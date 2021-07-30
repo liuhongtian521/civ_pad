@@ -1,0 +1,7 @@
+include ':app',
+        ':lib_opensource',
+        ':lib_coremodel',
+        ':lib_common',
+        'Extras:skeletonLibrary'
+
+

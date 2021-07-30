@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<declare-styleable name="CommonTitleBar">
+    <attr name="title" format="string" />
+    <attr name="goback" format="boolean"/>
+    <attr name="color" format="color"/>
+    <attr name="follow" format="boolean"/>
+    <attr name="share" format="boolean"/>
+</declare-styleable>
+</resources>

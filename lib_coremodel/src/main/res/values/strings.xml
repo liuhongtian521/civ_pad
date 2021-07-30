@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">CoreModel</string>
+    <string name="server_not_responding">服务器无响应</string>
+
+
+    <string-array name="string_array_resolutions">
+        <item>320x240</item>
+        <item>480x360</item>
+        <item>640x360</item>
+        <item>640x480</item>
+        <item>960x540</item>
+        <item>1280x720</item>
+    </string-array>
+</resources>

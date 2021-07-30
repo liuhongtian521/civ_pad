@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">考生身份认证</string>
+    <string name="pwd_format">0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM!@_.</string>
+    <string name="security_pwd_format">0123456789</string>
+    <string name="verification_code_format">0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="invite_code_format">0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="logining">正在登陆</string>
+    <string name="emptyView_mode_desc_fail_title">加载失败</string>
+    <string name="emptyView_mode_desc_retry">点击重试</string>
+    <string name="filtrate">筛选</string>
+    <string name="more">更多</string>
+    <string name="copyright">Copyright 169 联通（辽宁）产业互联网有限公司 . All Rights Reserved.</string>
+    <string name="admin_login">管理员登录</string>
+    <string name="main_examination">选择考场</string>
+    <string name="login_title">考生身份认证系统</string>
+    <string name="login_account_hint">用户名</string>
+    <string name="login_btn">登录</string>
+    <string name="login_pwd_hint">密码</string>
+    <string name="examination_check">场次查看</string>
+    <string name="data_view">数据查看</string>
+    <string name="data_lead">数据导入</string>
+    <string name="data_export">数据导出</string>
+    <string name="data_clear">数据清空</string>
+    <string name="data_lead_mode">请选择导入方式</string>
+    <string name="data_lead_net">网络导入</string>
+    <string name="data_lead_usb">U盘导入</string>
+    <string name="data_lead_sdcard">SD卡导入</string>
+    <string name="data_lead_in">导入数据</string>
+</resources>

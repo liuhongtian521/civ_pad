@@ -1,0 +1,28 @@
+{
+  "item": [
+    {
+      "name": "考试管理",
+      "pic": "icon_ext"
+    },
+    {
+      "name": "数据服务",
+      "pic": "icon_data"
+    },
+    {
+      "name": "系统设置",
+      "pic": "icon_system"
+    },
+    {
+      "name": "日志信息",
+      "pic": "icon_log"
+    },
+    {
+      "name": "系统自检",
+      "pic": "icon_check"
+    },
+    {
+      "name": "系统信息",
+      "pic": "icon_message"
+    }
+  ]
+}

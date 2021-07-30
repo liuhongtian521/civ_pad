@@ -1,0 +1,13 @@
+package com.askia.coremodel.viewmodel;
+
+import androidx.databinding.ObservableField;
+
+
+public class LoginViewModel extends BaseViewModel{
+
+    //account
+    public ObservableField<String> account = new ObservableField<>("");
+    //pwd
+    public ObservableField<String> password = new ObservableField<>("");
+
+}

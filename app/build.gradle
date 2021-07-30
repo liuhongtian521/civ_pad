@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+apply from: 'tinker-support.gradle'
+
+android {
+    compileSdkVersion parent.ext.compileSdkVersion
+    buildToolsVersion parent.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.lncucc.authentication"
+        minSdkVersion parent.ext.minSdkVersion
+        targetSdkVersion parent.ext.targetSdkVersion
+        versionCode 15
+        versionName "0.9.6"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // 设置支持multidex
+        multiDexEnabled true
+        //Bugly的类放到主Dex
+        //multiDexKeepProguard file("multidexKeep.pro")
+        //ARouter
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+         manifestPlaceholders = [
+                 "RELEASE_TIME": releaseTime(),
+         ]
+        // 设置支持的SO库架构
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+
+        dexOptions {
+            incremental true
+            javaMaxHeapSize "4g"
+        }
+    }
+    // 签名配置
+    signingConfigs {
+        release {
+            try {
+                storeFile file("../lncucc.jks")
+                storePassword "android"
+                keyAlias "lncucc"
+                keyPassword "android"
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
+        debug {
+            try {
+                storeFile file("../lncucc.jks")
+                storePassword "android"
+                keyAlias "lncucc"
+                keyPassword "android"
+            } catch (ex) {
+                throw new InvalidUserDataException(ex.toString())
+            }
+        }
+    }
+
+
+    buildTypes {
+        debug{
+            buildConfigField "String", "ArcFaceAppId", "\"841cKYTJQacN7AzWKed2JZkSmjHxEDk3MGyqEYsEuujH\""
+            buildConfigField "String", "ArcFaceSdkKey", "\"7x799eDFBdGyvp9NPU7dREcFcwgXwTTGEfKGM7PGmsEN\""
+            buildConfigField "String", "BaiDuTTSAppId", "\"17726385\""
+            buildConfigField "String", "BaiDuTTSAppKey", "\"Gq19GeFvvXAGoioqmCtUiqTK\""
+            buildConfigField "String", "BaiDuTTSSecretKey", "\"dlmK2pXdyaTjdvLj6auqwBoT56gSG4qt\""
+            buildConfigField "Boolean", "needAliveness", "false"
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled false
+            buildConfigField "String", "ArcFaceAppId", "\"841cKYTJQacN7AzWKed2JZkSmjHxEDk3MGyqEYsEuujH\""
+            buildConfigField "String", "ArcFaceSdkKey", "\"7x799eDFBdGyvp9NPU7dREcFcwgXwTTGEfKGM7PGmsEN\""
+            buildConfigField "String", "BaiDuTTSAppId", "\"17726385\""
+            buildConfigField "String", "BaiDuTTSAppKey", "\"Gq19GeFvvXAGoioqmCtUiqTK\""
+            buildConfigField "String", "BaiDuTTSSecretKey", "\"dlmK2pXdyaTjdvLj6auqwBoT56gSG4qt\""
+            buildConfigField "Boolean", "needAliveness", "false"
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "dahuaji_${defaultConfig.versionName}_${defaultConfig.versionCode}_${releaseTime()}.apk"
+                }
+
+            }
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        disable 'MissingTranslation'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd_HH:mm", TimeZone.getTimeZone("Asia/Shanghai"))
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+    implementation project(':lib_common')
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
+}

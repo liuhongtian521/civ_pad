@@ -1,0 +1,169 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion parent.ext.compileSdkVersion
+    buildToolsVersion parent.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion parent.ext.minSdkVersion
+        targetSdkVersion parent.ext.targetSdkVersion
+        versionCode 1
+        versionName "0.0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+            jni.srcDirs = []
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    //解决重复引用RxJava冲突
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    //Test
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //Architecture components For Lifecycles, LiveData, and ViewModel
+    api 'android.arch.lifecycle:runtime:1.1.1'
+    api 'android.arch.lifecycle:extensions:1.1.1'
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+
+    //http
+    api 'com.squareup.retrofit2:retrofit:2.4.0'
+    api 'com.squareup.retrofit2:converter-gson:2.3.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    api 'com.squareup.okhttp3:okhttp:3.11.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+
+    // RxComment
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    api 'io.reactivex.rxjava2:rxjava:2.1.9'
+    api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
+    api 'com.ttsea.jrxbus2:jrxbus2:1.0.3'
+
+    implementation 'com.squareup.retrofit2:retrofit-converters:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.4.0'
+    implementation 'com.alibaba:fastjson:1.1.54.android'
+    api 'io.jsonwebtoken:jjwt-api:0.11.1'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
+    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.1') {
+        exclude group: 'org.json', module: 'json'
+    }
+    implementation 'com.elvishew:xlog:1.6.1'
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'io.github.yuweiguocn:GreenDaoUpgradeHelper:v2.2.1'
+
+
+
+    //Arouter
+    api 'com.alibaba:arouter-api:1.2.4'
+
+    //logutils
+    api 'com.apkfuns.logutils:library:1.5.1.1'
+
+    //RecyclerView Adapter
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    //quick adapter
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
+
+    //QMUI
+    api 'com.qmuiteam:qmui:1.1.2'
+
+    //Toast
+    api 'com.github.GrenderG:Toasty:1.3.0'
+
+
+    //65K问题
+    api 'com.android.support:multidex:1.0.3'
+
+    //DataTime Picker
+    api 'com.contrarywind:Android-PickerView:4.1.4'
+
+    //bugly
+    api 'com.tencent.bugly:crashreport_upgrade:1.3.5'
+    api 'com.tencent.tinker:tinker-android-lib:1.9.6'
+    api 'com.tencent.bugly:nativecrashreport:3.3.1'
+
+
+    //下拉刷新
+    api 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
+    api 'com.android.support:support-core-utils:27.1.1'
+
+    //进度条
+    api 'cn.bingoogolapple:bga-progressbar:1.0.0@aar'
+
+    // indicator
+    api 'com.github.hackware1993:MagicIndicator:1.5.0'
+
+    //悬浮窗
+    // api 'com.github.yhaolpz:FloatWindow:1.0.9'
+
+    //Search
+    api 'com.github.CodingEnding:FairySearchView:1.01'
+
+    //event bus
+    api 'org.greenrobot:eventbus:3.0.0'
+
+    /*添加zxing依赖*/
+    api 'com.github.yuzhiqiang1993:zxing:2.1.4'
+    // 今日头条适配方案
+    api 'me.jessyan:autosize:0.9.5'
+    //banner
+    api 'com.youth.banner:banner:1.4.10'  //最新版本
+
+    //utilcode
+    api "com.blankj:utilcode:$rootProject.utilcode"
+    //占位图
+    api project(':Extras:skeletonLibrary')
+    // 一个通用的 可以嵌套任何view的圆角布局
+    api 'com.gcssloop.widget:rclayout:1.8.1'
+
+    // 上拉加载，下拉刷新
+    api 'com.jcodecraeer:xrecyclerview:1.5.9'
+
+    //  recyclerview 分割线
+    api 'com.yanyusong.y_divideritemdecoration:y_divideritemdecoration:2.0'
+    // tablayout
+    api 'q.rorbin:VerticalTabLayout:1.2.5'
+    // 文件下载
+    api 'com.liulishuo.filedownloader:library:1.7.4'
+    //switch button
+    api 'com.kyleduo.switchbutton:library:2.1.0'
+
+    // 加载动画
+    api 'com.wang.avi:library:2.1.3'
+
+    // 相册、拍照
+    compile('com.yuyh.imgsel:library:2.0.6')
+            {
+                exclude group: 'com.android.support'
+            }
+    // 声网
+    api 'io.agora.rtc:full-sdk:2.9.2'
+    // 声网IM
+    api 'io.agora.rtm:rtm-sdk:1.1.0'
+    api "androidx.constraintlayout:constraintlayout:2.0.4"
+    // glide
+    api 'com.github.bumptech.glide:glide:4.12.0'
+}

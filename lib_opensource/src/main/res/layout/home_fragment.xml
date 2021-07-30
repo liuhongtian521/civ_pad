@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+</LinearLayout><!--<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="handlers"
+            type="com.yueke.app.bmyp.fragments.HomeFragment" />
+
+        <variable
+            name="pageData"
+            type="com.askia.coremodel.viewmodel.HomeViewModel.PageData" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        &lt;!&ndash;头部&ndash;&gt;
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/color_shape"
+            android:orientation="vertical">
+
+            &lt;!&ndash;定位 消息&ndash;&gt;
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_10">
+
+                <com.qmuiteam.qmui.alpha.QMUIAlphaFrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_20"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_location" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/dp_40"
+                        android:text="@{pageData.location}"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14" />
+
+                </com.qmuiteam.qmui.alpha.QMUIAlphaFrameLayout>
+
+                <com.qmuiteam.qmui.alpha.QMUIAlphaFrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_22"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_message" />
+
+                </com.qmuiteam.qmui.alpha.QMUIAlphaFrameLayout>
+
+
+            </FrameLayout>
+
+            &lt;!&ndash;扫码 付款 收款&ndash;&gt;
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_10"
+                android:weightSum="3">
+
+                <com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="@{handlers::jumpToScanOR}"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_35"
+                        android:layout_height="@dimen/dp_35"
+                        android:src="@drawable/icon_scan_or" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:text="@string/scan_or"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+
+                </com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout>
+
+                <com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="@{handlers::jumpToPayment}"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_35"
+                        android:layout_height="@dimen/dp_35"
+                        android:src="@drawable/icon_payment" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:text="@string/payment"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+
+                </com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout>
+
+                <com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="@{handlers::jumpToProceeds}"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_35"
+                        android:layout_height="@dimen/dp_35"
+                        android:src="@drawable/icon_proceeds" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:text="@string/proceeds"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_12" />
+
+                </com.qmuiteam.qmui.alpha.QMUIAlphaLinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dataView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+</layout>-->
