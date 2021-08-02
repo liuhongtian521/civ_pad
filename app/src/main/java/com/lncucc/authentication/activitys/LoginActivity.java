@@ -53,7 +53,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin(){
-        LogUtils.e("do login!");
         startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
     }
 
