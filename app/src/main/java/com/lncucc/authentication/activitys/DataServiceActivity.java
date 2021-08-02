@@ -1,15 +1,9 @@
 package com.lncucc.authentication.activitys;
 
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -19,9 +13,10 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActDataServiceBinding;
 import com.lncucc.authentication.fragments.DataClearFragment;
+import com.lncucc.authentication.fragments.DataImportFragment;
 import com.lncucc.authentication.fragments.DataViewFragment;
-import com.lncucc.authentication.fragments.ExportFragment;
-import com.lncucc.authentication.fragments.LeadInFragment;
+import com.lncucc.authentication.fragments.DataExportFragment;
+
 import java.util.ArrayList;
 
 import q.rorbin.verticaltablayout.VerticalTabLayout;
@@ -62,8 +57,8 @@ public class DataServiceActivity extends BaseActivity {
 
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new DataViewFragment());
-        mFragmentList.add(new LeadInFragment());
-        mFragmentList.add(new ExportFragment());
+        mFragmentList.add(new DataImportFragment());
+        mFragmentList.add(new DataExportFragment());
         mFragmentList.add(new DataClearFragment());
 
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));

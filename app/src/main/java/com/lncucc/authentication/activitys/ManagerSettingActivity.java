@@ -49,7 +49,6 @@ public class ManagerSettingActivity extends BaseActivity {
         mRecyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((adapter1, view, position) -> {
-            MyToastUtils.success ("click position ->"+position,0);
             switch (position){
                 case 1:
                     startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);

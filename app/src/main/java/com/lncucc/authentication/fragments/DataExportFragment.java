@@ -10,15 +10,17 @@ import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
 import com.lncucc.authentication.R;
-import com.lncucc.authentication.databinding.FragmentLeadInBinding;
+import com.lncucc.authentication.databinding.FragmentExportBinding;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 数据导入
+ * 数据导出
  */
-public class LeadInFragment extends BaseFragment {
-    private FragmentLeadInBinding leadInBinding;
+public class DataExportFragment extends BaseFragment {
+
+    private FragmentExportBinding exportBinding;
+
     @Override
     public void onInit() {
 
@@ -31,8 +33,8 @@ public class LeadInFragment extends BaseFragment {
 
     @Override
     public View onInitDataBinding(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container) {
-        leadInBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_lead_in,container,false);
-        return leadInBinding.getRoot();
+        exportBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_export,container,false);
+        return exportBinding.getRoot();
     }
 
     @Override
