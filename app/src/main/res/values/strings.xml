@@ -26,4 +26,11 @@
     <string name="data_lead_usb">U盘导入</string>
     <string name="data_lead_sdcard">SD卡导入</string>
     <string name="data_lead_in">导入数据</string>
+    <string name="system__setting">基本设置</string>
+    <string name="mute__setting">静音设置</string>
+    <string name="accord__setting">按键音</string>
+    <string name="voice__setting">语音提示</string>
+    <string name="advanced__setting">高级设置</string>
+    <string name="start_valid_time">开始验证时间</string>
+    <string name="end_valid_time">结束验证时间</string>
 </resources>

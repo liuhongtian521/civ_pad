@@ -104,10 +104,10 @@
             android:theme="@style/BaseNoActionBar"
             android:exported="true"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <!-- 数据服务 -->
@@ -117,6 +117,20 @@
             android:theme="@style/BaseNoActionBar"
             android:exported="true"
             android:windowSoftInputMode="stateHidden"/>
+
+
+        <!-- 系统设置 -->
+        <activity android:name=".activitys.SystemSettingActivity"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTop"
+            android:theme="@style/BaseNoActionBar"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!--定义两个provider 不同依赖的库使用不同authorities的问题-->
         <provider

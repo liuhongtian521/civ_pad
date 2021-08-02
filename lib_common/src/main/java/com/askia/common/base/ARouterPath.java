@@ -20,4 +20,6 @@ public class ARouterPath {
     public static final String MANAGER_SETTING_ACTIVITY ="/activity/manager";
     /*数据服务*/
     public static final String DATA_SERVICE_ACTIVITY = "/activity/data";
+    /*系统设置*/
+    public static final String SYSTEM_SETTING = "/activity/systemSetting";
 }

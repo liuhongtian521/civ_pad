@@ -20,6 +20,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'io.supercharge:shimmerlayout:2.1.0'
     implementation "com.android.support:recyclerview-v7:$supportVersion"
+    implementation 'com.qmuiteam:qmui:2.0.0-alpha10'
+
 }
 
 publish {

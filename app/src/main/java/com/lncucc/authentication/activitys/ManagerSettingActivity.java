@@ -52,7 +52,7 @@ public class ManagerSettingActivity extends BaseActivity {
             MyToastUtils.success ("click position ->"+position,0);
             switch (position){
                 case 1:
-                    startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);
+                    startActivityByRouter(ARouterPath.SYSTEM_SETTING);
                     break;
                 default:
                     break;

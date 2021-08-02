@@ -111,6 +111,7 @@ def releaseTime() {
 
 dependencies {
     implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
+
     implementation project(':lib_common')
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
 }
