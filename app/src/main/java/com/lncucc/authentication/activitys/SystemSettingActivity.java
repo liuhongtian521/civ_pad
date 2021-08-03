@@ -20,11 +20,11 @@ import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActDataServiceBinding;
 import com.lncucc.authentication.databinding.ActSystemSettingBinding;
 import com.lncucc.authentication.fragments.DataClearFragment;
-import com.lncucc.authentication.fragments.DataViewFragment;
-import com.lncucc.authentication.fragments.ExportFragment;
-import com.lncucc.authentication.fragments.LeadInFragment;
 import com.lncucc.authentication.fragments.BaseSettingFragment;
 import com.lncucc.authentication.fragments.AdvancedSettingFragment;
+import com.lncucc.authentication.fragments.DataExportFragment;
+import com.lncucc.authentication.fragments.DataImportFragment;
+
 import java.util.ArrayList;
 
 import q.rorbin.verticaltablayout.VerticalTabLayout;
@@ -69,8 +69,8 @@ public class SystemSettingActivity extends BaseActivity {
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new BaseSettingFragment());
         mFragmentList.add(new AdvancedSettingFragment());
-        mFragmentList.add(new LeadInFragment());
-        mFragmentList.add(new ExportFragment());
+        mFragmentList.add(new DataImportFragment());
+        mFragmentList.add(new DataExportFragment());
         mFragmentList.add(new DataClearFragment());
 
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));
