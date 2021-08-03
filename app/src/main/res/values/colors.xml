@@ -26,4 +26,6 @@
     <color name="main_copy_right">#A7B6D1</color>
     <!-- 管理员设置 -->
     <color name="bg_manager">#EFF2F7</color>
+    <color name="DBE2E9">#DBE2E9</color>
+    <color name="F2F7FF">#F2F7FF</color>
 </resources>

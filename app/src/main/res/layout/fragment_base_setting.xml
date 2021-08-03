@@ -48,18 +48,42 @@
             <RelativeLayout
                 android:id="@+id/rl_base_setting_slider"
                 android:layout_width="match_parent"
-                android:layout_height="31dp">
-                    <com.qmuiteam.qmui.widget.QMUISlider
-                        android:layout_height="16dp"
-                        android:layout_centerInParent="true"
-                        android:checked="false"
-                        android:layout_centerVertical="true"
 
-                        android:id="@+id/slider"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="20dp"/>
+                android:layout_height="31dp"
+                android:background="@drawable/bg_base_sound"
+                >
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/sound_little"
+                    />
+
+
+                <com.qmuiteam.qmui.widget.QMUISlider
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="15dp"
+                    android:checked="false"
+                    app:qmui_slider_bar_height="10dp"
+                    app:qmui_slider_bar_normal_color="@color/DBE2E9"
+                    app:qmui_slider_bar_thumb_size="15dp"
+
+                    />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/sound_big"
+
+                    />
             </RelativeLayout>
 
 
