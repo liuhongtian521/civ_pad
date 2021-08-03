@@ -71,17 +71,6 @@ public class ZipTool {
         // 解压缩所有文件以及文件夹
         zipFile.extractAll(toPath);
     }
-
-    public static void main(String[] args) throws Exception {
-        //zip("D:\\temp\\110204","D:\\temp\\110204.zip","123456");
-//        unzip("D:\\temp\\test\\110204.zip","D:\\temp\\test\\110204","123456");
-    }
-
-
-
-
-
-
 }
 
 

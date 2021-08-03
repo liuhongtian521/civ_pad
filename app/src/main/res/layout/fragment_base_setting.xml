@@ -48,7 +48,6 @@
             <RelativeLayout
                 android:id="@+id/rl_base_setting_slider"
                 android:layout_width="match_parent"
-
                 android:layout_height="31dp"
                 android:background="@drawable/bg_base_sound"
                 >
@@ -58,19 +57,20 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/sound_little"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="8dp"
                     />
 
 
                 <com.qmuiteam.qmui.widget.QMUISlider
                     android:id="@+id/slider"
                     android:layout_width="match_parent"
-                    android:layout_height="10dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
                     android:checked="false"
-                    app:qmui_slider_bar_height="10dp"
+                    app:qmui_slider_bar_height="8dp"
                     app:qmui_slider_bar_normal_color="@color/DBE2E9"
                     app:qmui_slider_bar_thumb_size="15dp"
 
@@ -82,6 +82,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/sound_big"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="15dp"
 
                     />
             </RelativeLayout>
@@ -110,7 +112,7 @@
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/sb_net"
                     android:layout_width="45dp"
-                    android:layout_height="16dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:checked="false"

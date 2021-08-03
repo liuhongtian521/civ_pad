@@ -67,8 +67,19 @@
                     android:layout_width="45dp"
                     android:layout_height="16dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginRight="22dp"
                     android:checked="true"
                     android:layout_centerVertical="true"
+                    />
+
+                <ImageView
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/right_arrow"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="3dp"
                     />
                 <View
                     android:background="@drawable/bg_driver"
@@ -96,8 +107,19 @@
                     android:layout_width="45dp"
                     android:layout_height="16dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginRight="22dp"
                     android:checked="true"
                     android:layout_centerVertical="true"
+                    />
+
+                <ImageView
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/right_arrow"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="3dp"
                     />
 
                 <View

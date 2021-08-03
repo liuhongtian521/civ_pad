@@ -57,7 +57,9 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
-            MyToastUtils.error(result, Toast.LENGTH_SHORT);
+            if ("100".equals(result)){
+                MyToastUtils.error("解压成功", Toast.LENGTH_SHORT);
+            }
         });
     }
 
@@ -86,9 +88,7 @@ public class DataImportFragment extends BaseFragment {
         } else if (viewModel.usbImport.get()) {
             LogUtils.e("usb导入");
         } else {
-            LogUtils.e("sdk卡导入");
             viewModel.doSdCardImport();
-
         }
 
 
