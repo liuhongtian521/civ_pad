@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    复制代码
+    <item
+        android:layout_height="19dp"
+        android:layout_width="75dp"
+        >
+        <shape android:shape="rectangle">
+            <solid android:color="#FF2A6DE5"/>
+            <corners android:radius="13dp" />
+        </shape>
+    </item>
+</selector>

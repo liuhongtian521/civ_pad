@@ -21,6 +21,9 @@ import com.lncucc.authentication.databinding.ActSystemSettingBinding;
 import com.lncucc.authentication.fragments.DataClearFragment;
 import com.lncucc.authentication.fragments.BaseSettingFragment;
 import com.lncucc.authentication.fragments.AdvancedSettingFragment;
+import com.lncucc.authentication.fragments.NetworkSettingFragment;
+import com.lncucc.authentication.fragments.DisplaySettingFragment;
+import com.lncucc.authentication.fragments.UserManageFragment;
 
 import java.util.ArrayList;
 
@@ -67,7 +70,9 @@ public class SystemSettingActivity extends BaseActivity {
         mFragmentList.add(new BaseSettingFragment());
         mFragmentList.add(new AdvancedSettingFragment());
         mFragmentList.add(new DataClearFragment());
-
+        mFragmentList.add(new NetworkSettingFragment());
+        mFragmentList.add(new DisplaySettingFragment());
+        mFragmentList.add(new UserManageFragment());
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));
     }
 
