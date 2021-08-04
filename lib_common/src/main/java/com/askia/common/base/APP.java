@@ -15,7 +15,6 @@ import android.widget.ImageView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.apkfuns.logutils.LogUtils;
-import com.askia.common.BuildConfig;
 import com.askia.common.R;
 import com.askia.common.util.BuglyUtils;
 import com.askia.common.util.MyToastUtils;
@@ -109,26 +108,26 @@ public class APP extends Application {
                 "com.tencent.tinker.loader.TinkerLoader", false);
     }*/
 
-    private Handler mMainHandler = new Handler() {
-        /*
-         * @param msg
-         */
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Log.d("qyytts", msg.obj + "");
-            if (msg.what == INIT_SUCCESS) {
-                // 引擎初始化成功马上播放
-
-            }
-            if (!TextUtils.isEmpty((CharSequence) msg.obj) && String.valueOf(msg.obj).contains("播放结束回调")) {
-
-            } else if (!TextUtils.isEmpty((CharSequence) msg.obj) && (String.valueOf(msg.obj).contains("错误") || String.valueOf(msg.obj).contains("失败"))) {
-
-            }
-        }
-    };/*  LogUtils.getLog2FileConfig().configLog2FileEnable(true);
-        LogUtils.getLog2FileConfig().configLog2FilePath("/mnt/sdcard/ddswlog/");*/
+//    private Handler mMainHandler = new Handler() {
+//        /*
+//         * @param msg
+//         */
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            Log.d("qyytts", msg.obj + "");
+//            if (msg.what == INIT_SUCCESS) {
+//                // 引擎初始化成功马上播放
+//
+//            }
+//            if (!TextUtils.isEmpty((CharSequence) msg.obj) && String.valueOf(msg.obj).contains("播放结束回调")) {
+//
+//            } else if (!TextUtils.isEmpty((CharSequence) msg.obj) && (String.valueOf(msg.obj).contains("错误") || String.valueOf(msg.obj).contains("失败"))) {
+//
+//            }
+//        }
+//    };/*  LogUtils.getLog2FileConfig().configLog2FileEnable(true);
+//        LogUtils.getLog2FileConfig().configLog2FilePath("/mnt/sdcard/ddswlog/");*/
 
     @Override
     public void onCreate() {
@@ -145,11 +144,11 @@ public class APP extends Application {
         Utils.init(this);
         // 数据库初始化
         Realm.init(this);
-        try {
-            Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         // 文件下载
         FileDownloader.setup(this);
         FileDownloadLog.NEED_LOG = true;
@@ -236,38 +235,38 @@ public class APP extends Application {
 
 
 
-    public boolean initAgora(String agoraAppId) {
-        mAgoraAppId = agoraAppId;
-        // 声网
-        try {
-            mRtcEngine = RtcEngine.create(getApplicationContext(), mAgoraAppId, mHandler);
-            mRtcEngine.setChannelProfile(io.agora.rtc.Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
-            mRtcEngine.enableVideo();
-            mRtcEngine.setLogFile(FileUtil.initializeLogFile(this));
-            initConfig();
-
-            // 声网IM
-            IMUtils.getInstance(getApplicationContext()).init( mAgoraAppId);
-            return true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            new QMUIDialog.MessageDialogBuilder(APP.this)
-                    .setTitle("错误")
-                    .setMessage("音视频模块初始化错误，请联系运维人员或稍后重启应用重试！错误原因:" + e.getMessage())
-                    .setCancelable(false)
-                    .setCanceledOnTouchOutside(false)
-                    .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, new QMUIDialogAction.ActionListener() {
-                        @Override
-                        public void onClick(QMUIDialog dialog, int index) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
-            MyToastUtils.info("音视频模块初始化失败");
-            return false;
-        }
-    }
+//    public boolean initAgora(String agoraAppId) {
+//        mAgoraAppId = agoraAppId;
+//        // 声网
+//        try {
+//            mRtcEngine = RtcEngine.create(getApplicationContext(), mAgoraAppId, mHandler);
+//            mRtcEngine.setChannelProfile(io.agora.rtc.Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
+//            mRtcEngine.enableVideo();
+//            mRtcEngine.setLogFile(FileUtil.initializeLogFile(this));
+//            initConfig();
+//
+//            // 声网IM
+//            IMUtils.getInstance(getApplicationContext()).init( mAgoraAppId);
+//            return true;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            new QMUIDialog.MessageDialogBuilder(APP.this)
+//                    .setTitle("错误")
+//                    .setMessage("音视频模块初始化错误，请联系运维人员或稍后重启应用重试！错误原因:" + e.getMessage())
+//                    .setCancelable(false)
+//                    .setCanceledOnTouchOutside(false)
+//                    .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, new QMUIDialogAction.ActionListener() {
+//                        @Override
+//                        public void onClick(QMUIDialog dialog, int index) {
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
+//            MyToastUtils.info("音视频模块初始化失败");
+//            return false;
+//        }
+//    }
 
     @Subscribe
     public void onAuthenticationEvent(AuthenticationEvent event) {
@@ -391,13 +390,13 @@ public class APP extends Application {
         return mGlobalConfig;
     }
 
-    public RtcEngine rtcEngine() {
-        if(mRtcEngine == null)
-        {
-            initAgora(SharedPreUtil.getInstance().getAgoraid());
-        }
-        return mRtcEngine;
-    }
+//    public RtcEngine rtcEngine() {
+//        if(mRtcEngine == null)
+//        {
+//            initAgora(SharedPreUtil.getInstance().getAgoraid());
+//        }
+//        return mRtcEngine;
+//    }
 
     public StatsManager statsManager() {
         return mStatsManager;
@@ -421,33 +420,33 @@ public class APP extends Application {
      * FileSaveListener 在UiMessageListener的基础上，使用 onSynthesizeDataArrived回调，获取音频流
      */
     public void initialTts() {
-        if(synthesizer != null)
-            return;
-        LoggerProxy.printable(true); // 日志打印在logcat中
+//        if(synthesizer != null)
+//            return;
+//        LoggerProxy.printable(true); // 日志打印在logcat中
         // 设置初始化参数
         // 此处可以改为 含有您业务逻辑的SpeechSynthesizerListener的实现类
-        SpeechSynthesizerListener listener = new UiMessageListener(mMainHandler);
+//        SpeechSynthesizerListener listener = new UiMessageListener(mMainHandler);
 
         // appId appKey secretKey 网站上您申请的应用获取。注意使用离线合成功能的话，需要应用中填写您app的包名。包名在build.gradle中获取。
-        InitConfig initConfig = new InitConfig("17726385", "Gq19GeFvvXAGoioqmCtUiqTK", "dlmK2pXdyaTjdvLj6auqwBoT56gSG4qt", ttsMode, getParams(), listener);
+//        InitConfig initConfig = new InitConfig("17726385", "Gq19GeFvvXAGoioqmCtUiqTK", "dlmK2pXdyaTjdvLj6auqwBoT56gSG4qt", ttsMode, getParams(), listener);
 
         // 如果您集成中出错，请将下面一段代码放在和demo中相同的位置，并复制InitConfig 和 AutoCheck到您的项目中
         // 上线时请删除AutoCheck的调用
-        AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == 100) {
-                    AutoCheck autoCheck = (AutoCheck) msg.obj;
-                    synchronized (autoCheck) {
-                        String message = autoCheck.obtainDebugMessage();
-                        // toPrint(message); // 可以用下面一行替代，在logcat中查看代码
-                        // Log.w("AutoCheckMessage", message);
-                    }
-                }
-            }
-
-        });
-        synthesizer = new NonBlockSyntherizer(this, initConfig, mMainHandler); // 此处可以改为MySyntherizer 了解调用过程
+//        AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                if (msg.what == 100) {
+//                    AutoCheck autoCheck = (AutoCheck) msg.obj;
+//                    synchronized (autoCheck) {
+//                        String message = autoCheck.obtainDebugMessage();
+//                        // toPrint(message); // 可以用下面一行替代，在logcat中查看代码
+//                        // Log.w("AutoCheckMessage", message);
+//                    }
+//                }
+//            }
+//
+//        });
+//        synthesizer = new NonBlockSyntherizer(this, initConfig, mMainHandler); // 此处可以改为MySyntherizer 了解调用过程
 
     }
 

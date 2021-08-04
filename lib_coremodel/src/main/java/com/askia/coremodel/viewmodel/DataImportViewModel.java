@@ -1,10 +1,16 @@
 package com.askia.coremodel.viewmodel;
 
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.util.JsonUtil;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 
@@ -14,6 +20,10 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Observer;
+
+import io.reactivex.Observable;
+import io.realm.Realm;
 
 
 /**
@@ -25,6 +35,7 @@ public class DataImportViewModel extends BaseViewModel {
     public ObservableField<Boolean> usbImport = new ObservableField<>(false);
     public ObservableField<Boolean> sdCardImport = new ObservableField<>(true);
     private MutableLiveData<String> sdCardLiveData = new MutableLiveData<>();
+
     private String pwd = "123456";
 
     public MutableLiveData<String> getSdCardData() {
@@ -48,21 +59,26 @@ public class DataImportViewModel extends BaseViewModel {
                     for (int i = 0; i < list.size(); i++) {
                         //压缩包路径
                         String path = dataPath + File.separator + list.get(i).getName();
+                        //文件名
+                        String fileName = list.get(i).getName().split("\\.")[0];
                         //解压存放路径
-                        String toPath = unZipPath + File.separator + list.get(i).getName().split("\\.")[0];
+                        String toPath = unZipPath + File.separator + fileName;
                         // 生成的压缩文件
                         ZipFile zipFile = new ZipFile(path);
                         // 设置密码
                         zipFile.setPassword(pwd.toCharArray());
                         //解压进度
                         final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+                        int finalI = i;
                         Thread thread = new Thread(() -> {
                             int percentDone = 0;
-                            while (true){
+                            while (true) {
                                 percentDone = progressMonitor.getPercentDone();
                                 sdCardLiveData.postValue(percentDone + "");
-                                LogUtils.e("percentDone ->", percentDone + "");
-                                if (percentDone >= 100){
+                                if (percentDone >= 100) {
+                                    //解析
+                                    LogUtils.e("unzip success ->", fileName);
+                                    getExDataFromLocal(toPath);
                                     break;
                                 }
                             }
@@ -83,9 +99,75 @@ public class DataImportViewModel extends BaseViewModel {
     }
 
     /**
-     * 读取本地json
+     * 解析解压json
+     *
+     * @param path 解压文件路径
      */
-    private void getExDataFromLocal(){
+    private void getExDataFromLocal(String path) {
+        List<File> list = FileUtils.listFilesInDir(path);
+        for (int i = 0; i < list.size(); i++) {
+            //是否是json文件
+            if (list.get(i).isFile()) {
+                LogUtils.e("json file name ->", list.get(i).getName());
+                insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
+            }else {
+                //人脸照片
+                insertFace(path + File.separator + "/photo");
+            }
+        }
+    }
+
+
+    /**
+     * 考试数据插入
+     * @param filePath 文件路径
+     * @param fileName 文件名
+     */
+    private void insert2db(String filePath, String fileName){
+        switch (fileName) {
+            //考试计划表
+            case "ea_exam_plan.json":
+                List<DBExamPlan> planBean = JsonUtil.file2JsonArray(filePath, DBExamPlan.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(planBean));
+                break;
+            //考试安排表
+            case "ea_exam_arrange.json":
+                List<DBExamArrange> arrangeBean = JsonUtil.file2JsonArray(filePath, DBExamArrange.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(arrangeBean));
+                break;
+            //考试编排表
+            case "ea_exam_layout.json":
+                List<DBExamLayout> layoutBean = JsonUtil.file2JsonArray(filePath, DBExamLayout.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(layoutBean));
+                break;
+            //考生信息表
+            case "ea_examinee.json":
+                List<DBExaminee> amineeBean = JsonUtil.file2JsonArray(filePath, DBExaminee.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(amineeBean));
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    /**
+     * 人脸照片插入人脸库
+     *
+     * @param filePath photo path
+     */
+    private void insertFace(String filePath){
+        //获取单个压缩包照片数量
+        String photoCount = FileUtils.getFileSize(filePath);
+        LogUtils.e("photo count ->", photoCount);
+        //文件夹相片数量
+        List<File> photoList = FileUtils.listFilesInDir(filePath);
+        LogUtils.e("photo list size->", photoList.size());
+        if (photoList.isEmpty()) return;
+
+        for (File file : photoList){
+            LogUtils.e("photo name->",file.getName());
+        }
 
     }
 
