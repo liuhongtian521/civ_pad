@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
     </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/white"
@@ -139,37 +139,47 @@
 
 
 
-                <TextView
-                    android:layout_width="50dp"
+
+                <LinearLayout
+                    android:layout_width="100dp"
                     android:layout_height="19dp"
-                    android:id="@+id/cam_set_btn1"
-                    android:background="@drawable/bg_network_btn"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="前置"
-                    android:textAlignment="center"
+                    android:background="@drawable/bg_display_camer"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:id="@+id/Cam_set"
                     android:layout_marginRight="10dp"
-                    android:textColor="#FFF"
-                    android:textSize="9sp"
-                    android:gravity="center"
-                    />
 
+                    >
 
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/camera_set_btn1"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="前置"
+                        android:textAlignment="center"
+                        android:textColor="#666666"
+                        android:textSize="9sp"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="16dp"
+                        android:id="@+id/camera_set_btn2"
+                        android:background="@drawable/bg_network_btn"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="后置"
+                        android:textAlignment="center"
+                        android:textColor="#FFF"
+                        android:textSize="9sp"
+                        android:gravity="center"
+                        />
 
-                <TextView
-                    android:layout_width="50dp"
-                    android:layout_height="19dp"
-                    android:id="@+id/cam_set_bt2"
-                    android:background="@drawable/bg_network_btn"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="后置"
-                    android:textAlignment="center"
-                    android:layout_marginRight="70dp"
-                    android:textColor="#FFF"
-                    android:textSize="9sp"
-                    android:gravity="center"
-                    />
+                </LinearLayout>
 
             </RelativeLayout>
         </LinearLayout>
