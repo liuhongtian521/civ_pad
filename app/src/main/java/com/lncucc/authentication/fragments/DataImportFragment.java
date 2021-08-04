@@ -16,6 +16,7 @@ import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
+import com.ttsea.jrxbus2.RxBus2;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,7 @@ public class DataImportFragment extends BaseFragment {
 
     @Override
     public void onInit() {
+        RxBus2.getInstance().register(this);
     }
 
     public void initEvent() {

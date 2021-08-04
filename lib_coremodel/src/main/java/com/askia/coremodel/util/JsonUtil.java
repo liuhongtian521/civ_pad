@@ -1,9 +1,27 @@
 package com.askia.coremodel.util;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import android.util.JsonReader;
 
+import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -69,5 +87,38 @@ public class JsonUtil {
         object.addProperty(key, str);
         return gson.fromJson(JsonBean2Str(object), JsonObject.class);
     }
+
+    public static <T> List<T> file2JsonArray(String path, Class<T> t) {
+        File file = FileUtils.getFileByPath(path);
+        List<T> list = new ArrayList<>();
+        String result = null;
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            result = new String(bytes);
+//            Type type = new TypeToken<List<T>>(){}.getType();
+//            bean = gson.fromJson(result,type);
+            JsonArray array = new JsonParser().parse(result).getAsJsonArray();
+            for (JsonElement element : array){
+                list.add(gson.fromJson(element,t));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+//    List<T> list = new ArrayList<T>();
+//        try {
+//        Gson gson = new Gson();
+//        JsonArray arry = new JsonParser().parse(jsonString).getAsJsonArray();
+//        for (JsonElement jsonElement : arry) {
+//            list.add(gson.fromJson(jsonElement, cls));
+//        }
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//    }
 
 }

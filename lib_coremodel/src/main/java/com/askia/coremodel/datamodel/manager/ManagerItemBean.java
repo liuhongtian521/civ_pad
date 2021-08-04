@@ -9,7 +9,6 @@ import java.util.List;
 public class ManagerItemBean implements Serializable {
 
 
-    @SerializedName("item")
     private List<ItemBean> item;
 
     public List<ItemBean> getItem() {

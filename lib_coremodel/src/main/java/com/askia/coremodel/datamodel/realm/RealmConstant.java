@@ -4,12 +4,12 @@ import io.realm.RealmConfiguration;
 
 public class RealmConstant
 {
-    public static int VERSON = 4;
+    public static int VERSON = 1;
 
     public static RealmConfiguration getRealmConfig()
     {
         return new RealmConfiguration.Builder()
-                .name("DDSW")
+                .name("CIV.realm")
                 .schemaVersion(RealmConstant.VERSON)
                 .build();
     }

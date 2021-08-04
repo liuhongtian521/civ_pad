@@ -51,7 +51,7 @@ public class ManagerSettingActivity extends BaseActivity {
         adapter.setOnItemClickListener((adapter1, view, position) -> {
             switch (position){
                 case 1:
-                    startActivityByRouter(ARouterPath.SYSTEM_SETTING);
+                    startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);
                     break;
                 default:
                     break;
