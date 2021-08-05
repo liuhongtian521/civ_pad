@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_400"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_write_round_five"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_35">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="@dimen/dp_20"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/rel_title_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="准考证查询"
+                        android:textColor="#666666"
+                        android:textSize="@dimen/sp_9" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rel_click"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/tv_click_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="准考证查询"
+                        android:textColor="#163366"
+                        android:textSize="@dimen/sp_10" />
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_3"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="#5392FF" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rel_title_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="身份证号查询"
+                        android:textColor="#666666"
+                        android:textSize="@dimen/sp_9" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                android:src="@drawable/cha" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="#EFF2F7" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/bg_edit"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:id="@+id/iv_view"
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_14"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_search" />
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="@dimen/dp_72"
+                android:layout_height="@dimen/dp_30"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/btn_one"
+                android:text="查询"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_11" />
+
+            <ImageView
+                android:id="@+id/iv_del"
+                android:layout_width="@dimen/dp_29"
+                android:layout_height="@dimen/dp_29"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btn_search"
+                android:src="@drawable/icon_del" />
+
+            <EditText
+                android:id="@+id/edit_exam_number"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/iv_del"
+                android:layout_toRightOf="@+id/iv_view"
+                android:background="@null"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_6"
+                android:paddingRight="@dimen/dp_6" />
+
+            <EditText
+                android:id="@+id/edit_idcard"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/iv_del"
+                android:layout_toRightOf="@+id/iv_view"
+                android:background="@null"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_6"
+                android:paddingRight="@dimen/dp_6"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/line_people"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_144"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/bg_btn_line_blur"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_10">
+
+                <ImageView
+                    android:id="@+id/iv_face"
+                    android:layout_width="@dimen/dp_65"
+                    android:layout_height="@dimen/dp_80"
+                    android:src="@drawable/icon_face_show" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center|left"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="张某某"
+                        android:textColor="#333333"
+                        android:textSize="@dimen/sp_12" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="准考证号："
+                            android:textColor="#333333"
+                            android:textSize="@dimen/sp_9" />
+
+                        <TextView
+                            android:id="@+id/tv_cardno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="#333333"
+                            android:textSize="@dimen/sp_9" />
+
+                        <LinearLayout
+                            android:layout_width="@dimen/dp_120"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="@dimen/dp_1"
+                                android:layout_height="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
+                                android:background="#D5D5D5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="考场："
+                                android:textColor="#333333"
+                                android:textSize="@dimen/sp_9" />
+
+                            <TextView
+                                android:id="@+id/tv_address"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text=" "
+                                android:textColor="#333333"
+                                android:textSize="@dimen/sp_9" />
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="身份证号："
+                            android:textColor="#333333"
+                            android:textSize="@dimen/sp_9" />
+
+                        <TextView
+                            android:id="@+id/tv_idCard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="#333333"
+                            android:textSize="@dimen/sp_9" />
+
+                        <LinearLayout
+                            android:layout_width="@dimen/dp_120"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="@dimen/dp_1"
+                                android:layout_height="@dimen/dp_10"
+                                android:layout_marginRight="@dimen/dp_10"
+                                android:background="#D5D5D5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="座位号："
+                                android:textColor="#333333"
+                                android:textSize="@dimen/sp_9" />
+
+                            <TextView
+                                android:id="@+id/tv_address_no"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text=" "
+                                android:textColor="#333333"
+                                android:textSize="@dimen/sp_9" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="@dimen/dp_75"
+                    android:layout_height="@dimen/dp_19"
+                    android:background="@drawable/bg_btn_line_blue"
+                    android:text="取消"
+                    android:textColor="#2A6DE5"
+                    android:textSize="@dimen/sp_9" />
+
+                <Button
+                    android:layout_width="@dimen/dp_75"
+                    android:layout_height="@dimen/dp_19"
+                    android:background="@drawable/btn_one"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:text="对比"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_9" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
