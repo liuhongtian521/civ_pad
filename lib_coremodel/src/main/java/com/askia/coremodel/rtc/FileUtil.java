@@ -4,7 +4,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class FileUtil {
     private static final String LOG_FOLDER_NAME = "log";
@@ -30,5 +35,33 @@ public class FileUtil {
 
         if (folder != null && !folder.exists() && !folder.mkdir()) return "";
         else return new File(folder, LOG_FILE_NAME).getAbsolutePath();
+    }
+
+    /**
+     * file to byte[]
+     * @param file
+     * @return
+     */
+    public static byte[] readFile(File file){
+        byte[] buffer = null;
+        try
+        {
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1)
+            {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return buffer;
     }
 }

@@ -7,18 +7,42 @@ import io.realm.annotations.PrimaryKey;
 
 public class DBExamPlan extends RealmObject implements Serializable {
 
-    private Long endTime;
+
+    private String createBy;
+    private Long createTime;
+    private String endTime;
     private String examCode;
-    private String examName;
+    private String examPlanId;
     @PrimaryKey
     private String id;
-    private Long startTime;
+    private String seCode;
+    private String seName;
+    private String startTime;
+    private String subCode;
+    private String subName;
+    private String sysOrgCode;
 
-    public Long getEndTime() {
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Long endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -30,12 +54,12 @@ public class DBExamPlan extends RealmObject implements Serializable {
         this.examCode = examCode;
     }
 
-    public String getExamName() {
-        return examName;
+    public String getExamPlanId() {
+        return examPlanId;
     }
 
-    public void setExamName(String examName) {
-        this.examName = examName;
+    public void setExamPlanId(String examPlanId) {
+        this.examPlanId = examPlanId;
     }
 
     public String getId() {
@@ -46,11 +70,51 @@ public class DBExamPlan extends RealmObject implements Serializable {
         this.id = id;
     }
 
-    public Long getStartTime() {
+    public String getSeCode() {
+        return seCode;
+    }
+
+    public void setSeCode(String seCode) {
+        this.seCode = seCode;
+    }
+
+    public String getSeName() {
+        return seName;
+    }
+
+    public void setSeName(String seName) {
+        this.seName = seName;
+    }
+
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Long startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public String getSubCode() {
+        return subCode;
+    }
+
+    public void setSubCode(String subCode) {
+        this.subCode = subCode;
+    }
+
+    public String getSubName() {
+        return subName;
+    }
+
+    public void setSubName(String subName) {
+        this.subName = subName;
+    }
+
+    public String getSysOrgCode() {
+        return sysOrgCode;
+    }
+
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
     }
 }
