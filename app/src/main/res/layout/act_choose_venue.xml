@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="handlers"
+            type="com.lncucc.authentication.activitys.ChooseVenveActivity" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EFF2F7"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rel_title1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:background="@color/white"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="2"
+            android:shadowRadius="3">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="选择考场"
+                android:textColor="#333333"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    android:background="@drawable/icon_toleft" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:text="返回"
+                    android:textColor="#666666"
+                    android:textSize="@dimen/sp_9" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rel_title1"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/bg_write_round_five"
+            android:orientation="vertical">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rec_choose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"/>
+
+            <LinearLayout
+                android:id="@+id/line_choose_clear"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="right"
+                android:layout_margin="@dimen/dp_15"
+                android:background="@drawable/bg_gray_round"
+                android:gravity="center|left"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_14">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    android:src="@drawable/icon_chooseall" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_4"
+                    android:text="取消全选"
+                    android:textColor="#2A6DE5"
+                    android:textSize="@dimen/sp_9" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/line_choose_all"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="right"
+                android:layout_margin="@dimen/dp_15"
+                android:background="@drawable/bg_gray_round"
+                android:gravity="center|left"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_14"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_12"
+                    android:layout_height="@dimen/dp_12"
+                    android:src="@drawable/icon_choosenoall" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:text="全选"
+                    android:textColor="#2A6DE5"
+                    android:textSize="@dimen/sp_9" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="390dp"
+                android:layout_height="@dimen/dp_30"
+                android:text="确定"
+                android:textSize="@dimen/sp_11"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/dp_20"
+                android:background="@drawable/btn_one" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</layout>
