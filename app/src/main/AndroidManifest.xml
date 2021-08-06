@@ -133,7 +133,6 @@
             <!--                <category android:name="android.intent.category.LAUNCHER" />-->
             <!--            </intent-filter>-->
         </activity>
-
         <!--        身份验证-->
         <activity
             android:name=".activitys.AuthenticationActivity"
@@ -150,8 +149,14 @@
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
-
-
+        <!--        验证数据查看-->
+        <activity
+            android:name=".activitys.DataViewActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <!--定义两个provider 不同依赖的库使用不同authorities的问题-->
         <provider
             android:name="com.lncucc.authentication.widgets.MyFileProvider"

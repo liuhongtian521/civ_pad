@@ -253,6 +253,18 @@
                 android:shadowDx="0"
                 android:shadowDy="2"
                 android:shadowRadius="3"
+                android:text="不通过"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/sp_9" />
+            <Button
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/bg_quicken"
+                android:shadowColor="#ABAFB3"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:shadowRadius="3"
                 android:text="存疑"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/sp_9" />
