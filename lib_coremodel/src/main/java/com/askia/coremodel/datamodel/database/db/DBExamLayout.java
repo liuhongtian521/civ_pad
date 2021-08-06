@@ -10,44 +10,59 @@ import io.realm.annotations.PrimaryKey;
  */
 public class DBExamLayout extends RealmObject implements Serializable {
 
-    private String admissionCard;
-    private String arrangeId;
-    private String examRoomId;
-    private String examineeId;
+
+    private String createBy;
+    private Long createTime;
+    private String endTime;
+    private String examCode;
+    private String examPlanId;
     @PrimaryKey
     private String id;
-    private String seatNo;
+    private String seCode;
+    private String seName;
+    private String startTime;
+    private String subCode;
+    private String subName;
+    private String sysOrgCode;
 
-    public String getAdmissionCard() {
-        return admissionCard;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setAdmissionCard(String admissionCard) {
-        this.admissionCard = admissionCard;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
-    public String getArrangeId() {
-        return arrangeId;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setArrangeId(String arrangeId) {
-        this.arrangeId = arrangeId;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
-    public String getExamRoomId() {
-        return examRoomId;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setExamRoomId(String examRoomId) {
-        this.examRoomId = examRoomId;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
-    public String getExamineeId() {
-        return examineeId;
+    public String getExamCode() {
+        return examCode;
     }
 
-    public void setExamineeId(String examineeId) {
-        this.examineeId = examineeId;
+    public void setExamCode(String examCode) {
+        this.examCode = examCode;
+    }
+
+    public String getExamPlanId() {
+        return examPlanId;
+    }
+
+    public void setExamPlanId(String examPlanId) {
+        this.examPlanId = examPlanId;
     }
 
     public String getId() {
@@ -58,11 +73,51 @@ public class DBExamLayout extends RealmObject implements Serializable {
         this.id = id;
     }
 
-    public String getSeatNo() {
-        return seatNo;
+    public String getSeCode() {
+        return seCode;
     }
 
-    public void setSeatNo(String seatNo) {
-        this.seatNo = seatNo;
+    public void setSeCode(String seCode) {
+        this.seCode = seCode;
+    }
+
+    public String getSeName() {
+        return seName;
+    }
+
+    public void setSeName(String seName) {
+        this.seName = seName;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getSubCode() {
+        return subCode;
+    }
+
+    public void setSubCode(String subCode) {
+        this.subCode = subCode;
+    }
+
+    public String getSubName() {
+        return subName;
+    }
+
+    public void setSubName(String subName) {
+        this.subName = subName;
+    }
+
+    public String getSysOrgCode() {
+        return sysOrgCode;
+    }
+
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
     }
 }

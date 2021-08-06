@@ -22,4 +22,9 @@ public class ARouterPath {
     public static final String DATA_SERVICE_ACTIVITY = "/activity/data";
     /*系统设置*/
     public static final String SYSTEM_SETTING = "/activity/systemSetting";
+    /*选择考场*/
+    public static final String CHOOSE_VENVE = "/activity/chooseVenve";
+    /*验证数据查看*/
+    public static final String DATA_VIEW = "/activity/dataView";
+
 }

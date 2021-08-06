@@ -1,29 +1,55 @@
 package com.askia.coremodel.datamodel.database.operation;
 
-import com.ttsea.jrxbus2.RxBus2;
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
 
+import java.util.List;
 import io.realm.Realm;
 
+/**
+ *
+ */
 public class DBOperation {
 
     /**
-     *
-     * @param t
-     * @param <T>
-     * @param object
+     * 获取考试计划列表
+     * @return
      */
-    public <T> void insert(Class<T> t,Object object){
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                RxBus2.getInstance().post(null);
-            }
-        });
+    public static List<DBExamPlan> getExamPlan(){
+        return Realm.getDefaultInstance().where(DBExamPlan.class).findAll();
     }
+
+    /**
+     * 获取考场安排列表
+     * @return
+     */
+    public static List<DBExamArrange> getDBExamArrange(){
+        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
+    }
+
+    /**
+     * 获取考试考试编排表
+     * @return
+     */
+    public static List<DBExamLayout> getDBExamLayout(){
+        return Realm.getDefaultInstance().where(DBExamLayout.class).findAll();
+    }
+
+    /**
+     * 获取考生信息列表
+     * @return
+     */
+    public static List<DBExaminee> getDBExaminee(){
+        return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
+    }
+
+    /**
+     *
+     * @return
+     */
+//    public static List<DBExaminee> getDBExamineeByArrange(){
+//
+//    }
 }

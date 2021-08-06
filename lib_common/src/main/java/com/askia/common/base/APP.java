@@ -57,10 +57,13 @@ import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.ui.UILifecycleListener;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.loader.app.TinkerApplication;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
+import com.unicom.facedetect.detect.FaceDetectInitListener;
+import com.unicom.facedetect.detect.FaceDetectManager;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
 
@@ -144,11 +147,11 @@ public class APP extends Application {
         Utils.init(this);
         // 数据库初始化
         Realm.init(this);
-//        try {
-//            Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         // 文件下载
         FileDownloader.setup(this);
         FileDownloadLog.NEED_LOG = true;
@@ -197,14 +200,27 @@ public class APP extends Application {
                 Glide.with(context).asBitmap().load(path).into(imageView);
             }
         });
+
+        FaceDetectManager.getInstance().init(getApplicationContext(), "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
+            @Override
+            public void onInitComplete() {
+                Log.e("init face", "success");
+            }
+
+            @Override
+            public void onInitFailure(String errorMessage) {
+                Log.e("init face", "failure");
+            }
+        });
         // 声网IM
     //    IMUtils.getInstance().init(getApplicationContext(), mAgoraApøpId);
 
 
         RxBus2.getInstance().register(this);
-      /*  Bugly.init(getApplicationContext(), "注册时申请的APPID", false);
+//        initFace();
+//      /*  Bugly.init(getApplicationContext(), "注册时申请的APPID", false);
         // bugly report
-        CrashReport.setIsDevelopmentDevice(getApplicationContext(), false);
+        /*CrashReport.setIsDevelopmentDevice(getApplicationContext(), false);
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(getApplicationContext());
         strategy.setCrashHandleCallback(new CrashReport.CrashHandleCallback() {
             public Map<String, String> onCrashHandleStart(int crashType, String errorType,
@@ -233,40 +249,53 @@ public class APP extends Application {
         CrashReport.initCrashReport(getApplicationContext(),strategy);*/
     }
 
-
-
-//    public boolean initAgora(String agoraAppId) {
-//        mAgoraAppId = agoraAppId;
-//        // 声网
-//        try {
-//            mRtcEngine = RtcEngine.create(getApplicationContext(), mAgoraAppId, mHandler);
-//            mRtcEngine.setChannelProfile(io.agora.rtc.Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
-//            mRtcEngine.enableVideo();
-//            mRtcEngine.setLogFile(FileUtil.initializeLogFile(this));
-//            initConfig();
+//    public void initFace(){
+//        FaceDetectManager.getInstance().init(getApplicationContext(), "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
+//            @Override
+//            public void onInitComplete() {
+//                Log.e("init face","success");
+//            }
 //
-//            // 声网IM
-//            IMUtils.getInstance(getApplicationContext()).init( mAgoraAppId);
-//            return true;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            new QMUIDialog.MessageDialogBuilder(APP.this)
-//                    .setTitle("错误")
-//                    .setMessage("音视频模块初始化错误，请联系运维人员或稍后重启应用重试！错误原因:" + e.getMessage())
-//                    .setCancelable(false)
-//                    .setCanceledOnTouchOutside(false)
-//                    .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, new QMUIDialogAction.ActionListener() {
-//                        @Override
-//                        public void onClick(QMUIDialog dialog, int index) {
-//                            dialog.dismiss();
-//                        }
-//                    })
-//                    .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
-//            MyToastUtils.info("音视频模块初始化失败");
-//            return false;
-//        }
+//            @Override
+//            public void onInitFailure(String errorMessage) {
+//                Log.e("init face","failure");
+//            }
+//        });
 //    }
+
+
+    public boolean initAgora(String agoraAppId) {
+        mAgoraAppId = agoraAppId;
+        // 声网
+        try {
+            mRtcEngine = RtcEngine.create(getApplicationContext(), mAgoraAppId, mHandler);
+            mRtcEngine.setChannelProfile(io.agora.rtc.Constants.CHANNEL_PROFILE_LIVE_BROADCASTING);
+            mRtcEngine.enableVideo();
+            mRtcEngine.setLogFile(FileUtil.initializeLogFile(this));
+            initConfig();
+
+            // 声网IM
+            IMUtils.getInstance(getApplicationContext()).init( mAgoraAppId);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new QMUIDialog.MessageDialogBuilder(APP.this)
+                    .setTitle("错误")
+                    .setMessage("音视频模块初始化错误，请联系运维人员或稍后重启应用重试！错误原因:" + e.getMessage())
+                    .setCancelable(false)
+                    .setCanceledOnTouchOutside(false)
+                    .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, new QMUIDialogAction.ActionListener() {
+                        @Override
+                        public void onClick(QMUIDialog dialog, int index) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
+            MyToastUtils.info("音视频模块初始化失败");
+            return false;
+        }
+    }
 
     @Subscribe
     public void onAuthenticationEvent(AuthenticationEvent event) {
@@ -390,13 +419,13 @@ public class APP extends Application {
         return mGlobalConfig;
     }
 
-//    public RtcEngine rtcEngine() {
-//        if(mRtcEngine == null)
-//        {
-//            initAgora(SharedPreUtil.getInstance().getAgoraid());
-//        }
-//        return mRtcEngine;
-//    }
+    public RtcEngine rtcEngine() {
+        if(mRtcEngine == null)
+        {
+            initAgora(SharedPreUtil.getInstance().getAgoraid());
+        }
+        return mRtcEngine;
+    }
 
     public StatsManager statsManager() {
         return mStatsManager;

@@ -5,20 +5,28 @@ import java.io.Serializable;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
+/**
+ * 考生信息表
+ */
 public class DBExaminee extends RealmObject implements Serializable {
 
+
     private Long birthDate;
-    private String certificateNo;
-    private String certificateType;
-    private String examPalnId;
-    private String examineeName;
-    private String examineeNo;
-    private String foreignLanguage;
+    private String cardNo;
+    private String cardType;
+    private String createBy;
+    private Long createTime;
+    private String examCode;
+    private String fLanguage;
     private String gender;
     @PrimaryKey
     private String id;
+    private String liveAddr;
     private String nation;
-    private String registeredResidence;
+    private String planId;
+    private String stuName;
+    private String stuNo;
+    private String sysOrgCode;
 
     public Long getBirthDate() {
         return birthDate;
@@ -28,52 +36,52 @@ public class DBExaminee extends RealmObject implements Serializable {
         this.birthDate = birthDate;
     }
 
-    public String getCertificateNo() {
-        return certificateNo;
+    public String getCardNo() {
+        return cardNo;
     }
 
-    public void setCertificateNo(String certificateNo) {
-        this.certificateNo = certificateNo;
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
     }
 
-    public String getCertificateType() {
-        return certificateType;
+    public String getCardType() {
+        return cardType;
     }
 
-    public void setCertificateType(String certificateType) {
-        this.certificateType = certificateType;
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
-    public String getExamPalnId() {
-        return examPalnId;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setExamPalnId(String examPalnId) {
-        this.examPalnId = examPalnId;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
-    public String getExamineeName() {
-        return examineeName;
+    public Long getCreateTime() {
+        return createTime;
     }
 
-    public void setExamineeName(String examineeName) {
-        this.examineeName = examineeName;
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
     }
 
-    public String getExamineeNo() {
-        return examineeNo;
+    public String getExamCode() {
+        return examCode;
     }
 
-    public void setExamineeNo(String examineeNo) {
-        this.examineeNo = examineeNo;
+    public void setExamCode(String examCode) {
+        this.examCode = examCode;
     }
 
-    public String getForeignLanguage() {
-        return foreignLanguage;
+    public String getFLanguage() {
+        return fLanguage;
     }
 
-    public void setForeignLanguage(String foreignLanguage) {
-        this.foreignLanguage = foreignLanguage;
+    public void setFLanguage(String fLanguage) {
+        this.fLanguage = fLanguage;
     }
 
     public String getGender() {
@@ -92,6 +100,14 @@ public class DBExaminee extends RealmObject implements Serializable {
         this.id = id;
     }
 
+    public String getLiveAddr() {
+        return liveAddr;
+    }
+
+    public void setLiveAddr(String liveAddr) {
+        this.liveAddr = liveAddr;
+    }
+
     public String getNation() {
         return nation;
     }
@@ -100,11 +116,35 @@ public class DBExaminee extends RealmObject implements Serializable {
         this.nation = nation;
     }
 
-    public String getRegisteredResidence() {
-        return registeredResidence;
+    public String getPlanId() {
+        return planId;
     }
 
-    public void setRegisteredResidence(String registeredResidence) {
-        this.registeredResidence = registeredResidence;
+    public void setPlanId(String planId) {
+        this.planId = planId;
+    }
+
+    public String getStuName() {
+        return stuName;
+    }
+
+    public void setStuName(String stuName) {
+        this.stuName = stuName;
+    }
+
+    public String getStuNo() {
+        return stuNo;
+    }
+
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
+    }
+
+    public String getSysOrgCode() {
+        return sysOrgCode;
+    }
+
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
     }
 }

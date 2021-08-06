@@ -1,6 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.databinding.ObservableField;
@@ -10,19 +11,36 @@ import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
+import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
+import com.askia.coremodel.event.FaceHandleEvent;
+import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.ttsea.jrxbus2.RxBus2;
+import com.unicom.facedetect.detect.FaceDetectManager;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
+import org.apache.tools.zip.ZipEntry;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Observer;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 
 
@@ -34,12 +52,12 @@ public class DataImportViewModel extends BaseViewModel {
     public ObservableField<Boolean> netImport = new ObservableField<>(false);
     public ObservableField<Boolean> usbImport = new ObservableField<>(false);
     public ObservableField<Boolean> sdCardImport = new ObservableField<>(true);
-    private MutableLiveData<String> sdCardLiveData = new MutableLiveData<>();
+    private MutableLiveData<String> dataObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
 
     public MutableLiveData<String> getSdCardData() {
-        return sdCardLiveData;
+        return dataObservable;
     }
 
     private final String dataPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
@@ -74,7 +92,7 @@ public class DataImportViewModel extends BaseViewModel {
                             int percentDone = 0;
                             while (true) {
                                 percentDone = progressMonitor.getPercentDone();
-                                sdCardLiveData.postValue(percentDone + "");
+                                dataObservable.postValue(percentDone + "");
                                 if (percentDone >= 100) {
                                     //解析
                                     LogUtils.e("unzip success ->", fileName);
@@ -94,7 +112,7 @@ public class DataImportViewModel extends BaseViewModel {
                 }
             }
         } else {
-            sdCardLiveData.postValue("请检查压缩包存放地址是否正确！");
+            dataObservable.postValue("请检查压缩包存放地址是否正确！");
         }
     }
 
@@ -110,9 +128,9 @@ public class DataImportViewModel extends BaseViewModel {
             if (list.get(i).isFile()) {
                 LogUtils.e("json file name ->", list.get(i).getName());
                 insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
-            }else {
+            } else {
                 //人脸照片
-                insertFace(path + File.separator + "/photo");
+                pushFaceImage(path + File.separator + "photo");
             }
         }
     }
@@ -120,10 +138,11 @@ public class DataImportViewModel extends BaseViewModel {
 
     /**
      * 考试数据插入
+     *
      * @param filePath 文件路径
      * @param fileName 文件名
      */
-    private void insert2db(String filePath, String fileName){
+    private void insert2db(String filePath, String fileName) {
         switch (fileName) {
             //考试计划表
             case "ea_exam_plan.json":
@@ -147,28 +166,49 @@ public class DataImportViewModel extends BaseViewModel {
                 break;
             default:
                 break;
-
         }
     }
 
-    /**
-     * 人脸照片插入人脸库
-     *
-     * @param filePath photo path
-     */
-    private void insertFace(String filePath){
-        //获取单个压缩包照片数量
-        String photoCount = FileUtils.getFileSize(filePath);
-        LogUtils.e("photo count ->", photoCount);
-        //文件夹相片数量
-        List<File> photoList = FileUtils.listFilesInDir(filePath);
-        LogUtils.e("photo list size->", photoList.size());
-        if (photoList.isEmpty()) return;
+    private void pushFaceImage(String filePath) {
+        Observable.create((ObservableOnSubscribe<String>) emitter ->
+        {
+            //文件夹相片数量
+            List<File> photoList = FileUtils.listFilesInDir(filePath);
+            LogUtils.e("photo list size->", photoList.size());
+            if (photoList.isEmpty()) return;
 
-        for (File file : photoList){
-            LogUtils.e("photo name->",file.getName());
-        }
+            for (File file : photoList) {
+                String faceNumber = file.getName().split("\\.")[0];
+                LogUtils.e("photo name->", faceNumber);
+                byte[] bytes = FileUtil.readFile(file);
+                String faceId = FaceDetectManager.getInstance().addFace(faceNumber, "", bytes);
+                emitter.onNext(faceId);
+            }
 
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(String result) {
+                        LogUtils.e("faceid ->", result);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     public void doSdCardImport() {

@@ -51,7 +51,6 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
 
-
     <application
         android:name="com.askia.common.base.APP"
         android:allowBackup="true"
@@ -59,73 +58,52 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-   >
+        android:theme="@style/AppTheme">
 
         <activity
             android:name="com.lncucc.authentication.activitys.SplashActivity"
             android:launchMode="singleTask"
-            android:theme="@style/BaseNoActionBar"
             android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
 
         <!--登录 -->
-        <activity android:name=".activitys.LoginActivity"
-            android:screenOrientation="landscape"
+        <activity
+            android:name=".activitys.LoginActivity"
             android:launchMode="singleTop"
-            android:theme="@style/BaseNoActionBar">
-        </activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"></activity>
 
         <!-- 主页-->
-        <activity android:name="com.lncucc.authentication.activitys.MainActivity"
+        <activity
+            android:name="com.lncucc.authentication.activitys.MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
-            android:exported="true"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
 
         <!--考场管理 -->
-        <activity android:name=".activitys.ExaminationActivity"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTop"
-            android:theme="@style/BaseNoActionBar"
+        <activity
+            android:name=".activitys.ExaminationActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateHidden"/>
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
         <!-- 管理员设置 -->
-        <activity android:name=".activitys.ManagerSettingActivity"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTop"
-            android:theme="@style/BaseNoActionBar"
+        <activity
+            android:name=".activitys.ManagerSettingActivity"
             android:exported="true"
-            android:windowSoftInputMode="stateHidden">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-
-        <!-- 数据服务 -->
-        <activity android:name=".activitys.DataServiceActivity"
-            android:screenOrientation="landscape"
             android:launchMode="singleTop"
-            android:theme="@style/BaseNoActionBar"
-            android:exported="true"
-            android:windowSoftInputMode="stateHidden"/>
-
-
-        <!-- 系统设置 -->
-        <activity android:name=".activitys.SystemSettingActivity"
             android:screenOrientation="landscape"
-            android:launchMode="singleTop"
             android:theme="@style/BaseNoActionBar"
-            android:exported="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -133,6 +111,53 @@
             </intent-filter>
         </activity>
 
+        <!-- 数据服务 -->
+        <activity
+            android:name=".activitys.DataServiceActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+
+        <!-- 系统设置 -->
+        <activity
+            android:name=".activitys.SystemSettingActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
+        </activity>
+        <!--        身份验证-->
+        <activity
+            android:name=".activitys.AuthenticationActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <!--        选择考场-->
+        <activity
+            android:name=".activitys.ChooseVenveActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <!--        验证数据查看-->
+        <activity
+            android:name=".activitys.DataViewActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <!--定义两个provider 不同依赖的库使用不同authorities的问题-->
         <provider
             android:name="com.lncucc.authentication.widgets.MyFileProvider"
@@ -167,7 +192,7 @@
 
         <meta-data
             android:name="releaseTime"
-            android:value="${RELEASE_TIME}"/>
+            android:value="${RELEASE_TIME}" />
 
     </application>
 
