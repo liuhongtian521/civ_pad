@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="viewmodel"
+            type="com.askia.coremodel.viewmodel.DateSettingViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,11 +73,13 @@
 
                         />
                     <TextView
+                        android:id="@+id/date_wrap"
                         android:layout_width="wrap_content"
-                        android:text="2021.07.20 12:00:00"
+                        android:text="@={viewmodel.timeStr}"
                         android:layout_height="wrap_content"
                         android:textColor="#FF2A6DE5"
                         android:textSize="12sp"
+                        android:clickable="true"
                         />
 
                 </LinearLayout>
@@ -94,6 +98,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/sb_time_set"
                     android:layout_centerHorizontal="true"
                     android:layout_width="390dp"
                     android:layout_height="30dp"
@@ -102,6 +107,7 @@
                     android:gravity="center"
                     android:textSize="11sp"
                     android:textColor="#FFFFFFFF"
+                    android:clickable="true"
                     />
 
 

@@ -1,14 +1,18 @@
 package com.lncucc.authentication.fragments;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentNetworkSettingBinding;
 
@@ -19,9 +23,19 @@ import org.jetbrains.annotations.NotNull;
  */
 public class NetworkSettingFragment extends BaseFragment {
     private FragmentNetworkSettingBinding networkSetting;
+    TextView netVBtn;
+    Intent intent=null;
+
     @Override
     public void onInit() {
-
+    netVBtn = networkSetting.netSetBtn;
+    netVBtn.setOnClickListener(new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            openNetwork();
+            return;
+        }
+    });
     }
 
     @Override
@@ -39,4 +53,17 @@ public class NetworkSettingFragment extends BaseFragment {
     public void onSubscribeViewModel() {
 
     }
+
+    public void openNetwork () {
+        if(android.os.Build.VERSION.SDK_INT>10){
+            intent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+        }else{
+            intent = new Intent();
+            ComponentName component = new ComponentName("com.android.settings","com.android.settings.WirelessSettings");
+            intent.setComponent(component);
+            intent.setAction("android.intent.action.VIEW");
+        }
+        startActivity(intent);
+    }
+
 }
