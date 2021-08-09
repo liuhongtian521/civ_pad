@@ -1,6 +1,9 @@
 package com.lncucc.authentication.fragments;
 
+import android.content.ContentResolver;
 import android.graphics.Color;
+import android.hardware.Camera;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +16,17 @@ import androidx.databinding.DataBindingUtil;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDisplaySettingBinding;
+import com.qmuiteam.qmui.widget.QMUISlider;
 
 
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,19 +41,49 @@ public class DisplaySettingFragment extends BaseFragment {
     TextView te1; // 前置摄像头
     TextView te2; // 后置摄像头
     String currentPos; // 当前选择的是哪个摄像头  前置"1"  后置"2"
+    QMUISlider sliderBrightness;
     @Override
     public void onInit() {
-    linear = displaySetting.CamSet;
-    te1 = displaySetting.cameraSetBtn1;
-    te2 = displaySetting.cameraSetBtn2;
+        linear = displaySetting.CamSet;
+        te1 = displaySetting.cameraSetBtn1;
+        te2 = displaySetting.cameraSetBtn2;
+        sliderBrightness = displaySetting.sliderBrightness;
+        sliderBrightness.setCurrentProgress(getScreenBrightness());
+        cameraSet();
+            sliderBrightness.setCallback(new QMUISlider.Callback() {
+            @Override
+            public void onProgressChange(QMUISlider slider, int progress, int tickCount, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onTouchDown(QMUISlider slider, int progress, int tickCount, boolean hitThumb) {
+
+            }
+
+            @Override
+            public void onTouchUp(QMUISlider slider, int progress, int tickCount) {
+                saveScreenBrightness(progress);
+            }
+
+            @Override
+            public void onStartMoving(QMUISlider slider, int progress, int tickCount) {
+
+            }
+
+            @Override
+            public void onStopMoving(QMUISlider slider, int progress, int tickCount) {
+
+            }
+        });
         currentPos = "2";
         setState();
-    linear.setOnClickListener(new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            setState();
-        }
-     });
+        linear.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                setState();
+            }
+         });
     }
 
 
@@ -92,4 +130,54 @@ public class DisplaySettingFragment extends BaseFragment {
             return;
         }
     }
+
+    public void setScrennManualMode() {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        try {
+            int mode = Settings.System.getInt(contentResolver,
+                    Settings.System.SCREEN_BRIGHTNESS_MODE);
+            if (mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE,
+                        Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+    private int getScreenBrightness() {
+        // 获取屏幕亮度值
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        int defVal = 125;
+        return 100 * Settings.System.getInt(contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS, defVal) / 255;
+    }
+    private void saveScreenBrightness(int process) {
+        // 当屏幕亮度模式为0即手动调节时，可以通过如下代码设置屏幕亮度：
+        setScrennManualMode();
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        int value = process * 255/100; // 设置亮度值为255
+        Settings.System.putInt(contentResolver,
+                Settings.System.SCREEN_BRIGHTNESS, value);
+    }
+    private void setWindowBrightness(int brightness) {
+        // 设置当前窗口亮度
+        Window window = mActivity.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.screenBrightness = brightness / 255.0f;
+        window.setAttributes(lp);
+    }
+    public void cameraSet () {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        LogUtils.e("camera info ==>>>>>", info.facing, Camera.CameraInfo.CAMERA_FACING_FRONT);
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+            // 前置
+            currentPos ="2";
+            setState();
+        } else {
+            // 后置
+            currentPos ="1";
+            setState();
+        }
+    }
+}

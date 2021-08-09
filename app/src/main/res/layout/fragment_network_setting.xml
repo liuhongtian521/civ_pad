@@ -139,6 +139,7 @@
                     android:layout_marginRight="10dp"
                     android:textColor="#FFF"
                     android:textSize="9sp"
+                    android:clickable="true"
                     android:gravity="center"
                     />
 

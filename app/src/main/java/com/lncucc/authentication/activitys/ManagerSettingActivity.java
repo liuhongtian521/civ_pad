@@ -53,8 +53,11 @@ public class ManagerSettingActivity extends BaseActivity {
                 case 1:
                     startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);
                     break;
-                default:
+                case 2:
+                    startActivityByRouter(ARouterPath.SYSTEM_SETTING);
                     break;
+                default:
+
             }
         });
     }
