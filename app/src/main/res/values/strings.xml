@@ -33,4 +33,7 @@
     <string name="advanced__setting">高级设置</string>
     <string name="start_valid_time">开始验证时间</string>
     <string name="end_valid_time">结束验证时间</string>
+    <string name="login_system">进入系统</string>
+    <string name="initialize_title">考生身份认证系统</string>
+    <string name="initialize_update">系统正在初始化数据请稍后…</string>
 </resources>

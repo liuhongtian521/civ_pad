@@ -12,6 +12,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
+import com.askia.coremodel.datamodel.http.ApiConstants;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
@@ -43,6 +44,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 
+import static com.askia.coremodel.rtc.Constants.unZipPath;
+import static com.askia.coremodel.rtc.Constants.zipPath;
+
 
 /**
  * 数据导入viewModel
@@ -60,23 +64,19 @@ public class DataImportViewModel extends BaseViewModel {
         return dataObservable;
     }
 
-    private final String dataPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
-    private final String unZipPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "ExModel";
-
-
     /**
      * 校验sdcard根目录下是否存在examination文件
      * 并解压.zip文件到Examination/data下
      */
     public void checkZipFile() {
-        if (FileUtils.isFileExists(dataPath)) {
+        if (FileUtils.isFileExists(zipPath)) {
             //文件夹存在，获取zip list
-            List<File> list = FileUtils.listFilesInDir(dataPath);
+            List<File> list = FileUtils.listFilesInDir(zipPath);
             if (list != null && list.size() > 0) {
                 try {
                     for (int i = 0; i < list.size(); i++) {
                         //压缩包路径
-                        String path = dataPath + File.separator + list.get(i).getName();
+                        String path = zipPath + File.separator + list.get(i).getName();
                         //文件名
                         String fileName = list.get(i).getName().split("\\.")[0];
                         //解压存放路径

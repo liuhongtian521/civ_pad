@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="handles"
+            type="com.lncucc.authentication.activitys.DateSettingActivity" />
+    </data>
+
+    <LinearLayout
+        android:background="#EFF2F7"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/common_title_layout"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/bg_login_white"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <DatePicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <Button
+                android:id="@+id/btn_to_system"
+                android:background="@drawable/bg_login_button"
+                android:text="@string/login_system"
+                android:onClick="@{handles::loginSystem}"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:textColor="@color/white"
+                android:layout_width="390dp"
+                android:layout_height="30dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

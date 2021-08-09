@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
@@ -40,6 +41,7 @@ public class DataImportFragment extends BaseFragment {
         leadInBinding.sbNet.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.netImport.set(isChecked));
         leadInBinding.sbUsb.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.usbImport.set(isChecked));
         leadInBinding.sbSdcard.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.sdCardImport.set(isChecked));
+        LogUtils.e(DBOperation.getDBExamLayout());
     }
 
     @Override

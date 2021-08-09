@@ -115,20 +115,6 @@ public class SplashActivity extends BaseActivity
 
     }
 
-    public void initFace(View view){
-        FaceDetectManager.getInstance().init(getApplicationContext(), "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
-            @Override
-            public void onInitComplete() {
-                Log.e("init face","success");
-            }
-
-            @Override
-            public void onInitFailure(String errorMessage) {
-                Log.e("init face","failure");
-            }
-        });
-    }
-
     public void toLogin(View view){
         startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
     }
