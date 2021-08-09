@@ -93,7 +93,6 @@
 
         <!-- 时间设置 -->
         <activity android:name=".activitys.DateSettingActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
@@ -114,8 +113,6 @@
         <!--考场管理 -->
         <activity
             android:name=".activitys.ExaminationActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -123,8 +120,6 @@
         <!-- 管理员设置 -->
         <activity
             android:name=".activitys.ManagerSettingActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
@@ -133,8 +128,6 @@
         <!-- 数据服务 -->
         <activity
             android:name=".activitys.DataServiceActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -143,32 +136,25 @@
         <!-- 系统设置 -->
         <activity
             android:name=".activitys.SystemSettingActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
         </activity>
-        <!--        身份验证-->
+        <!--身份验证-->
         <activity
             android:name=".activitys.AuthenticationActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <!--        选择考场-->
+        <!--选择考场-->
         <activity
             android:name=".activitys.ChooseVenveActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <!--        验证数据查看-->
+        <!-- 验证数据查看-->
         <activity
             android:name=".activitys.DataViewActivity"
-            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"

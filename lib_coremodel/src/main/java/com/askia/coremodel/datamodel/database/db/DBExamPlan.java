@@ -10,17 +10,16 @@ public class DBExamPlan extends RealmObject implements Serializable {
 
     private String createBy;
     private Long createTime;
-    private String endTime;
+    private Long endTime;
     private String examCode;
-    private String examPlanId;
+    private String examName;
+    private String examStatus;
     @PrimaryKey
     private String id;
-    private String seCode;
-    private String seName;
-    private String startTime;
-    private String subCode;
-    private String subName;
+    private Long startTime;
     private String sysOrgCode;
+    private String updateBy;
+    private Long updateTime;
 
     public String getCreateBy() {
         return createBy;
@@ -38,11 +37,11 @@ public class DBExamPlan extends RealmObject implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 
@@ -54,12 +53,20 @@ public class DBExamPlan extends RealmObject implements Serializable {
         this.examCode = examCode;
     }
 
-    public String getExamPlanId() {
-        return examPlanId;
+    public String getExamName() {
+        return examName;
     }
 
-    public void setExamPlanId(String examPlanId) {
-        this.examPlanId = examPlanId;
+    public void setExamName(String examName) {
+        this.examName = examName;
+    }
+
+    public String getExamStatus() {
+        return examStatus;
+    }
+
+    public void setExamStatus(String examStatus) {
+        this.examStatus = examStatus;
     }
 
     public String getId() {
@@ -70,44 +77,12 @@ public class DBExamPlan extends RealmObject implements Serializable {
         this.id = id;
     }
 
-    public String getSeCode() {
-        return seCode;
-    }
-
-    public void setSeCode(String seCode) {
-        this.seCode = seCode;
-    }
-
-    public String getSeName() {
-        return seName;
-    }
-
-    public void setSeName(String seName) {
-        this.seName = seName;
-    }
-
-    public String getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
-    }
-
-    public String getSubCode() {
-        return subCode;
-    }
-
-    public void setSubCode(String subCode) {
-        this.subCode = subCode;
-    }
-
-    public String getSubName() {
-        return subName;
-    }
-
-    public void setSubName(String subName) {
-        this.subName = subName;
     }
 
     public String getSysOrgCode() {
@@ -116,5 +91,21 @@ public class DBExamPlan extends RealmObject implements Serializable {
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
     }
 }

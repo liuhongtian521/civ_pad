@@ -27,13 +27,7 @@ public class InitializeViewModel extends BaseViewModel{
         //解压文件夹是否存在
         if (FileUtils.isFileExists(unZipPath)){
             List<File> list = FileUtils.listFilesInDir(unZipPath);
-            if (!list.isEmpty()){
-                return true;
-            }else {
-                //无数据
-                return false;
-            }
-
+            return !list.isEmpty();
         }else {
             //无数据
             return false;

@@ -43,8 +43,9 @@ public class InitializeActivity extends BaseActivity {
 
                     @Override
                     public void onNext(@NotNull Long aLong) {
-                        if (aLong <= 100){
-                            actInitializeBinding.qmProcess.setProgress(Integer.parseInt(aLong + ""));
+                        if (aLong <= 10){
+                            //压缩下载进度
+                            actInitializeBinding.qmProcess.setProgress(Integer.parseInt(aLong * 10 + ""));
                             actInitializeBinding.tvProgress.setText(aLong + "%");
                         }else {
                             startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
@@ -107,5 +108,11 @@ public class InitializeActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDisposable.dispose();
     }
 }
