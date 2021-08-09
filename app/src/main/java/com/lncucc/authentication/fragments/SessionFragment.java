@@ -31,7 +31,6 @@ public class SessionFragment extends BaseFragment {
     @Override
     public void onInit() {
         mlist = DBOperation.getDBExamArrange();
-        LogUtils.e("exam arrange ->",mlist);
         mBinding.examRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         SessionAdapter adapter = new SessionAdapter(mlist);
         mBinding.examRecycler.setAdapter(adapter);

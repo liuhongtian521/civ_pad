@@ -41,4 +41,7 @@
     <string name="exa_type">考试类型</string>
     <string name="exa_name">考试名称</string>
     <string name="exa_time">考试时间</string>
+    <string name="data_import_clear">清空导入数据</string>
+    <string name="data_auth_clear">清空验证数据</string>
+    <string name="data_clear_confirm">确定清空</string>
 </resources>

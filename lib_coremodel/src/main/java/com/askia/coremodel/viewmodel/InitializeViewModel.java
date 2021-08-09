@@ -1,6 +1,5 @@
 package com.askia.coremodel.viewmodel;
 
-import android.os.Environment;
 
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
@@ -10,7 +9,7 @@ import com.blankj.utilcode.util.FileUtils;
 import java.io.File;
 import java.util.List;
 
-import static com.askia.coremodel.rtc.Constants.unZipPath;
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 public class InitializeViewModel extends BaseViewModel{
 
@@ -25,8 +24,8 @@ public class InitializeViewModel extends BaseViewModel{
 
     public boolean hasExaData(){
         //解压文件夹是否存在
-        if (FileUtils.isFileExists(unZipPath)){
-            List<File> list = FileUtils.listFilesInDir(unZipPath);
+        if (FileUtils.isFileExists(UN_ZIP_PATH)){
+            List<File> list = FileUtils.listFilesInDir(UN_ZIP_PATH);
             return !list.isEmpty();
         }else {
             //无数据

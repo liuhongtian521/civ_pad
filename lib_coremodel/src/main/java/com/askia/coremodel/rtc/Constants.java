@@ -36,7 +36,7 @@ public class Constants {
     public static final String KEY_CLIENT_ROLE = "key_client_role";
 
     //压缩包路径
-    public static final String zipPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
+    public static final String ZIP_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
     //解压路径
-    public static final String unZipPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "ExModel";
+    public static final String UN_ZIP_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "ExModel";
 }

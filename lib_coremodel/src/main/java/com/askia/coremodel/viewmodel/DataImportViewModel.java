@@ -1,9 +1,5 @@
 package com.askia.coremodel.viewmodel;
 
-import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
-
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,31 +7,17 @@ import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
-import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
-import com.askia.coremodel.datamodel.http.ApiConstants;
-import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
-import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.ttsea.jrxbus2.RxBus2;
 import com.unicom.facedetect.detect.FaceDetectManager;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
-import org.apache.tools.zip.ZipEntry;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -46,8 +28,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 
-import static com.askia.coremodel.rtc.Constants.unZipPath;
-import static com.askia.coremodel.rtc.Constants.zipPath;
+import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 
 /**
@@ -71,18 +53,18 @@ public class DataImportViewModel extends BaseViewModel {
      * 并解压.zip文件到Examination/data下
      */
     public void checkZipFile() {
-        if (FileUtils.isFileExists(zipPath)) {
+        if (FileUtils.isFileExists(ZIP_PATH)) {
             //文件夹存在，获取zip list
-            List<File> list = FileUtils.listFilesInDir(zipPath);
+            List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
             if (list != null && list.size() > 0) {
                 try {
                     for (int i = 0; i < list.size(); i++) {
                         //压缩包路径
-                        String path = zipPath + File.separator + list.get(i).getName();
+                        String path = ZIP_PATH + File.separator + list.get(i).getName();
                         //文件名
                         String fileName = list.get(i).getName().split("\\.")[0];
                         //解压存放路径
-                        String toPath = unZipPath + File.separator + fileName;
+                        String toPath = UN_ZIP_PATH + File.separator + fileName;
                         // 生成的压缩文件
                         ZipFile zipFile = new ZipFile(path);
                         // 设置密码
@@ -112,6 +94,8 @@ public class DataImportViewModel extends BaseViewModel {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }else {
+                dataObservable.postValue("当前文件夹内没有压缩包，请检查存放位置！");
             }
         } else {
             dataObservable.postValue("请检查压缩包存放地址是否正确！");

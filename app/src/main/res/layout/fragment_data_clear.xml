@@ -3,21 +3,110 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="clicks"
+            type="com.lncucc.authentication.fragments.DataClearFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
-            android:text="数据清空"
-            android:textColor="@color/_333333"
+            android:id="@+id/tv_data_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textStyle="bold"
+            android:text="@string/data_clear"
+            android:textSize="9sp"
+            android:textColor="#FF163366"
+            android:gravity="left"
+            android:lineSpacingExtra="13dp" />
+
+        <View
+            android:id="@+id/data_lead_line"
+            app:layout_constraintTop_toBottomOf="@+id/tv_data_clear"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/bg_driver"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_clear_import"
+            app:layout_constraintTop_toBottomOf="@+id/data_lead_line"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:background="@mipmap/icon_import"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="137dp"
+            android:layout_height="94dp">
+
+            <CheckBox
+                android:id="@+id/checkbox_import"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_check_box"
+                android:button="@null"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:text="@string/data_import_clear"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:textColor="#163366"
+                android:textSize="9sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+        <RelativeLayout
+            app:layout_constraintTop_toBottomOf="@+id/data_lead_line"
+            app:layout_constraintLeft_toRightOf="@+id/rl_clear_import"
+            android:background="@mipmap/icon_auth"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="137dp"
+            android:layout_height="94dp">
+
+            <CheckBox
+                android:id="@+id/checkbox_auth"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_check_box"
+                android:button="@null"
+                android:layout_width="14dp"
+                android:layout_height="14dp"/>
+            <TextView
+                android:text="@string/data_auth_clear"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:textColor="#163366"
+                android:textSize="9sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_data_clear_confirm"
+            android:layout_width="390dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginBottom="80dp"
+            android:layout_height="30dp"
+            android:text="@string/data_clear_confirm"
+            android:background="@drawable/bg_logout_setting"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:onClick="@{clicks::clear}"
+            android:textColor="#FFFFFFFF"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
