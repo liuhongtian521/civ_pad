@@ -42,7 +42,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     private Integer rgbCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
     protected boolean isCameraInit = false;
     public boolean mFaceDecting = true;
-    // 连续5帧在指定区域
+    // 连续5帧在指定区 域
     protected int frames = 0;
     protected TextureView mPreview;
     private long startDectTime;
