@@ -18,15 +18,25 @@
         android:textSize="@dimen/sp_9" />
 
     <ImageView
-        android:id="@+id/iv_item_verify_type"
+        android:id="@+id/iv_item_success"
         android:layout_width="@dimen/dp_26"
         android:layout_height="@dimen/dp_9"
         android:layout_alignTop="@+id/tv_item_verify_name"
         android:layout_alignBottom="@+id/tv_item_verify_name"
         android:layout_marginLeft="@dimen/dp_3"
         android:layout_toRightOf="@+id/tv_item_verify_name"
+        android:visibility="gone"
         android:src="@drawable/icon_type_success" />
-    
+    <ImageView
+        android:id="@+id/iv_item_faile"
+        android:layout_width="@dimen/dp_26"
+        android:layout_height="@dimen/dp_9"
+        android:layout_alignTop="@+id/tv_item_verify_name"
+        android:layout_alignBottom="@+id/tv_item_verify_name"
+        android:layout_marginLeft="@dimen/dp_3"
+        android:layout_toRightOf="@+id/tv_item_verify_name"
+        android:visibility="gone"
+        android:src="@drawable/icon_type_faile" />
     
     <ImageView
         android:id="@+id/iv_item_head_one"

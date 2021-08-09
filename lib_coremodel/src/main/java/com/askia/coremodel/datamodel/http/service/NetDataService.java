@@ -10,6 +10,8 @@ import java.util.Map;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -23,5 +25,8 @@ public interface NetDataService
     @GET("/canteen/appControllor.do?getZipList")
     Observable<QueryFaceZipsUrlsData> queryFaceZipsUrls(@Query("timeStamp") String timeStamp);
 
+    @FormUrlEncoded
+    @POST("/sys/mLogin")
+    Observable<BaseResponseData> mLogin(@Field("username") String username,@Field("password") String password);
 
 }

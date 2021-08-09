@@ -59,11 +59,13 @@
                 android:padding="@dimen/dp_5">
 
                 <ImageView
+                    android:id="@+id/iv_photo_one"
                     android:layout_width="@dimen/dp_65"
                     android:layout_height="@dimen/dp_80"
                     android:layout_alignParentLeft="true" />
 
                 <ImageView
+                    android:id="@+id/iv_photo_two"
                     android:layout_width="@dimen/dp_65"
                     android:layout_height="@dimen/dp_80"
                     android:layout_alignParentRight="true" />
@@ -148,13 +150,23 @@
 
 
                 <ImageView
-                    android:id="@+id/iv_student_type"
+                    android:id="@+id/iv_student_success"
                     android:layout_width="@dimen/dp_34"
                     android:layout_height="@dimen/dp_12"
                     android:layout_alignTop="@+id/tv_view_four"
                     android:layout_alignBottom="@+id/tv_view_four"
                     android:layout_toRightOf="@+id/tv_view_four"
                     android:src="@drawable/icon_type_success" />
+
+                <ImageView
+                    android:id="@+id/iv_student_faile"
+                    android:layout_width="@dimen/dp_34"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_alignTop="@+id/tv_view_four"
+                    android:layout_alignBottom="@+id/tv_view_four"
+                    android:layout_toRightOf="@+id/tv_view_four"
+                    android:src="@drawable/icon_type_faile"
+                    android:visibility="gone"/>
             </RelativeLayout>
         </LinearLayout>
 

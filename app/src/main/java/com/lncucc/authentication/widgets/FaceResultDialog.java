@@ -36,8 +36,6 @@ public class FaceResultDialog extends BaseDialog {
 
         ivClose=mView.findViewById(R.id.iv_close);
 
-
-
         this.onListener = dialogClickBackListener;
 
         mCountDownTimer = new CountDownTimer(2 * 1000, 1000) {
