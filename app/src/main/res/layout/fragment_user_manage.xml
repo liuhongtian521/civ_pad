@@ -10,7 +10,6 @@
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
             android:id="@+id/ll_user_manage_top"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -26,15 +25,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
         <View
             android:id="@+id/user_manage__line"
             app:layout_constraintTop_toBottomOf="@+id/ll_user_manage_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
             android:layout_height="1.5dp"/>
-
-
         <LinearLayout
             android:id="@+id/ll_user_manage__mode"
             android:orientation="vertical"
@@ -43,14 +39,10 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             app:layout_constraintTop_toBottomOf="@+id/user_manage__line">
-
-
-
             <RelativeLayout
                 android:id="@+id/rl_user_manage__net"
                 android:layout_width="match_parent"
                 android:layout_height="31dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,7 +51,6 @@
                     android:text="用户名"
                     android:textColor="@color/_666666"
                     android:textSize="8sp" />
-
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
@@ -69,16 +60,12 @@
                     android:textColor="#FF333333"
                     android:textAlignment="textEnd"
                     android:textSize="8sp" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
-
-
             </RelativeLayout>
-
             <RelativeLayout
                 android:id="@+id/rl_user_manage_usb"
                 android:layout_width="match_parent"
@@ -90,6 +77,7 @@
                     android:layout_centerVertical="true"
                     android:textColor="@color/_666666"
                     android:layout_width="wrap_content"
+
                     android:layout_height="wrap_content"/>
 
                 <EditText
@@ -97,11 +85,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="用户名"
+                    android:text=""
                     android:background="@null"
                     android:textColor="#FF333333"
                     android:textAlignment="textEnd"
-
+                    android:hint="请输入"
                     android:textSize="8sp" />
                 <View
                     android:background="@drawable/bg_driver"
@@ -127,11 +115,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="用户名"
+                    android:text=""
                     android:background="@null"
                     android:textColor="#FF333333"
                     android:textAlignment="textEnd"
-
+                    android:hint="请输入"
                     android:textSize="8sp" />
 
                 <View
@@ -140,7 +128,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="1.5dp"/>
             </RelativeLayout>
-
             <RelativeLayout
                 android:id="@+id/rl_user_manage_sdcard"
                 android:layout_width="match_parent"
@@ -153,18 +140,35 @@
                     android:textColor="@color/_666666"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
                 <EditText
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="用户名"
+                    android:text=""
                     android:background="@null"
                     android:textColor="#FF333333"
                     android:textAlignment="textEnd"
-
+                    android:hint="请输入"
                     android:textSize="8sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                >
+            <TextView
+                android:id="@+id/sb_time_set"
+                android:layout_centerHorizontal="true"
+                android:layout_width="390dp"
+                android:layout_height="30dp"
+                android:text="确认"
+                android:background="@drawable/bg_network_btn"
+                android:gravity="center"
+                android:textSize="11sp"
+                android:textColor="#FFFFFFFF"
+                android:clickable="true"
+                />
             </RelativeLayout>
         </LinearLayout>
 
