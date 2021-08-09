@@ -2,6 +2,7 @@ package com.lncucc.authentication.activitys;
 
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
@@ -11,7 +12,9 @@ import com.alibaba.android.arouter.utils.TextUtils;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
@@ -34,6 +37,8 @@ public class LoginActivity extends BaseActivity {
     public void onInit() {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
+        String defaultAccount = SharedPreferencesUtils.getString(this,"account","");
+        loginViewModel.account.set(defaultAccount);
     }
 
     @Override
@@ -44,8 +49,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onInitDataBinding() {
         loginBinding = DataBindingUtil.setContentView(this, R.layout.act_login);
-        loginBinding.setClick(new ProxyClick());
         loginBinding.setViewmodel(loginViewModel);
+        loginBinding.setClick(new ProxyClick());
     }
 
     @Override
@@ -53,7 +58,20 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin(){
-        startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+        //有网络联网登录
+        if (NetUtils.isNetConnected()){
+
+        }else {
+            //本地账号密码登录
+            if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())){
+                //登录成功，存本次登录账号
+                SharedPreferencesUtils.putString(this,"account",loginViewModel.account.get());
+                startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY);
+                finish();
+            }else {
+                MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
+            }
+        }
     }
 
     public class ProxyClick {

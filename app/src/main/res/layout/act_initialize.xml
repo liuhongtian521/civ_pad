@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.askia.coremodel.viewmodel.InitializeViewModel" />
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/icon_init">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@mipmap/logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/initialize_title"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="375dp"
+            android:layout_height="73dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_initialize_progress">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="19dp"
+                android:text="@string/initialize_update"
+                android:textColor="@color/_666666"
+                android:textSize="9sp" />
+
+            <com.qmuiteam.qmui.widget.QMUIProgressBar
+                android:id="@+id/qm_process"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="42dp"
+                android:layout_width="330dp"
+                app:qmui_background_color="#DBE2E9"
+                app:qmui_progress_color="#5392FF"
+                app:qmui_stroke_round_cap="true"
+                app:qmui_type="type_rect"
+                android:layout_height="10dp" />
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:textSize="8sp"
+                android:textColor="#2A6DE5"
+                android:text="88%"
+                android:layout_marginLeft="1dp"
+                android:layout_toRightOf="@+id/qm_process"
+                android:layout_marginTop="41dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</layout>

@@ -1,5 +1,9 @@
 package com.askia.coremodel.rtc;
 
+import android.os.Environment;
+
+import java.io.File;
+
 import io.agora.rtc.video.BeautyOptions;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
@@ -30,4 +34,9 @@ public class Constants {
     public static final String PREF_ENABLE_STATS = "pref_enable_stats";
 
     public static final String KEY_CLIENT_ROLE = "key_client_role";
+
+    //压缩包路径
+    public static final String zipPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
+    //解压路径
+    public static final String unZipPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "ExModel";
 }
