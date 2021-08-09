@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_35">
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -149,9 +148,11 @@
                 android:layout_toLeftOf="@+id/iv_del"
                 android:layout_toRightOf="@+id/iv_view"
                 android:background="@null"
+                android:hint="请输入准考证号"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6" />
+                android:paddingRight="@dimen/dp_6"
+                android:textSize="@dimen/sp_10" />
 
             <EditText
                 android:id="@+id/edit_idcard"
@@ -160,9 +161,11 @@
                 android:layout_toLeftOf="@+id/iv_del"
                 android:layout_toRightOf="@+id/iv_view"
                 android:background="@null"
+                android:hint="请输入身份证号"
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_6"
                 android:paddingRight="@dimen/dp_6"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone" />
 
         </RelativeLayout>
@@ -176,6 +179,7 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_20"
             android:background="@drawable/bg_btn_line_blur"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <LinearLayout
@@ -200,6 +204,7 @@
                     android:paddingLeft="@dimen/dp_10">
 
                     <TextView
+                        android:id="@+id/tv_people_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -320,6 +325,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/btn_quick"
                     android:layout_width="@dimen/dp_75"
                     android:layout_height="@dimen/dp_19"
                     android:background="@drawable/bg_btn_line_blue"
@@ -328,10 +334,11 @@
                     android:textSize="@dimen/sp_9" />
 
                 <Button
+                    android:id="@+id/btn_next"
                     android:layout_width="@dimen/dp_75"
                     android:layout_height="@dimen/dp_19"
-                    android:background="@drawable/btn_one"
                     android:layout_marginLeft="@dimen/dp_10"
+                    android:background="@drawable/btn_one"
                     android:text="对比"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_9" />

@@ -54,6 +54,7 @@
             android:paddingLeft="@dimen/dp_14">
 
             <TextView
+                android:id="@+id/tv_face_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="张某某"
@@ -245,6 +246,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btn_not"
                 android:layout_width="@dimen/dp_75"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginRight="@dimen/dp_10"
@@ -257,6 +259,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/sp_9" />
             <Button
+                android:id="@+id/btn_maybe"
                 android:layout_width="@dimen/dp_75"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginRight="@dimen/dp_10"
@@ -270,6 +273,7 @@
                 android:textSize="@dimen/sp_9" />
 
             <Button
+                android:id="@+id/btn_sure"
                 android:layout_width="@dimen/dp_75"
                 android:layout_height="@dimen/dp_25"
                 android:background="@drawable/btn_one"

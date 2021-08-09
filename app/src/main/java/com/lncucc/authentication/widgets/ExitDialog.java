@@ -14,15 +14,13 @@ import android.view.WindowManager;
 import com.askia.common.base.ViewManager;
 import com.lncucc.authentication.R;
 
-public class ExitDialog extends BaseDialog
-{
+public class ExitDialog extends BaseDialog {
     View mView;
 
     //    style引用style样式
-    public ExitDialog(Context context)
-    {
-        super(context,R.style.DialogTheme);
-        mView = getLayoutInflater().inflate(R.layout.dialog_exit,null);
+    public ExitDialog(Context context) {
+        super(context, R.style.DialogTheme);
+        mView = getLayoutInflater().inflate(R.layout.dialog_exit, null);
         setContentView(mView);
 
         findViewById(R.id.btn_confirm).setOnClickListener(new View.OnClickListener() {
