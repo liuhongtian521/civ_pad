@@ -43,7 +43,6 @@ public class AuthenticationActivity extends BaseActivity {
             protected void fillData(FViewHolderHelper viewHolderHelper, int position, Map<String, Object> model) {
                 viewHolderHelper.setText(R.id.tv_item_verify_name,model.get("name").toString());
 
-
             }
         };
 
