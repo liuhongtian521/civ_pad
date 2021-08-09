@@ -41,7 +41,6 @@ public class DataImportFragment extends BaseFragment {
         leadInBinding.sbNet.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.netImport.set(isChecked));
         leadInBinding.sbUsb.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.usbImport.set(isChecked));
         leadInBinding.sbSdcard.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.sdCardImport.set(isChecked));
-        LogUtils.e(DBOperation.getDBExamLayout());
     }
 
     @Override

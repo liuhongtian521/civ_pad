@@ -64,7 +64,6 @@
                 android:id="@+id/tv_progress"
                 android:textSize="8sp"
                 android:textColor="#2A6DE5"
-                android:text="88%"
                 android:layout_marginLeft="1dp"
                 android:layout_toRightOf="@+id/qm_process"
                 android:layout_marginTop="41dp"

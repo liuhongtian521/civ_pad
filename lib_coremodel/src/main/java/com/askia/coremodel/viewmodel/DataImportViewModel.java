@@ -11,12 +11,14 @@ import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
 import com.askia.coremodel.datamodel.http.ApiConstants;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.ttsea.jrxbus2.RxBus2;
@@ -143,6 +145,7 @@ public class DataImportViewModel extends BaseViewModel {
      * @param fileName 文件名
      */
     private void insert2db(String filePath, String fileName) {
+
         switch (fileName) {
             //考试计划表
             case "ea_exam_plan.json":
@@ -181,7 +184,7 @@ public class DataImportViewModel extends BaseViewModel {
                 String faceNumber = file.getName().split("\\.")[0];
                 LogUtils.e("photo name->", faceNumber);
                 byte[] bytes = FileUtil.readFile(file);
-                String faceId = FaceDetectManager.getInstance().addFace(faceNumber, "", bytes);
+                String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
                 emitter.onNext(faceId);
             }
 

@@ -27,6 +27,7 @@ public class DateSettingActivity extends BaseActivity {
 
     public void loginSystem(View view) {
         startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+        finish();
     }
 
     @Override

@@ -16,7 +16,6 @@ public class DBExamArrange  extends RealmObject implements Serializable {
     private Long createTime;
     private String endTime;
     private String examCode;
-    private String examPlanId;
     @PrimaryKey
     private String id;
     private String seCode;
@@ -25,6 +24,8 @@ public class DBExamArrange  extends RealmObject implements Serializable {
     private String subCode;
     private String subName;
     private String sysOrgCode;
+    private String updateBy;
+    private Long updateTime;
 
     public String getCreateBy() {
         return createBy;
@@ -56,14 +57,6 @@ public class DBExamArrange  extends RealmObject implements Serializable {
 
     public void setExamCode(String examCode) {
         this.examCode = examCode;
-    }
-
-    public String getExamPlanId() {
-        return examPlanId;
-    }
-
-    public void setExamPlanId(String examPlanId) {
-        this.examPlanId = examPlanId;
     }
 
     public String getId() {
@@ -120,5 +113,21 @@ public class DBExamArrange  extends RealmObject implements Serializable {
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
     }
 }

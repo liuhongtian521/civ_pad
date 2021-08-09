@@ -11,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 public class DBExaminee extends RealmObject implements Serializable {
 
 
-    private Long birthDate;
+    private String birthDate;
     private String cardNo;
     private String cardType;
     private String createBy;
@@ -23,16 +23,18 @@ public class DBExaminee extends RealmObject implements Serializable {
     private String id;
     private String liveAddr;
     private String nation;
-    private String planId;
+    private String photoUrl;
     private String stuName;
     private String stuNo;
     private String sysOrgCode;
+    private String updateBy;
+    private Long updateTime;
 
-    public Long getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Long birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -116,12 +118,12 @@ public class DBExaminee extends RealmObject implements Serializable {
         this.nation = nation;
     }
 
-    public String getPlanId() {
-        return planId;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setPlanId(String planId) {
-        this.planId = planId;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public String getStuName() {
@@ -146,5 +148,21 @@ public class DBExaminee extends RealmObject implements Serializable {
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
     }
 }

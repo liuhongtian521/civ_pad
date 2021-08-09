@@ -48,7 +48,7 @@ public class DateSettingFragment extends BaseFragment {
     String my_time_1;
     String my_time_2;
     long sysTime;
-    Timer timer;
+    Timer timer = new Timer();
 
 
     @Override
@@ -67,7 +67,6 @@ public class DateSettingFragment extends BaseFragment {
         });
         timeset();
 
-         timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {

@@ -13,17 +13,28 @@ public class DBExamLayout extends RealmObject implements Serializable {
 
     private String createBy;
     private Long createTime;
-    private String endTime;
+    private String distCode;
+    private String distName;
+    private String exReNum;
     private String examCode;
-    private String examPlanId;
+    private String gender;
     @PrimaryKey
     private String id;
+    private String idCard;
+    private String nation;
+    private String roomNo;
     private String seCode;
     private String seName;
-    private String startTime;
+    private String seatNo;
+    private String siteCode;
+    private String siteName;
+    private String stuName;
+    private String stuNo;
     private String subCode;
     private String subName;
     private String sysOrgCode;
+    private String updateBy;
+    private Long updateTime;
 
     public String getCreateBy() {
         return createBy;
@@ -41,12 +52,28 @@ public class DBExamLayout extends RealmObject implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getDistCode() {
+        return distCode;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setDistCode(String distCode) {
+        this.distCode = distCode;
+    }
+
+    public String getDistName() {
+        return distName;
+    }
+
+    public void setDistName(String distName) {
+        this.distName = distName;
+    }
+
+    public String getExReNum() {
+        return exReNum;
+    }
+
+    public void setExReNum(String exReNum) {
+        this.exReNum = exReNum;
     }
 
     public String getExamCode() {
@@ -57,12 +84,12 @@ public class DBExamLayout extends RealmObject implements Serializable {
         this.examCode = examCode;
     }
 
-    public String getExamPlanId() {
-        return examPlanId;
+    public String getGender() {
+        return gender;
     }
 
-    public void setExamPlanId(String examPlanId) {
-        this.examPlanId = examPlanId;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getId() {
@@ -71,6 +98,30 @@ public class DBExamLayout extends RealmObject implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public String getNation() {
+        return nation;
+    }
+
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
+
+    public String getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
     }
 
     public String getSeCode() {
@@ -89,12 +140,44 @@ public class DBExamLayout extends RealmObject implements Serializable {
         this.seName = seName;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getSeatNo() {
+        return seatNo;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setSeatNo(String seatNo) {
+        this.seatNo = seatNo;
+    }
+
+    public String getSiteCode() {
+        return siteCode;
+    }
+
+    public void setSiteCode(String siteCode) {
+        this.siteCode = siteCode;
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public String getStuName() {
+        return stuName;
+    }
+
+    public void setStuName(String stuName) {
+        this.stuName = stuName;
+    }
+
+    public String getStuNo() {
+        return stuNo;
+    }
+
+    public void setStuNo(String stuNo) {
+        this.stuNo = stuNo;
     }
 
     public String getSubCode() {
@@ -119,5 +202,21 @@ public class DBExamLayout extends RealmObject implements Serializable {
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
     }
 }

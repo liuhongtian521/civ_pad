@@ -105,6 +105,7 @@ public class APP extends Application {
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
     private Boolean isTTSInit = false;
+    public boolean isInitFaceSuccess = false;
 
 /*    public APP() {
         super(ShareConstants.TINKER_ENABLE_ALL, "com.askia.common.base.APP",
@@ -204,11 +205,13 @@ public class APP extends Application {
         FaceDetectManager.getInstance().init(getApplicationContext(), "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
             @Override
             public void onInitComplete() {
+                isInitFaceSuccess = true;
                 Log.e("init face", "success");
             }
 
             @Override
             public void onInitFailure(String errorMessage) {
+                isInitFaceSuccess = false;
                 Log.e("init face", "failure");
             }
         });
