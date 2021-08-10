@@ -12,11 +12,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EFF2F7"
-        android:orientation="vertical">
-
+        android:background="#EFF2F7">
+        <RelativeLayout
+            android:id="@+id/rl_top"
+            android:background="#FAFAFA"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
         <RelativeLayout
             android:id="@+id/rel_title"
+            android:layout_below="@+id/rl_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
             android:background="#FAFAFA"
@@ -45,6 +49,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:text="2021辽宁省高考语文科目"
                     android:textColor="#2A6DE5"
                     android:textSize="@dimen/sp_12" />
@@ -220,6 +225,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="10dp"
                 android:layout_height="match_parent" />
         </LinearLayout>
 
@@ -240,6 +246,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_30"
                 android:gravity="center"
+                android:textSize="9sp"
+                android:textColor="@color/_163366"
                 android:paddingLeft="@dimen/dp_10"
                 android:text="摄像头画面" />
 
@@ -250,6 +258,7 @@
                 android:background="#FAFAFA" />
 
             <FrameLayout
+                android:id="@+id/frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/dp_8" />

@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.askia.common.base.ARouterPath;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FraFaceBinding;
 
@@ -20,6 +22,7 @@ import com.lncucc.authentication.databinding.FraFaceBinding;
  *fragment 人脸展示
  * @date 2021/8/6
  */
+@Route(path = ARouterPath.FACE_SHOW_ACTIVITY)
 public class FaceShowFragment extends BaseFaceAuthFragment {
     private FraFaceBinding mDataBinding;
 

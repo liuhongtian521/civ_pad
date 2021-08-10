@@ -60,9 +60,7 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
-            if ("100".equals(result)){
-                MyToastUtils.error("解压成功", Toast.LENGTH_SHORT);
-            }
+            MyToastUtils.error(result, Toast.LENGTH_SHORT);
         });
     }
 

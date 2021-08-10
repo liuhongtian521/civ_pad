@@ -62,4 +62,11 @@ public class DataClearViewModel extends BaseViewModel {
                     }
                 });
     }
+
+    /**
+     * 清空验证数据
+     */
+    public void delAuthData(){
+
+    }
 }

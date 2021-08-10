@@ -11,6 +11,7 @@ public class RealmConstant
         return new RealmConfiguration.Builder()
                 .name("CIV.realm")
                 .schemaVersion(RealmConstant.VERSON)
+                .deleteRealmIfMigrationNeeded()
                 .build();
     }
 }

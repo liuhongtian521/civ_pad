@@ -12,6 +12,7 @@ import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
+import com.lncucc.authentication.fragments.FaceShowFragment;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
@@ -37,9 +38,12 @@ public class AuthenticationActivity extends BaseActivity {
     private InquiryDialog inquiryDialog;
 
     private FRecyclerViewAdapter<Map<String, Object>> mAdapter;
+    private FaceShowFragment faceFragment;
 
     @Override
     public void onInit() {
+        faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
+        addFragment(faceFragment,R.id.frame_layout);
         mAdapter = new FRecyclerViewAdapter<Map<String, Object>>(mDataBinding.rvList, R.layout.item_verify) {
             @Override
             protected void fillData(FViewHolderHelper viewHolderHelper, int position, Map<String, Object> model) {

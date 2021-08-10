@@ -2,31 +2,25 @@ package com.lncucc.authentication.fragments;
 
 import android.graphics.Point;
 import android.hardware.Camera;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.TextureView;
-import android.widget.ImageView;
+import android.widget.Toast;
 
-import com.arcsoft.face.AgeInfo;
-import com.arcsoft.face.FaceEngine;
-import com.arcsoft.face.FaceFeature;
-import com.arcsoft.face.GenderInfo;
-import com.arcsoft.face.LivenessInfo;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.askia.common.base.BaseFragment;
-import com.askia.common.util.faceUtils.ConfigUtil;
+import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.faceUtils.DrawHelper;
-import com.askia.common.util.faceUtils.FaceHelper;
-import com.askia.common.util.faceUtils.FaceListener;
-import com.askia.common.util.faceUtils.RequestFeatureStatus;
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
-import com.askia.common.widget.face.FaceRectView;
-import com.askia.coremodel.viewmodel.FaceAuthViewModel;
+import com.askia.coremodel.viewmodel.FaceDetectorViewModel;
+import com.bigdata.facedetect.FaceDetect;
+import com.blankj.utilcode.util.LogUtils;
+import com.unicom.facedetect.detect.FaceDetectManager;
+import com.unicom.facedetect.detect.FaceDetectResult;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import io.reactivex.Observable;
 
 public abstract class BaseFaceAuthFragment extends BaseFragment {
     // 最大识别人脸数量
@@ -49,6 +43,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     private long startSearchTime;
     //连续50帧没有人脸数据
     protected int notface = 0;
+    public FaceDetectorViewModel detectorViewModel;
 
     @Override
     public void onInit() {
@@ -56,6 +51,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     @Override
     public void onInitViewModel() {
+        detectorViewModel = ViewModelProviders.of(getActivity()).get(FaceDetectorViewModel.class);
     }
 
 
@@ -77,7 +73,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
                 previewSize = camera.getParameters().getPreviewSize();
                 drawHelper = new DrawHelper(mPreview.getWidth(), mPreview.getHeight(), mPreview.getWidth(), mPreview.getHeight(), displayOrientation
-                        , cameraId, isMirror, true, false);//false,false:查询机   true,false:消费机
+                        , cameraId, isMirror, true, false);
                 Log.i(TAG, "onCameraOpened: " + drawHelper.toString());
             }
 
@@ -91,8 +87,17 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             public void onPreview(final byte[] nv21, Camera camera) {
                 if (!mFaceDecting)
                     return;
-
-                //人脸处理
+                //人脸处理，检测照片中是否有人脸
+                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation(), false);
+                if (faceResult.faceBmp == null || faceResult.faceRect == null) {
+                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
+                } else {
+                    //获取人脸特征
+                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp,previewSize.width,previewSize.height,faceResult.keypoints);
+                    //人脸对比
+                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature,30f);
+                    LogUtils.e("detect result ->", detectResult.similarity);
+                }
             }
 
             @Override

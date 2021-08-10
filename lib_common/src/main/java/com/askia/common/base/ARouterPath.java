@@ -28,5 +28,7 @@ public class ARouterPath {
     public static final String DATA_VIEW = "/activity/dataView";
     /*初始化*/
     public static final String INITIALIZE_ACTIVITY = "/activity/initialize";
+    /*人脸识别*/
+    public static final String FACE_SHOW_ACTIVITY = "/fragment/face/show";
 
 }

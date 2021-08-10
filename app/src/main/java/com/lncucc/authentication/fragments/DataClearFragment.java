@@ -3,6 +3,7 @@ package com.lncucc.authentication.fragments;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
+import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.viewmodel.DataClearViewModel;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
@@ -49,6 +51,17 @@ public class DataClearFragment extends BaseFragment {
     }
 
     public void clear(View view){
-        viewModel.delImport();
+        boolean isClearImportData = clearBinding.checkboxImport.isChecked();
+        boolean isClearAuthData = clearBinding.checkboxAuth.isChecked();
+        if (isClearImportData){
+            viewModel.delImport();
+        }else if (isClearAuthData){
+            viewModel.delAuthData();
+        }else if (isClearImportData && isClearAuthData){
+            viewModel.delImport();
+            viewModel.delAuthData();
+        }else {
+            MyToastUtils.error("请选择清空方式!", Toast.LENGTH_SHORT);
+        }
     }
 }

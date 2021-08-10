@@ -212,7 +212,7 @@ public class APP extends Application {
             @Override
             public void onInitFailure(String errorMessage) {
                 isInitFaceSuccess = false;
-                Log.e("init face", "failure");
+                Log.e("init face error", errorMessage);
             }
         });
         // 声网IM
