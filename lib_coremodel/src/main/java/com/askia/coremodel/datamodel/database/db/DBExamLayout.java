@@ -9,8 +9,6 @@ import io.realm.annotations.PrimaryKey;
  * 考试编排
  */
 public class DBExamLayout extends RealmObject implements Serializable {
-
-
     private String createBy;
     private Long createTime;
     private String distCode;

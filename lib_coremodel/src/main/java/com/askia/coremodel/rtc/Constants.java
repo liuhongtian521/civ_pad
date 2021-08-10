@@ -35,6 +35,8 @@ public class Constants {
 
     public static final String KEY_CLIENT_ROLE = "key_client_role";
 
+    //apk下载地址
+    public static final String apkPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "CivDownload";
     //压缩包路径
     public static final String ZIP_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
     //解压路径

@@ -145,6 +145,7 @@
                 android:layout_toLeftOf="@+id/btn_audit"
                 android:background="@drawable/bg_btn_line_blue"
                 android:text="选择考场"
+                android:onClick="@{()->handlers.chooseExamination()}"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
 

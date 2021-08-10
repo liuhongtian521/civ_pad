@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -12,6 +13,7 @@ import com.alibaba.android.arouter.utils.TextUtils;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
@@ -55,12 +57,23 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
+
+        loginViewModel.loginDate.observe(this, new Observer<LoginData>() {
+            @Override
+            public void onChanged(LoginData loginData) {
+                if (loginData.isSuccess()){
+                    SharedPreferencesUtils.putString(getApplicationContext(),"account",loginViewModel.account.get());
+                    startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+                    finish();
+                }
+            }
+        });
     }
 
     private void doLogin(){
         //有网络联网登录
         if (NetUtils.isNetConnected()){
-
+            loginViewModel.login(loginViewModel.account.get(),loginViewModel.password.get());
         }else {
             //本地账号密码登录
             if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())){

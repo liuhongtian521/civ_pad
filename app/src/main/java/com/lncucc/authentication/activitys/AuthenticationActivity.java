@@ -1,5 +1,7 @@
 package com.lncucc.authentication.activitys;
 
+import android.view.View;
+
 import androidx.databinding.BaseObservable;
 import androidx.databinding.DataBindingUtil;
 
@@ -111,5 +113,15 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
+    }
+
+    //选择考场
+    public void chooseExamination(View view){
+        startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
+    }
+
+    public void login(View view){
+        startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+        finish();
     }
 }

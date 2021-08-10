@@ -23,6 +23,7 @@ import com.lncucc.authentication.fragments.BaseSettingFragment;
 import com.lncucc.authentication.fragments.AdvancedSettingFragment;
 import com.lncucc.authentication.fragments.NetworkSettingFragment;
 import com.lncucc.authentication.fragments.DisplaySettingFragment;
+import com.lncucc.authentication.fragments.UpdataFragment;
 import com.lncucc.authentication.fragments.UserManageFragment;
 import com.lncucc.authentication.fragments.LogoutSettingFragment;
 import com.lncucc.authentication.fragments.DateSettingFragment;
@@ -67,6 +68,7 @@ public class SystemSettingActivity extends BaseActivity {
         mTitleList.add("显示设置");
         mTitleList.add("用户管理");
         mTitleList.add("退出登录");
+        mTitleList.add("系统升级");
 
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new BaseSettingFragment());
@@ -76,6 +78,7 @@ public class SystemSettingActivity extends BaseActivity {
         mFragmentList.add(new DisplaySettingFragment());
         mFragmentList.add(new UserManageFragment());
         mFragmentList.add(new LogoutSettingFragment());
+        mFragmentList.add(new UpdataFragment());
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));
     }
 

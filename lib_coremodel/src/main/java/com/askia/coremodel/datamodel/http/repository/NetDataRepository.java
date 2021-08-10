@@ -5,6 +5,8 @@ package com.askia.coremodel.datamodel.http.repository;
 import com.askia.coremodel.datamodel.http.ApiClient;
 import com.askia.coremodel.datamodel.http.HttpUnionPayBean;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
+import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
+import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 
 import java.util.Map;
@@ -24,5 +26,18 @@ public class NetDataRepository
         return responseData;
     }
 
+    //登录
+    public static  Observable<LoginData> login(String user,String psd){
+        Observable<LoginData> responseData = ApiClient.getNetDataService()
+                .mLogin(user, psd);
+        return responseData;
+    }
+
+    //更新包
+    public static Observable<CheckVersionData> checkVersion(String version){
+        Observable<CheckVersionData> responseData = ApiClient.getNetDataService()
+                .checkVersion(version);
+        return responseData;
+    }
 
 }
