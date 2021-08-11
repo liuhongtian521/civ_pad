@@ -60,7 +60,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     }
 
-    protected abstract void setUI(boolean showFace);
+    protected abstract void setUI(FaceDetectResult detectResult);
 
     /**
      * 初始化相机
@@ -90,13 +90,27 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 //人脸处理，检测照片中是否有人脸
                 FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation(), false);
                 if (faceResult.faceBmp == null || faceResult.faceRect == null) {
-                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
+//                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
                 } else {
+                    if (frames < 10) {
+                        frames++;
+                        return;
+                    } else {
+                        mFaceDecting = false;
+                    }
                     //获取人脸特征
-                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp,previewSize.width,previewSize.height,faceResult.keypoints);
+                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
                     //人脸对比
-                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature,30f);
+                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 80f);
                     LogUtils.e("detect result ->", detectResult.similarity);
+                    frames = 0;
+                    if (detectResult != null) {
+                        setUI(detectResult);
+                    } else {
+                        goContinueDetectFace();
+                    }
+
+
                 }
             }
 

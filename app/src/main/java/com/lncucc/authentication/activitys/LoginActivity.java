@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity {
             public void onChanged(LoginData loginData) {
                 if (loginData.isSuccess()){
                     SharedPreferencesUtils.putString(getApplicationContext(),"account",loginViewModel.account.get());
-                    startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+                    startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY);
                     finish();
                 }
             }
@@ -80,7 +80,7 @@ public class LoginActivity extends BaseActivity {
             if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())){
                 //登录成功，存本次登录账号
                 SharedPreferencesUtils.putString(this,"account",loginViewModel.account.get());
-                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+                startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY);
                 finish();
             }else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);

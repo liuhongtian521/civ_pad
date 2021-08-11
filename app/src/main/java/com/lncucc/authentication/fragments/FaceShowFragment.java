@@ -1,5 +1,6 @@
 package com.lncucc.authentication.fragments;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,14 @@ import androidx.databinding.DataBindingUtil;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.activitys.AuthenticationActivity;
 import com.lncucc.authentication.databinding.FraFaceBinding;
+import com.unicom.facedetect.detect.FaceDetectResult;
 
 /**
  * Create bt she:
- *fragment 人脸展示
+ * fragment 人脸展示
+ *
  * @date 2021/8/6
  */
 @Route(path = ARouterPath.FACE_SHOW_ACTIVITY)
@@ -41,8 +45,10 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
     }
 
     @Override
-    protected void setUI(boolean showFace) {
+    protected void setUI(FaceDetectResult detectResult) {
         //获取到了数据
+        Log.e("TagSnake", "getmsg");
+        ((AuthenticationActivity) getActivity()).getFace(detectResult);
 
     }
 

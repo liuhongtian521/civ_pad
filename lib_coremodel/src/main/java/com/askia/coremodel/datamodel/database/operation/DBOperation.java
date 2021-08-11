@@ -45,7 +45,7 @@ public class DBOperation {
      * @return
      */
     public static List<DBExaminee> getDBExaminee(){
-        return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
+            return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
     }
 
     /**

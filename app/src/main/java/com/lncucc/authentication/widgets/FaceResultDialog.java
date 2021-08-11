@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
@@ -28,13 +29,17 @@ public class FaceResultDialog extends BaseDialog {
 
     private CountDownTimer mCountDownTimer;
 
+    LinearLayout linSuccess, linFaile;
+
 
     public FaceResultDialog(Context context, DialogClickBackListener dialogClickBackListener) {
         super(context, R.style.DialogTheme);
         mView = getLayoutInflater().inflate(R.layout.dialog_face_finish, null);
         setContentView(mView);
 
-        ivClose=mView.findViewById(R.id.iv_close);
+        ivClose = mView.findViewById(R.id.iv_close);
+        linSuccess = mView.findViewById(R.id.line_face_success);
+        linFaile = mView.findViewById(R.id.line_face_faile);
 
         this.onListener = dialogClickBackListener;
 
@@ -54,6 +59,7 @@ public class FaceResultDialog extends BaseDialog {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mCountDownTimer.cancel();
                 onListener.dissMiss();
             }
         });
@@ -88,6 +94,27 @@ public class FaceResultDialog extends BaseDialog {
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
+    }
+
+    public void setType(boolean type) {
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        super.show();
+        fullScreenImmersive(getWindow().getDecorView());
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        Window window = this.getWindow();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        mCountDownTimer.start();
+        if (type) {
+            linSuccess.setVisibility(View.VISIBLE);
+            linFaile.setVisibility(View.GONE);
+        } else {
+            linSuccess.setVisibility(View.GONE);
+            linFaile.setVisibility(View.VISIBLE);
+        }
+
+
     }
 
 }

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AdvancedSettingFragment extends BaseFragment {
     private FragmentAdvancedSettingBinding advancedSetting;
+
     @Override
     public void onInit() {
 
@@ -31,7 +32,7 @@ public class AdvancedSettingFragment extends BaseFragment {
 
     @Override
     public View onInitDataBinding(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container) {
-        advancedSetting = DataBindingUtil.inflate(inflater, R.layout.fragment_advanced_setting,container,false);
+        advancedSetting = DataBindingUtil.inflate(inflater, R.layout.fragment_advanced_setting, container, false);
         return advancedSetting.getRoot();
     }
 

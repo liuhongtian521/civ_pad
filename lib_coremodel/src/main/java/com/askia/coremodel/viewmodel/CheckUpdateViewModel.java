@@ -1,6 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
 import android.util.Log;
+import android.view.View;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -100,6 +101,7 @@ public class CheckUpdateViewModel extends BaseViewModel {
                     protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         Log.d("TagSnake", "下载任务正在等待：" + soFarBytes + "/" + totalBytes);
                     }
+
                     //下载进度回调
                     @Override
                     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {

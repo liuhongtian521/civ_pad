@@ -12,15 +12,15 @@ import io.realm.annotations.PrimaryKey;
 public class DBExamArrange  extends RealmObject implements Serializable {
 
 
-    private String createBy;
-    private Long createTime;
-    private String endTime;
-    private String examCode;
     @PrimaryKey
     private String id;
+    private String createBy;
+    private Long createTime;
+    private String startTime;
+    private String endTime;
+    private String examCode;
     private String seCode;
     private String seName;
-    private String startTime;
     private String subCode;
     private String subName;
     private String sysOrgCode;

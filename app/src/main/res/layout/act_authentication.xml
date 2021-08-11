@@ -114,14 +114,16 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btn_login"
+                android:id="@+id/btn_setting"
                 android:layout_width="@dimen/dp_75"
                 android:layout_height="@dimen/dp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:background="@drawable/bg_btn_line_blue"
-                android:text="管理员登陆"
+                android:onClick="@{handlers::setting}"
+                android:text="管理员设置"
+                android:gravity="center"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
 
@@ -131,8 +133,10 @@
                 android:layout_height="@dimen/dp_20"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
-                android:layout_toLeftOf="@+id/btn_login"
+                android:layout_toLeftOf="@+id/btn_setting"
                 android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
+
                 android:text="人工审核"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
@@ -147,6 +151,7 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_toLeftOf="@+id/btn_audit"
                 android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
                 android:text="选择考场"
                 android:onClick="@{handlers::chooseExamination}"
                 android:textColor="#3A90FF"

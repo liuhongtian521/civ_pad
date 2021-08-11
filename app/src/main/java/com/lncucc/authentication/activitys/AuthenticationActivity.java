@@ -9,6 +9,7 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
+import com.blankj.utilcode.util.FileUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
 import com.lncucc.authentication.fragments.FaceShowFragment;
@@ -16,6 +17,7 @@ import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
+import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.util.Map;
 
@@ -39,14 +41,17 @@ public class AuthenticationActivity extends BaseActivity {
     private FRecyclerViewAdapter<Map<String, Object>> mAdapter;
     private FaceShowFragment faceFragment;
 
+
+
     @Override
     public void onInit() {
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
-        addFragment(faceFragment,R.id.frame_layout);
+        addFragment(faceFragment, R.id.frame_layout);
+
         mAdapter = new FRecyclerViewAdapter<Map<String, Object>>(mDataBinding.rvList, R.layout.item_verify) {
             @Override
             protected void fillData(FViewHolderHelper viewHolderHelper, int position, Map<String, Object> model) {
-                viewHolderHelper.setText(R.id.tv_item_verify_name,model.get("name").toString());
+                viewHolderHelper.setText(R.id.tv_item_verify_name, model.get("name").toString());
             }
         };
 
@@ -54,6 +59,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 peopleMsgDialog.dismiss();
+                faceFragment.goContinueDetectFace();
             }
 
             @Override
@@ -76,7 +82,6 @@ public class AuthenticationActivity extends BaseActivity {
                     //不通过
                 } else if (type == 1) {
                     //存疑
-
                 } else {
                     //通过
 
@@ -119,12 +124,22 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     //选择考场
-    public void chooseExamination(View view){
+    public void chooseExamination(View view) {
         startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
     }
 
-    public void login(View view){
-        startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
-        finish();
+    public void setting(View view) {
+        startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
     }
+
+    public void getFace(FaceDetectResult detectResult) {
+        if (detectResult.similarity > 80f) {
+            faceResultDialog.setType(true);
+        } else {
+            faceResultDialog.setType(false);
+        }
+
+
+    }
+
 }

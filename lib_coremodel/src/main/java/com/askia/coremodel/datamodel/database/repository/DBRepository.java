@@ -2,11 +2,17 @@ package com.askia.coremodel.datamodel.database.repository;
 
 import android.app.Application;
 
+import com.askia.coremodel.datamodel.database.db.UserLoginData;
+
 public class DBRepository {
 
     public static void init(Application context) {
         SharedPreUtil.initSharedPreference(context);
     }
+
+
+
+
 /*    //查询用户登陆信息
     public static HttpLoginBean QueryUserLoginData() {
         HttpLoginBean userLoginData = SharedPreUtil.getInstance().getUser();
