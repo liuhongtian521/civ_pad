@@ -85,9 +85,9 @@ public class DataImportFragment extends BaseFragment {
         }
 
         if (viewModel.netImport.get()) {
-            LogUtils.e("网络导入");
+            MyToastUtils.error("敬请期待！",Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {
-            LogUtils.e("usb导入");
+            MyToastUtils.error("敬请期待！",Toast.LENGTH_SHORT);
         } else {
             viewModel.doSdCardImport();
         }

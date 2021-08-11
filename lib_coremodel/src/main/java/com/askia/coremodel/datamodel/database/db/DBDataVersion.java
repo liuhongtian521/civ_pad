@@ -10,15 +10,48 @@ import io.realm.annotations.PrimaryKey;
  */
 public class DBDataVersion extends RealmObject implements Serializable {
 
+
+    private String createBy;
+    private String createTime;
+    private String dataVersion;
+    private String examCode;
     @PrimaryKey
     private String id;
-    private int data_version; //版本号
-    private String exam_code;// 考试代码
-    private String create_by;
-    private String create_time;
-    private String update_by;
-    private String update_time;
-    private String sys_org_code;
+    private String sysOrgCode;
+    private String updateBy;
+    private String updateTime;
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getDataVersion() {
+        return dataVersion;
+    }
+
+    public void setDataVersion(String dataVersion) {
+        this.dataVersion = dataVersion;
+    }
+
+    public String getExamCode() {
+        return examCode;
+    }
+
+    public void setExamCode(String examCode) {
+        this.examCode = examCode;
+    }
 
     public String getId() {
         return id;
@@ -28,60 +61,27 @@ public class DBDataVersion extends RealmObject implements Serializable {
         this.id = id;
     }
 
-    public int getData_version() {
-        return data_version;
+    public String getSysOrgCode() {
+        return sysOrgCode;
     }
 
-    public void setData_version(int data_version) {
-        this.data_version = data_version;
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
     }
 
-    public String getExam_code() {
-        return exam_code;
+    public String getUpdateBy() {
+        return updateBy;
     }
 
-    public void setExam_code(String exam_code) {
-        this.exam_code = exam_code;
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
     }
 
-    public String getCreate_by() {
-        return create_by;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
-    public void setCreate_by(String create_by) {
-        this.create_by = create_by;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public String getUpdate_by() {
-        return update_by;
-    }
-
-    public void setUpdate_by(String update_by) {
-        this.update_by = update_by;
-    }
-
-    public String getUpdate_time() {
-        return update_time;
-    }
-
-    public void setUpdate_time(String update_time) {
-        this.update_time = update_time;
-    }
-
-    public String getSys_org_code() {
-        return sys_org_code;
-    }
-
-    public void setSys_org_code(String sys_org_code) {
-        this.sys_org_code = sys_org_code;
-    }
-
 }

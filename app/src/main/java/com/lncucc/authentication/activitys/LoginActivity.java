@@ -39,7 +39,7 @@ public class LoginActivity extends BaseActivity {
     public void onInit() {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
-        String defaultAccount = SharedPreferencesUtils.getString(this,"account","");
+        String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
         loginViewModel.account.set(defaultAccount);
         loginViewModel.password.set("123456");
     }
@@ -62,8 +62,8 @@ public class LoginActivity extends BaseActivity {
         loginViewModel.loginDate.observe(this, new Observer<LoginData>() {
             @Override
             public void onChanged(LoginData loginData) {
-                if (loginData.isSuccess()){
-                    SharedPreferencesUtils.putString(getApplicationContext(),"account",loginViewModel.account.get());
+                if (loginData.isSuccess()) {
+                    SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
                     startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY);
                     finish();
                 }
@@ -71,37 +71,37 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    private void doLogin(){
+    private void doLogin() {
         //有网络联网登录
-        if (NetUtils.isNetConnected()){
-            loginViewModel.login(loginViewModel.account.get(),loginViewModel.password.get());
-        }else {
+        if (NetUtils.isNetConnected()) {
+            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
+        } else {
             //本地账号密码登录
-            if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())){
+            if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())) {
                 //登录成功，存本次登录账号
-                SharedPreferencesUtils.putString(this,"account",loginViewModel.account.get());
-                startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY);
+                SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
+                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
                 finish();
-            }else {
+            } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
         }
     }
 
     public class ProxyClick {
-        public void login(){
-            if (TextUtils.isEmpty(loginViewModel.account.get())){
-                MyToastUtils.error("请输入用户名！",0);
+        public void login() {
+            if (TextUtils.isEmpty(loginViewModel.account.get())) {
+                MyToastUtils.error("请输入用户名！", 0);
                 return;
             }
-            if (TextUtils.isEmpty(loginViewModel.password.get())){
+            if (TextUtils.isEmpty(loginViewModel.password.get())) {
                 ToastUtils.showShort("请输入密码！");
                 return;
             }
             doLogin();
         }
 
-        public void openEyes(){
+        public void openEyes() {
             if (txtPassword.getInputType() == 128) {
                 txtPassword.setInputType(129);
                 imageView.setBackgroundResource(R.mipmap.icon_pwd_show);

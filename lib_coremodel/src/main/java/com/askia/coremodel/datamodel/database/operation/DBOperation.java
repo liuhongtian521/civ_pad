@@ -1,5 +1,6 @@
 package com.askia.coremodel.datamodel.database.operation;
 
+import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
@@ -77,4 +78,11 @@ public class DBOperation {
         return query.findAll();
     }
 
+    /**
+     *
+     * @return 返回版本对象
+     */
+    public static DBDataVersion getVersion(){
+        return Realm.getDefaultInstance().where(DBDataVersion.class).findAll().last();
+    }
 }
