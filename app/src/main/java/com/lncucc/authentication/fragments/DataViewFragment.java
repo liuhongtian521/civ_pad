@@ -1,10 +1,8 @@
 package com.lncucc.authentication.fragments;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -14,10 +12,8 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
-import com.lncucc.authentication.adapters.SessionAdapter;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 
 import java.util.ArrayList;
@@ -35,6 +31,7 @@ public class DataViewFragment extends BaseFragment {
     @Override
     public void onInit() {
         mList = DBOperation.getDBExamLayoutByIdNo("");
+        tempList.clear();
         tempList.addAll(mList);
         viewBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new DataViewAdapter(tempList);

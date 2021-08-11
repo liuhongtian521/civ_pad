@@ -64,5 +64,17 @@ public class DBOperation {
         return query.findAll();
     }
 
+    /**
+     * 根据
+     * @param seCode 场次编码
+     * @return 根据场次码获取当前场次下的 所有考场编号
+     */
+    public static List<DBExamLayout> getRoomList(String seCode){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("seCode",seCode);
+        query.endGroup();
+        return query.findAll();
+    }
 
 }

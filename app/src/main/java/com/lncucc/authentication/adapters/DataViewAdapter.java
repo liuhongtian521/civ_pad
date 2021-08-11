@@ -1,5 +1,7 @@
 package com.lncucc.authentication.adapters;
 
+import android.graphics.Color;
+
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -23,6 +25,14 @@ public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHold
         baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
         baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());
         baseViewHolder.setText(R.id.tv_exam, s.getSeName());
+        int position = baseViewHolder.getLayoutPosition();
+        String color = "";
+        if (position % 2 != 0) {
+            color = "#EFF2F7";
+        } else {
+            color = "#ffffff";
+        }
+        baseViewHolder.itemView.setBackgroundColor(Color.parseColor(color));
     }
 
 

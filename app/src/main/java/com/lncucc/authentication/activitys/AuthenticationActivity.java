@@ -125,7 +125,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     //选择考场
     public void chooseExamination(View view) {
-        startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
+        startActivityByRouter(ARouterPath.CHOOSE_VENVE);
     }
 
     public void setting(View view) {
