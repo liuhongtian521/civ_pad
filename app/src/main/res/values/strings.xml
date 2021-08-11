@@ -44,4 +44,8 @@
     <string name="data_import_clear">清空导入数据</string>
     <string name="data_auth_clear">清空验证数据</string>
     <string name="data_clear_confirm">确定清空</string>
+    <string name="stu_name">姓名</string>
+    <string name="stu_id_no">身份证号</string>
+    <string name="stu_admission">准考证号</string>
+    <string name="examination">场次</string>
 </resources>

@@ -41,6 +41,7 @@ public class LoginActivity extends BaseActivity {
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this,"account","");
         loginViewModel.account.set(defaultAccount);
+        loginViewModel.password.set("123456");
     }
 
     @Override

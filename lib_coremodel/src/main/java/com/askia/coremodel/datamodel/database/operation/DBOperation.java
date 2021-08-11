@@ -6,7 +6,10 @@ import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 
 import java.util.List;
+
+import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 
 /**
  *
@@ -46,10 +49,20 @@ public class DBOperation {
     }
 
     /**
+     * @params 身份证准考证后6位
      *
-     * @return
+     * @return 获取考试编排表
      */
-//    public static List<DBExaminee> getDBExamineeByArrange(){
-//
-//    }
+    public static List<DBExamLayout> getDBExamLayoutByIdNo(String params){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        //身份证号
+        query.like("idCard","?*"+params, Case.SENSITIVE);
+        //准考证号
+        query.or().equalTo("exReNum","?*" + params);
+        query.endGroup();
+        return query.findAll();
+    }
+
+
 }

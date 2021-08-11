@@ -3,20 +3,168 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="handles"
+            type="com.lncucc.authentication.fragments.DataViewFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:text="数据查看"
-            android:textColor="@color/_333333"
+        <LinearLayout
+            android:id="@+id/ll_data_lead_top"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="31dp">
+            <TextView
+                android:text="@string/data_view"
+                android:textColor="#163366"
+                android:textSize="9sp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/data_lead_line"
+            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top"
+            android:background="@drawable/bg_driver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_search"
+            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="275dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/bg_edit"
+            android:paddingLeft="@dimen/dp_10">
+
+            <ImageView
+                android:id="@+id/iv_view"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_search" />
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/btn_one"
+                android:text="搜索"
+                android:onClick="@{handles::query}"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+            <EditText
+                android:id="@+id/edit_exam_number"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_toRightOf="@+id/iv_view"
+                android:background="@null"
+                android:hint="请输入身份证或准考证后6位"
+                android:textColorHint="#A7B6D1"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_6"
+                android:paddingRight="@dimen/dp_6"
+                android:textSize="9sp" />
+
+            <EditText
+                android:id="@+id/edit_idcard"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/iv_view"
+                android:background="@null"
+                android:hint="请输入身份证号"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dp_6"
+                android:paddingRight="@dimen/dp_6"
+                android:textSize="@dimen/sp_10"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_header"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="14"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_common_list_header"
+            app:layout_constraintTop_toBottomOf="@+id/rl_search"
+            android:layout_width="match_parent"
+            android:layout_height="25dp">
+
+            <TextView
+                android:textSize="8sp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/_333333"
+                android:text="@string/session_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="8sp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/_333333"
+                android:text="@string/stu_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="8sp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/_333333"
+                android:text="@string/stu_id_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="8sp"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/_333333"
+                android:text="@string/stu_admission"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:textSize="8sp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/_333333"
+                android:text="@string/examination"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintTop_toBottomOf="@+id/ll_header"
+            android:id="@+id/rl_data_view"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,6 @@ package com.lncucc.authentication.activitys;
 
 import android.view.View;
 
-import androidx.databinding.BaseObservable;
 import androidx.databinding.DataBindingUtil;
 
 import com.alibaba.android.arouter.facade.annotation.Route;

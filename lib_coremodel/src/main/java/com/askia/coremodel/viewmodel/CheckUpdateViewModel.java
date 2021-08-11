@@ -26,7 +26,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.askia.coremodel.rtc.Constants.apkPath;
-import static com.askia.coremodel.rtc.Constants.zipPath;
 
 
 /**

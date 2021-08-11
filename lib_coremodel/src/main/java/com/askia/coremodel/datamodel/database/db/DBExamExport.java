@@ -7,27 +7,27 @@ import io.realm.annotations.PrimaryKey;
 
 /**
  * Create bt she:
- * 打卡后保存的实体类
+ * 数据导出
  * @date 2021/8/9
  */
-public class DBExamSign extends RealmObject implements Serializable {
+public class DBExamExport extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
     private String stu_no;//考生号
     private String examinee_id;//考生id
-    private String verify_pack_id;//验证包id
+    private String verify_pack_id;//验证包id 不传
     private String verify_time;//验证时间
     private String verify_result;//验证结果 0未验证 1成功 2失败（存疑） 3未验证
     private String match_rate;//匹配率
     private String se_code;//场次码
-    private String entrance_photo_url;//入场照片地址
+    private String entrance_photo_url;//入场照片地址 不传
     private String exam_code;//考试代码
     private String create_by;//创建人
     private String create_time;//
     private String updata_up;//
     private String updata_time;//
     private String sys_org_code;//组织机构代码
-    private String equipment;//设备id
+    private String equipment;//设备id mac 地址
 
     public String getId() {
         return id;

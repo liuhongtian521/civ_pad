@@ -26,13 +26,12 @@ import java.util.List;
  */
 public class SessionFragment extends BaseFragment {
     private FragmentSessionBinding mBinding;
-    private List<DBExamArrange> mlist;
 
     @Override
     public void onInit() {
-        mlist = DBOperation.getDBExamArrange();
+        List<DBExamArrange> list = DBOperation.getDBExamArrange();
         mBinding.examRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        SessionAdapter adapter = new SessionAdapter(mlist);
+        SessionAdapter adapter = new SessionAdapter(list);
         mBinding.examRecycler.setAdapter(adapter);
     }
 

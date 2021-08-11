@@ -3,7 +3,9 @@ package com.askia.coremodel.viewmodel;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamInfo;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
@@ -150,6 +152,16 @@ public class DataImportViewModel extends BaseViewModel {
             case "ea_examinee.json":
                 List<DBExaminee> amineeBean = JsonUtil.file2JsonArray(filePath, DBExaminee.class);
                 Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(amineeBean));
+                break;
+            //考试信息表
+            case "ea_data_version.json":
+                List<DBDataVersion> versionBean = JsonUtil.file2JsonArray(filePath,DBDataVersion.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(versionBean));
+                break;
+            //版本号
+            case "ks_kcxxb.json":
+                List<DBExamInfo> examInfoBean = JsonUtil.file2JsonArray(filePath,DBExamInfo.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(examInfoBean));
                 break;
             default:
                 break;

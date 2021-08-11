@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
         <variable
@@ -150,7 +148,7 @@
                 android:layout_toLeftOf="@+id/btn_audit"
                 android:background="@drawable/bg_btn_line_blue"
                 android:text="选择考场"
-                android:onClick="@{()->handlers.chooseExamination()}"
+                android:onClick="@{handlers::chooseExamination}"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
 

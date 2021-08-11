@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="1.5dp"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/tv_lead_mode_hint"
@@ -49,7 +49,7 @@
             android:textColor="@color/_5392FF"
             android:textSize="8sp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/data_lead_line" />
+            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top" />
 
         <LinearLayout
             android:id="@+id/ll_data_lead_mode"
@@ -91,7 +91,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"/>
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -125,7 +125,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"/>
+                    android:layout_height="wrap_content"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rl_data_lead_sdcard"
