@@ -23,6 +23,7 @@
                 android:text="@string/data_view"
                 android:textColor="#163366"
                 android:textSize="9sp"
+                android:textStyle="bold"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

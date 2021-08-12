@@ -85,4 +85,42 @@ public class DBOperation {
     public static DBDataVersion getVersion(){
         return Realm.getDefaultInstance().where(DBDataVersion.class).findAll().last();
     }
+
+    /**
+     * 根据id查看数据查看列表详细信息
+     * @param id id
+     * @return 当前场次学生信息
+     */
+    public static DBExamLayout getStudentInfo(String id){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("id",id);
+        query.endGroup();
+        return query.findAll().first();
+    }
+
+    /**
+     * 根据stuNo 查询居住地址
+     * @param stuNo 学生编号
+     * @return 居住信息
+     */
+    public static String getLiveAddress(String stuNo){
+        return Realm.getDefaultInstance().where(DBExaminee.class).equalTo("stuNo",stuNo)
+                .findFirst().getLiveAddr();
+    }
+
+    /**
+     * 根据考试代码 学生编号获取详细信息
+     * @param examCode 考试代码
+     * @param stuNo 学生编号
+     * @return 详细信息
+     */
+    public static DBExamLayout getStudentInfo(String examCode,String stuNo){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("examCode",examCode);
+        query.equalTo("stuNo",stuNo);
+        query.endGroup();
+        return query.findFirst();
+    }
 }

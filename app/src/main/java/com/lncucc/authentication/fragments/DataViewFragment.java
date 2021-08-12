@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -12,9 +13,16 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.blankj.utilcode.util.LogUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
+import com.lncucc.authentication.widgets.StudentInfoDialog;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +35,8 @@ public class DataViewFragment extends BaseFragment {
     private List<DBExamLayout> mList;
     private List<DBExamLayout> tempList = new ArrayList<>();
     private DataViewAdapter mAdapter;
+    private StudentInfoDialog infoDialog;
+    private DBExamLayout itemInfo;
 
     @Override
     public void onInit() {
@@ -35,6 +45,14 @@ public class DataViewFragment extends BaseFragment {
         tempList.addAll(mList);
         viewBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new DataViewAdapter(tempList);
+        infoDialog = new StudentInfoDialog(getActivity(), itemInfo);
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            LogUtils.e("item id ->", DBOperation.getStudentInfo(tempList.get(position).getId()));
+            itemInfo = DBOperation.getStudentInfo(tempList.get(position).getId());
+            if (infoDialog != null && itemInfo != null){
+                infoDialog.showDialog(itemInfo);
+            }
+        });
         viewBinding.rlDataView.setAdapter(mAdapter);
     }
 
@@ -42,6 +60,7 @@ public class DataViewFragment extends BaseFragment {
     public void onInitViewModel() {
 
     }
+
 
     @Override
     public View onInitDataBinding(LayoutInflater inflater, ViewGroup container) {

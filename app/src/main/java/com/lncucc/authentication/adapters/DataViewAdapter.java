@@ -1,6 +1,7 @@
 package com.lncucc.authentication.adapters;
 
 import android.graphics.Color;
+import android.view.View;
 
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -14,6 +15,7 @@ import java.util.List;
 
 
 public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHolder> {
+
     public DataViewAdapter(@Nullable List<DBExamLayout> data) {
         super(R.layout.item_data_view, data);
     }
