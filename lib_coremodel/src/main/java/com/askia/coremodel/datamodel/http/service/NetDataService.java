@@ -7,6 +7,7 @@ import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
+import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
 
 import java.util.Map;
 
@@ -38,9 +39,11 @@ public interface NetDataService {
     @GET("/authentication/datapreparation/layoutpack/getpackurl")
     Observable<GetZipData> getpackurl(@Query("getpackurl") String getpackurl, @Query("siteCode") String siteCode, @Query("dataVersion") String dataVersion);
 
+    //查询考试列表
     @GET("/authentication/homepage/selectpalnbysitecode")
-    Observable<BaseResponseData> selectpalnbysitecode(@Query("siteCode") String siteCode);
+    Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("siteCode") String siteCode);
 
+    //实时数据上传
     @POST("/authentication/verifystatistics/verifyfacecontrast")
     Observable<BaseResponseData> verifyfacecontrast(@Body RequestBody body);
 }

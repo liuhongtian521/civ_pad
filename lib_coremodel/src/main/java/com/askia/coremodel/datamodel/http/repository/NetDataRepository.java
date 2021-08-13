@@ -1,23 +1,24 @@
 package com.askia.coremodel.datamodel.http.repository;
 
 
-
 import com.askia.coremodel.datamodel.http.ApiClient;
 import com.askia.coremodel.datamodel.http.HttpUnionPayBean;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
+import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
+import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
 
 import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Query;
 
 
-public class NetDataRepository
-{
+public class NetDataRepository {
 
     // 人脸包下载
     public static Observable<QueryFaceZipsUrlsData> queryFaceZipsUrls(String TimeStamp) {
@@ -27,16 +28,37 @@ public class NetDataRepository
     }
 
     //登录
-    public static  Observable<LoginData> login(String user,String psd){
+    public static Observable<LoginData> login(String user, String psd) {
         Observable<LoginData> responseData = ApiClient.getNetDataService()
                 .mLogin(user, psd);
         return responseData;
     }
 
     //更新包
-    public static Observable<CheckVersionData> checkVersion(String version){
+    public static Observable<CheckVersionData> checkVersion(String version) {
         Observable<CheckVersionData> responseData = ApiClient.getNetDataService()
                 .checkVersion(version);
+        return responseData;
+    }
+
+    //数据包获取
+    public static Observable<GetZipData> getpackurl(String getpackurl, String siteCode, String dataVersion) {
+        Observable<GetZipData> responseData = ApiClient.getNetDataService()
+                .getpackurl(getpackurl, siteCode, dataVersion);
+        return responseData;
+    }
+
+    //考场数据获取
+    public static Observable<SelectpalnbysitecodeData> selectpalnbysitecode(String siteCode) {
+        Observable<SelectpalnbysitecodeData> responseData = ApiClient.getNetDataService()
+                .selectpalnbysitecode(siteCode);
+        return responseData;
+    }
+
+    //数据上传
+    public static Observable<BaseResponseData> verifyfacecontrast(RequestBody body){
+        Observable<BaseResponseData> responseData = ApiClient.getNetDataService()
+                .verifyfacecontrast(body);
         return responseData;
     }
 

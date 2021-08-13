@@ -50,23 +50,23 @@ public class AuthenticationViewModel extends BaseViewModel {
     }
 
 
-    public void setMsg(DBExaminee dbExaminee, String base64, String time, String type, String number) {
+    public void setMsg(DBExamLayout dbExamLayout, String base64, String time, String type, String number,String id) {
         Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                DBExamExport dbExamExport = new DBExamExport();
-                dbExamExport.setId(dbExaminee.getStuNo() + dbExamExport.getSe_code());
-                dbExamExport.setStu_no(dbExaminee.getStuNo());
-                dbExamExport.setExaminee_id(dbExaminee.getId());
-                dbExamExport.setVerify_time(time);
-                dbExamExport.setVerify_result(type);
-                dbExamExport.setMatch_rate(number);
-                dbExamExport.setSe_code(dbExamExport.getSe_code());
-                dbExamExport.setEntrance_photo_url(base64);
-                dbExamExport.setExam_code(dbExamExport.getExam_code());
-                dbExamExport.setSys_org_code(dbExamExport.getSys_org_code());
-                dbExamExport.setEquipment(DeviceUtils.getDeviceSN());
-                realm.insertOrUpdate(dbExamExport);
+                DBExamExport db = new DBExamExport();
+
+                db.setId(dbExamLayout.getId());
+                db.setStuNo(dbExamLayout.getStuNo());
+                db.setExamineeId(id);
+                db.setVerifyTime(time);
+                db.setVerifyResult(type);
+                db.setMatchRate(number);
+                db.setSeCode(dbExamLayout.getSeCode());
+
+
+                db.setEquipment(DeviceUtils.getDeviceSN());
+                realm.insertOrUpdate(db);
             }
         });
     }

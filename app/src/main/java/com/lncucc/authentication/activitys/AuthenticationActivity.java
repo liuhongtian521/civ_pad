@@ -95,40 +95,43 @@ public class AuthenticationActivity extends BaseActivity {
             public void backType(int type) {
                 faceResultDialog.dismiss();
                 faceFragment.goContinueDetectFace();
-                if (type == 0) {
-                    //不通过
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
-                } else if (type == 1) {
-                    //存疑
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
-                } else {
-                    //通过
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
-                }
+//                if (type == 0) {
+//                    //不通过
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
+//                } else if (type == 1) {
+//                    //存疑
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
+//                } else {
+//                    //通过
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
+//                }
             }
         });
 
         faceComparedDialog = new FaceComparedDialog(this, new DialogClickBackListener() {
             @Override
             public void dissMiss() {
-                faceResultDialog.dismiss();
+                isComparison=false;
+                faceComparedDialog.dismiss();
                 faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
-                faceResultDialog.dismiss();
+                isComparison=false;
+
+                faceComparedDialog.dismiss();
                 faceFragment.goContinueDetectFace();
-                if (type == 0) {
-                    //不通过
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
-                } else if (type == 1) {
-                    //存疑
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
-                } else {
-                    //通过
-                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
-                }
+//                if (type == 0) {
+//                    //不通过
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
+//                } else if (type == 1) {
+//                    //存疑
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
+//                } else {
+//                    //通过
+//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
+//                }
             }
         });
 
@@ -163,30 +166,45 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
+        //用户基础数据，
         mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
             @Override
             public void onChanged(DBExaminee dbExaminee) {
-                mDbExaminee = dbExaminee;
-                if (isComparison) {
+                if (dbExaminee==null)
+                    faceFragment.goContinueDetectFace();
+                else {
+                    mDbExaminee = dbExaminee;
                     mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode);
-                } else {
-                    if (dbExaminee != null) {
-                        faceResultDialog.setType(false);
-                    } else {
-                        faceFragment.goContinueDetectFace();
-                    }
                 }
+//                if (isComparison) {
+//                    if (dbExaminee != null) {
+//                    } else {
+//                        faceFragment.goContinueDetectFace();
+//                    }
+//                } else {
+//                    if (dbExaminee != null) {
+//                        faceResultDialog.setType(false);
+//                    } else {
+//                        faceFragment.goContinueDetectFace();
+//                    }
+//                }
             }
         });
         mViewModel.getmSeat().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
                 if (dbExamLayout != null) {
-                    faceComparedDialog.show();
-                    //人员的考场和座位
-                    faceComparedDialog.setSate(dbExamLayout);
-                    faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
-                    faceComparedDialog.setLeftPhoto(base64);
+                    if (isComparison){
+                        //比对状态
+                        faceComparedDialog.show();
+                        //人员的考场和座位
+                        faceComparedDialog.setSate(dbExamLayout);
+                        faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
+                        faceComparedDialog.setLeftPhoto(base64);
+                    }else {
+                        //识别状态
+
+                    }
                 } else {
                     faceFragment.goContinueDetectFace();
                 }
@@ -208,13 +226,12 @@ public class AuthenticationActivity extends BaseActivity {
     public void getFace(FaceDetectResult detectResult, String base64) {
         this.base64 = base64;
         if (isComparison) {
-            // mDbExaminee
-            if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {
+             if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
                 mViewModel.quickPeople(detectResult.faceNum, mExanCode);
-
             } else {
+                isComparison = false;
                 faceFragment.goContinueDetectFace();
             }
         } else {
