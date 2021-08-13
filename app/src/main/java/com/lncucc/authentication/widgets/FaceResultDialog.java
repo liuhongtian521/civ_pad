@@ -51,7 +51,11 @@ public class FaceResultDialog extends BaseDialog {
 
             @Override
             public void onFinish() {
-                onListener.dissMiss();
+                if (linSuccess.getVisibility() == View.VISIBLE) {
+                    onListener.backType(2);
+                } else {
+                    onListener.dissMiss();
+                }
             }
         };
 
@@ -60,10 +64,13 @@ public class FaceResultDialog extends BaseDialog {
             @Override
             public void onClick(View v) {
                 mCountDownTimer.cancel();
-                onListener.dissMiss();
+                if (linSuccess.getVisibility() == View.VISIBLE) {
+                    onListener.backType(2);
+                } else {
+                    onListener.dissMiss();
+                }
             }
         });
-
     }
 
 

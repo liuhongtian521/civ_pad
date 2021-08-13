@@ -9,6 +9,8 @@ import io.realm.annotations.PrimaryKey;
  * 考试编排
  */
 public class DBExamLayout extends RealmObject implements Serializable {
+    @PrimaryKey
+    private String id;
     private String createBy;
     private Long createTime;
     private String distCode;
@@ -16,13 +18,9 @@ public class DBExamLayout extends RealmObject implements Serializable {
     private String exReNum;
     private String examCode;
     private String gender;
-    @PrimaryKey
-    private String id;
     private String idCard;
     private String nation;
-    private String roomNo;
     private String seCode;
-    private String seName;
     private String seatNo;
     private String siteCode;
     private String siteName;
@@ -33,6 +31,8 @@ public class DBExamLayout extends RealmObject implements Serializable {
     private String sysOrgCode;
     private String updateBy;
     private Long updateTime;
+    private String roomNo;
+    private String seName;
 
     public String getCreateBy() {
         return createBy;

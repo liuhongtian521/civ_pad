@@ -4,6 +4,7 @@ package com.askia.coremodel.datamodel.http.service;
 import com.askia.coremodel.datamodel.http.HttpUnionPayBean;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
+import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -32,4 +34,13 @@ public interface NetDataService {
 
     @GET("/jeecg-boot/pad/checkVersion")
     Observable<CheckVersionData> checkVersion(@Query("version") String version);
+
+    @GET("/authentication/datapreparation/layoutpack/getpackurl")
+    Observable<GetZipData> getpackurl(@Query("getpackurl") String getpackurl, @Query("siteCode") String siteCode, @Query("dataVersion") String dataVersion);
+
+    @GET("/authentication/homepage/selectpalnbysitecode")
+    Observable<BaseResponseData> selectpalnbysitecode(@Query("siteCode") String siteCode);
+
+    @POST("/authentication/verifystatistics/verifyfacecontrast")
+    Observable<BaseResponseData> verifyfacecontrast(@Body RequestBody body);
 }

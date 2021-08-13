@@ -3,17 +3,24 @@ package com.lncucc.authentication.activitys;
 import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.viewmodel.AuthenticationViewModel;
+import com.askia.coremodel.viewmodel.CheckUpdateViewModel;
 import com.blankj.utilcode.util.FileUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
 import com.lncucc.authentication.fragments.FaceShowFragment;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.FaceComparedDialog;
 import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
@@ -37,11 +44,19 @@ public class AuthenticationActivity extends BaseActivity {
     private FaceResultDialog faceResultDialog;
     //搜索学生
     private InquiryDialog inquiryDialog;
-
+    //对比结果
+    private FaceComparedDialog faceComparedDialog;
     private FRecyclerViewAdapter<Map<String, Object>> mAdapter;
     private FaceShowFragment faceFragment;
+    private AuthenticationViewModel mViewModel;
 
+    private String mExanCode = "";
 
+    private FaceDetectResult mDetectResult;
+    private DBExaminee mDbExaminee;
+    private String base64;
+
+    private boolean isComparison = false;
 
     @Override
     public void onInit() {
@@ -64,7 +79,8 @@ public class AuthenticationActivity extends BaseActivity {
 
             @Override
             public void backType(int type) {
-
+                peopleMsgDialog.dismiss();
+                faceFragment.goContinueDetectFace();
             }
         });
 
@@ -72,21 +88,47 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 faceResultDialog.dismiss();
+                faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
                 faceResultDialog.dismiss();
-
+                faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
                 } else if (type == 1) {
                     //存疑
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
                 } else {
                     //通过
-
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
                 }
+            }
+        });
 
+        faceComparedDialog = new FaceComparedDialog(this, new DialogClickBackListener() {
+            @Override
+            public void dissMiss() {
+                faceResultDialog.dismiss();
+                faceFragment.goContinueDetectFace();
+            }
+
+            @Override
+            public void backType(int type) {
+                faceResultDialog.dismiss();
+                faceFragment.goContinueDetectFace();
+                if (type == 0) {
+                    //不通过
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
+                } else if (type == 1) {
+                    //存疑
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
+                } else {
+                    //通过
+                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
+                }
             }
         });
 
@@ -94,14 +136,15 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 inquiryDialog.dismiss();
+                faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
-                inquiryDialog.dismiss();
                 //对比
-
-
+                isComparison = true;
+                inquiryDialog.dismiss();
+                faceFragment.goContinueDetectFace();
             }
         });
 
@@ -109,7 +152,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public void onInitViewModel() {
-
+        mViewModel = ViewModelProviders.of(this).get(AuthenticationViewModel.class);
     }
 
     @Override
@@ -120,7 +163,35 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
-
+        mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
+            @Override
+            public void onChanged(DBExaminee dbExaminee) {
+                mDbExaminee = dbExaminee;
+                if (isComparison) {
+                    mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode);
+                } else {
+                    if (dbExaminee != null) {
+                        faceResultDialog.setType(false);
+                    } else {
+                        faceFragment.goContinueDetectFace();
+                    }
+                }
+            }
+        });
+        mViewModel.getmSeat().observe(this, new Observer<DBExamLayout>() {
+            @Override
+            public void onChanged(DBExamLayout dbExamLayout) {
+                if (dbExamLayout != null) {
+                    faceComparedDialog.show();
+                    //人员的考场和座位
+                    faceComparedDialog.setSate(dbExamLayout);
+                    faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
+                    faceComparedDialog.setLeftPhoto(base64);
+                } else {
+                    faceFragment.goContinueDetectFace();
+                }
+            }
+        });
     }
 
     //选择考场
@@ -132,14 +203,29 @@ public class AuthenticationActivity extends BaseActivity {
         startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
     }
 
-    public void getFace(FaceDetectResult detectResult) {
-        if (detectResult.similarity > 80f) {
-            faceResultDialog.setType(true);
+    /*这个是返回人脸数据和图片
+    * */
+    public void getFace(FaceDetectResult detectResult, String base64) {
+        this.base64 = base64;
+        if (isComparison) {
+            // mDbExaminee
+            if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {
+                //对比数据成功
+                this.mDetectResult = detectResult;
+                mViewModel.quickPeople(detectResult.faceNum, mExanCode);
+
+            } else {
+                faceFragment.goContinueDetectFace();
+            }
         } else {
-            faceResultDialog.setType(false);
+            if (detectResult.similarity > 80f) {
+                this.mDetectResult = detectResult;
+                faceResultDialog.setType(true);
+                mViewModel.quickPeople(detectResult.faceNum, mExanCode);
+            } else {
+                faceResultDialog.setType(false);
+            }
         }
-
-
     }
 
 }

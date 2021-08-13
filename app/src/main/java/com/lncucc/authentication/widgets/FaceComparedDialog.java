@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.util.OtherUtils;
 import com.lncucc.authentication.R;
 
 /**
@@ -79,6 +82,15 @@ public class FaceComparedDialog extends BaseDialog {
         });
     }
 
+    public void setSate(DBExamLayout dbExamLayout) {
+        setAddress(dbExamLayout.getRoomNo());
+        setAddNo(dbExamLayout.getSeatNo());
+        setName(dbExamLayout.getStuName());
+        setIdcard(dbExamLayout.getIdCard());
+        setCardNo(dbExamLayout.getExamCode());
+    }
+
+
     public void setName(String name) {
         tvName.setText(name);
     }
@@ -97,6 +109,10 @@ public class FaceComparedDialog extends BaseDialog {
 
     public void setAddNo(String addNo) {
         tvAddNo.setText(addNo);
+    }
+
+    public void setLeftPhoto(String base64) {
+        ivPhotoOne.setImageBitmap(OtherUtils.base64ToImageView(base64));
     }
 
     public void setNumber(String number) {

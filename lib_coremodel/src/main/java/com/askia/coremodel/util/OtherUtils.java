@@ -48,8 +48,9 @@ public class OtherUtils {
 
     /**
      * 字节数组转16进制
+     *
      * @param bytes 需要转换的byte数组
-     * @return  转换后的Hex字符串
+     * @return 转换后的Hex字符串
      */
     public static String bytesToHex(byte[] bytes) {
         StringBuffer sb = new StringBuffer();
@@ -63,21 +64,19 @@ public class OtherUtils {
         return sb.toString();
     }
 
-    public static Bitmap base64ToImageView(String base64Img){
+    public static Bitmap base64ToImageView(String base64Img) {
         byte[] decode = null;
-        if(isBase64Img(base64Img))
-        {
+        if (isBase64Img(base64Img)) {
             decode = Base64.decode(base64Img.split(",")[1], Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(decode, 0, decode.length);
         }
         return null;
     }
 
-    public static boolean isBase64Img(String imgurl){
-        if(!StringUtils.isEmpty(imgurl)&&(imgurl.startsWith("data:image/png;base64,")
-                ||imgurl.startsWith("data:image/*;base64,")||imgurl.startsWith("data:image/jpg;base64,") || imgurl.startsWith("data:image/jpeg;base64,"))
-        )
-        {
+    public static boolean isBase64Img(String imgurl) {
+        if (!StringUtils.isEmpty(imgurl) && (imgurl.startsWith("data:image/png;base64,")
+                || imgurl.startsWith("data:image/*;base64,") || imgurl.startsWith("data:image/jpg;base64,") || imgurl.startsWith("data:image/jpeg;base64,"))
+        ) {
             return true;
         }
         return false;

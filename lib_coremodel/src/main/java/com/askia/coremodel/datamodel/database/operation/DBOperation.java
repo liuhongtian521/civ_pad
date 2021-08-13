@@ -11,6 +11,7 @@ import java.util.List;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  *
@@ -19,61 +20,74 @@ public class DBOperation {
 
     /**
      * 获取考试计划列表
+     *
      * @return
      */
-    public static List<DBExamPlan> getExamPlan(){
+    public static List<DBExamPlan> getExamPlan() {
         return Realm.getDefaultInstance().where(DBExamPlan.class).findAll();
     }
 
     /**
      * 获取考场安排列表
+     *
      * @return
      */
-    public static List<DBExamArrange> getDBExamArrange(){
+    public static List<DBExamArrange> getDBExamArrange() {
         return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
     }
 
     /**
      * 获取考试考试编排表
+     *
      * @return
      */
-    public static List<DBExamLayout> getDBExamLayout(){
+    public static List<DBExamLayout> getDBExamLayout() {
         return Realm.getDefaultInstance().where(DBExamLayout.class).findAll();
     }
 
     /**
      * 获取考生信息列表
+     *
      * @return
      */
-    public static List<DBExaminee> getDBExaminee(){
-            return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
+    public static List<DBExaminee> getDBExaminee() {
+        return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
     }
 
     /**
-     * @params 身份证准考证后6位
-     *
      * @return 获取考试编排表
+     * @params 身份证准考证后6位
      */
-    public static List<DBExamLayout> getDBExamLayoutByIdNo(String params){
+    public static List<DBExamLayout> getDBExamLayoutByIdNo(String params) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         //身份证号
-        query.like("idCard","?*"+params, Case.SENSITIVE);
+        query.like("idCard", "?*" + params, Case.SENSITIVE);
         //准考证号
-        query.or().equalTo("exReNum","?*" + params);
+        query.or().equalTo("exReNum", "?*" + params);
         query.endGroup();
         return query.findAll();
     }
 
     /**
      * 根据
+     *
      * @param seCode 场次编码
      * @return 根据场次码获取当前场次下的 所有考场编号
      */
-    public static List<DBExamLayout> getRoomList(String seCode){
+    public static List<DBExamLayout> getRoomList(String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("seCode",seCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findAll();
+    }
+
+    public static List<DBExaminee> quickPeople(String name, String examCode) {
+        RealmQuery<DBExaminee> query = Realm.getDefaultInstance().where(DBExaminee.class);
+        query.beginGroup();
+        query.equalTo("stuNo", name);
+        query.equalTo("examCode", examCode);
         query.endGroup();
         return query.findAll();
     }

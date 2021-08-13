@@ -1,6 +1,8 @@
 package com.lncucc.authentication.fragments;
 
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -10,7 +12,9 @@ import android.widget.Toast;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
+import com.askia.common.util.ImageUtil;
 import com.askia.common.util.MyToastUtils;
+import com.askia.common.util.NV21ToBitmap;
 import com.askia.common.util.faceUtils.DrawHelper;
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
@@ -60,7 +64,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     }
 
-    protected abstract void setUI(FaceDetectResult detectResult);
+    protected abstract void setUI(FaceDetectResult detectResult, String base64);
 
     /**
      * 初始化相机
@@ -105,7 +109,18 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     LogUtils.e("detect result ->", detectResult.similarity);
                     frames = 0;
                     if (detectResult != null) {
-                        setUI(detectResult);
+                        byte[] newNav21 = new byte[nv21.length];
+                        System.arraycopy(nv21, 0, newNav21, 0, nv21.length);//数据处理用的
+                        NV21ToBitmap nv21Tool = new NV21ToBitmap(getContext());
+                        Bitmap bitmap = nv21Tool.nv21ToBitmap(newNav21, previewSize.width, previewSize.height);
+                        Rect faceRect = faceResult.faceRect;
+                        if (faceRect != null) {
+                            bitmap = ImageUtil.imageCrop(bitmap, faceRect);
+                        }
+                        bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+                        String base64 = ImageUtil.encodeImage(bitmap);
+                        setUI(detectResult, base64);
+                        bitmap.recycle();
                     } else {
                         goContinueDetectFace();
                     }

@@ -11,6 +11,8 @@ import io.realm.annotations.PrimaryKey;
 public class DBExaminee extends RealmObject implements Serializable {
 
 
+    @PrimaryKey
+    private String id;
     private String birthDate;
     private String cardNo;
     private String cardType;
@@ -19,8 +21,6 @@ public class DBExaminee extends RealmObject implements Serializable {
     private String examCode;
     private String fLanguage;
     private String gender;
-    @PrimaryKey
-    private String id;
     private String liveAddr;
     private String nation;
     private String photoUrl;
