@@ -23,9 +23,11 @@
     <string name="data_clear">数据清空</string>
     <string name="data_lead_mode">请选择导入方式</string>
     <string name="data_lead_net">网络导入</string>
+    <string name="data_export_net">网络导出</string>
     <string name="data_lead_usb">U盘导入</string>
     <string name="data_lead_sdcard">SD卡导入</string>
     <string name="data_lead_in">导入数据</string>
+    <string name="data_export_t">导出数据</string>
     <string name="system__setting">基本设置</string>
     <string name="mute__setting">静音设置</string>
     <string name="accord__setting">按键音</string>
@@ -48,4 +50,7 @@
     <string name="stu_id_no">身份证号</string>
     <string name="stu_admission">准考证号</string>
     <string name="examination">场次</string>
+    <string name="export_session">请选择导出场次</string>
+    <string name="session">场次</string>
+    <string name="export_type">请选择导出方式</string>
 </resources>

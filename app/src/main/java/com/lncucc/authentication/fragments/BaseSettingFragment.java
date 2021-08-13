@@ -1,29 +1,26 @@
 package com.lncucc.authentication.fragments;
 
-import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.qmuiteam.qmui.widget.QMUISlider;
-import com.blankj.utilcode.util.ToastUtils;
-
-import com.askia.common.base.BaseActivity;
 import com.askia.common.base.BaseFragment;
+import com.askia.common.util.MyToastUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.kyleduo.switchbutton.SwitchButton;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentBaseSettingBinding;
-import com.kyleduo.switchbutton.SwitchButton;
+import com.qmuiteam.qmui.widget.QMUISlider;
+
 import org.jetbrains.annotations.NotNull;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 /**
  * 数据导入
@@ -50,11 +47,11 @@ public class BaseSettingFragment extends BaseFragment  {
                 if (b) {
                     // 开启
                     Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                    ToastUtils.showShort("设置成功");
+                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
                 } else {
                     // 关闭
                     Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                    ToastUtils.showShort("设置成功");
+                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
                 }
             }
         });
@@ -64,10 +61,10 @@ public class BaseSettingFragment extends BaseFragment  {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE , 0);// 设置静音
-                    ToastUtils.showShort("设置成功");
+                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
                 } else {
                     mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_UNMUTE, 0);//取消静音
-                    ToastUtils.showShort("设置成功");
+                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
                 }
             }
         });

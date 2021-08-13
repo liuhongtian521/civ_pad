@@ -2,6 +2,7 @@ package com.askia.coremodel.datamodel.database.operation;
 
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
@@ -136,5 +137,18 @@ public class DBOperation {
         query.equalTo("stuNo",stuNo);
         query.endGroup();
         return query.findFirst();
+    }
+
+    /**
+     * 根据场次代码 查询导出数据
+     * @param seCode 场次编码
+     * @return 导出数据列表
+     */
+    public static List<DBExamExport> getExportBySeCode(String seCode){
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("seCode",seCode);
+        query.endGroup();
+        return  query.findAll();
     }
 }

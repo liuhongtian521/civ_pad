@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -14,15 +13,10 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.blankj.utilcode.util.LogUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 import com.lncucc.authentication.widgets.StudentInfoDialog;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +34,7 @@ public class DataViewFragment extends BaseFragment {
 
     @Override
     public void onInit() {
-        mList = DBOperation.getDBExamLayoutByIdNo("");
+        mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
         tempList.clear();
         tempList.addAll(mList);
         viewBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -61,6 +55,17 @@ public class DataViewFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (tempList.size() == 0){
+            mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
+            if (mList.size() > 0){
+                tempList.addAll(mList);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
     @Override
     public View onInitDataBinding(LayoutInflater inflater, ViewGroup container) {

@@ -30,7 +30,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_user_manage_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="1.5dp"/>
+            android:layout_height="2px"/>
         <LinearLayout
             android:id="@+id/ll_user_manage__mode"
             android:orientation="vertical"
@@ -62,7 +62,7 @@
                     android:textSize="8sp" />
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
+                    android:layout_height="2px"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
             </RelativeLayout>
@@ -95,7 +95,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"/>
+                    android:layout_height="2px"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rl_user_manage_newpsd"
@@ -126,7 +126,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"/>
+                    android:layout_height="2px"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rl_user_manage_sdcard"

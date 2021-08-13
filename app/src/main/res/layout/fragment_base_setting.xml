@@ -32,7 +32,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_base_setting_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="1.5dp"/>
+            android:layout_height="2px"/>
 
 
         <LinearLayout
@@ -104,7 +104,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"
+                    android:layout_height="2px"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
 
@@ -154,7 +154,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="1.5dp"/>
+                    android:layout_height="2px"/>
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="match_parent"

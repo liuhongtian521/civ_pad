@@ -40,7 +40,7 @@ public class Constants {
     //压缩包路径
     public static final String ZIP_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "Examination";
     //压缩包路径
-    public static final String STU_SIGN= Environment.getExternalStorageDirectory().getPath() + File.separator + "Sign";
+    public static final String STU_EXPORT= Environment.getExternalStorageDirectory().getPath() + File.separator + "ExamExport";
     //解压路径
     public static final String UN_ZIP_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "ExModel";
 }

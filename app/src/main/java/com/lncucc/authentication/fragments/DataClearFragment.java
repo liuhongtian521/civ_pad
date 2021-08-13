@@ -14,8 +14,11 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.viewmodel.DataClearViewModel;
 import com.blankj.utilcode.util.LogUtils;
+import com.google.android.material.dialog.MaterialDialogs;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDataClearBinding;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,21 +50,33 @@ public class DataClearFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.delImportData().observe(this, result ->{
             LogUtils.e("result ->", result);
+            MyToastUtils.success(result,Toast.LENGTH_SHORT);
         });
+    }
+
+    /**
+     * 数据删除确认dialog
+     */
+    public void showConfirmDialog(){
+    }
+
+    public void showPwdDialog(){
+
     }
 
     public void clear(View view){
         boolean isClearImportData = clearBinding.checkboxImport.isChecked();
         boolean isClearAuthData = clearBinding.checkboxAuth.isChecked();
-        if (isClearImportData){
-            viewModel.delImport();
-        }else if (isClearAuthData){
-            viewModel.delAuthData();
-        }else if (isClearImportData && isClearAuthData){
-            viewModel.delImport();
-            viewModel.delAuthData();
-        }else {
-            MyToastUtils.error("请选择清空方式!", Toast.LENGTH_SHORT);
-        }
+        showConfirmDialog();
+//        if (isClearImportData){
+//            viewModel.delImport();
+//        }else if (isClearAuthData){
+//            viewModel.delAuthData();
+//        }else if (isClearImportData && isClearAuthData){
+//            viewModel.delImport();
+//            viewModel.delAuthData();
+//        }else {
+//            MyToastUtils.error("请选择清空方式!", Toast.LENGTH_SHORT);
+//        }
     }
 }
