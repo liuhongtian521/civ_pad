@@ -12,9 +12,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
-import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.event.DataImportEvent;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
-import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.ttsea.jrxbus2.RxBus2;
@@ -34,7 +33,6 @@ public class DataImportFragment extends BaseFragment {
 
     @Override
     public void onInit() {
-        RxBus2.getInstance().register(this);
     }
 
     public void initEvent() {
@@ -60,7 +58,15 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
-            MyToastUtils.error(result, Toast.LENGTH_SHORT);
+            if ("100".equals(result)){
+                DataImportEvent event = new DataImportEvent();
+                event.setCode(0);
+                event.setMessage("导入成功");
+                RxBus2.getInstance().postStickyEvent(event);
+                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+            }else {
+                MyToastUtils.error(result, Toast.LENGTH_SHORT);
+            }
         });
     }
 
@@ -91,7 +97,10 @@ public class DataImportFragment extends BaseFragment {
         } else {
             viewModel.doSdCardImport();
         }
+    }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

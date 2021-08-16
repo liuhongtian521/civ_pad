@@ -1,5 +1,6 @@
 package com.lncucc.authentication.fragments;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,25 +14,33 @@ import androidx.lifecycle.ViewModelProviders;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.viewmodel.DataClearViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.google.android.material.dialog.MaterialDialogs;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDataClearBinding;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.lncucc.authentication.widgets.ConfirmDialog;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.PassWordClickCallBack;
+import com.lncucc.authentication.widgets.PassWordDialog;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
  * 数据清空
  */
-public class DataClearFragment extends BaseFragment {
+public class DataClearFragment extends BaseFragment implements DialogClickBackListener, PassWordClickCallBack {
     private FragmentDataClearBinding clearBinding;
     private DataClearViewModel viewModel;
+    private ConfirmDialog confirmDialog;
+    private PassWordDialog passWordDialog;
+    private boolean isClearImportData = false;
+    private boolean isClearAuthData = false;
 
     @Override
     public void onInit() {
-
+        confirmDialog = new ConfirmDialog(getActivity(), this);
+        passWordDialog = new PassWordDialog(getActivity(), this);
     }
 
     @Override
@@ -41,42 +50,73 @@ public class DataClearFragment extends BaseFragment {
 
     @Override
     public View onInitDataBinding(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container) {
-        clearBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_clear,container,false);
+        clearBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_clear, container, false);
         clearBinding.setClicks(this);
         return clearBinding.getRoot();
     }
 
     @Override
     public void onSubscribeViewModel() {
-        viewModel.delImportData().observe(this, result ->{
+        viewModel.delImportData().observe(this, result -> {
             LogUtils.e("result ->", result);
-            MyToastUtils.success(result,Toast.LENGTH_SHORT);
+            MyToastUtils.success(result, Toast.LENGTH_SHORT);
         });
     }
 
     /**
      * 数据删除确认dialog
      */
-    public void showConfirmDialog(){
+    public void showConfirmDialog() {
+        if (null != confirmDialog) {
+            confirmDialog.show();
+        }
     }
 
-    public void showPwdDialog(){
+    public void clear(View view) {
+        isClearImportData = clearBinding.checkboxImport.isChecked();
+        isClearAuthData = clearBinding.checkboxAuth.isChecked();
+
+        if (!isClearAuthData && !isClearImportData) {
+            MyToastUtils.error("请选择清空方式!", Toast.LENGTH_SHORT);
+        } else {
+            showConfirmDialog();
+        }
+    }
+
+    @Override
+    public void dissMiss() {
 
     }
 
-    public void clear(View view){
-        boolean isClearImportData = clearBinding.checkboxImport.isChecked();
-        boolean isClearAuthData = clearBinding.checkboxAuth.isChecked();
-        showConfirmDialog();
-//        if (isClearImportData){
-//            viewModel.delImport();
-//        }else if (isClearAuthData){
-//            viewModel.delAuthData();
-//        }else if (isClearImportData && isClearAuthData){
-//            viewModel.delImport();
-//            viewModel.delAuthData();
-//        }else {
-//            MyToastUtils.error("请选择清空方式!", Toast.LENGTH_SHORT);
-//        }
+    @Override
+    public void backType(int type) {
+        if (type == 0 && passWordDialog != null) {
+            confirmDialog.dismiss();
+            passWordDialog.show();
+        }
+    }
+
+    @Override
+    public void confirm(String pwd) {
+
+        String localPwd = SharedPreferencesUtils.getString(getActivity(), "pwd", "123456");
+        if (!TextUtils.isEmpty(localPwd) && localPwd.equals(pwd)) {
+            if (null != passWordDialog) {
+                passWordDialog.clearPwd();
+                passWordDialog.dismiss();
+            }
+
+            //密码正确 清空逻辑
+            if (isClearImportData) {
+                viewModel.delImport();
+            } else if (isClearAuthData) {
+                viewModel.delAuthData();
+            } else if (isClearImportData && isClearAuthData) {
+                viewModel.delImport();
+                viewModel.delAuthData();
+            }
+        } else {
+            MyToastUtils.error("密码错误！", Toast.LENGTH_SHORT);
+        }
     }
 }

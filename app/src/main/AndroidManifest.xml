@@ -76,16 +76,17 @@
         <!--登录 -->
         <activity
             android:name=".activitys.LoginActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- 主页-->
         <activity
             android:name="com.lncucc.authentication.activitys.MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
@@ -97,15 +98,14 @@
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <!-- 初始化 -->
         <activity android:name=".activitys.InitializeActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">

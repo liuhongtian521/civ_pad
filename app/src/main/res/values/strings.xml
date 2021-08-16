@@ -15,7 +15,7 @@
     <string name="login_title">考生身份认证系统</string>
     <string name="login_account_hint">用户名</string>
     <string name="login_btn">登录</string>
-    <string name="login_pwd_hint">密码</string>
+    <string name="login_pwd_hint">请输入密码</string>
     <string name="examination_check">场次查看</string>
     <string name="data_view">数据查看</string>
     <string name="data_lead">数据导入</string>
@@ -53,4 +53,10 @@
     <string name="export_session">请选择导出场次</string>
     <string name="session">场次</string>
     <string name="export_type">请选择导出方式</string>
+    <string name="data_clear_tip">确定要清空数据</string>
+    <string name="data_clear_content">数据一旦清空无法恢复</string>
+    <string name="btn_data_clear">取消</string>
+    <string name="btn_data_confirm">确定</string>
+    <string name="dialog_confirm_message">确认信息</string>
+
 </resources>

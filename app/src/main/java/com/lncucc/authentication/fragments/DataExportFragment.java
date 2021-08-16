@@ -81,7 +81,7 @@ public class DataExportFragment extends BaseFragment {
         } else if (exportBinding.sbUsb.isChecked()) {
             MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else {
-            exportViewModel.doDataExport("");
+            exportViewModel.doDataExport("123");
         }
     }
 }

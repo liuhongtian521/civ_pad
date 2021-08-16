@@ -12,11 +12,14 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.event.DataImportEvent;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 import com.lncucc.authentication.widgets.StudentInfoDialog;
+import com.ttsea.jrxbus2.RxBus2;
+import com.ttsea.jrxbus2.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,7 @@ public class DataViewFragment extends BaseFragment {
                 infoDialog.showDialog(itemInfo);
             }
         });
+        RxBus2.getInstance().register(this);
         viewBinding.rlDataView.setAdapter(mAdapter);
     }
 
@@ -55,14 +59,16 @@ public class DataViewFragment extends BaseFragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (tempList.size() == 0){
-            mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-            if (mList.size() > 0){
-                tempList.addAll(mList);
-                mAdapter.notifyDataSetChanged();
+    @Subscribe(receiveStickyEvent = true)
+    public void onImportDataEvent(DataImportEvent event){
+        LogUtils.e("data import ->",event);
+        if (event.getCode() == 0){
+            if (tempList.size() == 0){
+                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
+                if (mList.size() > 0){
+                    tempList.addAll(mList);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
@@ -89,5 +95,11 @@ public class DataViewFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus2.getInstance().unRegister(this);
     }
 }

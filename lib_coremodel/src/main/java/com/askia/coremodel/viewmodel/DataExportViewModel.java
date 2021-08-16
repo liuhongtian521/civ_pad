@@ -1,23 +1,40 @@
 package com.askia.coremodel.viewmodel;
 
-import android.util.JsonWriter;
+import android.text.TextUtils;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.askia.coremodel.datamodel.database.db.DBExamExport;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.util.JsonUtil;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.google.gson.Gson;
+
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.model.enums.AesKeyStrength;
+import net.lingala.zip4j.model.enums.CompressionLevel;
+import net.lingala.zip4j.model.enums.CompressionMethod;
+import net.lingala.zip4j.model.enums.EncryptionMethod;
+import net.lingala.zip4j.progress.ProgressMonitor;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 
 import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 
@@ -37,7 +54,8 @@ public class DataExportViewModel extends BaseViewModel {
 
     public void doDataExport(String seCode) {
         //是否有导出数据
-        List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
+//        List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
+        List<DBExamLayout> list = DBOperation.getDBExamLayoutByIdNo("123");
         if (list.isEmpty()) {
             exportObservable.postValue("暂无验证数据！");
             return;
@@ -51,28 +69,114 @@ public class DataExportViewModel extends BaseViewModel {
             exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
             //文件存在先删除再创建
             FileUtils.createFileByDeleteOldFile(exportPath);
+            List<DBExamLayout> tempList = new ArrayList<>();
+            //copy value to fields
+            tempList.addAll(Realm.getDefaultInstance().copyFromRealm(list));
             //写入数据
-            saveData2Local(list,exportPath);
+            saveData2Local(tempList, exportPath, seCode);
         }
     }
 
     /**
      * 数据写入
-     * @param exports 数据
+     *
+     * @param exports   数据
      * @param localPath 写入路径
      */
-    private void saveData2Local(List<DBExamExport> exports,String localPath){
-        try {
+    private void saveData2Local(List<DBExamLayout> exports, String localPath, String seCode) {
+        Observable.create((ObservableOnSubscribe<String>) emitter -> {
             //list 2 jsonString
-            String data = JsonUtil.JsonList2Str(exports);
+            String data = new Gson().toJson(exports);
             LogUtils.e("export data->", data);
             OutputStream fileOutputStream = new FileOutputStream(localPath);
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
+            String zipPath = STU_EXPORT;
+            String filePath = STU_EXPORT + File.separator + seCode;
+            compress2zip(zipPath, filePath, seCode);
+            emitter.onNext("123");
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        mDisposable.add(d);
+                    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            LogUtils.e("data write exception ->",e.getMessage());
+                    @Override
+                    public void onNext(@NotNull String s) {
+                        LogUtils.e("compress sucess ->", s);
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        LogUtils.e("compress error ->", e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    /**
+     * 压缩文件
+     *
+     * @param zipPath  压缩文件路径
+     * @param filePath 文件路径
+     * @param seCode   场次号
+     */
+    private void compress2zip(String zipPath, String filePath, String seCode) {
+        File zipPath_ = new File(zipPath);
+        File filePath_ = new File(filePath);
+
+        // 生成的压缩文件
+        ZipFile zipFile = new ZipFile(zipPath_ + seCode + ".zip");
+
+        ZipParameters parameters = new ZipParameters();
+
+        // 压缩方式
+        parameters.setCompressionMethod(CompressionMethod.DEFLATE);
+
+        // 压缩级别
+        parameters.setCompressionLevel(CompressionLevel.NORMAL);
+
+        // 是否设置加密文件
+        parameters.setEncryptFiles(true);
+
+        // 设置加密算法
+        parameters.setEncryptionMethod(EncryptionMethod.AES);
+
+        // 设置AES加密密钥的密钥强度
+        parameters.setAesKeyStrength(AesKeyStrength.KEY_STRENGTH_256);
+
+        // 设置密码
+        if (!TextUtils.isEmpty(pwd)) {
+            zipFile.setPassword(pwd.toCharArray());
+        }
+
+        final ProgressMonitor monitor = zipFile.getProgressMonitor();
+        new Thread(() -> {
+            int percentDone = 0;
+            while (true){
+                percentDone = monitor.getPercentDone();
+                LogUtils.e("zip success ->", percentDone + "");
+                exportObservable.postValue(percentDone + "");
+                if (percentDone >= 100) {
+                    //解析
+                    LogUtils.e("zip success ->", "导出成功");
+                    break;
+                }
+            }
+        }).start();
+
+        if (filePath_.isDirectory()) {
+            try {
+                zipFile.addFolder(filePath_, parameters);
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

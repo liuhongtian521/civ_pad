@@ -9,6 +9,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ctl_base"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView

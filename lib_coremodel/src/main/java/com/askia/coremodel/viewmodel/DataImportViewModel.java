@@ -1,5 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
+import android.util.Log;
+
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
@@ -114,11 +116,21 @@ public class DataImportViewModel extends BaseViewModel {
         for (int i = 0; i < list.size(); i++) {
             //是否是json文件
             if (list.get(i).isFile()) {
-                LogUtils.e("json file name ->", list.get(i).getName());
-                insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
+                try {
+                    LogUtils.e("json file name ->", list.get(i).getName());
+                    insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
+                }catch (Exception e){
+                    Log.e("TagSnake 01", Log.getStackTraceString(e));
+                }
+
             } else {
                 //人脸照片
-                pushFaceImage(path + File.separator + "photo");
+                try {
+                    pushFaceImage(path + File.separator + "photo");
+                }catch (Exception e){
+                    Log.e("TagSnake 02", Log.getStackTraceString(e));
+                }
+
             }
         }
     }
@@ -174,9 +186,15 @@ public class DataImportViewModel extends BaseViewModel {
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
                 LogUtils.e("photo name->", faceNumber);
+                try {
+
                 byte[] bytes = FileUtil.readFile(file);
                 String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
                 emitter.onNext(faceId);
+                }catch (Exception e){
+                    Log.e("TagSnake 03", Log.getStackTraceString(e));
+                }
+
             }
 
         }).subscribeOn(Schedulers.io())
