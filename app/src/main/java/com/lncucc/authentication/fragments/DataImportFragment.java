@@ -59,10 +59,6 @@ public class DataImportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
             if ("100".equals(result)){
-                DataImportEvent event = new DataImportEvent();
-                event.setCode(0);
-                event.setMessage("导入成功");
-                RxBus2.getInstance().postStickyEvent(event);
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
             }else {
                 MyToastUtils.error(result, Toast.LENGTH_SHORT);

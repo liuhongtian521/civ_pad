@@ -113,5 +113,6 @@ dependencies {
     implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
 
     implementation project(':lib_common')
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
 }

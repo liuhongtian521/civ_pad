@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -22,20 +23,157 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <DatePicker
+            <TextView
+                android:text="@string/date_title"
+                android:textColor="@color/_163366"
+                android:layout_marginTop="10dp"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <View
+                android:layout_marginTop="9dp"
+                android:background="@drawable/bg_driver"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-            <Button
-                android:id="@+id/btn_to_system"
-                android:background="@drawable/bg_login_button"
-                android:text="@string/login_system"
-                android:onClick="@{handles::loginSystem}"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:textColor="@color/white"
-                android:layout_width="390dp"
-                android:layout_height="30dp"/>
+                android:layout_height="2px"/>
+            <RelativeLayout
+                android:background="#f2f7ff"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <TextView
+                    android:id="@+id/date_title"
+                    android:textSize="11sp"
+                    android:text="2021年5月"
+                    android:layout_centerInParent="true"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="17dp"
+                android:background="#f8f9fa">
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="日" />
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="一" />
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="二"/>
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="三" />
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="四" />
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="五" />
+                <TextView
+                    style="@style/weekIndicatorStyle"
+                    android:text="六" />
+            </LinearLayout>
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <com.ldf.calendar.view.MonthPager
+                    android:id="@+id/calendar_view"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="200dp"
+                    android:background="#f8f9fa">
+                </com.ldf.calendar.view.MonthPager>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="14dp"
+                android:layout_height="30dp">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_hour"
+                        android:gravity="center"
+                        android:text="--"
+                        android:textColor="@color/_163366"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_time"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"/>
+
+                    <TextView
+                        android:text=":"
+                        android:textStyle="bold"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginEnd="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tv_min"
+                        android:gravity="center"
+                        android:text="--"
+                        android:textColor="@color/_163366"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_time"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"/>
+
+                    <TextView
+                        android:text=":"
+                        android:textStyle="bold"
+                        android:layout_marginStart="7dp"
+                        android:layout_marginEnd="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tv_sec"
+                        android:gravity="center"
+                        android:text="--"
+                        android:textColor="@color/_163366"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_time"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_setting"
+                    android:layout_toLeftOf="@+id/btn_to_system"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/setting"
+                    android:onClick="@{handles::setting}"
+                    android:background="@drawable/bg_login_button"
+                    android:textColor="@color/white"
+                    android:layout_width="103dp"
+                    android:layout_height="30dp"/>
+
+                <Button
+                    android:id="@+id/btn_to_system"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/bg_login_button"
+                    android:text="@string/login_system"
+                    android:onClick="@{handles::loginSystem}"
+                    android:layout_marginRight="15dp"
+                    android:textColor="@color/white"
+                    android:layout_width="320dp"
+                    android:layout_height="30dp"/>
+            </RelativeLayout>
         </LinearLayout>
 
     </LinearLayout>

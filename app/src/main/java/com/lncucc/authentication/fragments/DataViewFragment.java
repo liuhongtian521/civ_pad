@@ -50,27 +50,12 @@ public class DataViewFragment extends BaseFragment {
                 infoDialog.showDialog(itemInfo);
             }
         });
-        RxBus2.getInstance().register(this);
         viewBinding.rlDataView.setAdapter(mAdapter);
     }
 
     @Override
     public void onInitViewModel() {
 
-    }
-
-    @Subscribe(receiveStickyEvent = true)
-    public void onImportDataEvent(DataImportEvent event){
-        LogUtils.e("data import ->",event);
-        if (event.getCode() == 0){
-            if (tempList.size() == 0){
-                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-                if (mList.size() > 0){
-                    tempList.addAll(mList);
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        }
     }
 
     @Override
@@ -100,6 +85,19 @@ public class DataViewFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus2.getInstance().unRegister(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            if (tempList.size() == 0){
+                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
+                if (mList.size() > 0){
+                    tempList.addAll(mList);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
 }

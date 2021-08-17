@@ -58,5 +58,7 @@
     <string name="btn_data_clear">取消</string>
     <string name="btn_data_confirm">确定</string>
     <string name="dialog_confirm_message">确认信息</string>
+    <string name="date_title">请校正日期和时间</string>
+    <string name="setting">设置</string>
 
 </resources>

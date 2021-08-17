@@ -57,7 +57,14 @@
         <item name="android:paddingBottom">4dp</item>
     </style>
 
-
+    <style name="weekIndicatorStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">#333333</item>
+    </style>
     <style name="SheCheckBoxTheme" parent="@android:style/Widget.CompoundButton.CheckBox">
 
         <item name="android:button">@drawable/checkbox_choose</item>
