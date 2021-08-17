@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.TimeUtils;
@@ -186,6 +187,7 @@ public class DateSettingActivity extends BaseActivity {
     }
 
     public void setting(View view){
+        LogsUtil.saveOperationLogs("时间校正");
         startActivity(new Intent(Settings.ACTION_DATE_SETTINGS));
     }
 

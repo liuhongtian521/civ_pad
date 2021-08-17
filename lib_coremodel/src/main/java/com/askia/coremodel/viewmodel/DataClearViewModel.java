@@ -24,9 +24,14 @@ import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 public class DataClearViewModel extends BaseViewModel {
 
     public MutableLiveData<String> dataClearObservable = new MutableLiveData<>();
+    public MutableLiveData<String> dataVerifyObservable = new MutableLiveData<>();
 
     public MutableLiveData<String> delImportData() {
         return dataClearObservable;
+    }
+
+    public MutableLiveData<String> delVerifyData(){
+        return dataVerifyObservable;
     }
 
     /**
@@ -94,13 +99,13 @@ public class DataClearViewModel extends BaseViewModel {
      */
     public void delAuthData() {
         if (FileUtils.listFilesInDir(STU_EXPORT) == null || FileUtils.listFilesInDir(STU_EXPORT).size() == 0){
-            dataClearObservable.postValue("暂无验证数据");
+            dataVerifyObservable.postValue("暂无验证数据");
             return;
         }
 
         //清空数据库
         Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
-            dataClearObservable.postValue("验证数据库清理成功！");
+            dataVerifyObservable.postValue("验证数据库清理成功！");
             Observable.create((ObservableOnSubscribe<String>) emitter -> {
                 //清空验证数据文件夹
                 boolean result = FileUtils.deleteAllInDir(STU_EXPORT);
@@ -118,12 +123,12 @@ public class DataClearViewModel extends BaseViewModel {
 
                         @Override
                         public void onNext(@NotNull String s) {
-                            dataClearObservable.postValue(s);
+                            dataVerifyObservable.postValue(s);
                         }
 
                         @Override
                         public void onError(@NotNull Throwable e) {
-                            dataClearObservable.postValue("操作异常，请稍后重试！");
+                            dataVerifyObservable.postValue("操作异常，请稍后重试！");
                         }
 
                         @Override
@@ -131,6 +136,6 @@ public class DataClearViewModel extends BaseViewModel {
 
                         }
                     });
-        }, error -> dataClearObservable.postValue("数据库删除异常"));
+        }, error -> dataVerifyObservable.postValue("数据库删除异常"));
     }
 }

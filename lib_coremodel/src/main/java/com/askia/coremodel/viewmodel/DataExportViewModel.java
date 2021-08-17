@@ -94,7 +94,7 @@ public class DataExportViewModel extends BaseViewModel {
             String zipPath = STU_EXPORT;
             String filePath = STU_EXPORT + File.separator + seCode;
             compress2zip(zipPath, filePath, seCode);
-            emitter.onNext("123");
+            emitter.onNext("导出成功");
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<String>() {
@@ -105,6 +105,7 @@ public class DataExportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull String s) {
+                        exportObservable.postValue(s);
                         LogUtils.e("compress sucess ->", s);
                     }
 

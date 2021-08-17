@@ -6,6 +6,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.db.DBLogs;
 
 import java.util.List;
 
@@ -150,5 +151,13 @@ public class DBOperation {
         query.equalTo("seCode",seCode);
         query.endGroup();
         return  query.findAll();
+    }
+
+    /**
+     * 查询日志信息
+     * @return 数据操作日志信息
+     */
+    public static List<DBLogs> getOperationLogs(){
+        return Realm.getDefaultInstance().where(DBLogs.class).findAll();
     }
 }

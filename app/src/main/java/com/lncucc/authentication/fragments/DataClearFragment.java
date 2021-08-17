@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataClearViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
@@ -39,7 +40,7 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
 
     @Override
     public void onInit() {
-        confirmDialog = new ConfirmDialog(getActivity(), this);
+        confirmDialog = new ConfirmDialog(getActivity(), this,getString(R.string.data_clear_tip),getString(R.string.data_clear_content));
         passWordDialog = new PassWordDialog(getActivity(), this);
     }
 
@@ -58,8 +59,13 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     @Override
     public void onSubscribeViewModel() {
         viewModel.delImportData().observe(this, result -> {
-            LogUtils.e("result ->", result);
+            LogUtils.e("导入数据result ->", result);
+            LogsUtil.saveOperationLogs("导入数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
+        });
+        viewModel.delVerifyData().observe(this, result ->{
+            LogUtils.e("验证数据result ->", result);
+            LogsUtil.saveOperationLogs("验证数据清空");
         });
     }
 

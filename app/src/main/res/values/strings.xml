@@ -65,5 +65,6 @@
     <string name="logs_title">日志信息</string>
     <string name="logs_clear">清空日志</string>
     <string name="logs_clear_all">全部清空</string>
-
+    <string name="logs_clear_title">确定要清空日志？</string>
+    <string name="logs_clear_content">日志一旦清除无法恢复</string>
 </resources>

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentExportBinding;
@@ -51,6 +52,9 @@ public class DataExportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         exportViewModel.doExport().observe(this, result -> {
+            if ("导出成功".equals(result)){
+                LogsUtil.saveOperationLogs("数据导出");
+            }
             MyToastUtils.error(result, Toast.LENGTH_SHORT);
         });
     }

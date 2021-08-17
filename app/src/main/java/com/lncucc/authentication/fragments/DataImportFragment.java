@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.db.DBLogs;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.event.DataImportEvent;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.lncucc.authentication.R;
@@ -60,6 +62,7 @@ public class DataImportFragment extends BaseFragment {
         viewModel.getSdCardData().observe(this, result -> {
             if ("100".equals(result)){
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                LogsUtil.saveOperationLogs("数据导入");
             }else {
                 MyToastUtils.error(result, Toast.LENGTH_SHORT);
             }
