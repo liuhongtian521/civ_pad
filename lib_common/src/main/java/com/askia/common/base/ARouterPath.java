@@ -30,5 +30,7 @@ public class ARouterPath {
     public static final String INITIALIZE_ACTIVITY = "/activity/initialize";
     /*人脸识别*/
     public static final String FACE_SHOW_ACTIVITY = "/fragment/face/show";
+    /*日志信息*/
+    public static final String LOGS_ACTIVITY = "/activity/logs";
 
 }

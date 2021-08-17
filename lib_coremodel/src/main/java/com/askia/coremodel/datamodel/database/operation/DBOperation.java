@@ -65,7 +65,7 @@ public class DBOperation {
         //身份证号
         query.like("idCard", "?*" + params, Case.SENSITIVE);
         //准考证号
-        query.or().equalTo("exReNum", "?*" + params);
+        query.or().like("exReNum", "?*" + params,Case.SENSITIVE);
         query.endGroup();
         return query.findAll();
     }

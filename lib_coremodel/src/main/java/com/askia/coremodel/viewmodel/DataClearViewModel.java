@@ -1,8 +1,6 @@
 package com.askia.coremodel.viewmodel;
 
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 
 import com.blankj.utilcode.util.FileUtils;
@@ -18,7 +16,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
-import io.realm.RealmAsyncTask;
 
 import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
@@ -36,6 +33,13 @@ public class DataClearViewModel extends BaseViewModel {
      * 清空导入数据
      */
     public void delImport() {
+        if ((FileUtils.listFilesInDir(ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(ZIP_PATH) == null)
+                && (FileUtils.listFilesInDir(UN_ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(UN_ZIP_PATH) == null)) {
+            dataClearObservable.postValue("暂无导入数据");
+            return;
+        }
+
+
         //清空数据库
         Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
             dataClearObservable.postValue("数据库删除成功");
@@ -54,7 +58,7 @@ public class DataClearViewModel extends BaseViewModel {
                         emitter.onNext("操作成功");
                     }
                 } else {
-                    if (zipClear && dirClear){
+                    if (zipClear && dirClear) {
                         emitter.onNext("操作成功");
                     }
                 }
@@ -89,6 +93,11 @@ public class DataClearViewModel extends BaseViewModel {
      * 清空验证数据
      */
     public void delAuthData() {
+        if (FileUtils.listFilesInDir(STU_EXPORT) == null || FileUtils.listFilesInDir(STU_EXPORT).size() == 0){
+            dataClearObservable.postValue("暂无验证数据");
+            return;
+        }
+
         //清空数据库
         Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
             dataClearObservable.postValue("验证数据库清理成功！");

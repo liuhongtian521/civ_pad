@@ -76,7 +76,7 @@
         <!--登录 -->
         <activity
             android:name=".activitys.LoginActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -87,7 +87,7 @@
         <!-- 主页-->
         <activity
             android:name="com.lncucc.authentication.activitys.MainActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
 
@@ -95,7 +95,7 @@
 
         <!-- 时间设置 -->
         <activity android:name=".activitys.DateSettingActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -106,7 +106,7 @@
 
         <!-- 初始化 -->
         <activity android:name=".activitys.InitializeActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
         </activity>
@@ -114,14 +114,14 @@
         <!--考场管理 -->
         <activity
             android:name=".activitys.ExaminationActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
         <!-- 管理员设置 -->
         <activity
             android:name=".activitys.ManagerSettingActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
         </activity>
@@ -129,7 +129,7 @@
         <!-- 数据服务 -->
         <activity
             android:name=".activitys.DataServiceActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
@@ -137,29 +137,36 @@
         <!-- 系统设置 -->
         <activity
             android:name=".activitys.SystemSettingActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
         </activity>
         <!--身份验证-->
         <activity
             android:name=".activitys.AuthenticationActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <!--选择考场-->
         <activity
             android:name=".activitys.ChooseVenveActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <!-- 验证数据查看-->
         <activity
             android:name=".activitys.DataViewActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden" />
+        <!--日志查看 -->
+        <activity android:name=".activitys.LogActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            />
+
+
         <!--定义两个provider 不同依赖的库使用不同authorities的问题-->
         <provider
             android:name="com.lncucc.authentication.widgets.MyFileProvider"

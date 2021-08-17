@@ -63,9 +63,9 @@ public class StudentInfoDialog extends BaseDialog{
     public void showDialog(DBExamLayout layout){
         if (layout != null){
             //获取stuNo
-//            String stuNo = layout.getStuNo();
+            String stuNo = layout.getStuNo();
             //现在没有数据暂时写死
-            String stuNo = "210221112022500";
+//            String stuNo = "210221112022500";
             //根据stuNo查询居住地址
             String liveAddress = DBOperation.getLiveAddress(stuNo);
             //获取解压包文件夹名称
@@ -80,7 +80,7 @@ public class StudentInfoDialog extends BaseDialog{
                     filePath = file.getName();
                 }
             }
-            String path = UN_ZIP_PATH + File.separator + "110206/photo/" + stuNo + ".jpg";
+            String path = UN_ZIP_PATH + File.separator + examCode + "/photo/" + stuNo + ".jpg";
             //转换file
             File file = new File(path);
             if (file.exists()){

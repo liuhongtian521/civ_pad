@@ -12,14 +12,11 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.askia.coremodel.event.DataImportEvent;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 import com.lncucc.authentication.widgets.StudentInfoDialog;
-import com.ttsea.jrxbus2.RxBus2;
-import com.ttsea.jrxbus2.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +88,7 @@ public class DataViewFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser){
-            if (tempList.size() == 0){
+            if (tempList.size() == 0 && viewBinding != null){
                 mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
                 if (mList.size() > 0){
                     tempList.addAll(mList);
