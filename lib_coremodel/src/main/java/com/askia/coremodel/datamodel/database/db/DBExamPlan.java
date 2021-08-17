@@ -20,6 +20,24 @@ public class DBExamPlan extends RealmObject implements Serializable {
     private String sysOrgCode;
     private String updateBy;
     private Long updateTime;
+    private Long verifyStartTime;
+    private Long verifyEndTime;
+
+    public Long getVerifyStartTime() {
+        return verifyStartTime;
+    }
+
+    public void setVerifyStartTime(Long verifyStartTime) {
+        this.verifyStartTime = verifyStartTime;
+    }
+
+    public Long getVerifyEndTime() {
+        return verifyEndTime;
+    }
+
+    public void setVerifyEndTime(Long verifyEndTime) {
+        this.verifyEndTime = verifyEndTime;
+    }
 
     public String getCreateBy() {
         return createBy;

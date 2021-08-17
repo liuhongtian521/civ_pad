@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="6dp"
+    android:orientation="vertical"
+    android:layout_height="31dp">
+    <ImageView
+        android:background="@mipmap/icon_logs_point"
+        android:layout_width="6dp"
+        android:layout_height="6dp"/>
+    <View
+        android:id="@+id/v_line"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="1dp"
+        android:layout_height="25dp"/>
+</LinearLayout>

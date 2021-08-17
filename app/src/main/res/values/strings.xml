@@ -61,4 +61,9 @@
     <string name="date_title">请校正日期和时间</string>
     <string name="setting">设置</string>
 
+    <!--日志 -->
+    <string name="logs_title">日志信息</string>
+    <string name="logs_clear">清空日志</string>
+    <string name="logs_clear_all">全部清空</string>
+
 </resources>
