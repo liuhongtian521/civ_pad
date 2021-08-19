@@ -51,6 +51,11 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission
+        android:name="android.hardware.usb.host"
+        android:required="false"/>
+
 
     <application
         android:name="com.askia.common.base.APP"
@@ -166,6 +171,21 @@
             android:windowSoftInputMode="stateHidden"
             />
 
+        <!-- 系统信息 -->
+        <activity android:name=".activitys.UpdateActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <receiver android:name="com.askia.common.util.receiver.USBReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MEDIA_REMOVED"/>
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+
+                <data android:scheme="file"/>
+            </intent-filter>
+        </receiver>
 
         <!--定义两个provider 不同依赖的库使用不同authorities的问题-->
         <provider

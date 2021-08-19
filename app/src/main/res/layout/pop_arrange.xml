@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="31dp">
+            <TextView
+                android:layout_alignParentLeft="true"
+                android:text="@string/export_session_"
+                android:textColor="@color/_163366"
+                android:textSize="9sp"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <RelativeLayout
+                android:layout_alignParentRight="true"
+                android:id="@+id/rl_close"
+                android:padding="10dp"
+                android:layout_gravity="right"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+                <ImageView
+                    android:id="@+id/iv_close"
+                    android:background="@drawable/cha"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/v_line"
+            android:layout_below="@+id/rl_title"
+            android:background="@drawable/bg_driver"
+            android:layout_width="match_parent"
+            android:layout_height="2px"/>
+
+        <jsc.kit.wheel.base.WheelItemView
+            android:id="@+id/wheel"
+            android:layout_below="@+id/v_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:background="@drawable/bg_login_button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:layout_width="390dp"
+            android:layout_height="30dp"/>
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

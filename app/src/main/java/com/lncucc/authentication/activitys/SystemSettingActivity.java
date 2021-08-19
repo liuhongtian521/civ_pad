@@ -1,15 +1,9 @@
 package com.lncucc.authentication.activitys;
 
-import android.util.Log;
-import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -18,13 +12,10 @@ import com.askia.common.base.BaseActivity;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActSystemSettingBinding;
-import com.lncucc.authentication.fragments.DataClearFragment;
 import com.lncucc.authentication.fragments.BaseSettingFragment;
 import com.lncucc.authentication.fragments.AdvancedSettingFragment;
 import com.lncucc.authentication.fragments.NetworkSettingFragment;
 import com.lncucc.authentication.fragments.DisplaySettingFragment;
-import com.lncucc.authentication.fragments.UpdataFragment;
-import com.lncucc.authentication.fragments.UserManageFragment;
 import com.lncucc.authentication.fragments.LogoutSettingFragment;
 import com.lncucc.authentication.fragments.DateSettingFragment;
 
@@ -66,9 +57,9 @@ public class SystemSettingActivity extends BaseActivity {
         mTitleList.add("时间设置");
         mTitleList.add("网路设置");
         mTitleList.add("显示设置");
-        mTitleList.add("用户管理");
+//        mTitleList.add("用户管理");
         mTitleList.add("退出登录");
-        mTitleList.add("系统升级");
+//        mTitleList.add("系统升级");
 
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new BaseSettingFragment());
@@ -76,9 +67,9 @@ public class SystemSettingActivity extends BaseActivity {
         mFragmentList.add(new DateSettingFragment());
         mFragmentList.add(new NetworkSettingFragment());
         mFragmentList.add(new DisplaySettingFragment());
-        mFragmentList.add(new UserManageFragment());
+//        mFragmentList.add(new UserManageFragment());
         mFragmentList.add(new LogoutSettingFragment());
-        mFragmentList.add(new UpdataFragment());
+//        mFragmentList.add(new UpdataFragment());
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));
     }
 

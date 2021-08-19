@@ -51,6 +51,7 @@
     <string name="stu_admission">准考证号</string>
     <string name="examination">场次</string>
     <string name="export_session">请选择导出场次</string>
+    <string name="export_session_">选择导出场次</string>
     <string name="session">场次</string>
     <string name="export_type">请选择导出方式</string>
     <string name="data_clear_tip">确定要清空数据</string>

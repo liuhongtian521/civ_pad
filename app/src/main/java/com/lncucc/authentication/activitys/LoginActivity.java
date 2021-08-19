@@ -74,7 +74,10 @@ public class LoginActivity extends BaseActivity {
     private void doLogin() {
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
-            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
+//            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
+            SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
+            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+            finish();
         } else {
             //本地账号密码登录
             if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())) {

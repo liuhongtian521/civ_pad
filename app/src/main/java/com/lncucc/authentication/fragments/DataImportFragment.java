@@ -1,5 +1,11 @@
 package com.lncucc.authentication.fragments;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +18,30 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
-import com.askia.coremodel.datamodel.database.db.DBLogs;
+import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
-import com.askia.coremodel.event.DataImportEvent;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.LogUtils;
+import com.github.mjdev.libaums.UsbMassStorageDevice;
+import com.github.mjdev.libaums.fs.FileSystem;
+import com.github.mjdev.libaums.fs.UsbFile;
+import com.github.mjdev.libaums.fs.UsbFileInputStream;
+import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.ttsea.jrxbus2.RxBus2;
+import com.ttsea.jrxbus2.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 /**
  * 数据导入
@@ -32,9 +50,12 @@ public class DataImportFragment extends BaseFragment {
     private FragmentImportBinding leadInBinding;
     private DataImportViewModel viewModel;
     private ArrayList<Boolean> importList;
+    private UsbMassStorageDevice[] storageDevices;
+    private UsbFile cFolder;
 
     @Override
     public void onInit() {
+        RxBus2.getInstance().register(this);
     }
 
     public void initEvent() {
@@ -69,6 +90,115 @@ public class DataImportFragment extends BaseFragment {
         });
     }
 
+    @Subscribe
+    public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
+        if (event.isConnected) {
+            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
+        } else if (event.isGetPermission) {
+            UsbDevice usbDevice = event.usbDevice;
+            MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
+            readDevice(getUsbMass(usbDevice));
+        }
+    }
+
+    private UsbMassStorageDevice getUsbMass(UsbDevice usbDevice) {
+        for (UsbMassStorageDevice device : storageDevices) {
+            if (usbDevice.equals(device.getUsbDevice())) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * U盘设备读取
+     */
+    private void redUDiskDevsList() {
+        //设备管理器
+        UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+        //获取U盘存储设备
+        storageDevices = UsbMassStorageDevice.getMassStorageDevices(getActivity());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+        for (UsbMassStorageDevice device : storageDevices) {
+            //读取设备是否有权限
+            if (usbManager.hasPermission(device.getUsbDevice())) {
+//                MyToastUtils.success("有权限",Toast.LENGTH_SHORT);
+                readDevice(device);
+            } else {
+                //没有权限，进行申请
+                usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+            }
+        }
+        if (storageDevices.length == 0) {
+            MyToastUtils.success("请插入可用的U盘",Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void readDevice(UsbMassStorageDevice device) {
+        try {
+            device.init();//初始化
+            //设备分区
+            Partition partition = device.getPartitions().get(0);
+
+            //文件系统
+            FileSystem currentFs = partition.getFileSystem();
+            currentFs.getVolumeLabel();//可以获取到设备的标识
+
+            //通过FileSystem可以获取当前U盘的一些存储信息，包括剩余空间大小，容量等等
+            Log.e("Capacity: ", currentFs.getCapacity() + "");
+            Log.e("Occupied Space: ", currentFs.getOccupiedSpace() + "");
+            Log.e("Free Space: ", currentFs.getFreeSpace() + "");
+            Log.e("Chunk size: ", currentFs.getChunkSize() + "");
+
+//            ToastUtil.showToast("可用空间：" + currentFs.getFreeSpace());
+
+            //设置当前文件对象为根目录
+            cFolder = currentFs.getRootDirectory();
+            readFromUDisk();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readFromUDisk() {
+        UsbFile[] usbFiles = new UsbFile[0];
+        try {
+            usbFiles = cFolder.listFiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (null != usbFiles && usbFiles.length > 0) {
+
+            for (UsbFile usbFile : usbFiles) {
+                if (usbFile.getName().equals("Examination")) {
+                    readZipFromUDisk(usbFile);
+                }
+            }
+        }
+    }
+
+    private void readZipFromUDisk(UsbFile usbFile) {
+        UsbFile descFile = usbFile;
+        //读取文件内容 需要在viewModel中 异步操作，IO操作后再执行解压操作
+        InputStream is = null;
+        try {
+            //如果多个压缩包 进行批量复制到sdcard
+            for (UsbFile file : descFile.listFiles()){
+                is = new UsbFileInputStream(file);
+                boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/"+file.getName() + ".zip" ,is);
+                if (result){
+                    viewModel.doSdCardImport();
+                }
+                LogUtils.e("copy result ->",result);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void importData(View view) {
         importList = new ArrayList<>();
         importList.add(viewModel.netImport.get());
@@ -92,7 +222,7 @@ public class DataImportFragment extends BaseFragment {
         if (viewModel.netImport.get()) {
             MyToastUtils.error("敬请期待！",Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {
-            MyToastUtils.error("敬请期待！",Toast.LENGTH_SHORT);
+            redUDiskDevsList();
         } else {
             viewModel.doSdCardImport();
         }
@@ -101,5 +231,6 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        RxBus2.getInstance().unRegister(this);
     }
 }

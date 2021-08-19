@@ -1,5 +1,7 @@
 package com.lncucc.authentication.activitys;
 
+import android.content.IntentFilter;
+import android.hardware.usb.UsbManager;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
@@ -9,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.util.receiver.UsbStateChangeReceiver;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActDataServiceBinding;
@@ -24,6 +27,8 @@ import q.rorbin.verticaltablayout.adapter.TabAdapter;
 import q.rorbin.verticaltablayout.widget.ITabView;
 import q.rorbin.verticaltablayout.widget.QTabView;
 import q.rorbin.verticaltablayout.widget.TabView;
+
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
 
 /**
  * 数据服务
@@ -41,6 +46,7 @@ public class DataServiceActivity extends BaseActivity {
     public void onInit() {
         ((TextView)findViewById(R.id.tv_title)).setText("数据服务");
         findViewById(R.id.rl_left_back).setOnClickListener(v -> finish());
+        registerUDiskReceiver();
         initView();
         initData();
         initEvent();
@@ -94,6 +100,23 @@ public class DataServiceActivity extends BaseActivity {
 
             }
         });
+    }
+
+    /**
+     * usb插拔广播 注册
+     */
+    private void registerUDiskReceiver() {
+        IntentFilter usbDeviceStateFilter = new IntentFilter();
+        usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_ATTACHED);
+        usbDeviceStateFilter.addAction(UsbManager.ACTION_USB_ACCESSORY_DETACHED);
+        usbDeviceStateFilter.addAction("android.hardware.usb.action.USB_STATE");
+
+        usbDeviceStateFilter.addAction(ACTION_USB_PERMISSION); //自定义广播
+
+        registerReceiver(new UsbStateChangeReceiver(), usbDeviceStateFilter);
+
     }
 
     private void initData(){

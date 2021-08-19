@@ -1,4 +1,4 @@
-package com.lncucc.authentication.fragments;
+package com.lncucc.authentication.activitys;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,25 +6,29 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.askia.common.base.BaseFragment;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.askia.common.base.ARouterPath;
+import com.askia.common.base.BaseActivity;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.viewmodel.CheckUpdateViewModel;
-import com.askia.coremodel.viewmodel.LoginViewModel;
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.DeviceUtils;
+import com.blankj.utilcode.util.FileIOUtils;
 import com.lncucc.authentication.R;
-import com.lncucc.authentication.databinding.FragmentUpdataBinding;
+import com.lncucc.authentication.databinding.ActUpdateBinding;
 
 import java.io.File;
 
@@ -32,17 +36,21 @@ import static com.askia.coremodel.rtc.Constants.apkPath;
 
 /**
  * Create bt she:
- * 升级页面
+ * 系统设置
  *
  * @date 2021/8/10
  */
-public class UpdataFragment extends BaseFragment {
-    private FragmentUpdataBinding mBinding;
+@Route(path = ARouterPath.SYSTEM_INFO)
+public class UpdateActivity extends BaseActivity {
+    private ActUpdateBinding mBinding;
     private CheckUpdateViewModel mViewModel;
 
     @Override
     public void onInit() {
+        findViewById(R.id.rl_left_back).setOnClickListener(v -> finish());
+        ((TextView)findViewById(R.id.tv_title)).setText("系统信息");
 
+        initView();
     }
 
     @Override
@@ -51,9 +59,39 @@ public class UpdataFragment extends BaseFragment {
     }
 
     @Override
-    public View onInitDataBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_updata, container, false);
-        return mBinding.getRoot();
+    public void onInitDataBinding() {
+        mBinding = DataBindingUtil.setContentView(this, R.layout.act_update);
+    }
+
+    private void initView() {
+        File datapath = Environment.getDataDirectory();
+        StatFs dataFs = new StatFs(datapath.getPath());
+
+        long sizes = (long) dataFs.getFreeBlocks() * (long) dataFs.getBlockSize();
+        long available = sizes / ((1024 * 1024));
+
+        //身份信息总数
+        mBinding.tvViewOne.setText(DBOperation.getCount());
+        //数据存储量
+        mBinding.tvViewTwo.setText("29902kb");
+        //设备ID
+        mBinding.tvViewThree.setText(DeviceUtils.getAndroidID());
+        //软件版本
+        mBinding.tvViewFour.setText(AppUtils.getAppVersionName());
+        //出厂日期
+        mBinding.tvViewFive.setText("20190803");
+        //品牌
+        mBinding.tvViewSix.setText(DeviceUtils.getManufacturer());
+        //验证记录总数
+        mBinding.tvViewSeven.setText(DBOperation.getAuthCount());
+        //剩余存储量
+        mBinding.tvViewEight.setText(available + "kb");
+        //设备型号
+        mBinding.tvViewNine.setText(DeviceUtils.getModel());
+        //算法版本
+        mBinding.tvViewTeen.setText(DeviceUtils.getMacAddress());
+        //固件版本
+        mBinding.tvViewElen.setText(com.askia.coremodel.util.DeviceUtils.getDeviceSN());
     }
 
     @Override
@@ -70,7 +108,7 @@ public class UpdataFragment extends BaseFragment {
                     startActivity(intent);
 //                    mViewModel.DownApk(checkVersionData.getResult());
                 } else {
-                    Toast.makeText(getContext(), "没有新的更新包", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdateActivity.this, "没有新的更新包", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -85,6 +123,7 @@ public class UpdataFragment extends BaseFragment {
         });
 
     }
+
     private void installAPK() {
         File apkFile = new File(apkPath + "/download.apk");
         if (!apkFile.exists()) {
@@ -96,11 +135,11 @@ public class UpdataFragment extends BaseFragment {
                 //兼容7.0
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    Uri contentUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileProvider", apkFile);
+                    Uri contentUri = FileProvider.getUriForFile(this, getPackageName() + ".fileProvider", apkFile);
                     intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
                     //兼容8.0
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        boolean hasInstallPermission = getContext().getPackageManager().canRequestPackageInstalls();
+                        boolean hasInstallPermission = getPackageManager().canRequestPackageInstalls();
                         if (!hasInstallPermission) {
                             startInstallPermissionSettingActivity();
                             return;
@@ -110,8 +149,8 @@ public class UpdataFragment extends BaseFragment {
                     intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 }
-                if (getContext().getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
-                    getContext().startActivity(intent);
+                if (getPackageManager().queryIntentActivities(intent, 0).size() > 0) {
+                    startActivity(intent);
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -123,11 +162,11 @@ public class UpdataFragment extends BaseFragment {
         //注意这个是8.0新API
         Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent);
+        startActivity(intent);
     }
 
     public void getUpData(View view) {
-        mViewModel.checkVersion(getVersion(getContext()));
+        mViewModel.checkVersion(getVersion(this));
     }
 
 

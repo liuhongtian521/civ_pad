@@ -67,6 +67,7 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
             LogUtils.e("验证数据result ->", result);
             LogsUtil.saveOperationLogs("验证数据清空");
         });
+        KeyboardUtils.toggleSoftInput();
     }
 
     /**

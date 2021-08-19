@@ -61,7 +61,12 @@ public class ManagerSettingActivity extends BaseActivity {
                     break;
                 case 3:
                     startActivityByRouter(ARouterPath.LOGS_ACTIVITY);
+                    break;
+                case 5:
+                    startActivityByRouter(ARouterPath.SYSTEM_INFO);
+                    break;
                 default:
+                    break;
 
             }
         });
@@ -81,11 +86,5 @@ public class ManagerSettingActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
-    }
-
-    public class ProxyClick{
-        public void toExtManager(){
-            startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
-        }
     }
 }

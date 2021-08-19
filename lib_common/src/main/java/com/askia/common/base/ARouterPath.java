@@ -32,5 +32,7 @@ public class ARouterPath {
     public static final String FACE_SHOW_ACTIVITY = "/fragment/face/show";
     /*日志信息*/
     public static final String LOGS_ACTIVITY = "/activity/logs";
+    /*系统日志*/
+    public static final String SYSTEM_INFO = "/activity/setting";
 
 }

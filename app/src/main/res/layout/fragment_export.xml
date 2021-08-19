@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/ll_container"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
@@ -43,6 +44,7 @@
             android:layout_height="wrap_content"/>
 
         <RelativeLayout
+            android:id="@+id/rl_arrange"
             android:layout_width="match_parent"
             android:layout_height="30dp">
             <TextView
@@ -58,7 +60,7 @@
             <TextView
                 android:id="@+id/tv_session"
                 android:layout_toLeftOf="@+id/iv_right"
-                android:text="语文"
+                android:text="--"
                 android:textSize="8sp"
                 android:layout_marginRight="5dp"
                 android:layout_centerVertical="true"

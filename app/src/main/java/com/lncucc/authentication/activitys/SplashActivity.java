@@ -46,7 +46,8 @@ public class SplashActivity extends BaseActivity
 
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                Manifest.permission.ACCESS_WIFI_STATE
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS
         ).subscribe(aBoolean -> {
             if (aBoolean){
                 //申请的权限全部允许

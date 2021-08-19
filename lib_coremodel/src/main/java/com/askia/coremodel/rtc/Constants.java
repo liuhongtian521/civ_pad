@@ -34,6 +34,7 @@ public class Constants {
     public static final String PREF_ENABLE_STATS = "pref_enable_stats";
 
     public static final String KEY_CLIENT_ROLE = "key_client_role";
+    public static final String ACTION_USB_PERMISSION = "com.lncucc.authentication.USB_PERMISSION";
 
     //apk下载地址
     public static final String apkPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "CivDownload";

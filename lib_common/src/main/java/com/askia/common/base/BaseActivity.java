@@ -142,7 +142,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-
     /**
      * 替换fragment
      *

@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +28,7 @@ import com.askia.common.util.baidutts.MySyntherizer;
 import com.askia.common.util.baidutts.NonBlockSyntherizer;
 import com.askia.common.util.baidutts.OfflineResource;
 import com.askia.common.util.baidutts.UiMessageListener;
+import com.askia.common.util.receiver.UsbStateChangeReceiver;
 import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
 import com.askia.coremodel.datamodel.realm.MyMigration;
 import com.askia.coremodel.datamodel.realm.RealmConstant;
@@ -67,6 +71,8 @@ import com.unicom.facedetect.detect.FaceDetectManager;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
 
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -80,6 +86,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 import static com.askia.common.util.baidutts.MainHandlerConstant.INIT_SUCCESS;
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
 
 
 /**
@@ -265,8 +272,6 @@ public class APP extends Application {
 //            }
 //        });
 //    }
-
-
     public boolean initAgora(String agoraAppId) {
         mAgoraAppId = agoraAppId;
         // 声网
@@ -299,6 +304,7 @@ public class APP extends Application {
             return false;
         }
     }
+
 
     @Subscribe
     public void onAuthenticationEvent(AuthenticationEvent event) {
@@ -533,6 +539,5 @@ public class APP extends Application {
         }
         return offlineResource;
     }
-
 
 }

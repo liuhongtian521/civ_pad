@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.util.JsonUtil;
@@ -54,14 +55,13 @@ public class DataExportViewModel extends BaseViewModel {
 
     public void doDataExport(String seCode) {
         //是否有导出数据
-//        List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
-        List<DBExamLayout> list = DBOperation.getDBExamLayoutByIdNo("123");
+        List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
         if (list.isEmpty()) {
             exportObservable.postValue("暂无验证数据！");
             return;
         }
 
-        //判断导出文件夹是否存在，不存在或文件数量为0则没有验证数据
+        //判断导出文件夹是否存在，不存在或文件数量为0则没有验证数据s
         if (!FileUtils.isFileExists(STU_EXPORT) || FileUtils.listFilesInDir(STU_EXPORT).isEmpty()) {
             exportObservable.postValue("暂无验证数据！");
         } else {
@@ -69,7 +69,7 @@ public class DataExportViewModel extends BaseViewModel {
             exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
             //文件存在先删除再创建
             FileUtils.createFileByDeleteOldFile(exportPath);
-            List<DBExamLayout> tempList = new ArrayList<>();
+            List<DBExamExport> tempList = new ArrayList<>();
             //copy value to fields
             tempList.addAll(Realm.getDefaultInstance().copyFromRealm(list));
             //写入数据
@@ -83,7 +83,7 @@ public class DataExportViewModel extends BaseViewModel {
      * @param exports   数据
      * @param localPath 写入路径
      */
-    private void saveData2Local(List<DBExamLayout> exports, String localPath, String seCode) {
+    private void saveData2Local(List<DBExamExport> exports, String localPath, String seCode) {
         Observable.create((ObservableOnSubscribe<String>) emitter -> {
             //list 2 jsonString
             String data = new Gson().toJson(exports);

@@ -160,4 +160,20 @@ public class DBOperation {
     public static List<DBLogs> getOperationLogs(){
         return Realm.getDefaultInstance().where(DBLogs.class).findAll();
     }
+
+    /**
+     *
+     * @return 获取身份信息总数
+     */
+    public static String getCount(){
+        return String.valueOf(Realm.getDefaultInstance().where(DBExamLayout.class).findAll().size());
+    }
+
+    /**
+     *
+     * @return 获取验证信息总数
+     */
+    public static String getAuthCount(){
+        return String.valueOf(Realm.getDefaultInstance().where(DBExamExport.class).findAll().size());
+    }
 }
