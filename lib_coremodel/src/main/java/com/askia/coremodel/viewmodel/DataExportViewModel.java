@@ -74,19 +74,19 @@ public class DataExportViewModel extends BaseViewModel {
 
 
     public void doDataExport(String seCode) {
-        DBExamExport examExport = new DBExamExport();
-        examExport.setCreateBy("1");
-        examExport.setExamCode("222");
-        examExport.setSeCode("123");
-        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.copyToRealmOrUpdate(examExport);
-            }
-        });
+//        DBExamExport examExport = new DBExamExport();
+//        examExport.setCreateBy("1");
+//        examExport.setExamCode("222");
+//        examExport.setSeCode("123");
+//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                realm.copyToRealmOrUpdate(examExport);
+//            }
+//        });
 
         //是否有导出数据
-        List<DBExamExport> list = DBOperation.getExportBySeCode("123");
+        List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
         if (list.isEmpty()) {
             exportObservable.postValue("暂无验证数据！");
             return;

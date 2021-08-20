@@ -140,6 +140,20 @@ public class DBOperation {
         return query.findFirst();
     }
 
+    public static void updateVerifyTime(String startTime,String endTime){
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
+                plan.setVerifyStartTime(startTime);
+                plan.setVerifyEndTime(endTime);
+                realm.copyToRealmOrUpdate(plan);
+            }
+        });
+    }
+
     /**
      * 根据场次代码 查询导出数据
      * @param seCode 场次编码
