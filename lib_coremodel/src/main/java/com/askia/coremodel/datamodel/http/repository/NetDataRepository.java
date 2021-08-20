@@ -9,6 +9,7 @@ import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
+import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
 
 import java.util.Map;
 
@@ -56,9 +57,9 @@ public class NetDataRepository {
     }
 
     //数据上传
-    public static Observable<BaseResponseData> verifyfacecontrast(RequestBody body){
-        Observable<BaseResponseData> responseData = ApiClient.getNetDataService()
-                .verifyfacecontrast(body);
+    public static Observable<UpLoadResult> verifyfacecontrast(Map<String,String> map, MultipartBody.Part body){
+        Observable<UpLoadResult> responseData = ApiClient.getNetDataService()
+                .postVerifyData(map,body);
         return responseData;
     }
 

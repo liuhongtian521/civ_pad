@@ -9,8 +9,6 @@
     </data>
 
     <LinearLayout
-        android:focusableInTouchMode="true"
-        android:focusable="true"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -202,6 +200,7 @@
             </RelativeLayout>
         </LinearLayout>
         <TextView
+            android:focusableInTouchMode="true"
             android:id="@+id/tv_export"
             android:text="@string/data_export_t"
             android:textColor="@color/white"

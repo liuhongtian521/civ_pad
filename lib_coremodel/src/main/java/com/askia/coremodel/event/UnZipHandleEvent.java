@@ -27,7 +27,25 @@ public class UnZipHandleEvent implements Serializable {
         this.message = message;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
     private int unZipProcess; //解压进度
     private String message; //解压信息
+    private String fileName; //压缩包名称
+    private String filePath; //压缩包路径
     private int code; //状态码
 }

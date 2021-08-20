@@ -66,7 +66,7 @@ public class DBOperation {
         //身份证号
         query.like("idCard", "?*" + params, Case.SENSITIVE);
         //准考证号
-        query.or().like("exReNum", "?*" + params,Case.SENSITIVE);
+        query.or().like("exReNum", "?*" + params, Case.SENSITIVE);
         query.endGroup();
         return query.findAll();
     }
@@ -95,52 +95,54 @@ public class DBOperation {
     }
 
     /**
-     *
      * @return 返回版本对象
      */
-    public static DBDataVersion getVersion(){
+    public static DBDataVersion getVersion() {
         return Realm.getDefaultInstance().where(DBDataVersion.class).findAll().last();
     }
 
     /**
      * 根据id查看数据查看列表详细信息
+     *
      * @param id id
      * @return 当前场次学生信息
      */
-    public static DBExamLayout getStudentInfo(String id){
+    public static DBExamLayout getStudentInfo(String id) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("id",id);
+        query.equalTo("id", id);
         query.endGroup();
         return query.findAll().first();
     }
 
     /**
      * 根据stuNo 查询居住地址
+     *
      * @param stuNo 学生编号
      * @return 居住信息
      */
-    public static String getLiveAddress(String stuNo){
-        return Realm.getDefaultInstance().where(DBExaminee.class).equalTo("stuNo",stuNo)
+    public static String getLiveAddress(String stuNo) {
+        return Realm.getDefaultInstance().where(DBExaminee.class).equalTo("stuNo", stuNo)
                 .findFirst().getLiveAddr();
     }
 
     /**
      * 根据考试代码 学生编号获取详细信息
+     *
      * @param examCode 考试代码
-     * @param stuNo 学生编号
+     * @param stuNo    学生编号
      * @return 详细信息
      */
-    public static DBExamLayout getStudentInfo(String examCode,String stuNo){
+    public static DBExamLayout getStudentInfo(String examCode, String stuNo) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("examCode",examCode);
-        query.equalTo("stuNo",stuNo);
+        query.equalTo("examCode", examCode);
+        query.equalTo("stuNo", stuNo);
         query.endGroup();
         return query.findFirst();
     }
 
-    public static void updateVerifyTime(String startTime,String endTime){
+    public static void updateVerifyTime(String startTime, String endTime) {
         Realm realm = Realm.getDefaultInstance();
 
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -156,46 +158,59 @@ public class DBOperation {
 
     /**
      * 根据场次代码 查询导出数据
+     *
      * @param seCode 场次编码
      * @return 导出数据列表
      */
-    public static List<DBExamExport> getExportBySeCode(String seCode){
+    public static List<DBExamExport> getExportBySeCode(String seCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
-        query.equalTo("seCode",seCode);
+        query.equalTo("seCode", seCode);
         query.endGroup();
-        return  query.findAll();
+        return query.findAll();
     }
 
     /**
      * 查询日志信息
+     *
      * @return 数据操作日志信息
      */
-    public static List<DBLogs> getOperationLogs(){
+    public static List<DBLogs> getOperationLogs() {
         return Realm.getDefaultInstance().where(DBLogs.class).findAll();
     }
 
     /**
-     *
      * @return 获取身份信息总数
      */
-    public static String getCount(){
+    public static String getCount() {
         return String.valueOf(Realm.getDefaultInstance().where(DBExamLayout.class).findAll().size());
     }
 
     /**
-     *
      * @return 获取验证信息总数
      */
-    public static String getAuthCount(){
+    public static String getAuthCount() {
         return String.valueOf(Realm.getDefaultInstance().where(DBExamExport.class).findAll().size());
     }
 
     /**
      * @return 获取验证数据列表
      */
-    public static List<DBExamExport> getVerifyList(){
+    public static List<DBExamExport> getVerifyList() {
         return Realm.getDefaultInstance().where(DBExamExport.class).findAll();
+    }
+
+    /**
+     * 根据examCode 获取sitCode
+     *
+     * @return siteCode
+     */
+    public static String getSiteCode(String examCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("examCode",examCode,Case.SENSITIVE);
+        query.endGroup();
+        return query.findFirst().getSiteCode();
     }
 
     /**
@@ -208,7 +223,7 @@ public class DBOperation {
         //身份证号
         query.like("idCard", "?*" + params, Case.SENSITIVE);
         //准考证号
-        query.or().like("stuNo", "?*" + params,Case.SENSITIVE);
+        query.or().like("stuNo", "?*" + params, Case.SENSITIVE);
         query.endGroup();
         return query.findAll();
     }

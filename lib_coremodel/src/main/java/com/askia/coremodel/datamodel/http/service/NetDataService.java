@@ -8,6 +8,7 @@ import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
+import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
 
 import java.util.Map;
 
@@ -18,6 +19,8 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -44,6 +47,7 @@ public interface NetDataService {
     Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("siteCode") String siteCode);
 
     //实时数据上传
-    @POST("/authentication/verifystatistics/verifyfacecontrast")
-    Observable<BaseResponseData> verifyfacecontrast(@Body RequestBody body);
+    @Multipart
+    @POST("/api/pad/importverifypack")
+    Observable<UpLoadResult> postVerifyData(@HeaderMap Map<String,String> map, @Part MultipartBody.Part body);
 }

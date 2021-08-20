@@ -186,4 +186,13 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    //显示Dialog
+    public void showLogadingDialog() {
+        ((BaseActivity) getActivity()).showNetDialog();
+    }
+
+    public void closeLogadingDialog() {
+        ((BaseActivity) getActivity()).dismissNetDialog();
+    }
+
 }

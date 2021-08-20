@@ -2,6 +2,7 @@ package com.lncucc.authentication.fragments;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
+import com.askia.common.widget.NetLoadingDialog;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
@@ -62,22 +64,26 @@ public class DataExportFragment extends BaseFragment {
     private String seCode = "";
     private UsbMassStorageDevice[] storageDevices;
     private UsbFile cFolder;
+    String siteCode = "";
 
     private FragmentExportBinding exportBinding;
     private DataExportViewModel exportViewModel;
     private static final int FULL_SCREEN_FLAG = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            | View.SYSTEM_UI_FLAG_FULLSCREEN;
+    private DBExamArrange itemArrange;
 
     @Override
     public void onInit() {
         exportBinding.rlArrange.setOnClickListener(v -> showPopUp());
         sessionList = DBOperation.getDBExamArrange();
-        if (sessionList != null && sessionList.size() > 0){
+        if (sessionList != null && sessionList.size() > 0) {
             exportBinding.tvSession.setText(sessionList.get(0).getSeName());
+            itemArrange = sessionList.get(0);
             seCode = sessionList.get(0).getSeCode();
+            siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
         }
         RxBus2.getInstance().register(this);
     }
@@ -134,7 +140,8 @@ public class DataExportFragment extends BaseFragment {
             }
         }
         if (storageDevices.length == 0) {
-            MyToastUtils.success("请插入可用的U盘",Toast.LENGTH_SHORT);
+            closeLogadingDialog();
+            MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
 
@@ -173,12 +180,12 @@ public class DataExportFragment extends BaseFragment {
         }
     }
 
-    private void writeZip2UDisk(UsbFile usbFile){
+    private void writeZip2UDisk(UsbFile usbFile) {
         //获取SDCard中的压缩文件
         List<File> files = FileUtils.listFilesInDir(STU_EXPORT);
-        for (File file: files){
-            if (file.getName().contains(".zip") && file.getName().contains(seCode)){
-                exportViewModel.write2UDiskByOTG(file,usbFile);
+        for (File file : files) {
+            if (file.getName().contains(".zip") && file.getName().contains(seCode)) {
+                exportViewModel.write2UDiskByOTG(file, usbFile);
             }
         }
     }
@@ -187,36 +194,52 @@ public class DataExportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         //导出到sdcard
         exportViewModel.doExport().observe(this, result -> {
+            closeLogadingDialog();
             MyToastUtils.error(result, Toast.LENGTH_SHORT);
         });
         //写入U盘
-        exportViewModel.write2UDisk().observe(this, result ->{
+        exportViewModel.write2UDisk().observe(this, result -> {
+            closeLogadingDialog();
             MyToastUtils.success(result, Toast.LENGTH_LONG);
         });
 
-        exportViewModel.zip().observe(this,result ->{
-            if (result.getUnZipProcess() == 100){
+        exportViewModel.zip().observe(this, result -> {
+            if (result.getUnZipProcess() == 100) {
                 //如果选择U盘导出，从本地sd中拷贝到U盘根目录
-                if (exportBinding.sbUsb.isChecked()){
+                if (exportBinding.sbUsb.isChecked()) {
                     redUDiskDevsList();
-                }else {
+                    //选择网络导出
+                } else if (exportBinding.sbNet.isChecked()) {
+                    String examCode = itemArrange.getExamCode();
+                    String seCode = itemArrange.getSeCode();
+                    exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
+                } else {
+                    closeLogadingDialog();
                     MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
                 }
             }
         });
-    }
-    @Subscribe(code = 0)
-    public void onGetSessionEvent(String index){
-        int position = Integer.parseInt(index);
-        exportBinding.tvSession.setText(sessionList.get(position).getSeName());
-        seCode = sessionList.get(position).getSeCode();
+
+        exportViewModel.upLoad().observe(this, result -> {
+            closeLogadingDialog();
+            MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
+        });
     }
 
-    private void showPopUp(){
+    @Subscribe(code = 0)
+    public void onGetSessionEvent(String index) {
+        int position = Integer.parseInt(index);
+        itemArrange = sessionList.get(position);
+        exportBinding.tvSession.setText(itemArrange.getSeName());
+        seCode = itemArrange.getSeCode();
+        siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+    }
+
+    private void showPopUp() {
         View parent = exportBinding.llContainer;
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(),sessionList);
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
         pop.setFocusable(false);
-        pop.showAtLocation(parent, Gravity.CENTER,0,0);
+        pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
         pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
         pop.setFocusable(true);
         pop.update();
@@ -227,7 +250,6 @@ public class DataExportFragment extends BaseFragment {
         list.add(exportBinding.sbNet.isChecked());
         list.add(exportBinding.sbUsb.isChecked());
         list.add(exportBinding.sbSdcard.isChecked());
-
         int count = 0;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i)) {
@@ -242,14 +264,8 @@ public class DataExportFragment extends BaseFragment {
             MyToastUtils.error("请选择一种导出方式!", Toast.LENGTH_SHORT);
             return;
         }
-
-        if (exportBinding.sbNet.isChecked()) {
-            MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
-        } else if (exportBinding.sbUsb.isChecked()) {
-            exportViewModel.doDataExport(seCode);
-        } else {
-            exportViewModel.doDataExport(seCode);
-        }
+        showLogadingDialog();
+        exportViewModel.doDataExport(seCode);
     }
 
     @Override

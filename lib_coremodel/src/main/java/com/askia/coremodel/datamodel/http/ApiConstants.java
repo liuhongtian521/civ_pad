@@ -2,6 +2,6 @@ package com.askia.coremodel.datamodel.http;
 
 
 public class ApiConstants {
-     public static final String HOST = "http://172.16.145.254:8686"; // 测试环境
+     public static final String HOST = "http://192.168.1.115:8080"; // 测试环境
 
 }

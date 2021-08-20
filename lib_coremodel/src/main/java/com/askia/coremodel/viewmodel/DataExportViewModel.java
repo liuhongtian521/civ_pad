@@ -7,9 +7,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
+import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
 import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.util.IOUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.askia.coremodel.util.NetUtils;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -31,7 +34,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -41,6 +46,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 
@@ -56,6 +64,8 @@ public class DataExportViewModel extends BaseViewModel {
     MutableLiveData<String> usbWriteObservable = new MutableLiveData<>();
     //压缩
     MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
+    //导出数据上传
+    MutableLiveData<UpLoadResult> upLoadObservable = new MutableLiveData<>();
 
     private String exportPath = "";
     private final String fileName = "ea_verify_detail.json";
@@ -70,6 +80,10 @@ public class DataExportViewModel extends BaseViewModel {
 
     public MutableLiveData<UnZipHandleEvent> zip(){
         return unZipObservable;
+    }
+
+    public MutableLiveData<UpLoadResult> upLoad() {
+        return upLoadObservable;
     }
 
 
@@ -160,8 +174,10 @@ public class DataExportViewModel extends BaseViewModel {
         File zipPath_ = new File(zipPath);
         File filePath_ = new File(filePath);
         String macId = DeviceUtils.getAndroidID();
+        String zipFilePath = zipPath_ + "/" + seCode + "_" +macId+ ".zip";
+        String zipName = seCode + "_" +macId+ ".zip";
         // 生成的压缩文件
-        ZipFile zipFile = new ZipFile(zipPath_ + "/" + seCode + "_" +macId+ ".zip");
+        ZipFile zipFile = new ZipFile(zipFilePath);
 
         ZipParameters parameters = new ZipParameters();
 
@@ -199,6 +215,8 @@ public class DataExportViewModel extends BaseViewModel {
                     //解析
                     zipHandleEvent.setUnZipProcess(100);
                     zipHandleEvent.setCode(0);
+                    zipHandleEvent.setFileName(zipName);
+                    zipHandleEvent.setFilePath(zipFilePath);
                     zipHandleEvent.setMessage("压缩完成");
                     unZipObservable.postValue(zipHandleEvent);
                     break;
@@ -243,5 +261,47 @@ public class DataExportViewModel extends BaseViewModel {
                         }
                     });
         }
+    }
+
+    public void postData(String examCode,String siteCode,String seCode,String filePath){
+        Map<String,String> map = new HashMap<>();
+        map.put("examCode",examCode);
+        map.put("siteCode",siteCode);
+        map.put("seCode",seCode);
+        map.put("equipment",DeviceUtils.getAndroidID());
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        File file = new File(filePath);
+        RequestBody body = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        builder.addFormDataPart("file",file.getName(),body);
+        MultipartBody.Part multipartBody =MultipartBody.Part.createFormData("file",file.getName(),body);
+
+        NetDataRepository.verifyfacecontrast(map,multipartBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .safeSubscribe(new Observer<UpLoadResult>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NotNull UpLoadResult upLoadResult) {
+                        upLoadObservable.postValue(upLoadResult);
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        UpLoadResult bean = new UpLoadResult();
+                        bean.setMessage(e.getMessage());
+                        bean.setSuccess(false);
+                        upLoadObservable.postValue(bean);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }
