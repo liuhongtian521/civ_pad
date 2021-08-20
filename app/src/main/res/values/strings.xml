@@ -25,7 +25,9 @@
     <string name="data_lead_net">网络导入</string>
     <string name="data_export_net">网络导出</string>
     <string name="data_lead_usb">U盘导入</string>
+    <string name="data_export_usb">U盘导出</string>
     <string name="data_lead_sdcard">SD卡导入</string>
+    <string name="data_export_sdcard">SD卡导出</string>
     <string name="data_lead_in">导入数据</string>
     <string name="data_export_t">导出数据</string>
     <string name="system__setting">基本设置</string>

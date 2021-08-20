@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +122,6 @@ public class DataImportFragment extends BaseFragment {
         for (UsbMassStorageDevice device : storageDevices) {
             //读取设备是否有权限
             if (usbManager.hasPermission(device.getUsbDevice())) {
-//                MyToastUtils.success("有权限",Toast.LENGTH_SHORT);
                 readDevice(device);
             } else {
                 //没有权限，进行申请
@@ -144,15 +142,6 @@ public class DataImportFragment extends BaseFragment {
             //文件系统
             FileSystem currentFs = partition.getFileSystem();
             currentFs.getVolumeLabel();//可以获取到设备的标识
-
-            //通过FileSystem可以获取当前U盘的一些存储信息，包括剩余空间大小，容量等等
-            Log.e("Capacity: ", currentFs.getCapacity() + "");
-            Log.e("Occupied Space: ", currentFs.getOccupiedSpace() + "");
-            Log.e("Free Space: ", currentFs.getFreeSpace() + "");
-            Log.e("Chunk size: ", currentFs.getChunkSize() + "");
-
-//            ToastUtil.showToast("可用空间：" + currentFs.getFreeSpace());
-
             //设置当前文件对象为根目录
             cFolder = currentFs.getRootDirectory();
             readFromUDisk();

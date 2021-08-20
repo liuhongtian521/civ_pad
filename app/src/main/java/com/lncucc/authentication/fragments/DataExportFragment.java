@@ -1,5 +1,10 @@
 package com.lncucc.authentication.fragments;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +19,20 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.github.mjdev.libaums.UsbMassStorageDevice;
+import com.github.mjdev.libaums.fs.FileSystem;
+import com.github.mjdev.libaums.fs.UsbFile;
+import com.github.mjdev.libaums.fs.UsbFileInputStream;
+import com.github.mjdev.libaums.fs.UsbFileOutputStream;
+import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentExportBinding;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
@@ -27,8 +41,17 @@ import com.ttsea.jrxbus2.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
+import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 /**
  * 数据导出
@@ -36,7 +59,9 @@ import java.util.List;
 public class DataExportFragment extends BaseFragment {
     private List<Boolean> list;
     private List<DBExamArrange> sessionList;
-    private String examCode = "";
+    private String seCode = "";
+    private UsbMassStorageDevice[] storageDevices;
+    private UsbFile cFolder;
 
     private FragmentExportBinding exportBinding;
     private DataExportViewModel exportViewModel;
@@ -52,7 +77,7 @@ public class DataExportFragment extends BaseFragment {
         sessionList = DBOperation.getDBExamArrange();
         if (sessionList != null && sessionList.size() > 0){
             exportBinding.tvSession.setText(sessionList.get(0).getSeName());
-            examCode = sessionList.get(0).getExamCode();
+            seCode = sessionList.get(0).getSeCode();
         }
         RxBus2.getInstance().register(this);
     }
@@ -69,20 +94,122 @@ public class DataExportFragment extends BaseFragment {
         return exportBinding.getRoot();
     }
 
+    @Subscribe
+    public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
+        if (event.isConnected) {
+            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
+        } else if (event.isGetPermission) {
+            UsbDevice usbDevice = event.usbDevice;
+            MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
+            readDevice(getUsbMass(usbDevice));
+        }
+    }
+
+    private UsbMassStorageDevice getUsbMass(UsbDevice usbDevice) {
+        for (UsbMassStorageDevice device : storageDevices) {
+            if (usbDevice.equals(device.getUsbDevice())) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * U盘设备读取
+     */
+    private void redUDiskDevsList() {
+        //设备管理器
+        UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+        //获取U盘存储设备
+        storageDevices = UsbMassStorageDevice.getMassStorageDevices(getActivity());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+        for (UsbMassStorageDevice device : storageDevices) {
+            //读取设备是否有权限
+            if (usbManager.hasPermission(device.getUsbDevice())) {
+                readDevice(device);
+            } else {
+                //没有权限，进行申请
+                usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+            }
+        }
+        if (storageDevices.length == 0) {
+            MyToastUtils.success("请插入可用的U盘",Toast.LENGTH_SHORT);
+        }
+    }
+
+    private void readDevice(UsbMassStorageDevice device) {
+        try {
+            device.init();//初始化
+            //设备分区
+            Partition partition = device.getPartitions().get(0);
+
+            //文件系统
+            FileSystem currentFs = partition.getFileSystem();
+            currentFs.getVolumeLabel();//可以获取到设备的标识
+            //设置当前文件对象为根目录
+            cFolder = currentFs.getRootDirectory();
+            readFromUDisk();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readFromUDisk() {
+        UsbFile[] usbFiles = new UsbFile[0];
+        try {
+            usbFiles = cFolder.listFiles();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (null != usbFiles && usbFiles.length > 0) {
+
+            for (UsbFile usbFile : usbFiles) {
+                if (usbFile.getName().equals("Export")) {
+                    writeZip2UDisk(usbFile);
+                }
+            }
+        }
+    }
+
+    private void writeZip2UDisk(UsbFile usbFile){
+        //获取SDCard中的压缩文件
+        List<File> files = FileUtils.listFilesInDir(STU_EXPORT);
+        for (File file: files){
+            if (file.getName().contains(".zip") && file.getName().contains(seCode)){
+                exportViewModel.write2UDiskByOTG(file,usbFile);
+            }
+        }
+    }
+
     @Override
     public void onSubscribeViewModel() {
+        //导出到sdcard
         exportViewModel.doExport().observe(this, result -> {
-            if ("导出成功".equals(result)){
-                LogsUtil.saveOperationLogs("数据导出");
-            }
             MyToastUtils.error(result, Toast.LENGTH_SHORT);
+        });
+        //写入U盘
+        exportViewModel.write2UDisk().observe(this, result ->{
+            MyToastUtils.success(result, Toast.LENGTH_LONG);
+        });
+
+        exportViewModel.zip().observe(this,result ->{
+            if (result.getUnZipProcess() == 100){
+                //如果选择U盘导出，从本地sd中拷贝到U盘根目录
+                if (exportBinding.sbUsb.isChecked()){
+                    redUDiskDevsList();
+                }else {
+                    MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+                }
+            }
         });
     }
     @Subscribe(code = 0)
     public void onGetSessionEvent(String index){
         int position = Integer.parseInt(index);
         exportBinding.tvSession.setText(sessionList.get(position).getSeName());
-        examCode = sessionList.get(position).getExamCode();
+        seCode = sessionList.get(position).getSeCode();
     }
 
     private void showPopUp(){
@@ -108,7 +235,7 @@ public class DataExportFragment extends BaseFragment {
             }
         }
         if (count > 1) {
-            MyToastUtils.error("只能选择一种导入方式!", Toast.LENGTH_SHORT);
+            MyToastUtils.error("只能选择一种导出方式!", Toast.LENGTH_SHORT);
             return;
         }
         if (count == 0) {
@@ -119,9 +246,9 @@ public class DataExportFragment extends BaseFragment {
         if (exportBinding.sbNet.isChecked()) {
             MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else if (exportBinding.sbUsb.isChecked()) {
-            MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
+            exportViewModel.doDataExport(seCode);
         } else {
-            exportViewModel.doDataExport(examCode);
+            exportViewModel.doDataExport(seCode);
         }
     }
 
