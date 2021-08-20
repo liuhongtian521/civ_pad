@@ -41,7 +41,6 @@ public class DataViewFragment extends BaseFragment {
         mAdapter = new DataViewAdapter(tempList);
         infoDialog = new StudentInfoDialog(getActivity(), itemInfo);
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            LogUtils.e("item id ->", DBOperation.getStudentInfo(tempList.get(position).getId()));
             itemInfo = DBOperation.getStudentInfo(tempList.get(position).getId());
             if (infoDialog != null && itemInfo != null){
                 infoDialog.showDialog(itemInfo);
