@@ -176,4 +176,26 @@ public class DBOperation {
     public static String getAuthCount(){
         return String.valueOf(Realm.getDefaultInstance().where(DBExamExport.class).findAll().size());
     }
+
+    /**
+     * @return 获取验证数据列表
+     */
+    public static List<DBExamExport> getVerifyList(){
+        return Realm.getDefaultInstance().where(DBExamExport.class).findAll();
+    }
+
+    /**
+     * @return 获取验证数据查询
+     * @params 身份证准考证后6位
+     */
+    public static List<DBExamExport> getDBExportByIdNo(String params) {
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        //身份证号
+        query.like("idCard", "?*" + params, Case.SENSITIVE);
+        //准考证号
+        query.or().like("stuNo", "?*" + params,Case.SENSITIVE);
+        query.endGroup();
+        return query.findAll();
+    }
 }

@@ -29,14 +29,14 @@ public class DBExamExport extends RealmObject implements Serializable {
     private String sysOrgCode;//组织机构代码
     private String equipment;//设备id mac 地址
     private String siteCode;//考点编号
-    private String cardNo;//身份证号码
+    private String idCard;//身份证号码
 
-    public String getCardNo() {
-        return cardNo;
+    public String getIdCard() {
+        return idCard;
     }
 
-    public void setCardNo(String cardNo) {
-        this.cardNo = cardNo;
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
     }
 
     public String getId() {
