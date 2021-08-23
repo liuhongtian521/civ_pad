@@ -200,7 +200,6 @@
             </RelativeLayout>
         </LinearLayout>
         <TextView
-            android:focusableInTouchMode="true"
             android:id="@+id/tv_export"
             android:text="@string/data_export_t"
             android:textColor="@color/white"

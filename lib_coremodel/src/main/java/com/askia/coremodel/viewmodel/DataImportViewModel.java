@@ -11,6 +11,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamInfo;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.event.ZipHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
 import com.blankj.utilcode.util.FileUtils;
@@ -44,7 +45,12 @@ public class DataImportViewModel extends BaseViewModel {
     public ObservableField<Boolean> netImport = new ObservableField<>(false);
     public ObservableField<Boolean> usbImport = new ObservableField<>(false);
     public ObservableField<Boolean> sdCardImport = new ObservableField<>(true);
+
     private MutableLiveData<String> dataObservable = new MutableLiveData<>();
+    //usb
+    private MutableLiveData<String> usbImportObservable = new MutableLiveData<>();
+    //zip
+    private MutableLiveData<ZipHandleEvent> zipObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
 

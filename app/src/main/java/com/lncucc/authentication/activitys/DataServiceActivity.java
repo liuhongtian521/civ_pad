@@ -55,6 +55,7 @@ public class DataServiceActivity extends BaseActivity {
     private void initView(){
         tabLayout = findViewById(R.id.tab);
         viewPager = findViewById(R.id.view_pager);
+        viewPager.setOffscreenPageLimit(4);
         mTitleList = new ArrayList<>();
         mTitleList.add("数据查看");
         mTitleList.add("数据导入");
