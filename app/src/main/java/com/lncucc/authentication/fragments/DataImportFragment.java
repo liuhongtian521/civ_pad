@@ -80,11 +80,25 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
-            if ("100".equals(result)){
+            closeLogadingDialog();
+            MyToastUtils.error(result, Toast.LENGTH_SHORT);
+        });
+
+        viewModel.doZipHandle().observe(this, result -> {
+            int progress = result.getProgress();
+            closeLogadingDialog();
+            if (progress == 100) {
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
-                LogsUtil.saveOperationLogs("数据导入");
+            } else {
+                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+            }
+        });
+
+        viewModel.usbWriteObservable().observe(this, result ->{
+            if (result.getCode() == 0){
+                viewModel.doSdCardImport();
             }else {
-                MyToastUtils.error(result, Toast.LENGTH_SHORT);
+                MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
             }
         });
     }
@@ -92,10 +106,10 @@ public class DataImportFragment extends BaseFragment {
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
         if (event.isConnected) {
-            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
+//            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
         } else if (event.isGetPermission) {
             UsbDevice usbDevice = event.usbDevice;
-            MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
+//            MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
             readDevice(getUsbMass(usbDevice));
         }
     }
@@ -126,10 +140,12 @@ public class DataImportFragment extends BaseFragment {
             } else {
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+                showLogadingDialog();
             }
         }
         if (storageDevices.length == 0) {
-            MyToastUtils.success("请插入可用的U盘",Toast.LENGTH_SHORT);
+            closeLogadingDialog();
+            MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
 
@@ -147,6 +163,7 @@ public class DataImportFragment extends BaseFragment {
             readFromUDisk();
 
         } catch (Exception e) {
+            MyToastUtils.error("USB读取超时，请插拔重试！",Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
     }
@@ -162,31 +179,11 @@ public class DataImportFragment extends BaseFragment {
 
             for (UsbFile usbFile : usbFiles) {
                 if (usbFile.getName().equals("Examination")) {
-                    readZipFromUDisk(usbFile);
+                    viewModel.readZipFromUDisk(usbFile);
                 }
             }
         }
     }
-
-    private void readZipFromUDisk(UsbFile usbFile) {
-        UsbFile descFile = usbFile;
-        //读取文件内容 需要在viewModel中 异步操作，IO操作后再执行解压操作
-        InputStream is = null;
-        try {
-            //如果多个压缩包 进行批量复制到sdcard
-            for (UsbFile file : descFile.listFiles()){
-                is = new UsbFileInputStream(file);
-                boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/"+file.getName() + ".zip" ,is);
-                if (result){
-                    viewModel.doSdCardImport();
-                }
-                LogUtils.e("copy result ->",result);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public void importData(View view) {
         importList = new ArrayList<>();
@@ -207,9 +204,9 @@ public class DataImportFragment extends BaseFragment {
             MyToastUtils.error("请选择一种导入方式!", Toast.LENGTH_SHORT);
             return;
         }
-
+        showLogadingDialog();
         if (viewModel.netImport.get()) {
-            MyToastUtils.error("敬请期待！",Toast.LENGTH_SHORT);
+            MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {
             redUDiskDevsList();
         } else {

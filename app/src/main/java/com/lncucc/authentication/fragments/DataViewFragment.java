@@ -42,7 +42,7 @@ public class DataViewFragment extends BaseFragment {
         infoDialog = new StudentInfoDialog(getActivity(), itemInfo);
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
             itemInfo = DBOperation.getStudentInfo(tempList.get(position).getId());
-            if (infoDialog != null && itemInfo != null){
+            if (infoDialog != null && itemInfo != null) {
                 infoDialog.showDialog(itemInfo);
             }
         });
@@ -86,13 +86,12 @@ public class DataViewFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            if (tempList.size() == 0 && viewBinding != null){
+        if (isVisibleToUser) {
+            if (viewBinding != null) {
                 mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-                if (mList.size() > 0){
-                    tempList.addAll(mList);
-                    mAdapter.notifyDataSetChanged();
-                }
+                tempList.clear();
+                tempList.addAll(mList);
+                mAdapter.notifyDataSetChanged();
             }
         }
     }

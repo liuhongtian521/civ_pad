@@ -11,19 +11,29 @@ import com.askia.coremodel.datamodel.database.db.DBExamInfo;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.event.FaceDBHandleEvent;
+import com.askia.coremodel.event.FaceHandleEvent;
+import com.askia.coremodel.event.UsbWriteEvent;
 import com.askia.coremodel.event.ZipHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.github.mjdev.libaums.fs.UsbFile;
+import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.unicom.facedetect.detect.FaceDetectManager;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Handler;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -48,14 +58,28 @@ public class DataImportViewModel extends BaseViewModel {
 
     private MutableLiveData<String> dataObservable = new MutableLiveData<>();
     //usb
-    private MutableLiveData<String> usbImportObservable = new MutableLiveData<>();
+    private MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
     //zip
     private MutableLiveData<ZipHandleEvent> zipObservable = new MutableLiveData<>();
+    //face db insert
+    private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
 
     public MutableLiveData<String> getSdCardData() {
         return dataObservable;
+    }
+
+    public MutableLiveData<ZipHandleEvent> doZipHandle(){
+        return zipObservable;
+    }
+
+    public MutableLiveData<FaceDBHandleEvent> doFaceDBHandle(){
+        return faceDbObservable;
+    }
+
+    public MutableLiveData<UsbWriteEvent> usbWriteObservable(){
+        return usbImportObservable;
     }
 
     /**
@@ -86,8 +110,11 @@ public class DataImportViewModel extends BaseViewModel {
                             int percentDone = 0;
                             while (true) {
                                 percentDone = progressMonitor.getPercentDone();
-                                dataObservable.postValue(percentDone + "");
+                                ZipHandleEvent handleEvent = new ZipHandleEvent();
                                 if (percentDone >= 100) {
+                                    handleEvent.setProgress(percentDone);
+                                    handleEvent.setMessage("解压完成");
+                                    zipObservable.postValue(handleEvent);
                                     //解析
                                     LogUtils.e("unzip success ->", fileName);
                                     getExDataFromLocal(toPath);
@@ -182,13 +209,13 @@ public class DataImportViewModel extends BaseViewModel {
     }
 
     private void pushFaceImage(String filePath) {
-        Observable.create((ObservableOnSubscribe<String>) emitter ->
+        Observable.create((ObservableOnSubscribe<FaceDBHandleEvent>) emitter ->
         {
             //文件夹相片数量
             List<File> photoList = FileUtils.listFilesInDir(filePath);
             LogUtils.e("photo list size->", photoList.size());
             if (photoList.isEmpty()) return;
-
+            FaceDBHandleEvent event = new FaceDBHandleEvent();
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
                 LogUtils.e("photo name->", faceNumber);
@@ -196,7 +223,8 @@ public class DataImportViewModel extends BaseViewModel {
 
                 byte[] bytes = FileUtil.readFile(file);
                 String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
-                emitter.onNext(faceId);
+                event.setFaceId(faceId);
+                emitter.onNext(event);
                 }catch (Exception e){
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
@@ -205,15 +233,18 @@ public class DataImportViewModel extends BaseViewModel {
 
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
+                .subscribe(new Observer<FaceDBHandleEvent>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         mDisposable.add(d);
                     }
 
                     @Override
-                    public void onNext(String result) {
-                        LogUtils.e("faceid ->", result);
+                    public void onNext(FaceDBHandleEvent result) {
+                        FaceDBHandleEvent faceDBHandleEvent = new FaceDBHandleEvent();
+                        faceDBHandleEvent.setFaceId(result.getFaceId());
+                        faceDbObservable.postValue(faceDBHandleEvent);
+                        LogUtils.e("faceid ->", result.getFaceId());
                     }
 
                     @Override
@@ -227,6 +258,59 @@ public class DataImportViewModel extends BaseViewModel {
 
                     }
                 });
+    }
+
+    public void readZipFromUDisk(UsbFile usbFile) {
+        Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter->{
+            UsbFile descFile = usbFile;
+            InputStream is = null;
+            try {
+                UsbWriteEvent event = new UsbWriteEvent();
+
+                //如果多个压缩包 进行批量复制到sdcard
+                for (UsbFile file : descFile.listFiles()) {
+                    is = new UsbFileInputStream(file);
+                    boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/" + file.getName() + ".zip", is);
+                    event.setResult(result);
+                    if (!result) break;
+                    LogUtils.e("copy result ->", result);
+                }
+                emitter.onNext(event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<UsbWriteEvent>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NotNull UsbWriteEvent usbWriteEvent) {
+                        if (usbWriteEvent.getResult()){
+                            usbWriteEvent.setCode(0);
+                        }else {
+                            usbWriteEvent.setCode(1);
+                        }
+                        usbImportObservable.postValue(usbWriteEvent);
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        UsbWriteEvent event = new UsbWriteEvent();
+                        event.setCode(1);
+                        event.setMessage(e.getMessage());
+                        usbImportObservable.postValue(event);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
     public void doSdCardImport() {

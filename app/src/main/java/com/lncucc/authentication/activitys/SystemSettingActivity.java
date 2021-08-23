@@ -18,6 +18,7 @@ import com.lncucc.authentication.fragments.NetworkSettingFragment;
 import com.lncucc.authentication.fragments.DisplaySettingFragment;
 import com.lncucc.authentication.fragments.LogoutSettingFragment;
 import com.lncucc.authentication.fragments.DateSettingFragment;
+import com.lncucc.authentication.widgets.NoSwipeViewPager;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class SystemSettingActivity extends BaseActivity {
 
     private ActSystemSettingBinding systemBaseBinding;
     private VerticalTabLayout tabLayout;
-    private ViewPager viewPager;
+    private NoSwipeViewPager viewPager;
     private ArrayList<String> mTitleList;
     private ArrayList<Fragment> mFragmentList;
 

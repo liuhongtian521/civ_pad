@@ -12,11 +12,16 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
+import com.askia.coremodel.datamodel.http.ApiConstants;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentNetworkSettingBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * 数据导入
@@ -36,6 +41,12 @@ public class NetworkSettingFragment extends BaseFragment {
             return;
         }
     });
+        String ip = ApiConstants.HOST.substring(7,ApiConstants.HOST.length()-7);
+        String ipArray[] = ip.split("\\.");
+        networkSetting.ipInput4.setText(ipArray[0]);
+        networkSetting.ipInput3.setText(ipArray[1]);
+        networkSetting.ipInput2.setText(ipArray[2]);
+        networkSetting.ipInput1.setText(ipArray[3]);
     }
 
     @Override

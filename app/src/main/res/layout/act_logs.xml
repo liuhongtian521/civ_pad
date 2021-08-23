@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
-                <androidx.viewpager.widget.ViewPager
+                <com.lncucc.authentication.widgets.NoSwipeViewPager
                     android:id="@+id/view_pager"
                     android:background="@drawable/bg_login_white"
                     android:layout_margin="10dp"

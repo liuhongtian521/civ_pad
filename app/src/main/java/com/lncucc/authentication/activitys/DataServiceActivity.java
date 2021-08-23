@@ -19,6 +19,7 @@ import com.lncucc.authentication.fragments.DataClearFragment;
 import com.lncucc.authentication.fragments.DataImportFragment;
 import com.lncucc.authentication.fragments.DataViewFragment;
 import com.lncucc.authentication.fragments.DataExportFragment;
+import com.lncucc.authentication.widgets.NoSwipeViewPager;
 
 import java.util.ArrayList;
 
@@ -38,14 +39,16 @@ public class DataServiceActivity extends BaseActivity {
 
     private ActDataServiceBinding dataBinding;
     private VerticalTabLayout tabLayout;
-    private ViewPager viewPager;
+    private NoSwipeViewPager viewPager;
     private ArrayList<String> mTitleList;
     private ArrayList<Fragment> mFragmentList;
+    private UsbStateChangeReceiver usbStateChangeReceiver;
 
     @Override
     public void onInit() {
         ((TextView)findViewById(R.id.tv_title)).setText("数据服务");
         findViewById(R.id.rl_left_back).setOnClickListener(v -> finish());
+        usbStateChangeReceiver = new UsbStateChangeReceiver();
         registerUDiskReceiver();
         initView();
         initData();
@@ -116,7 +119,7 @@ public class DataServiceActivity extends BaseActivity {
 
         usbDeviceStateFilter.addAction(ACTION_USB_PERMISSION); //自定义广播
 
-        registerReceiver(new UsbStateChangeReceiver(), usbDeviceStateFilter);
+        registerReceiver(usbStateChangeReceiver, usbDeviceStateFilter);
 
     }
 
@@ -167,5 +170,11 @@ public class DataServiceActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(usbStateChangeReceiver);
     }
 }

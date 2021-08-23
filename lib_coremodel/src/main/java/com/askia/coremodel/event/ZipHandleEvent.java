@@ -37,6 +37,25 @@ public class ZipHandleEvent implements Serializable {
         this.result = result;
     }
 
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    private int progress;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message = "正在解压";
     private String filePath;
     private String seCode;
     private boolean result;

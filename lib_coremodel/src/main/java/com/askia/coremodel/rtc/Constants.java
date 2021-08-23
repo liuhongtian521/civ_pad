@@ -36,6 +36,8 @@ public class Constants {
     public static final String KEY_CLIENT_ROLE = "key_client_role";
     public static final String ACTION_USB_PERMISSION = "com.lncucc.authentication.USB_PERMISSION";
 
+    public static final String CAMERA_DEFAULT = "camera_default";
+
     //apk下载地址
     public static final String apkPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "CivDownload";
     //压缩包路径

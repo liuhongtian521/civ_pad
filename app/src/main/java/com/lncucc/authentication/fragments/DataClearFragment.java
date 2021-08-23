@@ -103,6 +103,14 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
         }
     }
 
+    public void importItemClick(View view){
+        clearBinding.checkboxImport.setChecked(!clearBinding.checkboxImport.isChecked());
+    }
+
+    public void authItemClick(View view){
+        clearBinding.checkboxAuth.setChecked(!clearBinding.checkboxAuth.isChecked());
+    }
+
     @Override
     public void confirm(String pwd) {
 

@@ -15,12 +15,9 @@ import com.askia.coremodel.viewmodel.ExaminationViewModel;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActExaminationBinding;
-import com.lncucc.authentication.fragments.DataClearFragment;
-import com.lncucc.authentication.fragments.DataExportFragment;
-import com.lncucc.authentication.fragments.DataImportFragment;
 import com.lncucc.authentication.fragments.DataValidationFragment;
-import com.lncucc.authentication.fragments.DataViewFragment;
 import com.lncucc.authentication.fragments.SessionFragment;
+import com.lncucc.authentication.widgets.NoSwipeViewPager;
 
 import java.util.ArrayList;
 
@@ -39,7 +36,7 @@ public class ExaminationActivity extends BaseActivity {
     private ExaminationViewModel mExaminationViewModel;
     private VerticalTabLayout tabLayout;
     private RelativeLayout back;
-    private ViewPager viewPager;
+    private NoSwipeViewPager viewPager;
     private ArrayList<String> mTitleList;
     private ArrayList<Fragment> mFragmentList;
 

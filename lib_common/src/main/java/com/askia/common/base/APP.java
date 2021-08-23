@@ -48,6 +48,7 @@ import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.baidu.tts.client.TtsMode;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.EncryptUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
@@ -87,6 +88,7 @@ import io.realm.RealmConfiguration;
 
 import static com.askia.common.util.baidutts.MainHandlerConstant.INIT_SUCCESS;
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
 
 
 /**
@@ -145,9 +147,6 @@ public class APP extends Application {
         super.onCreate();
         com.askia.common.util.Utils.init(this);
         registerActivityLifeCallback();
-        // 极光推送
-     //   JPushInterface.setDebugMode(true);
-     //   JPushInterface.init(this);
 
         SharedPreUtil.initSharedPreference(this);
         ARouter.init(this);
@@ -155,6 +154,8 @@ public class APP extends Application {
         Utils.init(this);
         // 数据库初始化
         Realm.init(this);
+        //初始化摄像头前置
+        SharedPreferencesUtils.putInt(this,CAMERA_DEFAULT, 1);
         try {
             Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
         } catch (FileNotFoundException e) {

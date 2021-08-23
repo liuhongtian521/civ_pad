@@ -91,7 +91,7 @@ public class DataExportViewModel extends BaseViewModel {
 //        DBExamExport examExport = new DBExamExport();
 //        examExport.setCreateBy("1");
 //        examExport.setExamCode("222");
-//        examExport.setSeCode("123");
+//        examExport.setSeCode(seCode);
 //        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm realm) {
@@ -208,9 +208,9 @@ public class DataExportViewModel extends BaseViewModel {
             while (true) {
                 percentDone = monitor.getPercentDone();
                 LogUtils.e("zip success ->", percentDone + "");
-                zipHandleEvent.setUnZipProcess(percentDone);
-                zipHandleEvent.setMessage("正在压缩");
-                unZipObservable.postValue(zipHandleEvent);
+//                zipHandleEvent.setUnZipProcess(percentDone);
+//                zipHandleEvent.setMessage("正在压缩");
+//                unZipObservable.postValue(zipHandleEvent);
                 if (percentDone >= 100) {
                     //解析
                     zipHandleEvent.setUnZipProcess(100);

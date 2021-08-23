@@ -18,6 +18,7 @@ import com.lncucc.authentication.fragments.DataImportFragment;
 import com.lncucc.authentication.fragments.DataViewFragment;
 import com.lncucc.authentication.fragments.LogsClearFragment;
 import com.lncucc.authentication.fragments.LogsInfoFragment;
+import com.lncucc.authentication.widgets.NoSwipeViewPager;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ import q.rorbin.verticaltablayout.widget.TabView;
 public class LogActivity extends BaseActivity {
     private ActLogsBinding logsBinding;
     private VerticalTabLayout tabLayout;
-    private ViewPager viewPager;
+    private NoSwipeViewPager viewPager;
     private ArrayList<String> mTitleList;
     private ArrayList<Fragment> mFragmentList;
 

@@ -15,6 +15,8 @@ import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.rtc.Constants;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.lncucc.authentication.R;
@@ -32,6 +34,8 @@ import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
+
 /**
  * 数据导入
  */
@@ -40,7 +44,7 @@ public class DisplaySettingFragment extends BaseFragment {
     LinearLayout linear ;  // 切换外部linear盒子
     TextView te1; // 前置摄像头
     TextView te2; // 后置摄像头
-    String currentPos; // 当前选择的是哪个摄像头  前置"1"  后置"2"
+    int currentPos; // 当前选择的是哪个摄像头  前置"1"  后置"0"
     QMUISlider sliderBrightness;
     @Override
     public void onInit() {
@@ -76,11 +80,18 @@ public class DisplaySettingFragment extends BaseFragment {
 
             }
         });
-        currentPos = "2";
+        currentPos = SharedPreferencesUtils.getInt(getActivity(),CAMERA_DEFAULT, 1);
         setState();
         linear.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+//                currentPos == 0 ? currentPos =1: currentPos= 0;
+                if (currentPos == 0){
+                    currentPos = 1;
+                }else {
+                    currentPos = 0;
+                }
+                SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT,currentPos);
                 setState();
             }
          });
@@ -111,9 +122,8 @@ public class DisplaySettingFragment extends BaseFragment {
     }
 
     public void setState () {
-        if (currentPos == "1") {
+        if (currentPos == 1) {
             // 当前是前置摄像头  该进行后置摄像头的设置
-            currentPos = "2";
             te2.setBackgroundResource(R.drawable.bg_network_btn);
             te2.setTextColor(Color.parseColor("#FFFFFF"));
             te1.setBackgroundColor(Color.TRANSPARENT);
@@ -122,7 +132,7 @@ public class DisplaySettingFragment extends BaseFragment {
         }
         else {
             // 当前是后置摄像头  该进行前置摄像头的切换
-            currentPos = "1";
+            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT,currentPos);
             te1.setBackgroundResource(R.drawable.bg_network_btn);
             te1.setTextColor(Color.parseColor("#FFFFFF"));
             te2.setBackgroundColor(Color.TRANSPARENT);
@@ -172,11 +182,11 @@ public class DisplaySettingFragment extends BaseFragment {
         LogUtils.e("camera info ==>>>>>", info.facing, Camera.CameraInfo.CAMERA_FACING_FRONT);
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
             // 前置
-            currentPos ="2";
+            currentPos =0;
             setState();
         } else {
             // 后置
-            currentPos ="1";
+            currentPos =1;
             setState();
         }
     }
