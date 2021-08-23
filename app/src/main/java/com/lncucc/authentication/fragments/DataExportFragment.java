@@ -103,7 +103,7 @@ public class DataExportFragment extends BaseFragment {
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
         if (event.isConnected) {
-            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
+//            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
         } else if (event.isGetPermission) {
             UsbDevice usbDevice = event.usbDevice;
             MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
@@ -215,7 +215,7 @@ public class DataExportFragment extends BaseFragment {
                     exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
                 } else {
                     closeLogadingDialog();
-                    MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+                    MyToastUtils.error("导出成功", Toast.LENGTH_SHORT);
                 }
             }
         });
@@ -267,6 +267,20 @@ public class DataExportFragment extends BaseFragment {
         showLogadingDialog();
         exportViewModel.doDataExport(seCode);
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (sessionList != null && sessionList.size() > 0) {
+                exportBinding.tvSession.setText(sessionList.get(0).getSeName());
+                itemArrange = sessionList.get(0);
+                seCode = sessionList.get(0).getSeCode();
+                siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+            }
+        }
+    }
+
 
     @Override
     public void onDestroy() {
