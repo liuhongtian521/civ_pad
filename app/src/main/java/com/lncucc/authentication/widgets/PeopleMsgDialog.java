@@ -44,6 +44,8 @@ public class PeopleMsgDialog extends BaseDialog {
         mView = getLayoutInflater().inflate(R.layout.dialog_people_msg, null);
         setContentView(mView);
 
+        setCanceledOnTouchOutside(false);
+
         this.onListener = dialogClickBackListener;
 
         ivBack = mView.findViewById(R.id.iv_back);//返回

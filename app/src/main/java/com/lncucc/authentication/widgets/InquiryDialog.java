@@ -158,6 +158,8 @@ public class InquiryDialog extends BaseDialog {
         });
 
         setCanceledOnTouchOutside(false);
+
+        editExamNum.setText("210221112022500");
     }
 
     public void setSearchListener(Search onSearch) {

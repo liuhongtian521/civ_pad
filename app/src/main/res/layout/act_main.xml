@@ -19,7 +19,7 @@
             android:id="@+id/rel_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_40">
+            android:layout_marginTop="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/tv_name"
@@ -92,8 +92,7 @@
                     android:id="@+id/tv_site"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="沈阳市二中考点"
-                    android:textColor="#163366"
+                     android:textColor="#163366"
                     android:textSize="@dimen/sp_12" />
             </LinearLayout>
 
@@ -104,8 +103,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_5"
-                android:text="语文科目"
-                android:textColor="#1550BA"
+                 android:textColor="#1550BA"
                 android:textSize="@dimen/dp_34" />
 
             <RelativeLayout
@@ -127,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="00:23:45"
+
                         android:textColor="#163366"
                         android:textSize="@dimen/sp_20" />
 
@@ -166,8 +164,7 @@
                     android:layout_below="@+id/view_one"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="2021/06/21 09:00:00~2021/06/21 11:00:00"
-                    android:textColor="#333333"
+                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
 
 
@@ -197,8 +194,7 @@
                     android:layout_below="@+id/view_two"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_4"
-                    android:text="2021/06/21 09:00:00~2021/06/21 11:00:00"
-                    android:textColor="#333333"
+                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
             </RelativeLayout>
 

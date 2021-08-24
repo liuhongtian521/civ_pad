@@ -203,6 +203,7 @@ public class MainActivity extends BaseActivity {
                 mDataBinding.tvVerificationTime.setText(simpleDateFormat.format(new Date(timeStart)) + "~" + simpleDateFormat.format(new Date(timeEnd)));
                 handler.removeCallbacks(runnable);
                 handler.postDelayed(runnable, TIME); // 在初始化方法里.
+                timer();
             }
         });
 
@@ -210,7 +211,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
                 mDataBinding.tvSite.setText(dbExamLayout.getSiteName());
-
             }
         });
     }

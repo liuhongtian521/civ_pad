@@ -139,7 +139,7 @@ public class DBExaminee extends RealmObject implements Serializable {
     }
 
     public void setStuNo(String stuNo) {
-        this.stuNo = stuNo;
+         this.stuNo = stuNo;
     }
 
     public String getSysOrgCode() {

@@ -39,6 +39,12 @@ public class AuthenticationViewModel extends BaseViewModel {
     private MutableLiveData<DBExamPlan> mDBExamPlan = new MutableLiveData<>();
     private MutableLiveData<DBExamArrange> mDBExamArrange = new MutableLiveData<>();
 
+    private MutableLiveData<Integer> mCanSign = new MutableLiveData<>();
+
+    public MutableLiveData<Integer> getmCanSign() {
+        return mCanSign;
+    }
+
     private MutableLiveData<DBExamExport> mDBExamExport = new MutableLiveData<>();
 
     public MutableLiveData<DBExamExport> getmDBExamExport() {
@@ -130,8 +136,18 @@ public class AuthenticationViewModel extends BaseViewModel {
 
     }
 
+    public void canSign(String id) {
+
+
+
+        mCanSign.postValue(DBOperation.getDBExamExport(id));
+
+    }
+
 
     public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String id, String cardNo) {
+
+        Log.e("TagSnake", type + ":状态");
 
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());

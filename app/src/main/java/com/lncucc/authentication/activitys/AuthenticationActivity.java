@@ -25,6 +25,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.recyclerview.FOnItemChildClickListener;
+import com.askia.common.recyclerview.FOnRVItemClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
@@ -116,11 +117,8 @@ public class AuthenticationActivity extends BaseActivity {
     };
 
     public void timer() {
-
         long nowTime = System.currentTimeMillis();
         mDataBinding.tvTime.setText(TimeUtils.millis2String(nowTime));
-
-//        Log.e("TagSnake TiME", "NOW" + nowTime + ":start" + timeStart + ":end" + timeEnd);
         if (nowTime > timeEnd) {
             startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
             finish();
@@ -167,17 +165,13 @@ public class AuthenticationActivity extends BaseActivity {
                 if (model == null) {
                     return;
                 }
-
-//                viewHolderHelper.setText(R.id.tv_item_verify_name, model.get("name").toString());
                 viewHolderHelper.setText(R.id.tv_item_verify_name, model.getStuName());
-
+                Log.e("TagSnake itemType", model.getVerifyResult());
                 if ("1".equals(model.getVerifyResult())) {
-                    viewHolderHelper.setImageResource(R.id.iv_type, R.drawable.icon_type_success);
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_success);
                 } else {
-                    viewHolderHelper.setImageResource(R.id.iv_type, R.drawable.icon_type_faile);
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_faile);
                 }
-
-
                 String path = UN_ZIP_PATH + File.separator + mExanCode + "/photo/" + model.getStuNo() + ".jpg";
                 //转换file
                 File file = new File(path);
@@ -188,6 +182,8 @@ public class AuthenticationActivity extends BaseActivity {
                 }
 
                 String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".png";
+//                Log.e("TagSnake itemT", pathT);
+
 //                Log.e("TagSnake list", pathT);
                 File file1 = new File(pathT);
                 if (file1.exists()) {
@@ -198,9 +194,20 @@ public class AuthenticationActivity extends BaseActivity {
             }
         };
 
+        mAdapter.setOnRVItemClickListener(new FOnRVItemClickListener() {
+            @Override
+            public void onRVItemClick(ViewGroup parent, View itemView, int position) {
+                Log.e("TagSnake list", "item =" + position);
+                faceFragment.closeFace();
+                peopleMsgDialog.show();
+                peopleMsgDialog.setMsg(saveList.get(position));
+            }
+        });
+
         mAdapter.setOnItemChildClickListener(new FOnItemChildClickListener() {
             @Override
             public void onItemChildClick(ViewGroup parent, View childView, int position) {
+                Log.e("TagSnake list", "item =" + position);
                 peopleMsgDialog.show();
             }
         });
@@ -289,8 +296,10 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void backType(int type) {
                 mDbExamLayout = inquiryDialog.getDbExamLayout();
-                mDbExaminee.setStuNo(mDbExamLayout.getStuNo());
-                mDbExaminee.setStuName(mDbExamLayout.getStuName());
+                DBExaminee newDbExamine = new DBExaminee();
+                newDbExamine.setStuNo(mDbExamLayout.getStuNo());
+                newDbExamine.setStuName(mDbExamLayout.getStuName());
+                mDbExaminee = newDbExamine;
                 //对比
                 isComparison = true;
                 inquiryDialog.dismiss();
@@ -365,22 +374,47 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
+        //判断是否可以刷脸
+        mViewModel.getmCanSign().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.e("TagSnake", integer + ":数据是否拥有");
+                if (integer > 0) {
+                    //有数据刷脸 普通刷脸无效
+                    faceResultDialog.setType(false);
+
+                } else {
+                    //无数据 可以刷脸
+                    faceResultDialog.setType(true);
+
+                }
+            }
+        });
+
         //刷脸记录
         mViewModel.getmDBExamExport().observe(this, new Observer<DBExamExport>() {
             @Override
             public void onChanged(DBExamExport dbExamExport) {
-
 //                for (DBExamExport item : saveList) {
 //                    if (item.getStuNo().equals(dbExamExport.getStuNo())) {
 //
 //                    }
 //                }
-
+                boolean have = false;
+                int haveIndex = -1;
                 for (int index = 0; index < saveList.size(); index++) {
-
+                    if (saveList.get(index).getStuNo().equals(dbExamExport.getStuNo())) {
+                        have = true;
+                        haveIndex = index;
+                        break;
+                    }
                 }
-
-                saveList.add(0, dbExamExport);
+                if (have) {
+                    Log.e("TagSnake", "havethis" + haveIndex);
+                    saveList.set(haveIndex, dbExamExport);
+                } else {
+                    saveList.add(0, dbExamExport);
+                }
                 mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
                 mAdapter.notifyDataSetChanged();
             }
@@ -416,7 +450,7 @@ public class AuthenticationActivity extends BaseActivity {
                     } else
                         faceFragment.goContinueDetectFace();
                 else {
-                    Log.e("TagSnake", mDetectResult.faceNum + "::" + mExanCode + "::" + mSeCode);
+//                    Log.e("TagSnake", mDetectResult.faceNum + "::" + mExanCode + "::" + mSeCode);
 
                     mDbExaminee = dbExaminee;
                     mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode, mSeCode);
@@ -434,15 +468,18 @@ public class AuthenticationActivity extends BaseActivity {
                         //比对状态
                         faceComparedDialog.show();
                         //人员的考场和座位
+                        faceComparedDialog.setMsg(mDbExaminee);
                         faceComparedDialog.setSate(dbExamLayout);
                         faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
-                        faceComparedDialog.setLeftPhoto(base64);
+//                        faceComparedDialog.setLeftPhoto(base64);
                     } else {
                         //识别状态
                         if (mExamCodeList.size() == 0)
-                            faceResultDialog.setType(true);
+                            mViewModel.canSign(dbExamLayout.getId());
+//                            faceResultDialog.setType(true);
                         else if (mExamCodeList.indexOf(dbExamLayout.getSiteCode()) > 0) {
-                            faceResultDialog.setType(true);
+                            mViewModel.canSign(dbExamLayout.getId());
+//                            faceResultDialog.setType(true);
                         } else
                             faceResultDialog.setType(false);
                     }
@@ -498,10 +535,11 @@ public class AuthenticationActivity extends BaseActivity {
 
     /*这个是返回人脸数据和图片
      * */
-    public void getFace(FaceDetectResult detectResult, String base64) {
-        this.base64 = base64;
-
+    public void getFace(FaceDetectResult detectResult) {
+//        this.base64 = base64;
         if (isComparison) {
+//            Log.e("TagSnake", mDbExaminee.getStuNo() + ":" + detectResult.faceNum);
+
             if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
@@ -509,11 +547,11 @@ public class AuthenticationActivity extends BaseActivity {
 
                 mViewModel.quickPeople(detectResult.faceNum, mExanCode);
             } else {
-                isComparison = false;
+//                isComparison = false;
                 faceFragment.goContinueDetectFace();
             }
         } else {
-            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
+//            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
             if (detectResult.similarity > 0.7f) {
                 this.mDetectResult = detectResult;
 //                mDetectResult.faceNum = "210221112007641";

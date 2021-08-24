@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -45,6 +46,8 @@ public class FaceComparedDialog extends BaseDialog {
 
         mView = getLayoutInflater().inflate(R.layout.dialog_face_compared, null);
         setContentView(mView);
+        setCanceledOnTouchOutside(false);
+
 
         ivClose = mView.findViewById(R.id.iv_back);
         tvName = mView.findViewById(R.id.tv_face_name);
@@ -54,8 +57,8 @@ public class FaceComparedDialog extends BaseDialog {
         tvAddNo = mView.findViewById(R.id.tv_address_no);
         tvNumber = mView.findViewById(R.id.tv_fraction);
 
-        ivPhotoOne = mView.findViewById(R.id.iv_photo_one);
-        ivPhotoTwo = mView.findViewById(R.id.iv_photo_two);
+        ivPhotoOne = mView.findViewById(R.id.iv_photo_left);
+        ivPhotoTwo = mView.findViewById(R.id.iv_photo_right);
 
         btnNot = mView.findViewById(R.id.btn_not);
         btnMaybe = mView.findViewById(R.id.btn_maybe);
@@ -84,6 +87,7 @@ public class FaceComparedDialog extends BaseDialog {
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("TagSnake","btnsure");
                 onListener.backType(2);
             }
         });
@@ -96,24 +100,24 @@ public class FaceComparedDialog extends BaseDialog {
         setIdcard(dbExamLayout.getIdCard());
         setCardNo(dbExamLayout.getExamCode());
 
-
-        String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + "/photo/" + dbExamLayout.getStuNo() + ".jpg";
+        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".png";
+        String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode()  + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
+//        Log.e("TagSnake",pathT);
         //转换file
-        File file = new File(path);
+        File file = new File(pathT);
         if (file.exists()) {
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(path);
+            Bitmap bt = BitmapFactory.decodeFile(pathT);
             ivPhotoOne.setImageBitmap(bt);
-//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
         }
+//
+//        Log.e("TagSnake",path);
 
-        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".png";
-        File file1 = new File(pathT);
+        File file1 = new File(path);
         if (file1.exists()) {
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(pathT);
+            Bitmap bt = BitmapFactory.decodeFile(path);
             ivPhotoTwo.setImageBitmap(bt);
-//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
         }
     }
 
@@ -143,7 +147,12 @@ public class FaceComparedDialog extends BaseDialog {
     }
 
     public void setNumber(String number) {
-        tvNumber.setText(number);
+
+        if (number.length() > 4) {
+            tvNumber.setText(number.substring(0, 4));
+        } else
+            tvNumber.setText(number);
+
     }
 
 
@@ -169,5 +178,10 @@ public class FaceComparedDialog extends BaseDialog {
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
+    }
+
+    public void setMsg(DBExaminee mDbExaminee) {
+
+
     }
 }

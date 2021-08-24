@@ -27,6 +27,7 @@ import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.File;
 
+import a.a.a.a.a;
 import io.reactivex.Observable;
 
 public abstract class BaseFaceAuthFragment extends BaseFragment {
@@ -69,7 +70,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     }
 
-    protected abstract void setUI(FaceDetectResult detectResult, String base64);
+    protected abstract void setUI(FaceDetectResult detectResult);
 
     protected abstract void getmSeCode();
 
@@ -143,8 +144,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
 //                        Log.e("TagSnake save", Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png");
 
-                        String base64 = ImageUtil.encodeImage(bitmap);
-                        setUI(detectResult, base64);
+//                        String base64 = ImageUtil.encodeImage(bitmap);
+                        setUI(detectResult );
 
                         bitmap.recycle();
                     } else {
@@ -216,6 +217,5 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     public void closeFace() {
         mFaceDecting = false;
     }
-
 
 }

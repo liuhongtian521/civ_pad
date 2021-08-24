@@ -62,6 +62,14 @@ public class DBOperation {
         });
     }
 
+    public static int getDBExamExport(String id) {
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("id", id);
+        query.endGroup();
+        return query.findAll().size();
+    }
+
     /**
      * 获取考试考试编排表
      *

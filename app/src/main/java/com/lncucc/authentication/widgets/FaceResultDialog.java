@@ -36,6 +36,7 @@ public class FaceResultDialog extends BaseDialog {
         super(context, R.style.DialogTheme);
         mView = getLayoutInflater().inflate(R.layout.dialog_face_finish, null);
         setContentView(mView);
+        setCanceledOnTouchOutside(false);
 
         ivClose = mView.findViewById(R.id.iv_close);
         linSuccess = mView.findViewById(R.id.line_face_success);
