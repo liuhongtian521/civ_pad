@@ -1,6 +1,8 @@
 package com.askia.coremodel.viewmodel;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 
 import com.askia.coremodel.datamodel.http.params.BaseRequestParams;
@@ -38,7 +40,9 @@ public class BaseViewModel extends ViewModel
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.e("TagSnake",route.toString());
         RequestBody body=RequestBody.create(okhttp3.MediaType.parse("application/json"),route);
+
         return body;
     }
 

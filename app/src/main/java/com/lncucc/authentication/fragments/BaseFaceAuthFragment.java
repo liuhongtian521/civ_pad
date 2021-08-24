@@ -18,11 +18,14 @@ import com.askia.common.util.NV21ToBitmap;
 import com.askia.common.util.faceUtils.DrawHelper;
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
+import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.FaceDetectorViewModel;
 import com.bigdata.facedetect.FaceDetect;
 import com.blankj.utilcode.util.LogUtils;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.detect.FaceDetectResult;
+
+import java.io.File;
 
 import io.reactivex.Observable;
 
@@ -49,6 +52,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     protected int notface = 0;
     public FaceDetectorViewModel detectorViewModel;
 
+    public String mSeCode;
+
     @Override
     public void onInit() {
     }
@@ -65,6 +70,12 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     }
 
     protected abstract void setUI(FaceDetectResult detectResult, String base64);
+
+    protected abstract void getmSeCode();
+
+    public void setmSeCode(String seCode) {
+        mSeCode = seCode;
+    }
 
     /**
      * 初始化相机
@@ -93,8 +104,9 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     return;
                 //人脸处理，检测照片中是否有人脸
                 FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation(), false);
-                if (faceResult.faceBmp == null || faceResult.faceRect == null) {
+                if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
 //                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
+                    frames = 0;
                 } else {
                     if (frames < 10) {
                         frames++;
@@ -105,8 +117,10 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     //获取人脸特征
                     float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
                     //人脸对比
-                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 80f);
+                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
                     LogUtils.e("detect result ->", detectResult.similarity);
+                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
+
                     frames = 0;
                     if (detectResult != null) {
                         byte[] newNav21 = new byte[nv21.length];
@@ -118,14 +132,24 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                             bitmap = ImageUtil.imageCrop(bitmap, faceRect);
                         }
                         bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+
+                        if (mSeCode == null) {
+                            getmSeCode();
+                        }
+                        if (mSeCode != null)
+                            com.blankj.utilcode.util.ImageUtils.save(bitmap,
+                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png",
+                                    Bitmap.CompressFormat.PNG);
+
+//                        Log.e("TagSnake save", Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png");
+
                         String base64 = ImageUtil.encodeImage(bitmap);
                         setUI(detectResult, base64);
+
                         bitmap.recycle();
                     } else {
                         goContinueDetectFace();
                     }
-
-
                 }
             }
 
@@ -187,6 +211,10 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     public void goContinueDetectFace() {
         mFaceDecting = true;
+    }
+
+    public void closeFace() {
+        mFaceDecting = false;
     }
 
 

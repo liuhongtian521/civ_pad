@@ -106,7 +106,7 @@ android {
 }
 
 def releaseTime() {
-    return new Date().format("yyyy-MM-dd_HH:mm", TimeZone.getTimeZone("Asia/Shanghai"))
+    return new Date().format("yyyy-MM-dd_HH_mm", TimeZone.getTimeZone("Asia/Shanghai"))
 }
 
 dependencies {

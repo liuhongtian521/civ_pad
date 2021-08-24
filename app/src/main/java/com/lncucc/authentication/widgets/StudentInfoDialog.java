@@ -60,7 +60,7 @@ public class StudentInfoDialog extends BaseDialog{
         mIdNo = mView.findViewById(R.id.tv_idCard);
     }
 
-    public void showDialog(DBExamLayout layout){
+    public void  showDialog(DBExamLayout layout){
         if (layout != null){
             //获取stuNo
             String stuNo = layout.getStuNo();

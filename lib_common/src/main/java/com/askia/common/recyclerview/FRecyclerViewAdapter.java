@@ -17,6 +17,7 @@
 package com.askia.common.recyclerview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -26,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author WangHuanyu
  * @ClassName FRecyclerViewAdapter
- * @author  WangHuanyu
  * @todo 适配的数据类型
  * @date 2016/9/13 16:18
  */
@@ -42,6 +43,7 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
     public FOnRVItemLongClickListener mOnRVItemLongClickListener;
 
     public RecyclerView mRecyclerView;
+    public int listLength = -1;
 
     public FRecyclerViewAdapter(RecyclerView recyclerView, int itemLayoutId) {
         mRecyclerView = recyclerView;
@@ -52,7 +54,18 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (listLength <= 0) {
+            return mData == null ? 0 : mData.size();
+        } else {
+            if (mData == null) {
+                return 0;
+            } else if (mData.size() < listLength) {
+                return mData.size();
+            } else {
+                return listLength;
+            }
+        }
+//        return listLength == -1 ? Math.min(mData == null ? 0 : mData.size(), listLength) : listLength;
     }
 
     @Override
@@ -133,7 +146,7 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
     }
 
     public M getItem(int position) {
-        return mData.get(position);
+        return mData == null ? null : mData.size() == position ? null : mData.get(position);
     }
 
     /**
@@ -147,10 +160,11 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
 
     /**
      * 获取数据源长度
+     *
      * @return true长度为0无数据  false有数据
      */
-    public boolean getDataSize(){
-        if(mData.size() == 0){
+    public boolean getDataSize() {
+        if (mData.size() == 0) {
             return true;
         }
         return false;
@@ -192,6 +206,10 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
             mData.clear();
         }
         notifyDataSetChanged();
+    }
+
+    public void setListLength(int length) {
+        listLength = length;
     }
 
     /**
@@ -282,8 +300,7 @@ public abstract class FRecyclerViewAdapter<M> extends RecyclerView.Adapter<FRecy
         notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void notifyDataSetChanged(List<M> data)
-    {
+    public void notifyDataSetChanged(List<M> data) {
         mData = data;
         notifyDataSetChanged();
     }

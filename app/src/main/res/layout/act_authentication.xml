@@ -2,20 +2,24 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="handlers"
             type="com.lncucc.authentication.activitys.AuthenticationActivity" />
     </data>
 
     <RelativeLayout
+        android:id="@+id/bg_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#EFF2F7">
+
         <RelativeLayout
             android:id="@+id/rl_top"
-            android:background="#FAFAFA"
             android:layout_width="match_parent"
-            android:layout_height="10dp"/>
+            android:layout_height="10dp"
+            android:background="#FAFAFA" />
+
         <RelativeLayout
             android:id="@+id/rel_title"
             android:layout_below="@+id/rl_top"
@@ -29,11 +33,11 @@
 
             <ImageView
                 android:id="@+id/view_one"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:background="@drawable/bg_blue_round" />
+                android:background="@drawable/icon_title" />
 
 
             <LinearLayout
@@ -44,13 +48,29 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="2021辽宁省高考语文科目"
-                    android:textColor="#2A6DE5"
-                    android:textSize="@dimen/sp_12" />
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_examname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2021辽宁省高考语文科目"
+                        android:textColor="#2A6DE5"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_choose_exam"
+                        android:layout_width="@dimen/dp_10"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:src="@drawable/icon_todown" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -59,40 +79,19 @@
                     android:gravity="left"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="第"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-
-                    <TextView
-                        android:id="@+id/tv_day_today"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="一"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="天/第"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
 
                     <TextView
                         android:id="@+id/tv_session"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1"
+                        android:text="第一天第一场"
                         android:textColor="#163366"
                         android:textSize="@dimen/sp_8" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="场（共计"
+                        android:text="（共计"
                         android:textColor="#163366"
                         android:textSize="@dimen/sp_8" />
 
@@ -121,9 +120,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_10"
                 android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
                 android:onClick="@{handlers::setting}"
                 android:text="管理员设置"
-                android:gravity="center"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
 
@@ -136,7 +135,7 @@
                 android:layout_toLeftOf="@+id/btn_setting"
                 android:background="@drawable/bg_btn_line_blue"
                 android:gravity="center"
-
+                android:onClick="@{handlers::audit}"
                 android:text="人工审核"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
@@ -152,8 +151,8 @@
                 android:layout_toLeftOf="@+id/btn_audit"
                 android:background="@drawable/bg_btn_line_blue"
                 android:gravity="center"
-                android:text="选择考场"
                 android:onClick="@{handlers::chooseExamination}"
+                android:text="选择考场"
                 android:textColor="#3A90FF"
                 android:textSize="@dimen/sp_9" />
 
@@ -206,7 +205,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_4"
-                        android:text="2/100"
+                        android:text=""
                         android:textColor="#3A90FF"
                         android:textSize="@dimen/sp_9" />
 
@@ -226,10 +225,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
-                android:layout_marginBottom="10dp"
-                android:layout_height="match_parent" />
+                android:layout_marginBottom="10dp" />
         </LinearLayout>
 
 
@@ -249,10 +248,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_30"
                 android:gravity="center"
-                android:textSize="9sp"
-                android:textColor="@color/_163366"
                 android:paddingLeft="@dimen/dp_10"
-                android:text="摄像头画面" />
+                android:text="摄像头画面"
+                android:textColor="@color/_163366"
+                android:textSize="9sp" />
 
 
             <View

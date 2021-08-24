@@ -1,6 +1,8 @@
 package com.lncucc.authentication.widgets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -15,8 +17,13 @@ import androidx.annotation.NonNull;
 
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.util.OtherUtils;
 import com.lncucc.authentication.R;
+
+import java.io.File;
+
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 /**
  * Create bt she:
@@ -88,6 +95,26 @@ public class FaceComparedDialog extends BaseDialog {
         setName(dbExamLayout.getStuName());
         setIdcard(dbExamLayout.getIdCard());
         setCardNo(dbExamLayout.getExamCode());
+
+
+        String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + "/photo/" + dbExamLayout.getStuNo() + ".jpg";
+        //转换file
+        File file = new File(path);
+        if (file.exists()) {
+            //转换bitmap
+            Bitmap bt = BitmapFactory.decodeFile(path);
+            ivPhotoOne.setImageBitmap(bt);
+//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
+        }
+
+        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".png";
+        File file1 = new File(pathT);
+        if (file1.exists()) {
+            //转换bitmap
+            Bitmap bt = BitmapFactory.decodeFile(pathT);
+            ivPhotoTwo.setImageBitmap(bt);
+//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+        }
     }
 
 

@@ -14,6 +14,7 @@ public class DBExamExport extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
     private String stuNo;//考生号
+    private String stuName;
     private String examineeId;//考生id
 //    private String verifyPackId;//验证包id 不传
     private String verifyTime;//验证时间
@@ -30,6 +31,14 @@ public class DBExamExport extends RealmObject implements Serializable {
     private String equipment;//设备id mac 地址
     private String siteCode;//考点编号
     private String idCard;//身份证号码
+
+    public String getStuName() {
+        return stuName;
+    }
+
+    public void setStuName(String stuName) {
+        this.stuName = stuName;
+    }
 
     public String getIdCard() {
         return idCard;

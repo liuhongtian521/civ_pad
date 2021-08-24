@@ -6,6 +6,11 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
 import com.askia.coremodel.datamodel.face.FaceEngineManager;
 import com.askia.coremodel.datamodel.face.FaceServer;
@@ -16,6 +21,7 @@ import com.askia.coremodel.datamodel.http.entities.QueryFaceZipsUrlsData;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
 import com.askia.coremodel.event.FaceHandleEvent;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -31,6 +37,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Stack;
@@ -43,123 +50,63 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainViewModel extends BaseViewModel {
-    private MutableLiveData<FaceEngineResult> mActiveEngineLiveData = new MutableLiveData<>();
-    private MutableLiveData<FaceEngineResult> mInitEngineLiveData = new MutableLiveData<>();
-    private MutableLiveData<FaceEngineResult> mGetActiveFileLiveData = new MutableLiveData<>();
 
-    public MutableLiveData<FaceEngineResult> getActiveEngineLiveData() {
-        return mActiveEngineLiveData;
+    private MutableLiveData<DBExamPlan> mDbExamPlan = new MutableLiveData<>();//考试
+    private MutableLiveData<DBExamLayout> mDBExamLayout = new MutableLiveData<>();//考试数据
+    private MutableLiveData<DBExamArrange> mDBexamArrange = new MutableLiveData<>();//场次信息
+
+    public MutableLiveData<DBExamLayout> getmDBExamLayout() {
+        return mDBExamLayout;
     }
 
-    public MutableLiveData<FaceEngineResult> getInitEngineLiveData() {
-        return mInitEngineLiveData;
+    public MutableLiveData<DBExamArrange> getmDBexamArrange() {
+        return mDBexamArrange;
     }
 
-    public MutableLiveData<FaceEngineResult> getGetActiveFileLiveData() {
-        return mGetActiveFileLiveData;
+    public MutableLiveData<DBExamPlan> getmDbExamPlan() {
+        return mDbExamPlan;
     }
 
+    public void getExamCode() {
+        List<DBExamPlan> planList = DBOperation.getExamPlan();
+        if (planList.size() > 0)
+            mDbExamPlan.postValue(planList.get(0));
+        else
+            mDbExamPlan.postValue(null);
+    }
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void initEngine(Context context) {
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            int activeCode = FaceEngineManager.initEngine(context);
-            emitter.onNext(activeCode);
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(activeCode);
-                        mInitEngineLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(-99);
-                        mInitEngineLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+    public void getSiteCode(String examCode) {//String examCode) {
+        examCode = "GK2030";
+        DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
+        List<DBExamArrange> list = DBOperation.getExamArrange(examCode);
+        long timeNow = System.currentTimeMillis();
+        DBExamArrange back = null;
+        for (DBExamArrange item : list) {
+            Log.e("TagSnake", item.toString());
+            long start = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) - Long.valueOf(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000;
+            long end = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) + Long.valueOf(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000;
+            if (start<timeNow &&end>timeNow){
+                back = item;
+                break;
+            }
+            if (start > timeNow) {
+                if (back == null) {
+                    back = item;
+                } else if (Long.valueOf(TimeUtils.string2Millis(back.getStartTime())) > Long.valueOf(TimeUtils.string2Millis(item.getStartTime()))) {
+                    back = item;
+                }
+            }
+        }
+        mDBexamArrange.postValue(back);
     }
 
-    public void activeEngine(Context context, String appid, String sdkkey) {
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            int activeCode = FaceEngineManager.activeEngine(context, appid, sdkkey);
-            emitter.onNext(activeCode);
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(activeCode);
-                        mActiveEngineLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(-99);
-                        mActiveEngineLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public void checkActiveStatus(Context context) {
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            int activeCode = FaceEngineManager.getActiveFileInfo(context);
-            emitter.onNext(activeCode);
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Integer activeCode) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(activeCode);
-                        mGetActiveFileLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        FaceEngineResult result = new FaceEngineResult();
-                        result.setAfCode(-99);
-                        mGetActiveFileLiveData.postValue(result);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+    public void getExamLayout(String examCode) {
+        List<DBExamLayout> layList = DBOperation.getDBExamLayout(examCode);
+        if (layList == null)
+            mDBExamLayout.postValue(null);
+        else
+            mDBExamLayout.postValue(layList.get(0));
     }
 
 

@@ -7,7 +7,7 @@ package com.askia.coremodel.datamodel.http.entities;
  */
 public class LoginData extends BaseResponseData {
 
-    private  LoginResultData result;
+    private LoginResultData result;
 
     public LoginResultData getResult() {
         return result;
@@ -16,4 +16,5 @@ public class LoginData extends BaseResponseData {
     public void setResult(LoginResultData result) {
         this.result = result;
     }
+
 }

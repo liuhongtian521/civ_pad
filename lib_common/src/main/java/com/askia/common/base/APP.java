@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.multidex.MultiDex;
+
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.apkfuns.logutils.LogUtils;
 import com.askia.common.R;
@@ -116,7 +118,13 @@ public class APP extends Application {
     private Boolean isTTSInit = false;
     public boolean isInitFaceSuccess = false;
 
-/*    public APP() {
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    /*    public APP() {
         super(ShareConstants.TINKER_ENABLE_ALL, "com.askia.common.base.APP",
                 "com.tencent.tinker.loader.TinkerLoader", false);
     }*/

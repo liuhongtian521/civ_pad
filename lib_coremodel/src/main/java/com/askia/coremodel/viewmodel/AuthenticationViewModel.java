@@ -1,15 +1,23 @@
 package com.askia.coremodel.viewmodel;
 
+import android.content.Intent;
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.repository.DBRepository;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.util.DeviceUtils;
+import com.blankj.utilcode.util.TimeUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -24,50 +32,145 @@ import io.realm.RealmResults;
  */
 public class AuthenticationViewModel extends BaseViewModel {
     private MutableLiveData<DBExaminee> mCheckVersionData = new MutableLiveData<>();
-
     private MutableLiveData<DBExamLayout> mSeat = new MutableLiveData<>();
+    private MutableLiveData<DBExamLayout> mStudent = new MutableLiveData<>();
+    private MutableLiveData<List<DBExamArrange>> mArrange = new MutableLiveData<>();
+    private MutableLiveData<Integer> mLayoutSize = new MutableLiveData<>();
+    private MutableLiveData<DBExamPlan> mDBExamPlan = new MutableLiveData<>();
+    private MutableLiveData<DBExamArrange> mDBExamArrange = new MutableLiveData<>();
+
+    private MutableLiveData<DBExamExport> mDBExamExport = new MutableLiveData<>();
+
+    public MutableLiveData<DBExamExport> getmDBExamExport() {
+        return mDBExamExport;
+    }
+
+    public MutableLiveData<DBExamArrange> getmDBExamArrange() {
+        return mDBExamArrange;
+    }
+
+    public MutableLiveData<DBExamPlan> getmDBExamPlan() {
+        return mDBExamPlan;
+    }
+
+    public MutableLiveData<Integer> getmLayoutSize() {
+        return mLayoutSize;
+    }
+
+    public MutableLiveData<List<DBExamArrange>> getmArrange() {
+        return mArrange;
+    }
 
     public MutableLiveData<DBExaminee> getmCheckVersionData() {
         return mCheckVersionData;
+    }
+
+    public MutableLiveData<DBExamLayout> getmStudent() {
+        return mStudent;
     }
 
     public MutableLiveData<DBExamLayout> getmSeat() {
         return mSeat;
     }
 
-    public void quickPeople(String name, String examCode) {
-
-        List<DBExaminee> list = DBOperation.quickPeople(name, examCode);
-        if (list == null || list.size() == 0)
-            mCheckVersionData.postValue(null);
-        else
-            mCheckVersionData.postValue(list.get(0));
+    public void getSize(String seCode) {
+        int size = DBOperation.getRoomList(seCode).size();
+        mLayoutSize.postValue(size);
     }
 
-    public void getSeatAbout(String stuNo, String examCode) {
-        DBExamLayout mDbExamLayout = DBOperation.getStudentInfo(examCode, stuNo);
+
+    public void qucikArrange(String examCode) {
+        List<DBExamArrange> list = DBOperation.getExamArrange(examCode);
+        mArrange.postValue(list);
+    }
+
+    public void getPlanByCode(String examCode) {
+        DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
+        List<DBExamArrange> list = DBOperation.getExamArrange(examCode);
+        long timeNow = System.currentTimeMillis();
+        DBExamArrange back = null;
+        for (DBExamArrange item : list) {
+            long start = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) - (Long.valueOf(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000);
+            long end = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) + (Long.valueOf(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000);
+            if (start < timeNow && end > timeNow) {
+                back = item;
+                break;
+            }
+        }
+        mDBExamArrange.postValue(back);
+
+    }
+
+
+    public void quickPeople(String name, String examCode) {
+        List<DBExaminee> list = DBOperation.quickPeople(name, examCode);
+        if (list == null || list.size() == 0) {
+            Log.e("TagSnake", "list == null || list.size() == 0");
+
+            mCheckVersionData.postValue(null);
+        } else {
+            Log.e("TagSnake", "list>0");
+            mCheckVersionData.postValue(list.get(0));
+        }
+    }
+
+    public void getSeatAbout(String stuNo, String examCode, String seCode) {
+        DBExamLayout mDbExamLayout = DBOperation.getStudentInfoTwo(examCode, stuNo, seCode);
         mSeat.postValue(mDbExamLayout);
     }
 
+    public void getStudent(int type, String msg, String examCode, String seCode) {
+        if (type == 0) {
+            DBExamLayout mDbExamLayout = DBOperation.getStudtByNum(msg, examCode, seCode);
+            mStudent.postValue(mDbExamLayout);
+        } else {
+            DBExamLayout mDbExamLayout = DBOperation.getStudentByCode(msg, examCode, seCode);
+            mStudent.postValue(mDbExamLayout);
+        }
 
-    public void setMsg(DBExamLayout dbExamLayout, String base64, String time, String type, String number,String id) {
-        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DBExamExport db = new DBExamExport();
-
-                db.setId(dbExamLayout.getId());
-                db.setStuNo(dbExamLayout.getStuNo());
-                db.setExamineeId(id);
-                db.setVerifyTime(time);
-                db.setVerifyResult(type);
-                db.setMatchRate(number);
-                db.setSeCode(dbExamLayout.getSeCode());
+    }
 
 
-                db.setEquipment(DeviceUtils.getDeviceSN());
-                realm.insertOrUpdate(db);
-            }
-        });
+    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String id, String cardNo) {
+
+        DBExamExport db = new DBExamExport();
+        db.setId(dbExamLayout.getId());
+        db.setStuNo(dbExamLayout.getStuNo());
+        db.setStuName(dbExamLayout.getStuName());
+        db.setExamineeId(id);
+        db.setVerifyTime(time);
+        db.setVerifyResult(type);
+        db.setMatchRate(number);
+        db.setSeCode(dbExamLayout.getSeCode());
+        db.setEquipment(DeviceUtils.getDeviceSN());
+        db.setExamCode(dbExamLayout.getExamCode());
+        db.setSysOrgCode(dbExamLayout.getSysOrgCode());
+        db.setSiteCode(dbExamLayout.getSiteCode());
+        db.setIdCard(cardNo);
+        DBOperation.setDBExamExport(db);
+//        realm.insertOrUpdate(db);
+        mDBExamExport.postValue(db);
+
+//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                DBExamExport db = new DBExamExport();
+//                db.setId(dbExamLayout.getId());
+//                db.setStuNo(dbExamLayout.getStuNo());
+//                db.setStuName(dbExamLayout.getStuName());
+//                db.setExamineeId(id);
+//                db.setVerifyTime(time);
+//                db.setVerifyResult(type);
+//                db.setMatchRate(number);
+//                db.setSeCode(dbExamLayout.getSeCode());
+//                db.setEquipment(DeviceUtils.getDeviceSN());
+//                db.setExamCode(dbExamLayout.getExamCode());
+//                db.setSysOrgCode(dbExamLayout.getSysOrgCode());
+//                db.setSiteCode(dbExamLayout.getSiteCode());
+//                db.setIdCard(cardNo);
+//                realm.insertOrUpdate(db);
+//                mDBExamExport.postValue(db);
+//            }
+//        });
     }
 }

@@ -45,12 +45,19 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
     }
 
     @Override
-    protected void setUI(FaceDetectResult detectResult,String base64) {
+    protected void setUI(FaceDetectResult detectResult, String base64) {
         //获取到了数据
         Log.e("TagSnake", "getmsg");
-        ((AuthenticationActivity) getActivity()).getFace(detectResult,base64);
-
+        ((AuthenticationActivity) getActivity()).getFace(detectResult, base64);
     }
+
+    @Override
+    protected void getmSeCode() {
+        mSeCode = ((AuthenticationActivity) getActivity()).getmSeCode();
+    }
+
+
+
 
     @Override
     public View onInitDataBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {

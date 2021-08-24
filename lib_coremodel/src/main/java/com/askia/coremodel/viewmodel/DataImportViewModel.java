@@ -15,6 +15,7 @@ import com.askia.coremodel.event.FaceDBHandleEvent;
 import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.event.UsbWriteEvent;
 import com.askia.coremodel.event.ZipHandleEvent;
+import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
 import com.blankj.utilcode.util.FileIOUtils;
@@ -56,17 +57,17 @@ public class DataImportViewModel extends BaseViewModel {
     public ObservableField<Boolean> usbImport = new ObservableField<>(false);
     public ObservableField<Boolean> sdCardImport = new ObservableField<>(true);
 
-    private MutableLiveData<String> dataObservable = new MutableLiveData<>();
     //usb
     private MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
     //zip
     private MutableLiveData<ZipHandleEvent> zipObservable = new MutableLiveData<>();
+    private MutableLiveData<UnZipHandleEvent> dataObservable = new MutableLiveData<>();
     //face db insert
     private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
 
-    public MutableLiveData<String> getSdCardData() {
+    public MutableLiveData<UnZipHandleEvent> getSdCardData() {
         return dataObservable;
     }
 
@@ -87,6 +88,7 @@ public class DataImportViewModel extends BaseViewModel {
      * 并解压.zip文件到Examination/data下
      */
     public void checkZipFile() {
+        UnZipHandleEvent zipHandleEvent = new UnZipHandleEvent();
         if (FileUtils.isFileExists(ZIP_PATH)) {
             //文件夹存在，获取zip list
             List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
@@ -110,6 +112,9 @@ public class DataImportViewModel extends BaseViewModel {
                             int percentDone = 0;
                             while (true) {
                                 percentDone = progressMonitor.getPercentDone();
+                                zipHandleEvent.setUnZipProcess(percentDone);
+                                zipHandleEvent.setMessage("初始刷数据");
+                                dataObservable.postValue(zipHandleEvent);
                                 ZipHandleEvent handleEvent = new ZipHandleEvent();
                                 if (percentDone >= 100) {
                                     handleEvent.setProgress(percentDone);
@@ -126,16 +131,23 @@ public class DataImportViewModel extends BaseViewModel {
                         // 解压缩所有文件以及文件夹
                         zipFile.extractAll(toPath);
                     }
+                    zipHandleEvent.setUnZipProcess(100);
+                    zipHandleEvent.setMessage("数据初始化完成");
+                    dataObservable.postValue(zipHandleEvent);
                 } catch (IOException e) {
                     LogUtils.e("unzip exception->", e.getMessage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else {
-                dataObservable.postValue("当前文件夹内没有压缩包，请检查存放位置！");
+            } else {
+                zipHandleEvent.setUnZipProcess(-1);
+                zipHandleEvent.setMessage("当前文件夹内没有压缩包，请检查存放位置！");
+                dataObservable.postValue(zipHandleEvent);
             }
         } else {
-            dataObservable.postValue("请检查压缩包存放地址是否正确！");
+            zipHandleEvent.setUnZipProcess(-1);
+            zipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
+            dataObservable.postValue(zipHandleEvent);
         }
     }
 
@@ -152,7 +164,7 @@ public class DataImportViewModel extends BaseViewModel {
                 try {
                     LogUtils.e("json file name ->", list.get(i).getName());
                     insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("TagSnake 01", Log.getStackTraceString(e));
                 }
 
@@ -160,7 +172,7 @@ public class DataImportViewModel extends BaseViewModel {
                 //人脸照片
                 try {
                     pushFaceImage(path + File.separator + "photo");
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("TagSnake 02", Log.getStackTraceString(e));
                 }
 

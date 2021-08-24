@@ -81,9 +81,13 @@ public class DataImportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
             closeLogadingDialog();
-            MyToastUtils.error(result, Toast.LENGTH_SHORT);
+            if ("100".equals(result)){
+                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                LogsUtil.saveOperationLogs("数据导入");
+            }else {
+                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+            }
         });
-
         viewModel.doZipHandle().observe(this, result -> {
             int progress = result.getProgress();
             closeLogadingDialog();
@@ -184,6 +188,26 @@ public class DataImportFragment extends BaseFragment {
             }
         }
     }
+
+    private void readZipFromUDisk(UsbFile usbFile) {
+        UsbFile descFile = usbFile;
+        //读取文件内容 需要在viewModel中 异步操作，IO操作后再执行解压操作
+        InputStream is = null;
+        try {
+            //如果多个压缩包 进行批量复制到sdcard
+            for (UsbFile file : descFile.listFiles()){
+                is = new UsbFileInputStream(file);
+                boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/"+file.getName() + ".zip" ,is);
+                if (result){
+                    viewModel.doSdCardImport();
+                }
+                LogUtils.e("copy result ->",result);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void importData(View view) {
         importList = new ArrayList<>();

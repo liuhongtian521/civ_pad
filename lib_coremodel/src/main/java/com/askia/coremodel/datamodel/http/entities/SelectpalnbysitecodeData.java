@@ -38,5 +38,13 @@ public class SelectpalnbysitecodeData extends BaseResponseData {
         public void setExamName(String examName) {
             this.examName = examName;
         }
+
+        @Override
+        public String toString() {
+            return "ResultBean{" +
+                    "examCode='" + examCode + '\'' +
+                    ", examName='" + examName + '\'' +
+                    '}';
+        }
     }
 }

@@ -18,12 +18,14 @@ import com.lncucc.authentication.adapters.ChooseVenueAdapter;
 import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.databinding.ActChooseVenueBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Create bt she:
- *选择考场
+ * 选择考场
+ *
  * @date 2021/8/5
  */
 @Route(path = ARouterPath.CHOOSE_VENVE)
@@ -31,6 +33,7 @@ public class ChooseVenveActivity extends BaseActivity {
     private ChooseVenueAdapter mAdapter;
     private ActChooseVenueBinding mDataBinding;
     private List<DBExamLayout> mList;
+
     @Override
     public void onInit() {
         mDataBinding.llBack.setOnClickListener(v -> finish());
@@ -40,7 +43,7 @@ public class ChooseVenveActivity extends BaseActivity {
         mAdapter = new ChooseVenueAdapter(mList);
         mDataBinding.recChoose.setLayoutManager(new LinearLayoutManager(this));
         mDataBinding.recChoose.setAdapter(mAdapter);
-        LogUtils.e("fetch room list by seCode->",mList);
+        LogUtils.e("fetch room list by seCode->", mList);
     }
 
     @Override
@@ -48,16 +51,19 @@ public class ChooseVenveActivity extends BaseActivity {
 
     }
 
-    public void confirm(View view){
+    public void confirm(View view) {
         int sum = 0;
-        for (int i = 0; i < mList.size(); i ++){
-            if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()){
-                sum ++;
+        ArrayList<String> idList = new ArrayList<>();
+        for (int i = 0; i < mList.size(); i++) {
+            if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()) {
+//                sum++;
+                idList.add(mList.get(i).getExamCode());
             }
         }
         Intent intent = new Intent();
-        intent.putExtra("count",sum);
-        setResult(1,intent);
+        intent.putStringArrayListExtra("list", idList);
+//        intent.putExtra("count", sum);
+        setResult(1, intent);
         finish();
     }
 

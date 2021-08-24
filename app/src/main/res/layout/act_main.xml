@@ -19,7 +19,7 @@
             android:id="@+id/rel_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_10">
+            android:layout_marginTop="@dimen/dp_40">
 
             <TextView
                 android:id="@+id/tv_name"
@@ -31,15 +31,24 @@
                 android:textColor="@color/main_title"
                 android:textSize="@dimen/sp_14" />
 
+            <ImageView
+                android:id="@+id/iv_choose_exam"
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/tv_name"
+                android:src="@drawable/icon_todown" />
+
             <TextView
-                android:id="@+id/tv_login"
+                android:id="@+id/tv_setting"
                 android:layout_width="@dimen/dp_76"
                 android:layout_height="@dimen/dp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="@dimen/dp_16"
                 android:background="@drawable/bg_btn_line_blue"
                 android:gravity="center"
-                android:text="管理员登录"
+                android:text="管理员设置"
                 android:textColor="@color/main_title"
                 android:textSize="@dimen/sp_8" />
 
@@ -48,7 +57,7 @@
                 android:layout_width="@dimen/dp_66"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_toLeftOf="@+id/tv_login"
+                android:layout_toLeftOf="@+id/tv_setting"
                 android:background="@drawable/bg_btn_line_blue"
                 android:gravity="center"
                 android:scrollbarThumbVertical="@dimen/sp_12"
@@ -61,8 +70,9 @@
             android:layout_width="@dimen/dp_205"
             android:layout_height="wrap_content"
             android:layout_below="@+id/rel_title"
+            android:layout_above="@+id/tv_show"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dp_36"
+            android:gravity="center"
             android:layout_marginRight="@dimen/dp_98"
             android:orientation="vertical">
 
@@ -79,7 +89,7 @@
                     android:src="@drawable/icon_address" />
 
                 <TextView
-                    android:id="@+id/text_test_site"
+                    android:id="@+id/tv_site"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="沈阳市二中考点"
@@ -195,6 +205,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_show"
             android:text="@string/copyright"
             android:textSize="7sp"
             android:textColor="@color/main_copy_right"

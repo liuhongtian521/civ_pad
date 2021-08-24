@@ -31,11 +31,11 @@ public class AdvancedSettingFragment extends BaseFragment {
     @Override
     public void onInit() {
         List<DBExamPlan> list = DBOperation.getExamPlan();
-        if (list != null && list.size() > 0){
+        if (list != null && list.size() > 0) {
             //设置开始时间
-            advancedSetting.edtStartTime.setText(list.get(0).getVerifyStartTime());
+            advancedSetting.edtStartTime.setText(list.get(0).getVerifyStartTime() == null ? "0" : list.get(0).getVerifyStartTime());
             //设置结束时间
-            advancedSetting.edtEndTime.setText(list.get(0).getVerifyEndTime());
+            advancedSetting.edtEndTime.setText(list.get(0).getVerifyEndTime() == null ? "0" : list.get(0).getVerifyEndTime());
         }
     }
 
@@ -56,15 +56,15 @@ public class AdvancedSettingFragment extends BaseFragment {
 
     }
 
-    public void confirm(View view){
+    public void confirm(View view) {
         String sVerifyTime = advancedSetting.edtStartTime.getText().toString();
         String eVerifyTime = advancedSetting.edtEndTime.getText().toString();
-        if (TextUtils.isEmpty(sVerifyTime) || TextUtils.isEmpty(eVerifyTime)){
+        if (TextUtils.isEmpty(sVerifyTime) || TextUtils.isEmpty(eVerifyTime)) {
             MyToastUtils.error("请设置验证时间", Toast.LENGTH_LONG);
-        }else {
+        } else {
             //写入验证时间
-            DBOperation.updateVerifyTime(sVerifyTime,eVerifyTime);
-            MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
+            DBOperation.updateVerifyTime(sVerifyTime, eVerifyTime);
+            MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
         }
     }
 }

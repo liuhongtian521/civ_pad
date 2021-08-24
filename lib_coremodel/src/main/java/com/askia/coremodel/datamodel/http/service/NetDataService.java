@@ -32,19 +32,18 @@ public interface NetDataService {
     @GET("/canteen/appControllor.do?getZipList")
     Observable<QueryFaceZipsUrlsData> queryFaceZipsUrls(@Query("timeStamp") String timeStamp);
 
-    @FormUrlEncoded
-    @POST("/sys/mLogin")
-    Observable<LoginData> mLogin(@Field("username") String username, @Field("password") String password);
+    @POST("/api/sys/mLogin")
+    Observable<LoginData> mLogin(@Body RequestBody body);//@Field("username") String username, @Field("password") String password);
 
-    @GET("/jeecg-boot/pad/checkVersion")
+    @GET("/api/pad/checkVersion")
     Observable<CheckVersionData> checkVersion(@Query("version") String version);
 
-    @GET("/authentication/datapreparation/layoutpack/getpackurl")
-    Observable<GetZipData> getpackurl(@Query("getpackurl") String getpackurl, @Query("siteCode") String siteCode, @Query("dataVersion") String dataVersion);
+    @GET("/api/pad/getpackurl")
+    Observable<GetZipData> getpackurl(@Query("examCode") String examCode, @Query("siteCode") String siteCode, @Query("dataVersion") String dataVersion);
 
     //查询考试列表
-    @GET("/authentication/homepage/selectpalnbysitecode")
-    Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("siteCode") String siteCode);
+    @GET("/api/pad/selectpalnbysitecode")
+    Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("orgCode") String orgCode);
 
     //实时数据上传
     @Multipart

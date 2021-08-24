@@ -1,5 +1,7 @@
 package com.lncucc.authentication.activitys;
 
+import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -13,6 +15,7 @@ import com.alibaba.android.arouter.utils.TextUtils;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
@@ -40,7 +43,7 @@ public class LoginActivity extends BaseActivity {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
-        loginViewModel.account.set(defaultAccount);
+        loginViewModel.account.set("admin");
         loginViewModel.password.set("123456");
     }
 
@@ -59,12 +62,19 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
-        loginViewModel.loginDate.observe(this, new Observer<LoginData>() {
+        loginViewModel.getLoginDate().observe(this, new Observer<LoginData>() {
             @Override
             public void onChanged(LoginData loginData) {
+                Log.e("TagSnake", loginData.getMessage() + loginData.isSuccess());
+                if (loginData.isSuccess()) {
+                    Log.e("TagSnake", loginData.getResult().getUserInfo().toString());
+                }
+
                 if (loginData.isSuccess()) {
                     SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
-                    startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY);
+                    Bundle _b = new Bundle();
+                    _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
+                    startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
                     finish();
                 }
             }
@@ -72,18 +82,32 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin() {
+
+        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+        } else {
+            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+        }
+        finish();
+
+
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
-//            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
-            SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
-            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-            finish();
+            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
+//            SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
+//            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+//            finish();
         } else {
             //本地账号密码登录
             if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())) {
                 //登录成功，存本次登录账号
                 SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
-                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+
+                if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+                } else {
+                    startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+                }
                 finish();
             } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);

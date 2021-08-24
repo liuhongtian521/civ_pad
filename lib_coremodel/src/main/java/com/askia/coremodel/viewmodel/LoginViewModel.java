@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.askia.coremodel.datamodel.http.ResponseCode;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
+import com.askia.coremodel.datamodel.http.entities.LoginUpData;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
 
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,8 +34,12 @@ public class LoginViewModel extends BaseViewModel {
         return loginDate;
     }
 
-    public void login(String username,String psd){
-        NetDataRepository.login(username, psd).subscribeOn(Schedulers.io())
+    public void login(String username, String psd) {
+        LoginUpData loginUpData = new LoginUpData();
+        loginUpData.setPassword(psd);
+        loginUpData.setUsername(username);
+        NetDataRepository.login(convertPostBody(loginUpData))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .safeSubscribe(new Observer<LoginData>() {
                     @Override
@@ -43,6 +49,7 @@ public class LoginViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(LoginData data) {
+                        Log.e("TagSnake", data.getMessage());
                         loginDate.postValue(data);
                     }
 

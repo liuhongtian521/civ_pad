@@ -29,6 +29,12 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamPlan.class).findAll();
     }
 
+    public static DBExamPlan getExamPlan(String examCode) {
+        return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode", examCode)
+                .findFirst();
+    }
+
+
     /**
      * 获取考场安排列表
      *
@@ -38,6 +44,21 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
     }
 
+    public static List<DBExamArrange> getDBExamArrange(String examCode) {
+        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
+    }
+
+
+    public static void setDBExamExport(DBExamExport db) {
+        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(db);
+            }
+        });
+    }
+
     /**
      * 获取考试考试编排表
      *
@@ -45,6 +66,14 @@ public class DBOperation {
      */
     public static List<DBExamLayout> getDBExamLayout() {
         return Realm.getDefaultInstance().where(DBExamLayout.class).findAll();
+    }
+
+    public static List<DBExamLayout> getDBExamLayout(String examCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("examCode", examCode);
+        query.endGroup();
+        return query.findAll();
     }
 
     /**
@@ -76,14 +105,25 @@ public class DBOperation {
      *
      * @param seCode 场次编码
      * @return 根据场次码获取当前场次下的 所有考场编号
+     * she 8.23修改 去重
      */
     public static List<DBExamLayout> getRoomList(String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("seCode", seCode);
         query.endGroup();
-        return query.findAll();
+        return query.distinct("roomNo");
     }
+
+    public static int getStudentNumber(String examCode, String seCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("examCode", examCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findAll().size();
+    }
+
 
     public static List<DBExaminee> quickPeople(String name, String examCode) {
         RealmQuery<DBExaminee> query = Realm.getDefaultInstance().where(DBExaminee.class);
@@ -98,7 +138,8 @@ public class DBOperation {
      * @return 返回版本对象
      */
     public static DBDataVersion getVersion() {
-        return Realm.getDefaultInstance().where(DBDataVersion.class).findAll().last();
+        return Realm.getDefaultInstance().where(DBDataVersion.class).findAll().size() == 0 ?
+                null : Realm.getDefaultInstance().where(DBDataVersion.class).findAll().last();
     }
 
     /**
@@ -156,6 +197,7 @@ public class DBOperation {
         });
     }
 
+
     /**
      * 根据场次代码 查询导出数据
      *
@@ -166,6 +208,55 @@ public class DBOperation {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findAll();
+    }
+
+    /**
+     * 根据考试代码 学生编号 场次代码 获取详细信息
+     *
+     * @param examCode 考试代码
+     * @param stuNo    学生编号
+     * @param seCode   场次代码
+     * @return 详细信息
+     */
+    public static DBExamLayout getStudentInfoTwo(String examCode, String stuNo, String seCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("examCode", examCode);
+        query.equalTo("stuNo", stuNo);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findFirst();
+    }
+
+    public static DBExamLayout getStudtByNum(String examNum, String examCode, String seCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("exReNum", examNum);
+        query.equalTo("examCode", examCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findFirst();
+    }
+
+    public static DBExamLayout getStudentByCode(String idCode, String examCode, String seCode) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("idCode", idCode);
+        query.equalTo("examCode", examCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findFirst();
+    }
+
+    /*通过考试代码来获取场次
+     * examCode 考试代码
+     * */
+    public static List<DBExamArrange> getExamArrange(String examCode) {
+        RealmQuery<DBExamArrange> query = Realm.getDefaultInstance().where(DBExamArrange.class);
+        query.beginGroup();
+        query.equalTo("examCode", examCode);
         query.endGroup();
         return query.findAll();
     }
@@ -208,7 +299,7 @@ public class DBOperation {
     public static String getSiteCode(String examCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("examCode",examCode,Case.SENSITIVE);
+        query.equalTo("examCode", examCode, Case.SENSITIVE);
         query.endGroup();
         return query.findFirst().getSiteCode();
     }
@@ -227,4 +318,5 @@ public class DBOperation {
         query.endGroup();
         return query.findAll();
     }
+
 }

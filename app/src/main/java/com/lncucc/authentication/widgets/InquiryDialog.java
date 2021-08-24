@@ -1,7 +1,13 @@
 package com.lncucc.authentication.widgets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -11,9 +17,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.lncucc.authentication.R;
 
 import org.w3c.dom.Text;
+
+import java.io.File;
+
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 /**
  * Create bt she:
@@ -24,18 +35,22 @@ public class InquiryDialog extends BaseDialog {
     View mView;
     private DialogClickBackListener onListener;
 
+    private Search onSearch;
+
     RelativeLayout relLeft, relRight, relChoose;
     TextView tvChooseText;
 
     EditText editExamNum, editCard;
 
-    ImageView ivBack, ivDel;
+    ImageView ivBack, ivDel, ivFace;
 
     TextView tvName, tvExamNum, tvIdCard, tvAddress, tvAddressNum;
 
     Button btnSearch, btnClose, btnNext;
 
     LinearLayout linePeople;
+
+    private DBExamLayout dbExamLayout;
 
 
     public InquiryDialog(Context context, DialogClickBackListener dialogClickBackListener) {
@@ -50,6 +65,7 @@ public class InquiryDialog extends BaseDialog {
         tvChooseText = mView.findViewById(R.id.tv_click_title);
         ivBack = mView.findViewById(R.id.iv_back);
         ivDel = mView.findViewById(R.id.iv_del);
+        ivFace = mView.findViewById(R.id.iv_face);
 
         editExamNum = mView.findViewById(R.id.edit_exam_number);
         editCard = mView.findViewById(R.id.edit_idcard);
@@ -63,7 +79,7 @@ public class InquiryDialog extends BaseDialog {
         btnClose = mView.findViewById(R.id.btn_quick);
         btnNext = mView.findViewById(R.id.btn_next);
 
-        linePeople=mView.findViewById(R.id.line_people);
+        linePeople = mView.findViewById(R.id.line_people);
 
         this.onListener = dialogClickBackListener;
         ivDel.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +128,16 @@ public class InquiryDialog extends BaseDialog {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (relRight.getVisibility() == View.VISIBLE) {
+                    //准考证查询
+                    if (!"".equals(editExamNum.getText().toString().trim()))
+                        onSearch.search(editExamNum.getText().toString().trim(), 0);
+                } else if (relLeft.getVisibility() == View.VISIBLE) {
+                    //身份证号查询
+                    if (!"".equals(editCard.getText().toString().trim())) {
+                        onSearch.search(editCard.getText().toString().trim(), 1);
+                    }
+                }
                 search();
 
             }
@@ -130,10 +156,69 @@ public class InquiryDialog extends BaseDialog {
                 onListener.backType(1);
             }
         });
+
+        setCanceledOnTouchOutside(false);
     }
+
+    public void setSearchListener(Search onSearch) {
+        this.onSearch = onSearch;
+    }
+
+    public void setDbExamLayout(DBExamLayout dbExamLayout) {
+        this.dbExamLayout = dbExamLayout;
+        linePeople.setVisibility(View.VISIBLE);
+
+        tvName.setText(dbExamLayout.getStuName());
+        tvExamNum.setText(dbExamLayout.getExReNum());
+        tvIdCard.setText(dbExamLayout.getIdCard());
+        tvAddress.setText(dbExamLayout.getSiteName());
+        tvAddressNum.setText(dbExamLayout.getSeatNo());
+//        String path = UN_ZIP_PATH + File.separator + "110206/photo/" + dbExamLayout.getStuNo() + ".jpg";
+        String examCode = dbExamLayout.getExamCode();
+        String path = UN_ZIP_PATH + File.separator + examCode + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
+        //转换file
+        File file = new File(path);
+        if (file.exists()) {
+            //转换bitmap
+            Bitmap bt = BitmapFactory.decodeFile(path);
+            ivFace.setImageBitmap(bt);
+        }
+    }
+
+    public DBExamLayout getDbExamLayout() {
+        return dbExamLayout;
+    }
+
     //搜索用
     private void search() {
 
+    }
 
+    private void fullScreenImmersive(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            view.setSystemUiVisibility(uiOptions);
+        }
+    }
+
+    @Override
+    public void show() {
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        super.show();
+        fullScreenImmersive(getWindow().getDecorView());
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        Window window = this.getWindow();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+    }
+
+    public interface Search {
+        void search(String msg, int type);
     }
 }

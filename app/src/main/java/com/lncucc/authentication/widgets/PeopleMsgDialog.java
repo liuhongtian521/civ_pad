@@ -1,11 +1,26 @@
 package com.lncucc.authentication.widgets;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.rtc.Constants;
 import com.lncucc.authentication.R;
+
+import java.io.File;
+
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 /**
  * Create bt she:
@@ -17,7 +32,7 @@ public class PeopleMsgDialog extends BaseDialog {
     View mView;
     private DialogClickBackListener onListener;
 
-    ImageView ivBack, ivPhotoLeft, ivPhotoRight, ivSuccess, ivFaile;
+    ImageView ivBack, ivPhotoLeft, ivPhotoRight, ivType;
 
     TextView tvName, tvSex, tvNationality, tvSubjectsName, tvExaminationRoom, tvTicketNumber, tvSeatNumber, tvIdCard;
     TextView tvAddress, tvFaceValue;
@@ -34,8 +49,7 @@ public class PeopleMsgDialog extends BaseDialog {
         ivBack = mView.findViewById(R.id.iv_back);//返回
         ivPhotoLeft = mView.findViewById(R.id.iv_photo_one);//左面人脸
         ivPhotoRight = mView.findViewById(R.id.iv_photo_two);//右边人脸
-        ivSuccess = mView.findViewById(R.id.iv_student_success);//结果
-        ivFaile = mView.findViewById(R.id.iv_student_faile);
+        ivType = mView.findViewById(R.id.iv_student_type);//结果
 
         tvName = mView.findViewById(R.id.tv_student_name);//名字
         tvSex = mView.findViewById(R.id.tv_student_sex);//姓名
@@ -62,16 +76,57 @@ public class PeopleMsgDialog extends BaseDialog {
 
     public void setResult(boolean type) {
         if (type) {
-            ivSuccess.setVisibility(View.VISIBLE);
-            ivFaile.setVisibility(View.GONE);
+            ivType.setImageResource(R.drawable.icon_type_success);
+//            ivSuccess.setVisibility(View.VISIBLE);
+//            ivFaile.setVisibility(View.GONE);
             tvTypeSuccess.setVisibility(View.VISIBLE);
             tvFaceValue.setVisibility(View.GONE);
         } else {
-            ivSuccess.setVisibility(View.GONE);
-            ivFaile.setVisibility(View.VISIBLE);
+            ivType.setImageResource(R.drawable.icon_type_faile);
+//            ivSuccess.setVisibility(View.GONE);
+//            ivFaile.setVisibility(View.VISIBLE);
             tvTypeSuccess.setVisibility(View.GONE);
             tvFaceValue.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setMsg(DBExamExport model) {
+        String path = UN_ZIP_PATH + File.separator + model.getExamCode() + "/photo/" + model.getStuNo() + ".jpg";
+        //转换file
+        File file = new File(path);
+        if (file.exists()) {
+            //转换bitmap
+            Bitmap bt = BitmapFactory.decodeFile(path);
+//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
+            ivPhotoLeft.setImageBitmap(bt);
+        }
+
+        String pathT = Constants.STU_EXPORT + File.separator + model.getSeCode() + File.separator + "photo" + File.separator + model.getStuNo() + ".png";
+        File file1 = new File(pathT);
+        if (file1.exists()) {
+            //转换bitmap
+            Bitmap bt = BitmapFactory.decodeFile(pathT);
+            ivPhotoRight.setImageBitmap(bt);
+//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+        }
+
+
+        tvName.setText(model.getStuName());
+        DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuName(), model.getExamCode()).get(0);
+        tvSex.setText(dbExaminee.getGender());
+        tvNationality.setText(dbExaminee.getNation());
+        setResult("1".equals(model.getVerifyResult()));
+
+        String liveAddress = DBOperation.getLiveAddress(dbExaminee.getStuNo());
+        tvAddress.setText(liveAddress);
+        tvFaceValue.setText(model.getMatchRate());
+        DBExamLayout layout = DBOperation.getStudentInfo(model.getExamCode(), model.getStuNo());
+        tvTicketNumber.setText(layout.getExReNum());
+        tvIdCard.setText(layout.getIdCard());
+        setSubjectsName(layout.getSeName());
+        setExaminationRoom(layout.getRoomNo());
+        setSeatNumber(layout.getSiteName());
+
     }
 
     public void setName(String name) {
@@ -114,5 +169,27 @@ public class PeopleMsgDialog extends BaseDialog {
         tvFaceValue.setText(faceValue);
     }
 
+    @Override
+    public void show() {
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        super.show();
+        fullScreenImmersive(getWindow().getDecorView());
+        this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        Window window = this.getWindow();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+    }
 
+    private void fullScreenImmersive(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            view.setSystemUiVisibility(uiOptions);
+        }
+    }
 }

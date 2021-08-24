@@ -99,4 +99,20 @@ public class LoginUserInfoData implements Serializable {
     public void setWorkNo(String workNo) {
         this.workNo = workNo;
     }
+
+    @Override
+    public String toString() {
+        return "LoginUserInfoData{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", realname='" + realname + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", sex=" + sex +
+                ", phone='" + phone + '\'' +
+                ", orgCode='" + orgCode + '\'' +
+                ", post='" + post + '\'' +
+                ", workNo='" + workNo + '\'' +
+                '}';
+    }
 }

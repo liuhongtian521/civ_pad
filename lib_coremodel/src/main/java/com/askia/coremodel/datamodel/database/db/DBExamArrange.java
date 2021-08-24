@@ -130,4 +130,23 @@ public class DBExamArrange  extends RealmObject implements Serializable {
     public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "DBExamArrange{" +
+                "id='" + id + '\'' +
+                ", createBy='" + createBy + '\'' +
+                ", createTime=" + createTime +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", examCode='" + examCode + '\'' +
+                ", seCode='" + seCode + '\'' +
+                ", seName='" + seName + '\'' +
+                ", subCode='" + subCode + '\'' +
+                ", subName='" + subName + '\'' +
+                ", sysOrgCode='" + sysOrgCode + '\'' +
+                ", updateBy='" + updateBy + '\'' +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

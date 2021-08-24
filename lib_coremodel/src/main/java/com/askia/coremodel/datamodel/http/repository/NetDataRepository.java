@@ -29,9 +29,9 @@ public class NetDataRepository {
     }
 
     //登录
-    public static Observable<LoginData> login(String user, String psd) {
+    public static Observable<LoginData> login(RequestBody body) {
         Observable<LoginData> responseData = ApiClient.getNetDataService()
-                .mLogin(user, psd);
+                .mLogin(body);
         return responseData;
     }
 
@@ -43,9 +43,9 @@ public class NetDataRepository {
     }
 
     //数据包获取
-    public static Observable<GetZipData> getpackurl(String getpackurl, String siteCode, String dataVersion) {
+    public static Observable<GetZipData> getpackurl(String examCode, String siteCode, String dataVersion) {
         Observable<GetZipData> responseData = ApiClient.getNetDataService()
-                .getpackurl(getpackurl, siteCode, dataVersion);
+                .getpackurl(examCode, siteCode, dataVersion);
         return responseData;
     }
 

@@ -1,21 +1,41 @@
 package com.lncucc.authentication.activitys;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.recyclerview.FOnItemChildClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
-import com.askia.coremodel.viewmodel.CheckUpdateViewModel;
-import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
 import com.lncucc.authentication.fragments.FaceShowFragment;
@@ -24,9 +44,15 @@ import com.lncucc.authentication.widgets.FaceComparedDialog;
 import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
+import com.lncucc.authentication.widgets.PopExamPlan;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 /**
  * Create bt she:
@@ -38,6 +64,7 @@ import java.util.Map;
 public class AuthenticationActivity extends BaseActivity {
     private ActAuthenticationBinding mDataBinding;
 
+    private AuthenticationViewModel mViewModel;
     //考生信息 dialog
     private PeopleMsgDialog peopleMsgDialog;
     //刷脸结果
@@ -46,29 +73,144 @@ public class AuthenticationActivity extends BaseActivity {
     private InquiryDialog inquiryDialog;
     //对比结果
     private FaceComparedDialog faceComparedDialog;
-    private FRecyclerViewAdapter<Map<String, Object>> mAdapter;
+    //选择考试计划
+    private PopExamPlan mPopExamPlan;
+
+    //右侧列表适配器
+    private FRecyclerViewAdapter<DBExamExport> mAdapter;
+    //存储list
+    private List<DBExamExport> saveList;
     private FaceShowFragment faceFragment;
-    private AuthenticationViewModel mViewModel;
-
-    private String mExanCode = "";
-
     private FaceDetectResult mDetectResult;
     private DBExaminee mDbExaminee;
     private String base64;
-
+    private DBExamLayout mDbExamLayout;
+    private String mSeCode = "changcima01";//场次码
+    private String mExanCode = "examCode01";
     private boolean isComparison = false;
+    long timeStart, timeEnd;
+
+    int mStudentNumber = 0;
+
+
+    private ArrayList<String> mExamCodeList = new ArrayList<>();
+//    private List<DBExamArrange> mExamArrangeList = new ArrayList<>();
+
+    public String getmSeCode() {
+        return mSeCode;
+    }
+
+    private int TIME = 1000;  //每隔1s执行一次.
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                timer();
+                handler.postDelayed(this, TIME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    public void timer() {
+
+        long nowTime = System.currentTimeMillis();
+        mDataBinding.tvTime.setText(TimeUtils.millis2String(nowTime));
+
+//        Log.e("TagSnake TiME", "NOW" + nowTime + ":start" + timeStart + ":end" + timeEnd);
+        if (nowTime > timeEnd) {
+            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+            finish();
+        }
+    }
+
+
+    public void setmSeCode(String seCode) {
+        if (seCode == null)
+            return;
+        mSeCode = seCode;
+        if (faceFragment != null)
+            faceFragment.setmSeCode(seCode);
+//        mViewModel.getSize(seCode);
+    }
+
+    public void semExanCode(String mExanCode) {
+        if (mExanCode == null)
+            return;
+        this.mExanCode = mExanCode;
+        //获取场次数据
+        mViewModel.getPlanByCode(mExanCode);
+    }
+
 
     @Override
     public void onInit() {
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
+        semExanCode(getIntent().getExtras().getString("exanCode"));
+        mExamCodeList = getIntent().getExtras().getStringArrayList("list");
+        if (mExamCodeList == null) {
+            mExamCodeList = new ArrayList<>();
+        } else
+            mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
 
-        mAdapter = new FRecyclerViewAdapter<Map<String, Object>>(mDataBinding.rvList, R.layout.item_verify) {
+        timeStart = getIntent().getExtras().getLong("startTIME");
+        timeEnd = getIntent().getExtras().getLong("endTIME");
+        saveList = new ArrayList<>();
+
+        mAdapter = new FRecyclerViewAdapter<DBExamExport>(mDataBinding.rvList, R.layout.item_verify) {
             @Override
-            protected void fillData(FViewHolderHelper viewHolderHelper, int position, Map<String, Object> model) {
-                viewHolderHelper.setText(R.id.tv_item_verify_name, model.get("name").toString());
+            protected void fillData(FViewHolderHelper viewHolderHelper, int position, DBExamExport model) {
+                if (model == null) {
+                    return;
+                }
+
+//                viewHolderHelper.setText(R.id.tv_item_verify_name, model.get("name").toString());
+                viewHolderHelper.setText(R.id.tv_item_verify_name, model.getStuName());
+
+                if ("1".equals(model.getVerifyResult())) {
+                    viewHolderHelper.setImageResource(R.id.iv_type, R.drawable.icon_type_success);
+                } else {
+                    viewHolderHelper.setImageResource(R.id.iv_type, R.drawable.icon_type_faile);
+                }
+
+
+                String path = UN_ZIP_PATH + File.separator + mExanCode + "/photo/" + model.getStuNo() + ".jpg";
+                //转换file
+                File file = new File(path);
+                if (file.exists()) {
+                    //转换bitmap
+                    Bitmap bt = BitmapFactory.decodeFile(path);
+                    viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
+                }
+
+                String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".png";
+//                Log.e("TagSnake list", pathT);
+                File file1 = new File(pathT);
+                if (file1.exists()) {
+                    //转换bitmap
+                    Bitmap bt = BitmapFactory.decodeFile(pathT);
+                    viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+                }
             }
         };
+
+        mAdapter.setOnItemChildClickListener(new FOnItemChildClickListener() {
+            @Override
+            public void onItemChildClick(ViewGroup parent, View childView, int position) {
+                peopleMsgDialog.show();
+            }
+        });
+
+        mAdapter.setData(saveList);
+        mAdapter.setListLength(6);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mDataBinding.rvList.setLayoutManager(linearLayoutManager);
+        mDataBinding.rvList.setAdapter(mAdapter);
+
 
         peopleMsgDialog = new PeopleMsgDialog(this, new DialogClickBackListener() {
             @Override
@@ -94,44 +236,45 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void backType(int type) {
                 faceResultDialog.dismiss();
+
+
                 faceFragment.goContinueDetectFace();
-//                if (type == 0) {
-//                    //不通过
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
-//                } else if (type == 1) {
-//                    //存疑
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
-//                } else {
-//                    //通过
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
-//                }
+                if (type == 0) {
+                    //不通过
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                } else if (type == 1) {
+                    //存疑
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                } else {
+                    //通过
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                }
             }
         });
 
         faceComparedDialog = new FaceComparedDialog(this, new DialogClickBackListener() {
             @Override
             public void dissMiss() {
-                isComparison=false;
+                isComparison = false;
                 faceComparedDialog.dismiss();
                 faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
-                isComparison=false;
-
+                isComparison = false;
                 faceComparedDialog.dismiss();
                 faceFragment.goContinueDetectFace();
-//                if (type == 0) {
-//                    //不通过
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity));
-//                } else if (type == 1) {
-//                    //存疑
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity));
-//                } else {
-//                    //通过
-//                    mViewModel.setMsg(mDbExaminee, base64, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity));
-//                }
+                if (type == 0) {
+                    //不通过
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                } else if (type == 1) {
+                    //存疑
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                } else {
+                    //通过
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                }
             }
         });
 
@@ -144,6 +287,9 @@ public class AuthenticationActivity extends BaseActivity {
 
             @Override
             public void backType(int type) {
+                mDbExamLayout = inquiryDialog.getDbExamLayout();
+                mDbExaminee.setStuNo(mDbExamLayout.getStuNo());
+                mDbExaminee.setStuName(mDbExamLayout.getStuName());
                 //对比
                 isComparison = true;
                 inquiryDialog.dismiss();
@@ -151,6 +297,57 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
+
+        inquiryDialog.setSearchListener(new InquiryDialog.Search() {
+            @Override
+            public void search(String msg, int type) {
+                mViewModel.getStudent(type, msg, mExanCode, mSeCode);
+            }
+        });
+
+        mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
+            @Override
+            public void close(DBExamPlan dbExamPlan) {
+
+                semExanCode(dbExamPlan.getExamCode());
+                mDataBinding.tvExamname.setText(dbExamPlan.getExamName());
+
+            }
+        });
+
+        mPopExamPlan.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_todown);
+                isComparison = false;
+
+            }
+        });
+
+        mDataBinding.ivChooseExam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+
+                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
+            }
+        });
+        handler.postDelayed(runnable, TIME);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        faceFragment.goContinueDetectFace();
+        handler.postDelayed(runnable, TIME);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        faceFragment.closeFace();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
@@ -166,47 +363,105 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
+
+        //刷脸记录
+        mViewModel.getmDBExamExport().observe(this, new Observer<DBExamExport>() {
+            @Override
+            public void onChanged(DBExamExport dbExamExport) {
+
+//                for (DBExamExport item : saveList) {
+//                    if (item.getStuNo().equals(dbExamExport.getStuNo())) {
+//
+//                    }
+//                }
+
+                for (int index = 0; index < saveList.size(); index++) {
+
+                }
+
+                saveList.add(0, dbExamExport);
+                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        //场次数据
+        mViewModel.getmDBExamArrange().observe(this, new Observer<DBExamArrange>() {
+            @Override
+            public void onChanged(DBExamArrange dbExamArrange) {
+                if (dbExamArrange == null) {
+                    Toast.makeText(getApplicationContext(), "当前考试计划没有正在进行中的场次", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                setmSeCode(dbExamArrange.getSeCode());
+                mDataBinding.tvSession.setText(dbExamArrange.getSeName());
+                //考场总数
+                mDataBinding.tvSessionAll.setText(DBOperation.getRoomList(dbExamArrange.getSeCode()).size() + "");
+                mStudentNumber = DBOperation.getStudentNumber(mExanCode, mSeCode);
+//                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + );
+                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
+                saveList.clear();
+
+            }
+        });
+
         //用户基础数据，
         mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
             @Override
             public void onChanged(DBExaminee dbExaminee) {
-                if (dbExaminee==null)
-                    faceFragment.goContinueDetectFace();
+                if (dbExaminee == null)
+                    if (!isComparison) {
+                        faceResultDialog.setType(false);
+                    } else
+                        faceFragment.goContinueDetectFace();
                 else {
+                    Log.e("TagSnake", mDetectResult.faceNum + "::" + mExanCode + "::" + mSeCode);
+
                     mDbExaminee = dbExaminee;
-                    mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode);
+                    mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode, mSeCode);
                 }
-//                if (isComparison) {
-//                    if (dbExaminee != null) {
-//                    } else {
-//                        faceFragment.goContinueDetectFace();
-//                    }
-//                } else {
-//                    if (dbExaminee != null) {
-//                        faceResultDialog.setType(false);
-//                    } else {
-//                        faceFragment.goContinueDetectFace();
-//                    }
-//                }
             }
         });
+
+        //用户考场数据
         mViewModel.getmSeat().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
                 if (dbExamLayout != null) {
-                    if (isComparison){
+                    mDbExamLayout = dbExamLayout;
+                    if (isComparison) {
                         //比对状态
                         faceComparedDialog.show();
                         //人员的考场和座位
                         faceComparedDialog.setSate(dbExamLayout);
                         faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
                         faceComparedDialog.setLeftPhoto(base64);
-                    }else {
+                    } else {
                         //识别状态
-
+                        if (mExamCodeList.size() == 0)
+                            faceResultDialog.setType(true);
+                        else if (mExamCodeList.indexOf(dbExamLayout.getSiteCode()) > 0) {
+                            faceResultDialog.setType(true);
+                        } else
+                            faceResultDialog.setType(false);
                     }
                 } else {
-                    faceFragment.goContinueDetectFace();
+                    if (!isComparison) {
+                        faceResultDialog.setType(false);
+                    } else {
+                        faceFragment.goContinueDetectFace();
+                    }
+                }
+            }
+        });
+
+        mViewModel.getmStudent().observe(this, new Observer<DBExamLayout>() {
+            @Override
+            public void onChanged(DBExamLayout dbExamLayout) {
+                if (dbExamLayout != null) {
+                    inquiryDialog.setDbExamLayout(dbExamLayout);
+                } else {
+                    Toast.makeText(getApplicationContext(), "没有数据", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -214,35 +469,69 @@ public class AuthenticationActivity extends BaseActivity {
 
     //选择考场
     public void chooseExamination(View view) {
-        startActivityByRouter(ARouterPath.CHOOSE_VENVE);
+        Bundle _b = new Bundle();
+        _b.putString("SE_CODE", mSeCode);
+        startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 121101, _b);
     }
 
     public void setting(View view) {
         startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
     }
 
+    public void audit(View view) {
+        faceFragment.closeFace();
+        inquiryDialog.show();
+    }
+
+    //页面返回接收
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 121101 && resultCode == 1) {
+            mExamCodeList.clear();
+            mExamCodeList.addAll(data.getStringArrayListExtra("list"));
+            mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
+
+        }
+    }
+
     /*这个是返回人脸数据和图片
-    * */
+     * */
     public void getFace(FaceDetectResult detectResult, String base64) {
         this.base64 = base64;
+
         if (isComparison) {
-             if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {
+            if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
+//                mDetectResult.faceNum = "210221112007641";
+
                 mViewModel.quickPeople(detectResult.faceNum, mExanCode);
             } else {
                 isComparison = false;
                 faceFragment.goContinueDetectFace();
             }
         } else {
-            if (detectResult.similarity > 80f) {
+            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
+            if (detectResult.similarity > 0.7f) {
                 this.mDetectResult = detectResult;
-                faceResultDialog.setType(true);
-                mViewModel.quickPeople(detectResult.faceNum, mExanCode);
+//                mDetectResult.faceNum = "210221112007641";
+                mViewModel.quickPeople(mDetectResult.faceNum, mExanCode);
             } else {
                 faceResultDialog.setType(false);
             }
         }
     }
 
+    private void fullScreenImmersive(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            view.setSystemUiVisibility(uiOptions);
+        }
+    }
 }
