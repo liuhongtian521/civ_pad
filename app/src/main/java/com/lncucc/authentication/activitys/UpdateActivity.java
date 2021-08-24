@@ -61,6 +61,7 @@ public class UpdateActivity extends BaseActivity {
     @Override
     public void onInitDataBinding() {
         mBinding = DataBindingUtil.setContentView(this, R.layout.act_update);
+        mBinding.setHandlers(this);
     }
 
     private void initView() {
