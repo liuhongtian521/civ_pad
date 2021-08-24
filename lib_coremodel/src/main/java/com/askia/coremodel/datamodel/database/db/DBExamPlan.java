@@ -23,6 +23,16 @@ public class DBExamPlan extends RealmObject implements Serializable {
     private String verifyStartTime;
     private String verifyEndTime;
 
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
+
+    private String verifyCode;
+
     public String getVerifyStartTime() {
         return verifyStartTime;
     }

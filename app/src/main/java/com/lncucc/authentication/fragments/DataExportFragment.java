@@ -200,6 +200,7 @@ public class DataExportFragment extends BaseFragment {
         //写入U盘
         exportViewModel.write2UDisk().observe(this, result -> {
             closeLogadingDialog();
+            LogsUtil.saveOperationLogs("数据导出");
             MyToastUtils.success(result, Toast.LENGTH_LONG);
         });
 
@@ -213,8 +214,10 @@ public class DataExportFragment extends BaseFragment {
                     String examCode = itemArrange.getExamCode();
                     String seCode = itemArrange.getSeCode();
                     exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
+                    LogsUtil.saveOperationLogs("数据导出");
                 } else {
                     closeLogadingDialog();
+                    LogsUtil.saveOperationLogs("数据导出");
                     MyToastUtils.error("导出成功", Toast.LENGTH_SHORT);
                 }
             }

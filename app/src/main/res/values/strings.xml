@@ -16,6 +16,7 @@
     <string name="login_account_hint">用户名</string>
     <string name="login_btn">登录</string>
     <string name="login_pwd_hint">请输入密码</string>
+    <string name="login_verify_code">请输入验证码</string>
     <string name="examination_check">场次查看</string>
     <string name="data_view">数据查看</string>
     <string name="validation_data_check">验证数据查看</string>

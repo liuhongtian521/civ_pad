@@ -33,6 +33,9 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode", examCode)
                 .findFirst();
     }
+    public static DBExamPlan getSingleExamPlan(){
+        return Realm.getDefaultInstance().where(DBExamPlan.class).findFirst();
+    }
 
 
     /**

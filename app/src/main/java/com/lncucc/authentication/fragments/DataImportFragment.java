@@ -81,17 +81,13 @@ public class DataImportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.getSdCardData().observe(this, result -> {
             closeLogadingDialog();
-            if ("100".equals(result)){
-                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
-                LogsUtil.saveOperationLogs("数据导入");
-            }else {
-                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
-            }
+            MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
         });
         viewModel.doZipHandle().observe(this, result -> {
             int progress = result.getProgress();
             closeLogadingDialog();
             if (progress == 100) {
+                LogsUtil.saveOperationLogs("数据导入成功");
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
             } else {
                 MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);

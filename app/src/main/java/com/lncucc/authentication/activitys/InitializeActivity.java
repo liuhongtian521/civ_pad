@@ -147,6 +147,7 @@ public class InitializeActivity extends BaseActivity {
     @Override
     public void onInitDataBinding() {
         actInitializeBinding = DataBindingUtil.setContentView(this, R.layout.act_initialize);
+        actInitializeBinding.setHandlers(this);
     }
 
     @Subscribe

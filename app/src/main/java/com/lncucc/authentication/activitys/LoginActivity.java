@@ -43,8 +43,8 @@ public class LoginActivity extends BaseActivity {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
-        loginViewModel.account.set("admin");
-        loginViewModel.password.set("123456");
+        loginViewModel.account.set("K210106004");
+        loginViewModel.password.set("123qwe!@#QWE");
     }
 
     @Override
@@ -83,12 +83,12 @@ public class LoginActivity extends BaseActivity {
 
     private void doLogin() {
 
-        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-        } else {
-            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-        }
-        finish();
+//        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+//            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+//        } else {
+//            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+//        }
+//        finish();
 
 
         //有网络联网登录

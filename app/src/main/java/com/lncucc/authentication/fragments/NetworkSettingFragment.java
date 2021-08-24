@@ -13,15 +13,10 @@ import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.coremodel.datamodel.http.ApiConstants;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentNetworkSettingBinding;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Array;
-import java.util.List;
 
 /**
  * 数据导入

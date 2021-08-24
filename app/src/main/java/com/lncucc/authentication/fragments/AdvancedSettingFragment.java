@@ -17,6 +17,8 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentAdvancedSettingBinding;
+import com.lncucc.authentication.widgets.PassWordClickCallBack;
+import com.lncucc.authentication.widgets.VerifyCodeDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,8 +27,11 @@ import java.util.List;
 /**
  * 高级设置
  */
-public class AdvancedSettingFragment extends BaseFragment {
+public class AdvancedSettingFragment extends BaseFragment implements PassWordClickCallBack {
     private FragmentAdvancedSettingBinding advancedSetting;
+    private VerifyCodeDialog dialog;
+    private String sVerifyTime;
+    private String eVerifyTime;
 
     @Override
     public void onInit() {
@@ -37,6 +42,7 @@ public class AdvancedSettingFragment extends BaseFragment {
             //设置结束时间
             advancedSetting.edtEndTime.setText(list.get(0).getVerifyEndTime() == null ? "0" : list.get(0).getVerifyEndTime());
         }
+        dialog = new VerifyCodeDialog(getActivity(),this);
     }
 
     @Override
@@ -62,9 +68,24 @@ public class AdvancedSettingFragment extends BaseFragment {
         if (TextUtils.isEmpty(sVerifyTime) || TextUtils.isEmpty(eVerifyTime)) {
             MyToastUtils.error("请设置验证时间", Toast.LENGTH_LONG);
         } else {
-            //写入验证时间
-            DBOperation.updateVerifyTime(sVerifyTime, eVerifyTime);
-            MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+            dialog.show();
         }
+    }
+
+    @Override
+    public void confirm(String pwd) {
+        if (DBOperation.getSingleExamPlan() != null){
+            String localVerifyCode = DBOperation.getSingleExamPlan().getVerifyCode();
+            if (null != localVerifyCode && localVerifyCode.equals("pwd")){
+                //写入验证时间
+                DBOperation.updateVerifyTime(sVerifyTime, eVerifyTime);
+                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+            }else {
+                MyToastUtils.error("验证码输入错误！",Toast.LENGTH_SHORT);
+            }
+        }else {
+            MyToastUtils.error("暂无验证码,请重新导入重试",Toast.LENGTH_SHORT);
+        }
+        dialog.dismiss();
     }
 }

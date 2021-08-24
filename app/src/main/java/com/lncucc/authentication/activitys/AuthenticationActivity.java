@@ -63,6 +63,7 @@ import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 @Route(path = ARouterPath.IDENTIFY_ACTIVITY)
 public class AuthenticationActivity extends BaseActivity {
     private ActAuthenticationBinding mDataBinding;
+    //ZhjyBU@202104
 
     private AuthenticationViewModel mViewModel;
     //考生信息 dialog
