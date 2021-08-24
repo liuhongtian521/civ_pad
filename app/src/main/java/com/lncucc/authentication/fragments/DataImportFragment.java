@@ -98,11 +98,11 @@ public class DataImportFragment extends BaseFragment {
             }
         });
 
-        viewModel.usbWriteObservable().observe(this, result ->{
-            if (result.getCode() == 0){
+        viewModel.usbWriteObservable().observe(this, result -> {
+            if (result.getCode() == 0) {
                 viewModel.doSdCardImport();
-            }else {
-                MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
+            } else {
+                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
             }
         });
     }
@@ -167,7 +167,7 @@ public class DataImportFragment extends BaseFragment {
             readFromUDisk();
 
         } catch (Exception e) {
-            MyToastUtils.error("USB读取超时，请插拔重试！",Toast.LENGTH_SHORT);
+            MyToastUtils.error("USB读取超时，请插拔重试！", Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
     }

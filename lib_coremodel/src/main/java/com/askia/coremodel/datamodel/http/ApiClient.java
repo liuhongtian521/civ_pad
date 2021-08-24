@@ -1,10 +1,6 @@
 package com.askia.coremodel.datamodel.http;
 
 
-import android.util.Log;
-
-import com.askia.coremodel.BuildConfig;
-import com.askia.coremodel.datamodel.database.repository.DBRepository;
 import com.askia.coremodel.datamodel.http.service.NetDataService;
 import com.blankj.utilcode.util.LogUtils;
 
@@ -14,7 +10,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ApiClient {

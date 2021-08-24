@@ -232,11 +232,10 @@ public class DataImportViewModel extends BaseViewModel {
                 String faceNumber = file.getName().split("\\.")[0];
                 LogUtils.e("photo name->", faceNumber);
                 try {
-
-                byte[] bytes = FileUtil.readFile(file);
-                String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
-                event.setFaceId(faceId);
-                emitter.onNext(event);
+                    byte[] bytes = FileUtil.readFile(file);
+                    String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
+                    event.setFaceId(faceId);
+                    emitter.onNext(event);
                 }catch (Exception e){
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
