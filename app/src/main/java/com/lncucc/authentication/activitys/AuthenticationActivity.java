@@ -382,9 +382,7 @@ public class AuthenticationActivity extends BaseActivity {
                 if (integer > 0) {
                     //有数据刷脸 普通刷脸无效
                     faceResultDialog.setType(false);
-
                 } else {
-                    //无数据 可以刷脸
                     faceResultDialog.setType(true);
 
                 }

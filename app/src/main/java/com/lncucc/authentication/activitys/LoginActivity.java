@@ -82,7 +82,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin() {
-
+//
 //        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
 //            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
 //        } else {
@@ -102,7 +102,6 @@ public class LoginActivity extends BaseActivity {
             if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())) {
                 //登录成功，存本次登录账号
                 SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
-
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
                     startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
                 } else {

@@ -66,6 +66,7 @@ public class MainViewModel extends BaseViewModel {
     public MutableLiveData<DBExamPlan> getmDbExamPlan() {
         return mDbExamPlan;
     }
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void getExamCode() {
         List<DBExamPlan> planList = DBOperation.getExamPlan();
@@ -74,10 +75,9 @@ public class MainViewModel extends BaseViewModel {
         else
             mDbExamPlan.postValue(null);
     }
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void getSiteCode(String examCode) {//String examCode) {
-        examCode = "GK2030";
+//        examCode = "GK2030";
         DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
         List<DBExamArrange> list = DBOperation.getExamArrange(examCode);
         long timeNow = System.currentTimeMillis();
