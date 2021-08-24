@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="225dp"
+        android:layout_height="180dp"
+        android:background="@drawable/bg_login_white">
+
+        <RelativeLayout
+            android:id="@+id/rl_close"
+            android:padding="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp">
+            <ImageView
+                android:id="@+id/iv_close"
+                android:background="@drawable/cha"
+                android:layout_width="10dp"
+                android:layout_height="10dp"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_del"
+            android:background="@mipmap/icon_logout"
+            android:layout_marginTop="47dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="26dp"
+            android:layout_height="26dp"/>
+
+        <TextView
+            android:id="@+id/tv_data_clear_tips"
+            android:layout_below="@+id/iv_del"
+            android:layout_marginTop="11dp"
+            android:textColor="@color/_163366"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:text="@string/dialog_logout"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_below="@+id/tv_data_clear_tips"
+            android:layout_marginTop="40dp">
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:text="@string/btn_data_clear"
+                android:gravity="center"
+                android:textSize="9sp"
+                android:layout_marginLeft="30dp"
+                android:layout_alignParentStart="true"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_login_button"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:text="@string/btn_data_confirm"
+                android:gravity="center"
+                android:textSize="9sp"
+                android:layout_marginRight="30dp"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_login_button"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

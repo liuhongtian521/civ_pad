@@ -13,17 +13,20 @@ import com.askia.common.base.BaseFragment;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.LoginActivity;
 import com.lncucc.authentication.databinding.FragmentLogoutSettingBinding;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.LogoutDialog;
 
 import org.jetbrains.annotations.NotNull;
 
 /**
  * 退出登录
  */
-public class LogoutSettingFragment extends BaseFragment {
+public class LogoutSettingFragment extends BaseFragment implements DialogClickBackListener {
     private FragmentLogoutSettingBinding logoutSetting;
+    private LogoutDialog logoutDialog;
     @Override
     public void onInit() {
-
+        logoutDialog = new LogoutDialog(getActivity(),this);
     }
 
     @Override
@@ -44,8 +47,20 @@ public class LogoutSettingFragment extends BaseFragment {
     }
 
     public void logout(View view){
-        getActivity().finish();
-        startActivity(new Intent(getActivity(), LoginActivity.class));
+        logoutDialog.show();
     }
 
+    @Override
+    public void dissMiss() {
+
+    }
+
+    @Override
+    public void backType(int type) {
+        if (logoutDialog != null){
+            logoutDialog.dismiss();
+            getActivity().finish();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
+    }
 }

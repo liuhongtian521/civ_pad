@@ -20,6 +20,7 @@
     <string name="examination_check">场次查看</string>
     <string name="data_view">数据查看</string>
     <string name="validation_data_check">验证数据查看</string>
+    <string name="dialog_logout">确定要退出登录吗？</string>
     <string name="data_lead">数据导入</string>
     <string name="data_export">数据导出</string>
     <string name="data_clear">数据清空</string>
