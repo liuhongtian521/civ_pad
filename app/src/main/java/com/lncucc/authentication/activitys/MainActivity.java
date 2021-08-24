@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 Bundle _b = new Bundle();
                 _b.putString("SE_CODE", mSeCode);
-                startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 121101, _b);
+                startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 1211, _b);
             }
         });
 
@@ -149,7 +149,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 121101 && resultCode == 1) {
+        if (requestCode == 1211 && resultCode == 1) {
             mExamCodeList.addAll(data.getStringArrayListExtra("list"));
         }
     }

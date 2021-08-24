@@ -21,11 +21,11 @@ public class ValidationDataAdapter extends BaseQuickAdapter<DBExamExport, BaseVi
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamExport s) {
-//        baseViewHolder.setText(R.id.tv_stu_no,s.getId());
-//        baseViewHolder.setText(R.id.tv_stu_name,s.getStuName());
-//        baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
-//        baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());
-//        baseViewHolder.setText(R.id.tv_exam, s.getSeName());
+        baseViewHolder.setText(R.id.tv_stu_no,s.getId());
+        baseViewHolder.setText(R.id.tv_stu_name,s.getVerifyTime());
+        baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
+        baseViewHolder.setText(R.id.tv_stu_exa_num,s.getStuName());
+        baseViewHolder.setText(R.id.tv_exam, s.getVerifyResult());
         int position = baseViewHolder.getLayoutPosition();
         String color = "";
         if (position % 2 != 0) {
