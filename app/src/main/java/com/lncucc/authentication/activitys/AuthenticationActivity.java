@@ -506,7 +506,7 @@ public class AuthenticationActivity extends BaseActivity {
     public void chooseExamination(View view) {
         Bundle _b = new Bundle();
         _b.putString("SE_CODE", mSeCode);
-        startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 121101, _b);
+        startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 1211, _b);
     }
 
     public void setting(View view) {
@@ -522,11 +522,10 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 121101 && resultCode == 1) {
+        if (requestCode == 1211 && resultCode == 1) {
             mExamCodeList.clear();
             mExamCodeList.addAll(data.getStringArrayListExtra("list"));
             mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
-
         }
     }
 
