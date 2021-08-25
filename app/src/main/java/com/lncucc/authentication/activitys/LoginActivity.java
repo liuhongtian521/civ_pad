@@ -43,8 +43,8 @@ public class LoginActivity extends BaseActivity {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
-        loginViewModel.account.set("K210106004");
-        loginViewModel.password.set("123qwe!@#QWE");
+        loginViewModel.account.set("admin");
+        loginViewModel.password.set("123456");
     }
 
     @Override

@@ -66,6 +66,7 @@ public class MainViewModel extends BaseViewModel {
     public MutableLiveData<DBExamPlan> getmDbExamPlan() {
         return mDbExamPlan;
     }
+
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void getExamCode() {
@@ -86,7 +87,8 @@ public class MainViewModel extends BaseViewModel {
             Log.e("TagSnake", item.toString());
             long start = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) - Long.valueOf(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000;
             long end = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) + Long.valueOf(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000;
-            if (start<timeNow &&end>timeNow){
+            Log.e("TagSnake", "timeNow:" + timeNow + ":start:" + start + ":end:" + end);
+            if (start < timeNow && end > timeNow) {
                 back = item;
                 break;
             }

@@ -11,6 +11,7 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/bg_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/icon_main_bg">
@@ -19,7 +20,7 @@
             android:id="@+id/rel_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_10">
+            android:layout_marginTop="@dimen/dp_40">
 
             <TextView
                 android:id="@+id/tv_name"

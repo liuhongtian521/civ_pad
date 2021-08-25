@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -76,16 +77,14 @@ public class MainActivity extends BaseActivity {
 
     public void timer() {
         long nowTime = System.currentTimeMillis();
-
-        Log.e("TagSnake", "now" + nowTime + ":staet" + timeStart+":end"+timeEnd);
-
+//        Log.e("TagSnake", "now" + nowTime + ":staet" + timeStart + ":end" + timeEnd);
         if (nowTime > timeStart) {
             Bundle _d = new Bundle();
             _d.putString("exanCode", mExanCode);
             _d.putStringArrayList("list", mExamCodeList);
             _d.putLong("startTIME", timeStart);
             _d.putLong("endTIME", timeEnd);
-            startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY,_d);
+            startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY, _d);
             finish();
         } else {
             long betten = timeStart - nowTime;
@@ -112,6 +111,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void close(DBExamPlan dbExamPlan) {
                 mDataBinding.tvName.setText(dbExamPlan.getExamName());
+                semExanCode(dbExamPlan.getExamCode());
             }
         });
 
@@ -138,6 +138,14 @@ public class MainActivity extends BaseActivity {
                 Bundle _b = new Bundle();
                 _b.putString("SE_CODE", mSeCode);
                 startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 1211, _b);
+            }
+        });
+
+        mDataBinding.ivChooseExam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
             }
         });
 

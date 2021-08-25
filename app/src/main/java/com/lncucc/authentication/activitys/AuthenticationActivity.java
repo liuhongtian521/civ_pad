@@ -339,7 +339,6 @@ public class AuthenticationActivity extends BaseActivity {
             public void onClick(View v) {
 
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
-
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
             }
         });

@@ -176,8 +176,10 @@ public class InitializeActivity extends BaseActivity {
             //获取到数据
             if (!selectpalnbysitecodeData.isSuccess()) {
                 Toast.makeText(getApplicationContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
-                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-                finish();
+
+                breakthis(null);
+//                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+//                finish();
                 return;
             }
             mList = selectpalnbysitecodeData.getResult();
