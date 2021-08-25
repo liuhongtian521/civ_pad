@@ -14,6 +14,8 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ValidationDataAdapter;
 import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
@@ -40,6 +42,13 @@ public class DataValidationFragment extends BaseFragment {
         mBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ValidationDataAdapter(mList);
         mBinding.rlDataView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull @NotNull BaseQuickAdapter<?, ?> adapter, @NonNull @NotNull View view, int position) {
+
+            }
+        });
     }
 
     @Override

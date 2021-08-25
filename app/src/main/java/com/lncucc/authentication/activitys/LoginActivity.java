@@ -43,8 +43,9 @@ public class LoginActivity extends BaseActivity {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
-        loginViewModel.account.set("admin");
-        loginViewModel.password.set("123456");
+
+        loginViewModel.account.set(defaultAccount);
+//        loginViewModel.password.set("123qwe!@#QWE");
     }
 
     @Override
@@ -98,10 +99,10 @@ public class LoginActivity extends BaseActivity {
 //            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
 //            finish();
         } else {
+            String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
+            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.account.get());
             //本地账号密码登录
-            if ("admin".equals(loginViewModel.account.get()) && "123456".equals(loginViewModel.password.get())) {
-                //登录成功，存本次登录账号
-                SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
+            if (account.equals(loginViewModel.account.get()) && password.equals(loginViewModel.password.get())) {
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
                     startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
                 } else {
