@@ -37,6 +37,16 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamPlan.class).findFirst();
     }
 
+    /**
+     * 获取考试名称
+     * @param examCode
+     * @return
+     */
+    public static DBExamPlan getExamName(String examCode){
+        return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode",examCode)
+                .findFirst();
+    }
+
 
     /**
      * 获取考场安排列表
