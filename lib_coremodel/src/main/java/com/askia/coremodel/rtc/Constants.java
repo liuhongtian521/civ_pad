@@ -37,6 +37,10 @@ public class Constants {
     public static final String ACTION_USB_PERMISSION = "com.lncucc.authentication.USB_PERMISSION";
 
     public static final String CAMERA_DEFAULT = "camera_default";
+    public static final String KEY_SOUND = "key_sound";
+    public static final String SOUND_SETTING = "sound_setting";
+    public static final String DEFAULT_SOUND_SETTING = "default_sound_setting";
+    public static final String VOICE_SOUND = "voice_sound";
 
     //apk下载地址
     public static final String apkPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "CivDownload";
