@@ -1,8 +1,11 @@
 package com.lncucc.authentication.fragments;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
@@ -47,6 +50,7 @@ public class DataViewFragment extends BaseFragment {
             }
         });
         viewBinding.rlDataView.setAdapter(mAdapter);
+        initEvent();
     }
 
     @Override
@@ -62,6 +66,10 @@ public class DataViewFragment extends BaseFragment {
     }
 
     public void query(View view) {
+        queryStudent();
+    }
+
+    private void queryStudent(){
         String queryParams = viewBinding.editExamNumber.getText().toString().trim();
         mList = DBOperation.getDBExamLayoutByIdNo(queryParams);
         if (mList.size() > 0) {
@@ -72,6 +80,20 @@ public class DataViewFragment extends BaseFragment {
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
         }
     }
+
+    private void initEvent(){
+        viewBinding.editExamNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                    queryStudent();
+                }
+                return false;
+            }
+        });
+    }
+
+
 
     @Override
     public void onSubscribeViewModel() {

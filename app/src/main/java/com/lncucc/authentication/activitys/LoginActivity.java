@@ -77,6 +77,8 @@ public class LoginActivity extends BaseActivity {
                     _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
                     startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
                     finish();
+                }else {
+                    MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
                 }
             }
         });

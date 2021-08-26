@@ -17,6 +17,7 @@ import com.apkfuns.logutils.LogUtils;
 import com.askia.common.base.BaseFragment;
 import com.askia.coremodel.viewmodel.DateSettingViewModel;
 import com.askia.coremodel.viewmodel.LoginViewModel;
+import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.LoginActivity;
 import com.lncucc.authentication.databinding.FragmentDateSettingBinding;
@@ -24,69 +25,81 @@ import com.lncucc.authentication.databinding.FragmentDateSettingBinding;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 
 /**
- * 数据导入
+ * 时间设置
  */
 public class DateSettingFragment extends BaseFragment {
     private FragmentDateSettingBinding dateSetting;
      DateSettingViewModel dateSettingViewModel;
-
-    TextView timeSetBt;
-    TextView timeWrap;
-    Calendar cal;
-    String year;
-    String month;
-    String day;
-    String hour;
-    String minute;
-    String second;
-    String my_time_1;
-    String my_time_2;
-    long sysTime;
-    Timer timer = new Timer();
+    public final CompositeDisposable mDisposable = new CompositeDisposable();
 
 
     @Override
     public void onInit() {
-        cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        sysTime= System.currentTimeMillis();//获取系统时
-        timeSetBt = dateSetting.sbTimeSet;
-        timeWrap = dateSetting.dateWrap;
 
-        timeSetBt.setOnClickListener(new View.OnClickListener() {
+        dateSetting.sbTimeSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dateClick();
             }
         });
-        timeset();
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                timeset();
-            }
-        };
-        timer.schedule(task,10,1000);
+        initTimer();
     }
 
+    private void initTimer() {
+        Observable.interval(1000, TimeUnit.MILLISECONDS).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NotNull Long aLong) {
+                        com.blankj.utilcode.util.LogUtils.e("current time ->", System.currentTimeMillis());
+                        Date date = TimeUtils.millis2Date(System.currentTimeMillis());
+                        String current = TimeUtils.date2String(date);
+                        dateSetting.dateWrap.setText(current);
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+
     @Override
-    public void onResume() {
-        sysTime= System.currentTimeMillis();//获取系统时间
-        LogUtils.e("重新执行");
-        super.onResume();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            initTimer();
+        }
     }
 
     @Override
     public void onDestroy() {
-        timer.cancel();
         super.onDestroy();
+        mDisposable.dispose();
     }
 
     @Override
@@ -109,25 +122,6 @@ public class DateSettingFragment extends BaseFragment {
 
     public void dateClick() {
         mActivity.startActivity(new Intent(Settings.ACTION_DATE_SETTINGS));
-
     }
 
-    public void timeset () {
-
-//        year = String.valueOf(cal.get(Calendar.YEAR));
-//        month = String.valueOf(cal.get(Calendar.MONTH) + 1);
-//        day = String.valueOf(cal.get(Calendar.DATE));
-//        if (cal.get(Calendar.AM_PM) == 0)
-//            hour = String.valueOf(cal.get(Calendar.HOUR));
-//        else
-//            hour = String.valueOf(cal.get(Calendar.HOUR)+12);
-//        minute = String.valueOf(cal.get(Calendar.MINUTE));
-//        second = String.valueOf(cal.get(Calendar.SECOND));
-//
-//        my_time_1 = year + "-" + month + "-" + day + " ";
-//        my_time_2 = hour + ":" + minute + ":" + second;
-        sysTime = sysTime + 1000;
-        LogUtils.e("时间戳", sysTime);
-        dateSettingViewModel.timeStr.set(DateFormat.format("yyyy-MM-dd hh:mm:ss", sysTime).toString());
-    }
 }

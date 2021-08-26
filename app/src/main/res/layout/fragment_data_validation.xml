@@ -61,9 +61,9 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="2"
                 android:gravity="center"
-                android:text="@string/stu_id_no"
+                android:text="@string/stu_name"
                 android:textColor="@color/_333333"
                 android:textSize="8sp"
                 android:textStyle="bold" />
@@ -71,12 +71,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:gravity="center"
-                android:text="@string/stu_name"
+                android:text="@string/stu_id_no"
                 android:textColor="@color/_333333"
                 android:textSize="8sp"
                 android:textStyle="bold" />
+
 
             <TextView
                 android:layout_width="0dp"

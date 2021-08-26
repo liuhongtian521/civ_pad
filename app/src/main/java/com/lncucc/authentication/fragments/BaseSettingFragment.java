@@ -40,32 +40,27 @@ public class BaseSettingFragment extends BaseFragment  {
         sbSoundT = baseSetting.sbTable;
         sbSound.setChecked(true);
 
-        sbSoundT.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            // 设置键盘音开启关闭
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    // 开启
-                    Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
-                } else {
-                    // 关闭
-                    Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
-                }
+
+        // 设置键盘音开启关闭
+        sbSoundT.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                // 开启
+                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+                MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
+            } else {
+                // 关闭
+                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
+                MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
             }
         });
-        sbSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            // 静音设置
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE , 0);// 设置静音
-                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
-                } else {
-                    mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_UNMUTE, 0);//取消静音
-                    MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
-                }
+        // 静音设置
+        sbSound.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE , 0);// 设置静音
+                MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
+            } else {
+                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_UNMUTE, 1);//取消静音
+                MyToastUtils.success("设置成功",Toast.LENGTH_SHORT);
             }
         });
 

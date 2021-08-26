@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ChooseVenueAdapter;
 import com.lncucc.authentication.adapters.DataViewAdapter;
+import com.lncucc.authentication.callback.VenveItemClick;
 import com.lncucc.authentication.databinding.ActChooseVenueBinding;
 
 import java.util.ArrayList;
@@ -29,10 +30,11 @@ import java.util.Objects;
  * @date 2021/8/5
  */
 @Route(path = ARouterPath.CHOOSE_VENVE)
-public class ChooseVenveActivity extends BaseActivity {
+public class ChooseVenveActivity extends BaseActivity implements VenveItemClick {
     private ChooseVenueAdapter mAdapter;
     private ActChooseVenueBinding mDataBinding;
     private List<DBExamLayout> mList;
+    private boolean defaultTag = true;
 
     @Override
     public void onInit() {
@@ -40,7 +42,7 @@ public class ChooseVenveActivity extends BaseActivity {
         String seCode = getIntent().getStringExtra("SE_CODE");
 
         mList = DBOperation.getRoomList(seCode);
-        mAdapter = new ChooseVenueAdapter(mList);
+        mAdapter = new ChooseVenueAdapter(mList, this);
         mDataBinding.recChoose.setLayoutManager(new LinearLayoutManager(this));
         mDataBinding.recChoose.setAdapter(mAdapter);
         LogUtils.e("fetch room list by seCode->", mList);
@@ -49,6 +51,9 @@ public class ChooseVenveActivity extends BaseActivity {
     @Override
     public void onInitViewModel() {
 
+    }
+
+    private void initEvent() {
     }
 
     public void confirm(View view) {
@@ -67,15 +72,59 @@ public class ChooseVenveActivity extends BaseActivity {
         finish();
     }
 
+    //全部选择按钮 || 取消全选
+    public void chooseAll(View view) {
+
+        for (int i = 0; i < mList.size(); i++) {
+            boolean isChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
+            //全选 -> 取消全选
+            if (defaultTag) {
+                if (isChecked) {
+                    ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).setChecked(!isChecked);
+                }
+            } else {
+                if (!isChecked) {
+                    ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).setChecked(!isChecked);
+                }
+            }
+        }
+        defaultTag = !defaultTag;
+        if (defaultTag) {
+            mDataBinding.tvChooseAll.setText("取消全选");
+        } else {
+            mDataBinding.tvChooseAll.setText("全选");
+        }
+    }
+
     @Override
     public void onInitDataBinding() {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.act_choose_venue);
-        mDataBinding.setHandlers(this);
         mDataBinding.setHandlers(this);
     }
 
     @Override
     public void onSubscribeViewModel() {
 
+    }
+
+    @Override
+    public void onItemClickListener(int position) {
+        //全选状态 当前item取消选中改变 按钮文字
+       boolean isChecked = ((CheckBox)mAdapter.getViewByPosition(position,R.id.cx_ex)).isChecked();
+       if (!isChecked){
+           mDataBinding.tvChooseAll.setText("全选");
+       }else {
+           boolean isHasChecked = true;
+           for (int i = 0; i < mList.size(); i++) {
+               boolean itemChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
+               if (!itemChecked){
+                   isHasChecked = false;
+               }
+           }
+
+           if (isHasChecked){
+               mDataBinding.tvChooseAll.setText("取消全选");
+           }
+       }
     }
 }

@@ -73,9 +73,12 @@
                 android:layout_height="25dp"
                 android:layout_toRightOf="@+id/iv_view"
                 android:background="@null"
+                android:imeOptions="actionSearch"
                 android:hint="请输入身份证或准考证后6位"
                 android:textColorHint="#A7B6D1"
                 android:maxLines="1"
+                android:singleLine="true"
+                android:maxLength="6"
                 android:paddingLeft="@dimen/dp_6"
                 android:paddingRight="@dimen/dp_6"
                 android:textSize="9sp" />
