@@ -3,6 +3,11 @@ package com.askia.coremodel.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.askia.coremodel.datamodel.database.db.DBExamPlan;
+import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.unicom.facedetect.detect.FaceDetectManager;
@@ -52,7 +57,12 @@ public class DataClearViewModel extends BaseViewModel {
 
 
         //清空数据库
-        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+            realm.delete(DBExamLayout.class);
+            realm.delete(DBExamArrange.class);
+            realm.delete(DBExaminee.class);
+            realm.delete(DBExamPlan.class);
+        }, () -> {
             dataClearObservable.postValue("数据库删除成功");
             Observable.create((ObservableOnSubscribe<String>) emitter -> {
                 //清空.zip
@@ -110,7 +120,10 @@ public class DataClearViewModel extends BaseViewModel {
         }
 
         //清空数据库
-        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+            //清空验证数据
+            realm.delete(DBExamExport.class);
+        }, () -> {
             dataVerifyObservable.postValue("验证数据库清理成功！");
             Observable.create((ObservableOnSubscribe<String>) emitter -> {
                 //清空验证数据文件夹
@@ -124,7 +137,7 @@ public class DataClearViewModel extends BaseViewModel {
                     .subscribe(new Observer<String>() {
                         @Override
                         public void onSubscribe(@NotNull Disposable d) {
-
+                            mDisposable.add(d);
                         }
 
                         @Override

@@ -85,21 +85,10 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin() {
-//
-//        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-//            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-//        } else {
-//            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-//        }
-//        finish();
-
 
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
             loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
-//            SharedPreferencesUtils.putString(this, "account", loginViewModel.account.get());
-//            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-//            finish();
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
             String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.account.get());

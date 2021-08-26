@@ -15,6 +15,7 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
@@ -79,6 +80,7 @@ public class DataViewFragment extends BaseFragment {
         } else {
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
         }
+        KeyboardUtils.hideSoftInput(getActivity());
     }
 
     private void initEvent(){

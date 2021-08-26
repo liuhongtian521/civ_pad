@@ -88,4 +88,9 @@ public class AdvancedSettingFragment extends BaseFragment implements PassWordCli
         }
         dialog.dismiss();
     }
+
+    @Override
+    public void dismiss() {
+
+    }
 }

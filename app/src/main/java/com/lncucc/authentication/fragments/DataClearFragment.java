@@ -1,5 +1,6 @@
 package com.lncucc.authentication.fragments;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,12 +60,12 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     @Override
     public void onSubscribeViewModel() {
         viewModel.delImportData().observe(this, result -> {
-            LogUtils.e("导入数据result ->", result);
+            KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("导入数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
         });
         viewModel.delVerifyData().observe(this, result ->{
-            LogUtils.e("验证数据result ->", result);
+            KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("验证数据清空");
         });
         KeyboardUtils.toggleSoftInput();
@@ -113,7 +114,6 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
 
     @Override
     public void confirm(String pwd) {
-
         String localPwd = SharedPreferencesUtils.getString(getActivity(), "pwd", "123456");
         if (!TextUtils.isEmpty(localPwd) && localPwd.equals(pwd)) {
             if (null != passWordDialog) {
@@ -133,5 +133,11 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
         } else {
             MyToastUtils.error("密码错误！", Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void dismiss() {
+        passWordDialog.dismiss();
+        KeyboardUtils.toggleSoftInput();
     }
 }

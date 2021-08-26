@@ -233,9 +233,14 @@ public class DataImportViewModel extends BaseViewModel {
                 LogUtils.e("photo name->", faceNumber);
                 try {
                     byte[] bytes = FileUtil.readFile(file);
-                    String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
-                    event.setFaceId(faceId);
-                    emitter.onNext(event);
+                    //根据faceNumber获取人脸库中是否有此信息
+                    boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
+                    //如果人脸库中没有此人则把照片插入人脸库
+                    if (!isHave){
+                        String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
+                        event.setFaceId(faceId);
+                        emitter.onNext(event);
+                    }
                 }catch (Exception e){
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
