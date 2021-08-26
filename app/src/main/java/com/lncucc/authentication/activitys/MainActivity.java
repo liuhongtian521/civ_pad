@@ -149,8 +149,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mViewModel.getExamCode();
-
     }
 
 
@@ -229,6 +227,11 @@ public class MainActivity extends BaseActivity {
         super.onResume();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mViewModel.getExamCode();
+    }
     @Override
     protected void onPause() {
         super.onPause();

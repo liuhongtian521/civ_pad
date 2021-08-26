@@ -87,10 +87,10 @@ public class DateSettingActivity extends BaseActivity {
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS
         ).subscribe(aBoolean -> {
-            if (aBoolean){
+            if (aBoolean) {
                 //申请的权限全部允许
 //                goToMain();
-            }else{
+            } else {
                 //只要有一个权限被拒绝，就会执行
                 new QMUIDialog.MessageDialogBuilder(DateSettingActivity.this)
                         .setTitle("权限异常")
@@ -227,7 +227,7 @@ public class DateSettingActivity extends BaseActivity {
         finish();
     }
 
-    public void setting(View view){
+    public void setting(View view) {
         LogsUtil.saveOperationLogs("时间校正");
         startActivity(new Intent(Settings.ACTION_DATE_SETTINGS));
     }

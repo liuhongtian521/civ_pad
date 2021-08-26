@@ -143,6 +143,11 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getPlanByCode(mExanCode);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        semExanCode(this.mExanCode);
+    }
 
     @Override
     public void onInit() {

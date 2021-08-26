@@ -254,7 +254,7 @@ public class DBOperation {
     public static DBExamLayout getStudentByCode(String idCode, String examCode, String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("idCode", idCode);
+        query.equalTo("idCard", idCode);
         query.equalTo("examCode", examCode);
         query.equalTo("seCode", seCode);
         query.endGroup();
