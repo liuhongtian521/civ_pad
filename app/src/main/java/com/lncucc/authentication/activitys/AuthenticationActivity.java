@@ -521,6 +521,12 @@ public class AuthenticationActivity extends BaseActivity {
     public void audit(View view) {
         faceFragment.closeFace();
         inquiryDialog.show();
+        inquiryDialog.search();
+    }
+
+
+    public void toSeeMore(View view) {
+        startActivityByRouter(ARouterPath.DATA_VIEW);
     }
 
     //页面返回接收

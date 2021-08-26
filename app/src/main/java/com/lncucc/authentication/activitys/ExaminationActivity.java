@@ -39,12 +39,16 @@ public class ExaminationActivity extends BaseActivity {
     private NoSwipeViewPager viewPager;
     private ArrayList<String> mTitleList;
     private ArrayList<Fragment> mFragmentList;
+    private boolean showMsg;
 
     @Override
     public void onInit() {
+
+
         initView();
         initData();
         initEvent();
+
     }
 
     @Override
@@ -59,9 +63,9 @@ public class ExaminationActivity extends BaseActivity {
         mExaminationBinding.setOnclick(new ProxyClick());
     }
 
-    private void initView(){
+    private void initView() {
         back = findViewById(R.id.rl_left_back);
-        back.setOnClickListener(v->finish());
+        back.setOnClickListener(v -> finish());
         tabLayout = findViewById(R.id.tab);
         viewPager = findViewById(R.id.view_pager);
         mTitleList = new ArrayList<>();
@@ -72,12 +76,12 @@ public class ExaminationActivity extends BaseActivity {
         mFragmentList.add(new SessionFragment());
         mFragmentList.add(new DataValidationFragment());
 
-        viewPager.setAdapter(new DataServicePageAdapter(mFragmentList,getSupportFragmentManager()));
+        viewPager.setAdapter(new DataServicePageAdapter(mFragmentList, getSupportFragmentManager()));
         viewPager.setHorizontalScrollBarEnabled(false);
 
     }
 
-    private void initEvent(){
+    private void initEvent() {
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -109,7 +113,7 @@ public class ExaminationActivity extends BaseActivity {
         });
     }
 
-    private void initData(){
+    private void initData() {
         tabLayout.setTabAdapter(new TabAdapter() {
             @Override
             public int getCount() {
@@ -130,7 +134,7 @@ public class ExaminationActivity extends BaseActivity {
             public ITabView.TabTitle getTitle(int position) {
                 QTabView.TabTitle title = new QTabView.TabTitle.Builder()
                         .setContent(mTitleList.get(position))
-                        .setTextColor(getResources().getColor(R.color.white),getResources().getColor(R.color._333333))
+                        .setTextColor(getResources().getColor(R.color.white), getResources().getColor(R.color._333333))
                         .setTextSize(10)
                         .build();
                 return title;
@@ -150,12 +154,12 @@ public class ExaminationActivity extends BaseActivity {
 
     public class ProxyClick {
         //场次查看
-        public void handleExaminationData(){
+        public void handleExaminationData() {
 
         }
 
         //验证数据查看
-        public void handleExaminationNow(){
+        public void handleExaminationNow() {
 
         }
     }

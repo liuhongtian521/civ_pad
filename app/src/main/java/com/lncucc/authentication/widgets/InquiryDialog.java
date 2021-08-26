@@ -138,8 +138,6 @@ public class InquiryDialog extends BaseDialog {
                         onSearch.search(editCard.getText().toString().trim(), 1);
                     }
                 }
-                search();
-
             }
         });
 
@@ -192,8 +190,16 @@ public class InquiryDialog extends BaseDialog {
     }
 
     //搜索用
-    private void search() {
+    public void search() {
+        relLeft.setVisibility(View.GONE);
+        relRight.setVisibility(View.VISIBLE);
+        relChoose.setVisibility(View.VISIBLE);
+        tvChooseText.setText("准考证查询");
+        editExamNum.setVisibility(View.VISIBLE);
+        editExamNum.setText("");
+        editCard.setVisibility(View.GONE);
 
+        linePeople.setVisibility(View.GONE);
     }
 
     private void fullScreenImmersive(View view) {

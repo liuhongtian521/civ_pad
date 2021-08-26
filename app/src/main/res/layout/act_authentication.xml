@@ -22,9 +22,9 @@
 
         <RelativeLayout
             android:id="@+id/rel_title"
-            android:layout_below="@+id/rl_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
+            android:layout_below="@+id/rl_top"
             android:background="#FAFAFA"
             android:shadowColor="#000000"
             android:shadowDx="0"
@@ -194,10 +194,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/line_tomore"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
+                    android:onClick="@{handlers::toSeeMore}"
                     android:orientation="horizontal">
 
                     <TextView
