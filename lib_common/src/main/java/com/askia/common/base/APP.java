@@ -71,6 +71,8 @@ import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 import com.unicom.facedetect.detect.FaceDetectInitListener;
 import com.unicom.facedetect.detect.FaceDetectManager;
+import com.unicom.facedetect.log.DiagnosisLog;
+import com.unicom.facedetect.log.DiagnosisType;
 import com.yuyh.library.imgsel.ISNav;
 import com.yuyh.library.imgsel.common.ImageLoader;
 
@@ -223,6 +225,8 @@ public class APP extends Application {
             public void onInitComplete() {
                 isInitFaceSuccess = true;
                 Log.e("init face", "success");
+                DiagnosisLog.setDebugModel(true);
+                DiagnosisLog.d(DiagnosisType.DETECT,"onInitComplete");
             }
 
             @Override

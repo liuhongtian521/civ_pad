@@ -1,8 +1,11 @@
 package com.lncucc.authentication.fragments;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,6 +28,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import a.a.a.a.a;
@@ -104,7 +108,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 if (!mFaceDecting)
                     return;
                 //人脸处理，检测照片中是否有人脸
-                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation(), false);
+                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
                 if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
 //                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
                     frames = 0;
@@ -115,10 +119,19 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     } else {
                         mFaceDecting = false;
                     }
-                    //获取人脸特征
-                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
-                    //人脸对比
+
+                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
+                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
+                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 70, outputSteam);
+                    byte[] jpegData = outputSteam.toByteArray();
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 1;
+                    float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
                     FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
+                    //获取人脸特征
+//                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
+                    //人脸对比
+//                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
                     LogUtils.e("detect result ->", detectResult.similarity);
                     Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
 
@@ -145,7 +158,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 //                        Log.e("TagSnake save", Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png");
 
 //                        String base64 = ImageUtil.encodeImage(bitmap);
-                        setUI(detectResult );
+                        setUI(detectResult);
 
                         bitmap.recycle();
                     } else {

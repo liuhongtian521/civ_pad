@@ -10,16 +10,6 @@
     android:layout_height="30dp">
 
     <TextView
-        android:id="@+id/tv_no"
-        android:textSize="8sp"
-        android:textColor="@color/_333333"
-        android:text="@string/session_no"
-        android:gravity="center"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
-
-    <TextView
         android:id="@+id/tv_subject"
         android:textSize="8sp"
         android:layout_weight="2"
@@ -52,7 +42,7 @@
     <TextView
         android:id="@+id/tv_time"
         android:textSize="8sp"
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:textColor="@color/_333333"
         android:text="@string/exa_time"
         android:gravity="center"

@@ -24,7 +24,6 @@ public class SessionAdapter extends BaseQuickAdapter<DBExamArrange, BaseViewHold
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamArrange s) {
         String examName = DBOperation.getExamName(s.getExamCode()).getExamName();
-        baseViewHolder.setText(R.id.tv_no, s.getSeCode());
         baseViewHolder.setText(R.id.tv_subject, s.getSubName());
         baseViewHolder.setText(R.id.tv_type, examName);
         baseViewHolder.setText(R.id.tv_name, s.getSeName());

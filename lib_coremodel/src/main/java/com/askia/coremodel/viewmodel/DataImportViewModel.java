@@ -1,5 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.databinding.ObservableField;
@@ -232,7 +234,8 @@ public class DataImportViewModel extends BaseViewModel {
                 String faceNumber = file.getName().split("\\.")[0];
                 LogUtils.e("photo name->", faceNumber);
                 try {
-                    byte[] bytes = FileUtil.readFile(file);
+//                    byte[] bytes = FileUtil.readFile(file);
+                    byte [] bytes = FileUtil.getBytesByFile(file.getPath());
                     //根据faceNumber获取人脸库中是否有此信息
                     boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
                     //如果人脸库中没有此人则把照片插入人脸库

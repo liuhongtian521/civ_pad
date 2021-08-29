@@ -172,7 +172,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/bg_login_button"
             android:layout_width="390dp"
-            android:layout_marginTop="128dp"
+            android:layout_marginTop="8dp"
             android:layout_height="30dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

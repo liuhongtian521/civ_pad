@@ -7,15 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="30dp">
 
-    <TextView
-        android:id="@+id/tv_stu_no"
-        android:textSize="8sp"
-        android:layout_weight="2"
-        android:gravity="center"
-        android:textColor="@color/_333333"
-        android:text="@string/session_no"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tv_stu_name"
@@ -30,7 +21,7 @@
     <TextView
         android:id="@+id/tv_stu_num"
         android:textSize="8sp"
-        android:layout_weight="5"
+        android:layout_weight="2"
         android:gravity="center"
         android:textColor="@color/_333333"
         android:text="@string/stu_id_no"
@@ -40,7 +31,7 @@
     <TextView
         android:id="@+id/tv_stu_exa_num"
         android:textSize="8sp"
-        android:layout_weight="2"
+        android:layout_weight="5"
         android:gravity="center"
         android:textColor="@color/_333333"
         android:text="@string/stu_admission"
@@ -49,17 +40,19 @@
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <ImageView
+            android:layout_centerVertical="true"
             android:id="@+id/iv_state"
             android:layout_width="8dp"
             android:layout_height="8dp"/>
         <TextView
             android:id="@+id/tv_exam"
             android:textSize="8sp"
+            android:layout_marginLeft="4dp"
             android:layout_toRightOf="@+id/iv_state"
             android:gravity="center"
             android:textColor="@color/_333333"

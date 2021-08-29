@@ -14,6 +14,7 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
@@ -43,11 +44,8 @@ public class DataValidationFragment extends BaseFragment {
         mAdapter = new ValidationDataAdapter(mList);
         mBinding.rlDataView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull @NotNull BaseQuickAdapter<?, ?> adapter, @NonNull @NotNull View view, int position) {
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
 
-            }
         });
     }
 
@@ -59,6 +57,7 @@ public class DataValidationFragment extends BaseFragment {
     public void query(View view) {
         String queryParams = mBinding.editExamNumber.getText().toString().trim();
         mList = DBOperation.getDBExportByIdNo(queryParams);
+        KeyboardUtils.hideSoftInput(getActivity());
         if (mList.size() > 0) {
             tempList.clear();
             tempList.addAll(mList);

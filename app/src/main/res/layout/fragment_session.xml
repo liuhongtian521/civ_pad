@@ -47,15 +47,6 @@
             
             <TextView
                 android:textSize="8sp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textColor="@color/_333333"
-                android:text="@string/session_no"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:textSize="8sp"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:textColor="@color/_333333"
@@ -83,7 +74,7 @@
 
             <TextView
                 android:textSize="8sp"
-                android:layout_weight="4"
+                android:layout_weight="5"
                 android:gravity="center"
                 android:textColor="@color/_333333"
                 android:text="@string/exa_time"
@@ -94,6 +85,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/exam_recycler"
+            android:background="@color/bg_manager"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:paddingBottom="1dp"
             app:layout_constraintTop_toBottomOf="@+id/ll_header"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

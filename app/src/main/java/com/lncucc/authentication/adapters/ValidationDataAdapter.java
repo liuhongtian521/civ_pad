@@ -21,10 +21,10 @@ public class ValidationDataAdapter extends BaseQuickAdapter<DBExamExport, BaseVi
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamExport s) {
-        baseViewHolder.setText(R.id.tv_stu_no, s.getId());
         baseViewHolder.setText(R.id.tv_stu_name, s.getVerifyTime());
         baseViewHolder.setText(R.id.tv_stu_num, s.getStuName());
         baseViewHolder.setText(R.id.tv_stu_exa_num, s.getIdCard());
+
         baseViewHolder.setText(R.id.tv_exam, s.getVerifyResult());
         int position = baseViewHolder.getLayoutPosition();
         String color = "";
@@ -34,15 +34,19 @@ public class ValidationDataAdapter extends BaseQuickAdapter<DBExamExport, BaseVi
             color = "#ffffff";
         }
         baseViewHolder.itemView.setBackgroundColor(Color.parseColor(color));
+
         switch (s.getVerifyResult()) {
             case "1":
                 baseViewHolder.setBackgroundResource(R.id.iv_state,R.mipmap.icon_pass);
+                baseViewHolder.setText(R.id.tv_exam,"通过");
                 break;
             case "2":
                 baseViewHolder.setBackgroundResource(R.id.iv_state,R.mipmap.icon_not_pass);
+                baseViewHolder.setText(R.id.tv_exam,"未通过");
                 break;
             case "3":
                 baseViewHolder.setBackgroundResource(R.id.iv_state,R.mipmap.icon_doubt);
+                baseViewHolder.setText(R.id.tv_exam,"存疑");
                 break;
             default:
                 break;

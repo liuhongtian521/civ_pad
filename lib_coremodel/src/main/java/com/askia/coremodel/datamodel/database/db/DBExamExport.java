@@ -18,7 +18,7 @@ public class DBExamExport extends RealmObject implements Serializable {
     private String examineeId;//考生id
 //    private String verifyPackId;//验证包id 不传
     private String verifyTime;//验证时间
-    private String verifyResult;//验证结果 0未验证 1成功 2失败（存疑） 3未验证
+    private String verifyResult;//验证结果 0未验证 1成功 2失败 3存疑
     private String matchRate;//匹配率
     private String seCode;//场次码
     private String entrancePhotoUrl;//入场照片地址 不传

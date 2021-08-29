@@ -22,7 +22,6 @@ public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHold
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamLayout s) {
-        baseViewHolder.setText(R.id.tv_stu_no,s.getId());
         baseViewHolder.setText(R.id.tv_stu_name,s.getStuName());
         baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
         baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());

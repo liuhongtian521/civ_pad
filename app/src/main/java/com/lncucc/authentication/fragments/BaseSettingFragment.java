@@ -50,11 +50,11 @@ public class BaseSettingFragment extends BaseFragment {
         mSlider.setCurrentProgress(soundProgress);
         mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
         //静音设置初始化
-        int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING);
+        int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING,1);
         mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, silentSound * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
         sbSound.setChecked(silentSound == 1);
         //按键音初始化
-        int keySound = SharedPreferencesUtils.getInt(getActivity(), KEY_SOUND);
+        int keySound = SharedPreferencesUtils.getInt(getActivity(), KEY_SOUND,1);
         Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, keySound);
         sbSoundT.setChecked(keySound == 1);
 

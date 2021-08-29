@@ -64,4 +64,29 @@ public class FileUtil {
         }
         return buffer;
     }
+
+    public static byte[] getBytesByFile(String filePath) {
+        byte[] buffer = null;
+        try {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                return null;
+            }
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return buffer;
+    }
 }

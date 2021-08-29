@@ -49,6 +49,7 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
         //获取到了数据
         Log.e("TagSnake", "getmsg");
         ((AuthenticationActivity) getActivity()).getFace(detectResult);
+
     }
 
     @Override
