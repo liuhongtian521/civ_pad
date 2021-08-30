@@ -233,4 +233,12 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
         mFaceDecting = false;
     }
 
+    public void releaseCamera() {
+        cameraHelper.stop();
+    }
+
+    public void startCamera() {
+        cameraHelper.start();
+    }
+
 }

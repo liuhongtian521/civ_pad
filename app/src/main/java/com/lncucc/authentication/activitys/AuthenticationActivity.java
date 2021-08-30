@@ -355,6 +355,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        faceFragment.startCamera();
         faceFragment.goContinueDetectFace();
         handler.postDelayed(runnable, TIME);
     }
@@ -370,6 +371,7 @@ public class AuthenticationActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         faceFragment.closeFace();
+        faceFragment.releaseCamera();
         if (faceComparedDialog.isShowing())
             faceComparedDialog.dismiss();
         if (faceResultDialog.isShowing())
