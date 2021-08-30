@@ -43,6 +43,7 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     public void onInit() {
         confirmDialog = new ConfirmDialog(getActivity(), this,getString(R.string.data_clear_tip),getString(R.string.data_clear_content));
         passWordDialog = new PassWordDialog(getActivity(), this);
+        KeyboardUtils.hideSoftInput(getActivity());
     }
 
     @Override

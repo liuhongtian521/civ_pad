@@ -81,6 +81,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:background="#EFF2F7" />
 
+
             <LinearLayout
                 android:id="@+id/ll_header"
                 android:layout_width="match_parent"
@@ -93,16 +94,6 @@
                 android:orientation="horizontal"
                 android:weightSum="14"
                 app:layout_constraintTop_toBottomOf="@+id/rl_search">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text="@string/session_no"
-                    android:textColor="@color/_333333"
-                    android:textSize="8sp"
-                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -138,7 +129,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="4"
                     android:gravity="center"
                     android:text="@string/verify_result"
                     android:textColor="@color/_333333"
@@ -146,7 +137,6 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_list"

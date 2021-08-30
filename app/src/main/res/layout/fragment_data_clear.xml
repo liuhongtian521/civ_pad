@@ -10,6 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ctl_base"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
@@ -51,6 +53,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
+                android:focusable="false"
                 android:background="@drawable/bg_check_box"
                 android:button="@null"
                 android:layout_width="14dp"
@@ -80,6 +83,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
+                android:focusable="false"
                 android:background="@drawable/bg_check_box"
                 android:button="@null"
                 android:layout_width="14dp"

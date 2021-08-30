@@ -51,11 +51,8 @@ public class DataViewActivity extends BaseActivity {
         mAdapter = new ValidationDataAdapter(mList);
         mDataBinding.recList.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull @NotNull BaseQuickAdapter<?, ?> adapter, @NonNull @NotNull View view, int position) {
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
 
-            }
         });
     }
 
