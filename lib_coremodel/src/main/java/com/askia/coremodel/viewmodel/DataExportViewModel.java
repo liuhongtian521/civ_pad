@@ -114,12 +114,21 @@ public class DataExportViewModel extends BaseViewModel {
             //拼接数据导出文件夹路径 STU_EXPORT + /seCode
             exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
             //文件存在先删除再创建
-            FileUtils.createFileByDeleteOldFile(exportPath);
+            boolean isExit = FileUtils.createFileByDeleteOldFile(exportPath);
+            //遍历 历史导出文件压缩包
+            List<File> fileList = FileUtils.listFilesInDir(STU_EXPORT);
+            for (File file: fileList){
+                if (file.getName().contains(".zip")){
+                    FileUtils.deleteFile(file);
+                }
+            }
             List<DBExamExport> tempList = new ArrayList<>();
             //copy value to fields
             tempList.addAll(Realm.getDefaultInstance().copyFromRealm(list));
-            //写入数据
-            saveData2Local(tempList, exportPath, seCode);
+            if (isExit){
+                //写入数据
+                saveData2Local(tempList, exportPath, seCode);
+            }
         }
     }
 
@@ -209,9 +218,6 @@ public class DataExportViewModel extends BaseViewModel {
             while (true) {
                 percentDone = monitor.getPercentDone();
                 LogUtils.e("zip success ->", percentDone + "");
-//                zipHandleEvent.setUnZipProcess(percentDone);
-//                zipHandleEvent.setMessage("正在压缩");
-//                unZipObservable.postValue(zipHandleEvent);
                 if (percentDone >= 100) {
                     //解析
                     zipHandleEvent.setUnZipProcess(100);

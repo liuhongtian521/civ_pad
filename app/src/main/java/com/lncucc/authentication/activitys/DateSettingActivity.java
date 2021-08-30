@@ -124,7 +124,6 @@ public class DateSettingActivity extends BaseActivity {
 
                     @Override
                     public void onNext(@NotNull Long aLong) {
-                        LogUtils.e("current time ->", System.currentTimeMillis());
                         Date date = TimeUtils.millis2Date(System.currentTimeMillis());
                         dateSettingBinding.tvHour.setText(date.getHours() + "");
                         dateSettingBinding.tvMin.setText(date.getMinutes() + "");

@@ -167,9 +167,7 @@ public class DataImportViewModel extends BaseViewModel {
             FaceDBHandleEvent event = new FaceDBHandleEvent();
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
-                LogUtils.e("photo name->", faceNumber);
                 try {
-//                    byte[] bytes = FileUtil.readFile(file);
                     byte[] bytes = FileUtil.getBytesByFile(file.getPath());
                     //根据faceNumber获取人脸库中是否有此信息
                     boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
@@ -300,16 +298,15 @@ public class DataImportViewModel extends BaseViewModel {
                                 LogUtils.e("life owner ->", isWorking);
                                 while (isWorking) {
                                     percentDone = progressMonitor.getPercentDone();
-                                    LogUtils.e("unzip success ->", percentDone);
                                     unZipHandleEvent.setUnZipProcess(percentDone);
                                     unZipHandleEvent.setMessage("正在解压中...");
                                     unZipObservable.postValue(unZipHandleEvent);
                                     if (percentDone >= 100) {
+                                        unZipHandleEvent.setCode(0);
                                         unZipHandleEvent.setUnZipProcess(percentDone);
                                         unZipHandleEvent.setMessage("解压完成");
                                         unZipObservable.postValue(unZipHandleEvent);
                                         //解析
-                                        LogUtils.e("unzip success ->", fileName);
                                         getExDataFromLocal(toPath);
                                         break;
                                     }
@@ -323,7 +320,9 @@ public class DataImportViewModel extends BaseViewModel {
                             // 解压缩所有文件以及文件夹
                             try {
                                 zipFile.setRunInThread(true);
-                                zipFile.extractAll(toPath);
+                                if (progressMonitor.getState() != ProgressMonitor.State.BUSY){
+                                    zipFile.extractAll(toPath);
+                                }
                             } catch (ZipException e) {
                                 e.printStackTrace();
                             }
@@ -333,11 +332,13 @@ public class DataImportViewModel extends BaseViewModel {
                     e.printStackTrace();
                 }
             } else {
+                unZipHandleEvent.setCode(-1);
                 unZipHandleEvent.setUnZipProcess(-1);
                 unZipHandleEvent.setMessage("当前文件夹内没有压缩包，请检查存放位置！");
                 unZipObservable.postValue(unZipHandleEvent);
             }
         } else {
+            unZipHandleEvent.setCode(-1);
             unZipHandleEvent.setUnZipProcess(-1);
             unZipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
             unZipObservable.postValue(unZipHandleEvent);

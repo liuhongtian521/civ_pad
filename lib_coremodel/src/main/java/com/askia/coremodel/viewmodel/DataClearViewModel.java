@@ -114,10 +114,6 @@ public class DataClearViewModel extends BaseViewModel {
      * 清空验证数据
      */
     public void delAuthData() {
-        if (FileUtils.listFilesInDir(STU_EXPORT) == null || FileUtils.listFilesInDir(STU_EXPORT).size() == 0){
-            dataVerifyObservable.postValue("暂无验证数据");
-            return;
-        }
 
         //清空数据库
         Realm.getDefaultInstance().executeTransactionAsync(realm -> {
@@ -126,6 +122,11 @@ public class DataClearViewModel extends BaseViewModel {
         }, () -> {
             dataVerifyObservable.postValue("验证数据库清理成功！");
             Observable.create((ObservableOnSubscribe<String>) emitter -> {
+
+                if (FileUtils.listFilesInDir(STU_EXPORT) == null || FileUtils.listFilesInDir(STU_EXPORT).size() == 0){
+                    dataVerifyObservable.postValue("暂无验证数据");
+                    return;
+                }
                 //清空验证数据文件夹
                 boolean result = FileUtils.deleteAllInDir(STU_EXPORT);
                 if (result) {

@@ -85,7 +85,9 @@ public class DataImportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.doZipHandle().observe(this, result -> {
             int progress = result.getUnZipProcess();
-            loadingDialog.setLoadingProgress(progress,result.getMessage());
+            if (result.getCode() != -1){
+                loadingDialog.setLoadingProgress(progress,result.getMessage());
+            }
             if (progress == 100) {
                 loadingDialog.dismiss();
                 LogsUtil.saveOperationLogs("数据导入成功");
@@ -143,7 +145,6 @@ public class DataImportFragment extends BaseFragment {
             } else {
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
-                showLogadingDialog();
             }
         }
         if (storageDevices.length == 0) {
@@ -206,13 +207,15 @@ public class DataImportFragment extends BaseFragment {
             MyToastUtils.error("请选择一种导入方式!", Toast.LENGTH_SHORT);
             return;
         }
+        if (loadingDialog != null){
+            loadingDialog.show();
+        }
         if (viewModel.netImport.get()) {
             MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {
             redUDiskDevsList();
         } else {
 //            viewModel.doSdCardImport();
-            loadingDialog.show();
             viewModel.doUnzip(this);
         }
     }

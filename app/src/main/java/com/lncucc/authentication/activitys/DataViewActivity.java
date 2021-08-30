@@ -20,7 +20,9 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ValidationDataAdapter;
 import com.lncucc.authentication.databinding.ActDataviewBinding;
 import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.NoSwipeViewPager;
+import com.lncucc.authentication.widgets.PeopleMsgDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,16 +37,18 @@ import q.rorbin.verticaltablayout.VerticalTabLayout;
  * @date 2021/8/5
  */
 @Route(path = ARouterPath.DATA_VIEW)
-public class DataViewActivity extends BaseActivity {
+public class DataViewActivity extends BaseActivity implements DialogClickBackListener {
     private ActDataviewBinding mDataBinding;
     private List<DBExamExport> mList;
     private ValidationDataAdapter mAdapter;
     private List<DBExamExport> tempList = new ArrayList<>();
+    private PeopleMsgDialog peopleMsgDialog;
 
 
     @Override
     public void onInit() {
         mList = DBOperation.getVerifyList();
+        peopleMsgDialog = new PeopleMsgDialog(this,this);
         tempList.clear();
         tempList.addAll(mList);
         mDataBinding.recList.setLayoutManager(new LinearLayoutManager(this));
@@ -52,7 +56,7 @@ public class DataViewActivity extends BaseActivity {
         mDataBinding.recList.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-
+            peopleMsgDialog.show();
         });
     }
 
@@ -69,6 +73,16 @@ public class DataViewActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
+
+    }
+
+    @Override
+    public void dissMiss() {
+
+    }
+
+    @Override
+    public void backType(int type) {
 
     }
 }

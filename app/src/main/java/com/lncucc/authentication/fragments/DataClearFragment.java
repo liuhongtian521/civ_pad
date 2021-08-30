@@ -68,6 +68,7 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
         viewModel.delVerifyData().observe(this, result ->{
             KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("验证数据清空");
+            MyToastUtils.success(result, Toast.LENGTH_SHORT);
         });
         KeyboardUtils.toggleSoftInput();
     }
@@ -122,13 +123,14 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
                 passWordDialog.dismiss();
             }
 
+            if (isClearImportData && isClearAuthData) {
+                viewModel.delImport();
+                viewModel.delAuthData();
+            }
             //密码正确 清空逻辑
             if (isClearImportData) {
                 viewModel.delImport();
             } else if (isClearAuthData) {
-                viewModel.delAuthData();
-            } else if (isClearImportData && isClearAuthData) {
-                viewModel.delImport();
                 viewModel.delAuthData();
             }
         } else {
