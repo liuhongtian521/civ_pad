@@ -401,13 +401,12 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onChanged(Integer integer) {
                 Log.e("TagSnake", integer + ":数据是否拥有");
-                if (integer > 0) {
-                    //有数据刷脸 普通刷脸无效
-                    faceResultDialog.setType(false);
-                } else {
+//                if (integer > 0) {
+//                    //有数据刷脸 普通刷脸无效
+//                    faceResultDialog.setType(false);
+//                } else {
                     faceResultDialog.setType(true);
-
-                }
+//                }
             }
         });
 
