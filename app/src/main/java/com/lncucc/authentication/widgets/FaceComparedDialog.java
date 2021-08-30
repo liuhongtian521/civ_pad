@@ -87,7 +87,7 @@ public class FaceComparedDialog extends BaseDialog {
         btnSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("TagSnake","btnsure");
+                Log.e("TagSnake", "btnsure");
                 onListener.backType(2);
             }
         });
@@ -98,10 +98,11 @@ public class FaceComparedDialog extends BaseDialog {
         setAddNo(dbExamLayout.getSeatNo());
         setName(dbExamLayout.getStuName());
         setIdcard(dbExamLayout.getIdCard());
-        setCardNo(dbExamLayout.getExamCode());
+
+        setCardNo(dbExamLayout.getExReNum());
 
         String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".png";
-        String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode()  + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
+        String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
 //        Log.e("TagSnake",pathT);
         //转换file
         File file = new File(pathT);

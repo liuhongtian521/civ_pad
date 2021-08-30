@@ -9,7 +9,7 @@ import java.io.OutputStream;
 
 import static com.askia.coremodel.datamodel.http.download.AppUtil.sApp;
 
-class StorageUtil {
+public class StorageUtil {
     private static final String DIR_NAME_APK = "xczj";
 
     private StorageUtil() {
@@ -93,7 +93,7 @@ class StorageUtil {
      *
      * @param file
      */
-    static void deleteFile(File file) {
+   public static void deleteFile(File file) {
         try {
             if (file == null || !file.exists()) {
                 return;

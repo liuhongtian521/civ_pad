@@ -166,8 +166,7 @@ public class InitializeActivity extends BaseActivity {
     public void onSubscribeViewModel() {
         //获取考场数据
         zipDownloadViewModel.getSelectExma().observe(this, selectpalnbysitecodeData -> {
-
-//            Log.e("TagSnake", selectpalnbysitecodeData.isSuccess() + ":" + selectpalnbysitecodeData.getMessage() + ":" + selectpalnbysitecodeData.getResult().size());
+//            Log.e("TagSnake", selectpalnbysitecodeData.isSuccess() + ":" + selectpalnbysitecodeData.getMessage() + ":" );
 //            for (SelectpalnbysitecodeData.ResultBean resultBean : selectpalnbysitecodeData.getResult()) {
 //                Log.e("TagSnake", resultBean.toString());
 //            }

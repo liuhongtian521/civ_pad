@@ -132,8 +132,14 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 //                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
                     //人脸对比
 //                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
-//                    LogUtils.e("detect result ->", detectResult.similarity);
-//                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
+                    if (detectResult == null) {
+                        frames = 0;
+                        LogUtils.e("detect result ->    null");
+                        goContinueDetectFace();
+                        return;
+                    }
+                    LogUtils.e("detect result ->", detectResult.similarity);
+                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
 
                     frames = 0;
                     if (detectResult != null) {

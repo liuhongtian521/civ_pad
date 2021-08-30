@@ -365,6 +365,20 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        faceFragment.closeFace();
+        if (faceComparedDialog.isShowing())
+            faceComparedDialog.dismiss();
+        if (faceResultDialog.isShowing())
+            faceResultDialog.dismiss();
+        if (inquiryDialog.isShowing())
+            inquiryDialog.dismiss();
+        if (peopleMsgDialog.isShowing())
+            peopleMsgDialog.dismiss();
+    }
+
+    @Override
     public void onInitViewModel() {
         mViewModel = ViewModelProviders.of(this).get(AuthenticationViewModel.class);
     }

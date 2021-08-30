@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.http.ResponseCode;
+import com.askia.coremodel.datamodel.http.download.StorageUtil;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.datamodel.http.entities.DounloadZipData;
@@ -15,6 +16,8 @@ import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
 import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.rtc.Constants;
+import com.askia.coremodel.rtc.FileUtil;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -89,13 +92,13 @@ public class ZIPDownloadViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(SelectpalnbysitecodeData data) {
-                        Log.e("TagSnake", data.getMessage());
+                        Log.e("TagSnake back", data.getMessage());
                         selectExma.postValue(data);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("TagSnake", Log.getStackTraceString(e));
+                        Log.e("TagSnake back", Log.getStackTraceString(e));
 
                         SelectpalnbysitecodeData rulesData = new SelectpalnbysitecodeData();
                         if (e instanceof SocketTimeoutException) {
@@ -145,7 +148,13 @@ public class ZIPDownloadViewModel extends BaseViewModel {
 
 
     public void downloadZip(GetZipData.ResultBean resultBean) {
-        FileDownloader.getImpl().create(resultBean.getMinioUrl() + resultBean.getBucketName() +File.separator+ resultBean.getFileUrl() + resultBean.getFilename())
+        if (FileUtils.isFileExists(Constants.ZIP_PATH + File.separator + resultBean.getFilename())) {
+            File file = FileUtils.getFileByPath(Constants.ZIP_PATH + File.separator + resultBean.getFilename());
+            if (file != null)
+                StorageUtil.deleteFile(file);
+        }
+
+        FileDownloader.getImpl().create(resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
                 .setPath(Constants.ZIP_PATH + File.separator + resultBean.getFilename())
                 .setForceReDownload(true)
                 .setListener(new FileDownloadListener() {
