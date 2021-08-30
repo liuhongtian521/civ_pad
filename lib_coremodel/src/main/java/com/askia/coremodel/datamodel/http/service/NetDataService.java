@@ -1,6 +1,7 @@
 package com.askia.coremodel.datamodel.http.service;
 
 
+import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.LoginData;
@@ -43,5 +44,8 @@ public interface NetDataService {
     //实时数据上传
     @Multipart
     @POST("/api/pad/importverifypack")
-    Observable<UpLoadResult> postVerifyData(@HeaderMap Map<String,String> map, @Part MultipartBody.Part body);
+    Observable<UpLoadResult> postVerifyData(@HeaderMap Map<String, String> map, @Part MultipartBody.Part body);
+
+    @POST("/api/pad/uploadverifydetail")
+    Observable<BaseResponseData> uploadverifydetail(@Body RequestBody body);
 }

@@ -1,6 +1,8 @@
 package com.askia.coremodel.viewmodel;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,14 +14,29 @@ import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.repository.DBRepository;
+import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
 import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
+import com.askia.coremodel.datamodel.http.entities.UPMsgData;
+import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
+import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
+import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.util.DeviceUtils;
+import com.askia.coremodel.util.Utils;
 import com.blankj.utilcode.util.TimeUtils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -110,7 +127,6 @@ public class AuthenticationViewModel extends BaseViewModel {
             }
         }
         mDBExamArrange.postValue(back);
-
     }
 
 
@@ -118,7 +134,6 @@ public class AuthenticationViewModel extends BaseViewModel {
         List<DBExaminee> list = DBOperation.quickPeople(name, examCode);
         if (list == null || list.size() == 0) {
             Log.e("TagSnake", "list == null || list.size() == 0");
-
             mCheckVersionData.postValue(null);
         } else {
             Log.e("TagSnake", "list>0");
@@ -139,7 +154,6 @@ public class AuthenticationViewModel extends BaseViewModel {
             DBExamLayout mDbExamLayout = DBOperation.getStudentByCode(msg, examCode, seCode);
             mStudent.postValue(mDbExamLayout);
         }
-
     }
 
     public void canSign(String id) {
@@ -151,7 +165,7 @@ public class AuthenticationViewModel extends BaseViewModel {
     }
 
     public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String id, String cardNo) {
-        Log.e("TagSnake", type + ":状态");
+        Log.e("TagSnake", type + ":状态" + "::" + time);
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
         db.setStuNo(dbExamLayout.getStuNo());
@@ -168,5 +182,61 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setIdCard(cardNo);
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
+        upMsg(db);
+
+    }
+
+    private void upMsg(DBExamExport dbExamExport) {
+        Log.e("TagSnake up", "upMsg");
+
+        UPMsgData db = new UPMsgData();
+        db.setId(dbExamExport.getId());
+        db.setStuNo(dbExamExport.getStuNo());
+        db.setStuName(dbExamExport.getStuName());
+        db.setExamineeId(dbExamExport.getExamineeId());
+        Date date = new Date(Long.valueOf(dbExamExport.getVerifyTime()));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.format(date);
+        db.setVerifyTime(sdf.format(date));
+        db.setVerifyResult(dbExamExport.getVerifyResult());
+        db.setMatchRate(dbExamExport.getMatchRate());
+        db.setSeCode(dbExamExport.getSeCode());
+        db.setEquipment(DeviceUtils.getDeviceSN());
+        db.setExamCode(dbExamExport.getExamCode());
+        db.setSysOrgCode(dbExamExport.getSysOrgCode());
+        db.setSiteCode(dbExamExport.getSiteCode());
+        db.setIdCard(dbExamExport.getIdCard());
+//        db.setEntrancePhotoUrl();
+        String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
+        try {
+            db.setEntrancePhotoUrl(Utils.encodeBase64File(pathT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e("TagSnake up", db.toString());
+        NetDataRepository.uploadverifydetail(convertPostBody(db))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .safeSubscribe(new Observer<BaseResponseData>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NotNull BaseResponseData baseResponseData) {
+                        Log.e("TagSnake back", baseResponseData.getMessage());
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e("TagSnake err", Log.getStackTraceString(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

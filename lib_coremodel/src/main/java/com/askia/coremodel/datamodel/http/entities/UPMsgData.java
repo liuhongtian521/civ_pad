@@ -1,17 +1,13 @@
-package com.askia.coremodel.datamodel.database.db;
+package com.askia.coremodel.datamodel.http.entities;
 
-import java.io.Serializable;
-
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
+import com.askia.coremodel.datamodel.http.params.BaseRequestParams;
 
 /**
  * Create bt she:
- * 数据导出
- * @date 2021/8/9
+ *
+ * @date 2021/8/30
  */
-public class DBExamExport extends RealmObject implements Serializable {
-    @PrimaryKey
+public class UPMsgData extends BaseRequestParams {
     private String id;
     private String stuNo;//考生号
     private String stuName;
@@ -173,5 +169,29 @@ public class DBExamExport extends RealmObject implements Serializable {
 
     public void setSiteCode(String siteCode) {
         this.siteCode = siteCode;
+    }
+
+    @Override
+    public String toString() {
+        return "UPMsgData{" +
+                "id='" + id + '\'' +
+                ", stuNo='" + stuNo + '\'' +
+                ", stuName='" + stuName + '\'' +
+                ", examineeId='" + examineeId + '\'' +
+                ", verifyTime='" + verifyTime + '\'' +
+                ", verifyResult='" + verifyResult + '\'' +
+                ", matchRate='" + matchRate + '\'' +
+                ", seCode='" + seCode + '\'' +
+                ", entrancePhotoUrl='" + entrancePhotoUrl + '\'' +
+                ", examCode='" + examCode + '\'' +
+                ", createBy='" + createBy + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", updataUp='" + updataUp + '\'' +
+                ", updataTime='" + updataTime + '\'' +
+                ", sysOrgCode='" + sysOrgCode + '\'' +
+                ", equipment='" + equipment + '\'' +
+                ", siteCode='" + siteCode + '\'' +
+                ", idCard='" + idCard + '\'' +
+                '}';
     }
 }

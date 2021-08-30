@@ -152,6 +152,7 @@
                 android:imeOptions="actionSearch"
                 android:hint="请输入准考证号"
                 android:gravity="center|left"
+                android:text=""
                 android:maxLines="1"
                 android:paddingLeft="@dimen/dp_6"
                 android:paddingRight="@dimen/dp_6"

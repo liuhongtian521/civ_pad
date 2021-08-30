@@ -40,6 +40,8 @@ public class FaceComparedDialog extends BaseDialog {
     TextView tvName, tvCardNo, tvAddress, tvIdcard, tvAddNo, tvNumber;
     Button btnNot, btnMaybe, btnSure;
 
+    boolean success = false;
+
 
     public FaceComparedDialog(Context context, DialogClickBackListener dialogClickBackListener) {
         super(context, R.style.DialogTheme);
@@ -98,27 +100,27 @@ public class FaceComparedDialog extends BaseDialog {
         setAddNo(dbExamLayout.getSeatNo());
         setName(dbExamLayout.getStuName());
         setIdcard(dbExamLayout.getIdCard());
-
         setCardNo(dbExamLayout.getExReNum());
 
-        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
         String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
-//        Log.e("TagSnake",pathT);
-        //转换file
-        File file = new File(pathT);
-        if (file.exists()) {
-            //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(pathT);
-            ivPhotoOne.setImageBitmap(bt);
-        }
-//
-//        Log.e("TagSnake",path);
-
         File file1 = new File(path);
         if (file1.exists()) {
             //转换bitmap
             Bitmap bt = BitmapFactory.decodeFile(path);
-            ivPhotoTwo.setImageBitmap(bt);
+            ivPhotoOne.setImageBitmap(bt);
+        }
+
+        if (success) {
+            String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
+            //转换file
+            File file = new File(pathT);
+            if (file.exists()) {
+                //转换bitmap
+                Bitmap bt = BitmapFactory.decodeFile(pathT);
+                ivPhotoTwo.setImageBitmap(bt);
+            }
+        } else {
+            ivPhotoTwo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -148,12 +150,14 @@ public class FaceComparedDialog extends BaseDialog {
     }
 
     public void setNumber(String number) {
-
-        if (number.length() > 4) {
-            tvNumber.setText(number.substring(0, 4));
-        } else
-            tvNumber.setText(number);
-
+        if (success) {
+            if (number.length() > 4) {
+                tvNumber.setText(number.substring(0, 4));
+            } else
+                tvNumber.setText(number);
+        } else {
+            tvNumber.setText("----");
+        }
     }
 
 
@@ -181,8 +185,11 @@ public class FaceComparedDialog extends BaseDialog {
         window.setAttributes(layoutParams);
     }
 
-    public void setMsg(DBExaminee mDbExaminee) {
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-
+    public boolean getSuccess() {
+        return success;
     }
 }

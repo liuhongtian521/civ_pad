@@ -183,7 +183,6 @@ public class InquiryDialog extends BaseDialog {
             }
         });
 
-        editExamNum.setText("210221112022500");
     }
 
     public void setSearchListener(Search onSearch) {
@@ -223,6 +222,8 @@ public class InquiryDialog extends BaseDialog {
         tvChooseText.setText("准考证查询");
         editExamNum.setVisibility(View.VISIBLE);
         editExamNum.setText("");
+//        editExamNum.setText("030105200130");
+
         editCard.setVisibility(View.GONE);
 
         linePeople.setVisibility(View.GONE);

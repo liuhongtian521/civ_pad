@@ -77,19 +77,21 @@ public class PeopleMsgDialog extends BaseDialog {
 
     }
 
-    public void setResult(boolean type) {
-        if (type) {
+    public void setResult(String type) {
+        if ("1".equals(type)) {
             ivType.setImageResource(R.drawable.icon_type_success);
-//            ivSuccess.setVisibility(View.VISIBLE);
-//            ivFaile.setVisibility(View.GONE);
             tvTypeSuccess.setVisibility(View.VISIBLE);
-//            tvFaceValue.setVisibility(View.GONE);
-        } else {
+            tvTypeFaile.setVisibility(View.GONE);
+        } else if ("2".equals(type)) {
             ivType.setImageResource(R.drawable.icon_type_faile);
-//            ivSuccess.setVisibility(View.GONE);
-//            ivFaile.setVisibility(View.VISIBLE);
             tvTypeSuccess.setVisibility(View.GONE);
-//            tvFaceValue.setVisibility(View.VISIBLE);
+            tvTypeFaile.setVisibility(View.VISIBLE);
+            tvTypeFaile.setText("失败");
+        } else {
+            ivType.setImageResource(R.drawable.icon_cunyi);
+            tvTypeSuccess.setVisibility(View.GONE);
+            tvTypeFaile.setVisibility(View.VISIBLE);
+            tvTypeFaile.setText("存疑");
         }
     }
 
@@ -103,7 +105,6 @@ public class PeopleMsgDialog extends BaseDialog {
 //            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
             ivPhotoLeft.setImageBitmap(bt);
         }
-
         String pathT = Constants.STU_EXPORT + File.separator + model.getSeCode() + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";
         File file1 = new File(pathT);
         if (file1.exists()) {
@@ -115,12 +116,12 @@ public class PeopleMsgDialog extends BaseDialog {
 
 
         tvName.setText(model.getStuName());
-        Log.e("TagSnake",model.getStuNo()+"::"+ model.getExamCode());
+        Log.e("TagSnake", model.getStuNo() + "::" + model.getExamCode());
         Log.e("TagSnake", DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).size() + ":");
         DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).get(0);
         tvSex.setText(dbExaminee.getGender());
         tvNationality.setText(dbExaminee.getNation());
-        setResult("1".equals(model.getVerifyResult()));
+        setResult(model.getVerifyResult());
 
         String liveAddress = DBOperation.getLiveAddress(dbExaminee.getStuNo());
         tvAddress.setText(liveAddress);

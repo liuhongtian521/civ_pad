@@ -173,8 +173,11 @@ public class AuthenticationActivity extends BaseActivity {
                 Log.e("TagSnake itemType", model.getVerifyResult());
                 if ("1".equals(model.getVerifyResult())) {
                     viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_success);
-                } else {
+                } else if ("2".equals(model.getVerifyResult())) {
                     viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_faile);
+                } else {
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_cunyi);
+
                 }
                 String path = UN_ZIP_PATH + File.separator + mExanCode + "/photo/" + model.getStuNo() + ".jpg";
                 //转换file
@@ -253,13 +256,13 @@ public class AuthenticationActivity extends BaseActivity {
                 faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 }
             }
         });
@@ -279,13 +282,13 @@ public class AuthenticationActivity extends BaseActivity {
                 faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "0", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
                 }
             }
         });
@@ -430,7 +433,7 @@ public class AuthenticationActivity extends BaseActivity {
                 } else {
                     saveList.add(0, dbExamExport);
                 }
-                mViewModel.getExamNumber(mSeCode,mExanCode);
+                mViewModel.getExamNumber(mSeCode, mExanCode);
 //                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
                 mAdapter.notifyDataSetChanged();
             }
@@ -449,19 +452,17 @@ public class AuthenticationActivity extends BaseActivity {
                 //考场总数
                 mDataBinding.tvSessionAll.setText(DBOperation.getRoomList(dbExamArrange.getSeCode()).size() + "");
                 mStudentNumber = DBOperation.getStudentNumber(mExanCode, mSeCode);
-                mViewModel.getExamNumber(mSeCode,mExanCode);
+                mViewModel.getExamNumber(mSeCode, mExanCode);
 //                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
                 mViewModel.getExamNumber(dbExamArrange.getSeCode(), dbExamArrange.getExamCode());
-
                 saveList.clear();
-
             }
         });
         //验证数量
         mViewModel.getmDBExamExportNumber().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
-                mDataBinding.tvVerifyNumber.setText(integer+ "/" + mStudentNumber);
+                mDataBinding.tvVerifyNumber.setText(integer + "/" + mStudentNumber);
             }
         });
 
@@ -475,10 +476,12 @@ public class AuthenticationActivity extends BaseActivity {
                     } else
                         faceFragment.goContinueDetectFace();
                 else {
-//                    Log.e("TagSnake", mDetectResult.faceNum + "::" + mExanCode + "::" + mSeCode);
-
                     mDbExaminee = dbExaminee;
-                    mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode, mSeCode);
+                    if (!faceComparedDialog.getSuccess()) {
+                        mViewModel.getSeatAbout(mDbExaminee.getStuNo(), mExanCode, mSeCode);
+                    } else {
+                        mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode, mSeCode);
+                    }
                 }
             }
         });
@@ -493,9 +496,13 @@ public class AuthenticationActivity extends BaseActivity {
                         //比对状态
                         faceComparedDialog.show();
                         //人员的考场和座位
-                        faceComparedDialog.setMsg(mDbExaminee);
                         faceComparedDialog.setSate(dbExamLayout);
-                        faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
+                        if (!faceComparedDialog.getSuccess()) {
+                            faceComparedDialog.setNumber("----");
+                        } else {
+                            faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
+
+                        }
 //                        faceComparedDialog.setLeftPhoto(base64);
                     } else {
                         //识别状态
@@ -574,11 +581,14 @@ public class AuthenticationActivity extends BaseActivity {
                 //对比数据成功
                 this.mDetectResult = detectResult;
 //                mDetectResult.faceNum = "210221112007641";
-
+                faceComparedDialog.setSuccess(true);
                 mViewModel.quickPeople(detectResult.faceNum, mExanCode);
             } else {
+                //比对失败
+                faceComparedDialog.setSuccess(false);
+                mViewModel.quickPeople(mDbExaminee.getStuNo(), mExanCode);
 //                isComparison = false;
-                faceFragment.goContinueDetectFace();
+//                faceFragment.goContinueDetectFace();
             }
         } else {
 //            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
