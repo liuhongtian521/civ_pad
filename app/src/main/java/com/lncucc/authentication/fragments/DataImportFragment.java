@@ -29,6 +29,7 @@ import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
+import com.lncucc.authentication.widgets.DataLoadingDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 
@@ -51,10 +52,13 @@ public class DataImportFragment extends BaseFragment {
     private ArrayList<Boolean> importList;
     private UsbMassStorageDevice[] storageDevices;
     private UsbFile cFolder;
+    private DataLoadingDialog loadingDialog;
 
     @Override
     public void onInit() {
         RxBus2.getInstance().register(this);
+        loadingDialog = new DataLoadingDialog(getActivity());
+        loadingDialog.setCanceledOnTouchOutside(false);
     }
 
     public void initEvent() {
@@ -79,24 +83,23 @@ public class DataImportFragment extends BaseFragment {
 
     @Override
     public void onSubscribeViewModel() {
-        viewModel.getSdCardData().observe(this, result -> {
-            closeLogadingDialog();
-            MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
-        });
         viewModel.doZipHandle().observe(this, result -> {
-            int progress = result.getProgress();
-            closeLogadingDialog();
+            int progress = result.getUnZipProcess();
+            loadingDialog.setLoadingProgress(progress,result.getMessage());
             if (progress == 100) {
+                loadingDialog.dismiss();
                 LogsUtil.saveOperationLogs("数据导入成功");
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
-            } else {
-                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+            }
+            if (result.getCode() == -1){
+                loadingDialog.dismiss();
+                MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
             }
         });
 
         viewModel.usbWriteObservable().observe(this, result -> {
             if (result.getCode() == 0) {
-                viewModel.doSdCardImport();
+                viewModel.doUnzip(this);
             } else {
                 MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
             }
@@ -144,7 +147,6 @@ public class DataImportFragment extends BaseFragment {
             }
         }
         if (storageDevices.length == 0) {
-            closeLogadingDialog();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
@@ -185,26 +187,6 @@ public class DataImportFragment extends BaseFragment {
         }
     }
 
-    private void readZipFromUDisk(UsbFile usbFile) {
-        UsbFile descFile = usbFile;
-        //读取文件内容 需要在viewModel中 异步操作，IO操作后再执行解压操作
-        InputStream is = null;
-        try {
-            //如果多个压缩包 进行批量复制到sdcard
-            for (UsbFile file : descFile.listFiles()){
-                is = new UsbFileInputStream(file);
-                boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/"+file.getName() + ".zip" ,is);
-                if (result){
-                    viewModel.doSdCardImport();
-                }
-                LogUtils.e("copy result ->",result);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public void importData(View view) {
         importList = new ArrayList<>();
         importList.add(viewModel.netImport.get());
@@ -224,13 +206,14 @@ public class DataImportFragment extends BaseFragment {
             MyToastUtils.error("请选择一种导入方式!", Toast.LENGTH_SHORT);
             return;
         }
-        showLogadingDialog();
         if (viewModel.netImport.get()) {
             MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {
             redUDiskDevsList();
         } else {
-            viewModel.doSdCardImport();
+//            viewModel.doSdCardImport();
+            loadingDialog.show();
+            viewModel.doUnzip(this);
         }
     }
 

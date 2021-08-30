@@ -276,7 +276,7 @@ public class InitializeActivity extends BaseActivity {
             }
         });
 
-        dataImportViewModel.getSdCardData().observe(this, new Observer<UnZipHandleEvent>() {
+        dataImportViewModel.doZipHandle().observe(this, new Observer<UnZipHandleEvent>() {
             @Override
             public void onChanged(UnZipHandleEvent s) {
                 actInitializeBinding.tvMsg.setText(s.getMessage());

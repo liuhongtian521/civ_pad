@@ -4,7 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
@@ -28,6 +32,7 @@ import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.unicom.facedetect.detect.FaceDetectManager;
 
 import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.progress.ProgressMonitor;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,97 +66,27 @@ public class DataImportViewModel extends BaseViewModel {
 
     //usb
     private MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
-    //zip
-    private MutableLiveData<ZipHandleEvent> zipObservable = new MutableLiveData<>();
-    private MutableLiveData<UnZipHandleEvent> dataObservable = new MutableLiveData<>();
+    //unzip
+    private MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
     //face db insert
     private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
+    private boolean isWorking = true;
 
-    public MutableLiveData<UnZipHandleEvent> getSdCardData() {
-        return dataObservable;
+
+    public MutableLiveData<UnZipHandleEvent> doZipHandle() {
+        return unZipObservable;
     }
 
-    public MutableLiveData<ZipHandleEvent> doZipHandle(){
-        return zipObservable;
-    }
-
-    public MutableLiveData<FaceDBHandleEvent> doFaceDBHandle(){
+    public MutableLiveData<FaceDBHandleEvent> doFaceDBHandle() {
         return faceDbObservable;
     }
 
-    public MutableLiveData<UsbWriteEvent> usbWriteObservable(){
+    public MutableLiveData<UsbWriteEvent> usbWriteObservable() {
         return usbImportObservable;
     }
 
-    /**
-     * 校验sdcard根目录下是否存在examination文件
-     * 并解压.zip文件到Examination/data下
-     */
-    public void checkZipFile() {
-        UnZipHandleEvent zipHandleEvent = new UnZipHandleEvent();
-        if (FileUtils.isFileExists(ZIP_PATH)) {
-            //文件夹存在，获取zip list
-            List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
-            if (list != null && list.size() > 0) {
-                try {
-                    for (int i = 0; i < list.size(); i++) {
-                        //压缩包路径
-                        String path = ZIP_PATH + File.separator + list.get(i).getName();
-                        //文件名
-                        String fileName = list.get(i).getName().split("\\.")[0];
-                        //解压存放路径
-                        String toPath = UN_ZIP_PATH + File.separator + fileName;
-                        // 生成的压缩文件
-                        ZipFile zipFile = new ZipFile(path);
-                        // 设置密码
-                        zipFile.setPassword(pwd.toCharArray());
-                        //解压进度
-                        final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
-                        int finalI = i;
-                        Thread thread = new Thread(() -> {
-                            int percentDone = 0;
-                            while (true) {
-                                percentDone = progressMonitor.getPercentDone();
-                                zipHandleEvent.setUnZipProcess(percentDone);
-                                zipHandleEvent.setMessage("初始刷数据");
-                                dataObservable.postValue(zipHandleEvent);
-                                ZipHandleEvent handleEvent = new ZipHandleEvent();
-                                if (percentDone >= 100) {
-                                    handleEvent.setProgress(percentDone);
-                                    handleEvent.setMessage("解压完成");
-                                    zipObservable.postValue(handleEvent);
-                                    //解析
-                                    LogUtils.e("unzip success ->", fileName);
-                                    getExDataFromLocal(toPath);
-                                    break;
-                                }
-                            }
-                        });
-                        thread.start();
-                        // 解压缩所有文件以及文件夹
-                        zipFile.extractAll(toPath);
-                    }
-                    zipHandleEvent.setUnZipProcess(100);
-                    zipHandleEvent.setMessage("数据初始化完成");
-                    dataObservable.postValue(zipHandleEvent);
-                } catch (IOException e) {
-                    LogUtils.e("unzip exception->", e.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                zipHandleEvent.setUnZipProcess(-1);
-                zipHandleEvent.setMessage("当前文件夹内没有压缩包，请检查存放位置！");
-                dataObservable.postValue(zipHandleEvent);
-            }
-        } else {
-            zipHandleEvent.setUnZipProcess(-1);
-            zipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
-            dataObservable.postValue(zipHandleEvent);
-        }
-    }
 
     /**
      * 解析解压json
@@ -214,7 +149,7 @@ public class DataImportViewModel extends BaseViewModel {
                 break;
             //版本号
             case "ea_data_version.json":
-                List<DBDataVersion> versionBean = JsonUtil.file2JsonArray(filePath,DBDataVersion.class);
+                List<DBDataVersion> versionBean = JsonUtil.file2JsonArray(filePath, DBDataVersion.class);
                 Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(versionBean));
                 break;
             default:
@@ -235,16 +170,16 @@ public class DataImportViewModel extends BaseViewModel {
                 LogUtils.e("photo name->", faceNumber);
                 try {
 //                    byte[] bytes = FileUtil.readFile(file);
-                    byte [] bytes = FileUtil.getBytesByFile(file.getPath());
+                    byte[] bytes = FileUtil.getBytesByFile(file.getPath());
                     //根据faceNumber获取人脸库中是否有此信息
                     boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
                     //如果人脸库中没有此人则把照片插入人脸库
-                    if (!isHave){
+                    if (!isHave) {
                         String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
                         event.setFaceId(faceId);
                         emitter.onNext(event);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
 
@@ -280,7 +215,7 @@ public class DataImportViewModel extends BaseViewModel {
     }
 
     public void readZipFromUDisk(UsbFile usbFile) {
-        Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter->{
+        Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter -> {
             UsbFile descFile = usbFile;
             InputStream is = null;
             try {
@@ -308,9 +243,9 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull UsbWriteEvent usbWriteEvent) {
-                        if (usbWriteEvent.getResult()){
+                        if (usbWriteEvent.getResult()) {
                             usbWriteEvent.setCode(0);
-                        }else {
+                        } else {
                             usbWriteEvent.setCode(1);
                         }
                         usbImportObservable.postValue(usbWriteEvent);
@@ -332,8 +267,85 @@ public class DataImportViewModel extends BaseViewModel {
 
     }
 
+    /**
+     * 校验sdcard根目录下是否存在examination文件
+     * 并解压.zip文件到Examination/data下
+     */
+    public void doUnzip(LifecycleOwner owner) {
+        UnZipHandleEvent unZipHandleEvent = new UnZipHandleEvent();
+        if (FileUtils.isFileExists(ZIP_PATH)) {
+            //文件夹存在，获取zip list
+            List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
+            if (list != null && list.size() > 0) {
+                try {
+                    for (int i = 0; i < list.size(); i++) {
+                        //压缩包路径
+                        String path = ZIP_PATH + File.separator + list.get(i).getName();
+                        //文件名
+                        String fileName = list.get(i).getName().split("\\.")[0];
+                        //解压存放路径
+                        String toPath = UN_ZIP_PATH + File.separator + fileName;
+                        // 生成的压缩文件
+                        ZipFile zipFile = new ZipFile(path);
+                        // 设置密码
+                        zipFile.setPassword(pwd.toCharArray());
+                        //解压进度
+                        final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+                        progressMonitor.endProgressMonitor();
+
+                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+                            isWorking = event != Lifecycle.Event.ON_PAUSE && event != Lifecycle.Event.ON_STOP && event != Lifecycle.Event.ON_DESTROY;
+                            Thread thread = new Thread(() -> {
+                                int percentDone = 0;
+                                LogUtils.e("life owner ->", isWorking);
+                                while (isWorking) {
+                                    percentDone = progressMonitor.getPercentDone();
+                                    LogUtils.e("unzip success ->", percentDone);
+                                    unZipHandleEvent.setUnZipProcess(percentDone);
+                                    unZipHandleEvent.setMessage("正在解压中...");
+                                    unZipObservable.postValue(unZipHandleEvent);
+                                    if (percentDone >= 100) {
+                                        unZipHandleEvent.setUnZipProcess(percentDone);
+                                        unZipHandleEvent.setMessage("解压完成");
+                                        unZipObservable.postValue(unZipHandleEvent);
+                                        //解析
+                                        LogUtils.e("unzip success ->", fileName);
+                                        getExDataFromLocal(toPath);
+                                        break;
+                                    }
+                                }
+                            });
+                            thread.start();
+                            if (!isWorking){
+                                thread.interrupt();
+                                progressMonitor.setCancelAllTasks(true);
+                            }
+                            // 解压缩所有文件以及文件夹
+                            try {
+                                zipFile.setRunInThread(true);
+                                zipFile.extractAll(toPath);
+                            } catch (ZipException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                unZipHandleEvent.setUnZipProcess(-1);
+                unZipHandleEvent.setMessage("当前文件夹内没有压缩包，请检查存放位置！");
+                unZipObservable.postValue(unZipHandleEvent);
+            }
+        } else {
+            unZipHandleEvent.setUnZipProcess(-1);
+            unZipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
+            unZipObservable.postValue(unZipHandleEvent);
+        }
+    }
+
     public void doSdCardImport() {
-        checkZipFile();
+//        checkZipFile();
     }
 
 }
