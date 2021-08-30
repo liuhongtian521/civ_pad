@@ -158,7 +158,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                         }
                         if (mSeCode != null)
                             com.blankj.utilcode.util.ImageUtils.save(bitmap,
-                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png",
+                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg",
                                     Bitmap.CompressFormat.PNG);
 
 //                        Log.e("TagSnake save", Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".png");

@@ -336,7 +336,7 @@ public class InitializeActivity extends BaseActivity {
     public void downloadFinish() {
         actInitializeBinding.tvMsg.setText("系统正在初始化数据请稍后...");
         //全部下载完成
-        dataImportViewModel.doSdCardImport();
+        dataImportViewModel.doUnzip(this);
     }
 
     public void downloadFaile() {

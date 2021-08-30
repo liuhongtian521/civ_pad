@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -156,6 +158,30 @@ public class InquiryDialog extends BaseDialog {
         });
 
         setCanceledOnTouchOutside(false);
+
+
+        editExamNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!"".equals(editExamNum.getText().toString().trim()))
+                        onSearch.search(editExamNum.getText().toString().trim(), 0);
+                }
+                return false;
+            }
+        });
+
+        editCard.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!"".equals(editCard.getText().toString().trim())) {
+                        onSearch.search(editCard.getText().toString().trim(), 1);
+                    }
+                }
+                return false;
+            }
+        });
 
         editExamNum.setText("210221112022500");
     }

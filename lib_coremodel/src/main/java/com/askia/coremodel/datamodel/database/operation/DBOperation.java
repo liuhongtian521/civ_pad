@@ -33,17 +33,19 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode", examCode)
                 .findFirst();
     }
-    public static DBExamPlan getSingleExamPlan(){
+
+    public static DBExamPlan getSingleExamPlan() {
         return Realm.getDefaultInstance().where(DBExamPlan.class).findFirst();
     }
 
     /**
      * 获取考试名称
+     *
      * @param examCode
      * @return
      */
-    public static DBExamPlan getExamName(String examCode){
-        return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode",examCode)
+    public static DBExamPlan getExamName(String examCode) {
+        return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode", examCode)
                 .findFirst();
     }
 
@@ -76,6 +78,15 @@ public class DBOperation {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("id", id);
+        query.endGroup();
+        return query.findAll().size();
+    }
+
+    public static int getDBExamExportNumber(String seCode, String examCode) {
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("seCode", seCode);
+        query.equalTo("examCode", examCode);
         query.endGroup();
         return query.findAll().size();
     }

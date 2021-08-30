@@ -1,8 +1,11 @@
 package com.lncucc.authentication.fragments;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +49,16 @@ public class DataValidationFragment extends BaseFragment {
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
 
+        });
+
+        mBinding.editExamNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                    query(null);
+                }
+                return false;
+            }
         });
     }
 

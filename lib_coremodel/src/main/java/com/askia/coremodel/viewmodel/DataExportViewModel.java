@@ -1,6 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -287,11 +288,14 @@ public class DataExportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull UpLoadResult upLoadResult) {
+                        Log.e("TagSnake back",upLoadResult.getMessage());
                         upLoadObservable.postValue(upLoadResult);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
+                        Log.e("TagSnake err",Log.getStackTraceString(e));
+
                         UpLoadResult bean = new UpLoadResult();
                         bean.setMessage(e.getMessage());
                         bean.setSuccess(false);

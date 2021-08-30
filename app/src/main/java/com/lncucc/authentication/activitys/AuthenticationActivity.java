@@ -65,7 +65,6 @@ import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 public class AuthenticationActivity extends BaseActivity {
     private ActAuthenticationBinding mDataBinding;
     //ZhjyBU@202104
-
     private AuthenticationViewModel mViewModel;
     //考生信息 dialog
     private PeopleMsgDialog peopleMsgDialog;
@@ -186,7 +185,7 @@ public class AuthenticationActivity extends BaseActivity {
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
                 }
 
-                String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".png";
+                String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";
 //                Log.e("TagSnake itemT", pathT);
 
 //                Log.e("TagSnake list", pathT);
@@ -407,13 +406,13 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
+
         //刷脸记录
         mViewModel.getmDBExamExport().observe(this, new Observer<DBExamExport>() {
             @Override
             public void onChanged(DBExamExport dbExamExport) {
 //                for (DBExamExport item : saveList) {
 //                    if (item.getStuNo().equals(dbExamExport.getStuNo())) {
-//
 //                    }
 //                }
                 boolean have = false;
@@ -431,7 +430,8 @@ public class AuthenticationActivity extends BaseActivity {
                 } else {
                     saveList.add(0, dbExamExport);
                 }
-                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
+                mViewModel.getExamNumber(mSeCode,mExanCode);
+//                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -449,10 +449,19 @@ public class AuthenticationActivity extends BaseActivity {
                 //考场总数
                 mDataBinding.tvSessionAll.setText(DBOperation.getRoomList(dbExamArrange.getSeCode()).size() + "");
                 mStudentNumber = DBOperation.getStudentNumber(mExanCode, mSeCode);
-//                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + );
-                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
+                mViewModel.getExamNumber(mSeCode,mExanCode);
+//                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
+                mViewModel.getExamNumber(dbExamArrange.getSeCode(), dbExamArrange.getExamCode());
+
                 saveList.clear();
 
+            }
+        });
+        //验证数量
+        mViewModel.getmDBExamExportNumber().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mDataBinding.tvVerifyNumber.setText(integer+ "/" + mStudentNumber);
             }
         });
 

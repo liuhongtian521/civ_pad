@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -82,13 +83,13 @@ public class PeopleMsgDialog extends BaseDialog {
 //            ivSuccess.setVisibility(View.VISIBLE);
 //            ivFaile.setVisibility(View.GONE);
             tvTypeSuccess.setVisibility(View.VISIBLE);
-            tvFaceValue.setVisibility(View.GONE);
+//            tvFaceValue.setVisibility(View.GONE);
         } else {
             ivType.setImageResource(R.drawable.icon_type_faile);
 //            ivSuccess.setVisibility(View.GONE);
 //            ivFaile.setVisibility(View.VISIBLE);
             tvTypeSuccess.setVisibility(View.GONE);
-            tvFaceValue.setVisibility(View.VISIBLE);
+//            tvFaceValue.setVisibility(View.VISIBLE);
         }
     }
 
@@ -103,7 +104,7 @@ public class PeopleMsgDialog extends BaseDialog {
             ivPhotoLeft.setImageBitmap(bt);
         }
 
-        String pathT = Constants.STU_EXPORT + File.separator + model.getSeCode() + File.separator + "photo" + File.separator + model.getStuNo() + ".png";
+        String pathT = Constants.STU_EXPORT + File.separator + model.getSeCode() + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";
         File file1 = new File(pathT);
         if (file1.exists()) {
             //转换bitmap
@@ -114,7 +115,9 @@ public class PeopleMsgDialog extends BaseDialog {
 
 
         tvName.setText(model.getStuName());
-        DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuName(), model.getExamCode()).get(0);
+        Log.e("TagSnake",model.getStuNo()+"::"+ model.getExamCode());
+        Log.e("TagSnake", DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).size() + ":");
+        DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).get(0);
         tvSex.setText(dbExaminee.getGender());
         tvNationality.setText(dbExaminee.getNation());
         setResult("1".equals(model.getVerifyResult()));

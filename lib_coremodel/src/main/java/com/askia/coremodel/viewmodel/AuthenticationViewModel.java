@@ -41,6 +41,12 @@ public class AuthenticationViewModel extends BaseViewModel {
 
     private MutableLiveData<Integer> mCanSign = new MutableLiveData<>();
 
+    private MutableLiveData<Integer> mDBExamExportNumber = new MutableLiveData<>();
+
+    public MutableLiveData<Integer> getmDBExamExportNumber() {
+        return mDBExamExportNumber;
+    }
+
     public MutableLiveData<Integer> getmCanSign() {
         return mCanSign;
     }
@@ -137,18 +143,15 @@ public class AuthenticationViewModel extends BaseViewModel {
     }
 
     public void canSign(String id) {
-
-
-
         mCanSign.postValue(DBOperation.getDBExamExport(id));
-
     }
 
+    public void getExamNumber(String seCode, String examCode) {
+        mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode));
+    }
 
     public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String id, String cardNo) {
-
         Log.e("TagSnake", type + ":状态");
-
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
         db.setStuNo(dbExamLayout.getStuNo());
@@ -156,7 +159,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setExamineeId(id);
         db.setVerifyTime(time);
         db.setVerifyResult(type);
-        db.setMatchRate(number);
+        db.setMatchRate(number.substring(0, 4));
         db.setSeCode(dbExamLayout.getSeCode());
         db.setEquipment(DeviceUtils.getDeviceSN());
         db.setExamCode(dbExamLayout.getExamCode());
@@ -164,29 +167,6 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setSiteCode(dbExamLayout.getSiteCode());
         db.setIdCard(cardNo);
         DBOperation.setDBExamExport(db);
-//        realm.insertOrUpdate(db);
         mDBExamExport.postValue(db);
-
-//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                DBExamExport db = new DBExamExport();
-//                db.setId(dbExamLayout.getId());
-//                db.setStuNo(dbExamLayout.getStuNo());
-//                db.setStuName(dbExamLayout.getStuName());
-//                db.setExamineeId(id);
-//                db.setVerifyTime(time);
-//                db.setVerifyResult(type);
-//                db.setMatchRate(number);
-//                db.setSeCode(dbExamLayout.getSeCode());
-//                db.setEquipment(DeviceUtils.getDeviceSN());
-//                db.setExamCode(dbExamLayout.getExamCode());
-//                db.setSysOrgCode(dbExamLayout.getSysOrgCode());
-//                db.setSiteCode(dbExamLayout.getSiteCode());
-//                db.setIdCard(cardNo);
-//                realm.insertOrUpdate(db);
-//                mDBExamExport.postValue(db);
-//            }
-//        });
     }
 }

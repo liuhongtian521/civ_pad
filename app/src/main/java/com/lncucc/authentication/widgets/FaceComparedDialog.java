@@ -101,7 +101,7 @@ public class FaceComparedDialog extends BaseDialog {
 
         setCardNo(dbExamLayout.getExReNum());
 
-        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".png";
+        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
         String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
 //        Log.e("TagSnake",pathT);
         //转换file
