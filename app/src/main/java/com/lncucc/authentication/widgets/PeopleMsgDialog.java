@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
@@ -38,6 +39,7 @@ public class PeopleMsgDialog extends BaseDialog {
     TextView tvName, tvSex, tvNationality, tvSubjectsName, tvExaminationRoom, tvTicketNumber, tvSeatNumber, tvIdCard;
     TextView tvAddress, tvFaceValue;
     TextView tvTypeSuccess, tvTypeFaile;
+    RelativeLayout rlBack;
 
 
     public PeopleMsgDialog(Context context, DialogClickBackListener dialogClickBackListener) {
@@ -68,7 +70,9 @@ public class PeopleMsgDialog extends BaseDialog {
         tvTypeSuccess = mView.findViewById(R.id.tv_type_success);//结果-成功
         tvTypeFaile = mView.findViewById(R.id.tv_type_faile);//结果-失败
 
-        ivBack.setOnClickListener(new View.OnClickListener() {
+        rlBack = mView.findViewById(R.id.rl_back);
+
+        rlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onListener.dissMiss();

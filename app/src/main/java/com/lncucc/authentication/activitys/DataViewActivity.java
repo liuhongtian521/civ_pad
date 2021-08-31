@@ -1,11 +1,6 @@
 package com.lncucc.authentication.activitys;
 
-import android.view.View;
-import android.widget.RelativeLayout;
-
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -13,23 +8,14 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.askia.coremodel.viewmodel.ExaminationViewModel;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ValidationDataAdapter;
 import com.lncucc.authentication.databinding.ActDataviewBinding;
-import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
-import com.lncucc.authentication.widgets.NoSwipeViewPager;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import q.rorbin.verticaltablayout.VerticalTabLayout;
 
 /**
  * Create bt she:
@@ -47,6 +33,7 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
 
     @Override
     public void onInit() {
+        findViewById(R.id.rel_title1).setOnClickListener(v -> finish());
         mList = DBOperation.getVerifyList();
         peopleMsgDialog = new PeopleMsgDialog(this,this);
         tempList.clear();
@@ -56,6 +43,8 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
         mDataBinding.recList.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            DBExamExport examExport = DBOperation.getExamportById(tempList.get(position).getId());
+            peopleMsgDialog.setMsg(examExport);
             peopleMsgDialog.show();
         });
     }
@@ -78,7 +67,7 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
 
     @Override
     public void dissMiss() {
-
+        peopleMsgDialog.dismiss();
     }
 
     @Override

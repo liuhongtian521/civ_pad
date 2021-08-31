@@ -24,6 +24,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActLoginBinding;
+import com.unicom.facedetect.detect.FaceDetectManager;
 
 import java.util.Objects;
 
@@ -44,8 +45,8 @@ public class LoginActivity extends BaseActivity {
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
 
-        loginViewModel.account.set(defaultAccount);
-//        loginViewModel.password.set("123qwe!@#QWE");
+        loginViewModel.account.set("K210106005");
+        loginViewModel.password.set("Sjzt_2020@!");
     }
 
     @Override
@@ -91,7 +92,7 @@ public class LoginActivity extends BaseActivity {
             loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
-            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.account.get());
+            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.password.get());
             //本地账号密码登录
             if (account.equals(loginViewModel.account.get()) && password.equals(loginViewModel.password.get())) {
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {

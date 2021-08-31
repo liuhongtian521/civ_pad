@@ -351,4 +351,11 @@ public class DBOperation {
         return query.findAll();
     }
 
+    public static DBExamExport getExamportById(String id){
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("id",id,Case.SENSITIVE);
+        query.endGroup();
+        return query.findFirst();
+    }
 }

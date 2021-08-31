@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.blankj.utilcode.util.TimeUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lncucc.authentication.R;
@@ -21,7 +22,7 @@ public class ValidationDataAdapter extends BaseQuickAdapter<DBExamExport, BaseVi
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamExport s) {
-        baseViewHolder.setText(R.id.tv_stu_name, s.getVerifyTime());
+        baseViewHolder.setText(R.id.tv_stu_name, TimeUtils.millis2String(Long.parseLong(s.getVerifyTime())));
         baseViewHolder.setText(R.id.tv_stu_num, s.getStuName());
         baseViewHolder.setText(R.id.tv_stu_exa_num, s.getIdCard());
 

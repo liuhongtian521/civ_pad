@@ -170,7 +170,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                         } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
                             com.blankj.utilcode.util.ImageUtils.save(bitmap,
                                     Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg",
-                                    Bitmap.CompressFormat.PNG);
+                                    Bitmap.CompressFormat.JPEG);
 //                        String base64 = ImageUtil.encodeImage(bitmap);
                         setUI(detectResult);
                         bitmap.recycle();

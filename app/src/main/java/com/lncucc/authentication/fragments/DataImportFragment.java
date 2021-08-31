@@ -84,19 +84,27 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.doZipHandle().observe(this, result -> {
+            closeLogadingDialog();
             int progress = result.getUnZipProcess();
-            if (result.getCode() != -1){
-                loadingDialog.setLoadingProgress(progress,result.getMessage());
-            }
+//            if (result.getCode() != -1){
+//                loadingDialog.setLoadingProgress(progress,result.getMessage());
+//            }
             if (progress == 100) {
-                loadingDialog.dismiss();
                 LogsUtil.saveOperationLogs("数据导入成功");
+                //解析
+                viewModel.getExDataFromLocal(result.getFilePath());
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
             }
             if (result.getCode() == -1){
-                loadingDialog.dismiss();
+                closeLogadingDialog();
+//                loadingDialog.dismiss();
                 MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
             }
+        });
+
+        viewModel.doFaceDBHandle().observe(this,result->{
+            closeLogadingDialog();
+//            MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
         });
 
         viewModel.usbWriteObservable().observe(this, result -> {
@@ -143,11 +151,14 @@ public class DataImportFragment extends BaseFragment {
             if (usbManager.hasPermission(device.getUsbDevice())) {
                 readDevice(device);
             } else {
+                closeLogadingDialog();
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+
             }
         }
         if (storageDevices.length == 0) {
+            closeLogadingDialog();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
@@ -207,9 +218,10 @@ public class DataImportFragment extends BaseFragment {
             MyToastUtils.error("请选择一种导入方式!", Toast.LENGTH_SHORT);
             return;
         }
-        if (loadingDialog != null){
-            loadingDialog.show();
-        }
+//        if (loadingDialog != null){
+//            loadingDialog.show();
+//        }
+        showLogadingDialog();
         if (viewModel.netImport.get()) {
             MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
         } else if (viewModel.usbImport.get()) {

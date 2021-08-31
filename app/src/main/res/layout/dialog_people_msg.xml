@@ -23,17 +23,22 @@
                 android:text="考生信息"
                 android:textColor="#163366"
                 android:textSize="@dimen/sp_10" />
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rl_back"
+                android:layout_width="45dp"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="right"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                android:src="@drawable/cha" />
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:src="@drawable/cha" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
         <View

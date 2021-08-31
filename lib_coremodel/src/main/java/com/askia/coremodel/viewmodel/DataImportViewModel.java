@@ -93,26 +93,29 @@ public class DataImportViewModel extends BaseViewModel {
      *
      * @param path 解压文件路径
      */
-    private void getExDataFromLocal(String path) {
+    public void getExDataFromLocal(String path) {
         List<File> list = FileUtils.listFilesInDir(path);
-        for (int i = 0; i < list.size(); i++) {
-            //是否是json文件
-            if (list.get(i).isFile()) {
-                try {
-                    LogUtils.e("json file name ->", list.get(i).getName());
-                    insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
-                } catch (Exception e) {
-                    Log.e("TagSnake 01", Log.getStackTraceString(e));
-                }
+        if (list!= null && list.size() > 0){
+            //空
+            for (int i = 0; i < list.size(); i++) {
+                //是否是json文件
+                if (list.get(i).isFile()) {
+                    try {
+                        LogUtils.e("json file name ->", list.get(i).getName());
+                        insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
+                    } catch (Exception e) {
+                        Log.e("TagSnake 01", Log.getStackTraceString(e));
+                    }
 
-            } else {
-                //人脸照片
-                try {
-                    pushFaceImage(path + File.separator + "photo");
-                } catch (Exception e) {
-                    Log.e("TagSnake 02", Log.getStackTraceString(e));
-                }
+                } else {
+                    //人脸照片
+                    try {
+                        pushFaceImage(path + File.separator + "photo");
+                    } catch (Exception e) {
+                        Log.e("TagSnake 02", Log.getStackTraceString(e));
+                    }
 
+                }
             }
         }
     }
@@ -163,7 +166,8 @@ public class DataImportViewModel extends BaseViewModel {
             //文件夹相片数量
             List<File> photoList = FileUtils.listFilesInDir(filePath);
             LogUtils.e("photo list size->", photoList.size());
-            if (photoList.isEmpty()) return;
+            if (photoList.isEmpty())
+                return;
             FaceDBHandleEvent event = new FaceDBHandleEvent();
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
@@ -288,45 +292,82 @@ public class DataImportViewModel extends BaseViewModel {
                         // 设置密码
                         zipFile.setPassword(pwd.toCharArray());
                         //解压进度
-                        final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+                        ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
                         progressMonitor.endProgressMonitor();
 
-                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                            isWorking = event != Lifecycle.Event.ON_PAUSE && event != Lifecycle.Event.ON_STOP && event != Lifecycle.Event.ON_DESTROY;
-                            Thread thread = new Thread(() -> {
-                                int percentDone = 0;
-                                LogUtils.e("life owner ->", isWorking);
-                                while (isWorking) {
-                                    percentDone = progressMonitor.getPercentDone();
+                      new Thread(() -> {
+                            int percentDone = 0;
+//                            LogUtils.e("life owner ->", isWorking);
+                            while (true) {
+//                                percentDone = progressMonitor.getPercentDone();
+////                                unZipHandleEvent.setUnZipProcess(percentDone);
+////                                unZipHandleEvent.setMessage("正在解压中...");
+////                                unZipObservable.postValue(unZipHandleEvent);
+//                                if (percentDone >= 100) {
+//                                    unZipHandleEvent.setCode(0);
+//                                    unZipHandleEvent.setUnZipProcess(percentDone);
+//                                    unZipHandleEvent.setMessage("解压完成");
+//                                    unZipObservable.postValue(unZipHandleEvent);
+//                                    //解析
+//                                    getExDataFromLocal(toPath);
+//                                    break;
+//                                }
+                                percentDone = progressMonitor.getPercentDone();
+                                LogUtils.e("zip success ->", percentDone + "");
+                                if (percentDone >= 100) {
+                                    unZipHandleEvent.setCode(0);
                                     unZipHandleEvent.setUnZipProcess(percentDone);
-                                    unZipHandleEvent.setMessage("正在解压中...");
+                                    unZipHandleEvent.setMessage("解压完成");
+                                    unZipHandleEvent.setFilePath(toPath);
                                     unZipObservable.postValue(unZipHandleEvent);
-                                    if (percentDone >= 100) {
-                                        unZipHandleEvent.setCode(0);
-                                        unZipHandleEvent.setUnZipProcess(percentDone);
-                                        unZipHandleEvent.setMessage("解压完成");
-                                        unZipObservable.postValue(unZipHandleEvent);
-                                        //解析
-                                        getExDataFromLocal(toPath);
-                                        break;
-                                    }
+                                    break;
                                 }
-                            });
-                            thread.start();
-                            if (!isWorking){
-                                thread.interrupt();
-                                progressMonitor.setCancelAllTasks(true);
                             }
-                            // 解压缩所有文件以及文件夹
-                            try {
-                                zipFile.setRunInThread(true);
-                                if (progressMonitor.getState() != ProgressMonitor.State.BUSY){
-                                    zipFile.extractAll(toPath);
-                                }
-                            } catch (ZipException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        }).start();
+
+                        try {
+//                            zipFile.setRunInThread(true);
+                            zipFile.extractAll(toPath);
+                        } catch (ZipException e) {
+                            e.printStackTrace();
+                        }
+
+//                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+//                            isWorking = event != Lifecycle.Event.ON_DESTROY;
+//                            Thread thread = new Thread(() -> {
+//                                int percentDone = 0;
+//                                LogUtils.e("life owner ->", isWorking);
+//                                while (isWorking) {
+//                                    percentDone = progressMonitor.getPercentDone();
+//                                    unZipHandleEvent.setUnZipProcess(percentDone);
+//                                    unZipHandleEvent.setMessage("正在解压中...");
+//                                    unZipObservable.postValue(unZipHandleEvent);
+//                                    if (percentDone >= 100) {
+//                                        unZipHandleEvent.setCode(0);
+//                                        unZipHandleEvent.setUnZipProcess(percentDone);
+//                                        unZipHandleEvent.setMessage("解压完成");
+//                                        unZipObservable.postValue(unZipHandleEvent);
+//                                        //解析
+//                                        getExDataFromLocal(toPath);
+//                                        break;
+//                                    }
+//                                }
+//                            });
+//                            thread.start();
+//                            if (!isWorking){
+//                                thread.interrupt();
+//                                progressMonitor.setCancelAllTasks(true);
+//                            }
+//                            // 解压缩所有文件以及文件夹
+//                            try {
+//                                zipFile.setRunInThread(true);
+//                                if (progressMonitor.getState() != ProgressMonitor.State.BUSY){
+//                                    zipFile.extractAll(toPath);
+//                                }
+//                            } catch (ZipException e) {
+//                                e.printStackTrace();
+//                            }
+//                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

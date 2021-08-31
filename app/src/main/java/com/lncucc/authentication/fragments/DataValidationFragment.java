@@ -23,6 +23,8 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ValidationDataAdapter;
 import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.PeopleMsgDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,11 +34,12 @@ import java.util.List;
 /**
  * 验证数据查看
  */
-public class DataValidationFragment extends BaseFragment {
+public class DataValidationFragment extends BaseFragment implements DialogClickBackListener {
     private FragmentDataValidationBinding mBinding;
     private List<DBExamExport> mList;
     private ValidationDataAdapter mAdapter;
     private List<DBExamExport> tempList = new ArrayList<>();
+    private PeopleMsgDialog peopleMsgDialog;
 
     @Override
     public void onInit() {
@@ -44,11 +47,15 @@ public class DataValidationFragment extends BaseFragment {
         tempList.clear();
         tempList.addAll(mList);
         mBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ValidationDataAdapter(mList);
+        mAdapter = new ValidationDataAdapter(tempList);
         mBinding.rlDataView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+        peopleMsgDialog = new PeopleMsgDialog(getActivity(),this);
 
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            DBExamExport examExport = DBOperation.getExamportById(tempList.get(position).getId());
+            peopleMsgDialog.setMsg(examExport);
+            peopleMsgDialog.show();
         });
 
         mBinding.editExamNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -89,6 +96,16 @@ public class DataValidationFragment extends BaseFragment {
 
     @Override
     public void onSubscribeViewModel() {
+
+    }
+
+    @Override
+    public void dissMiss() {
+        peopleMsgDialog.dismiss();
+    }
+
+    @Override
+    public void backType(int type) {
 
     }
 }
