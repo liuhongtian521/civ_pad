@@ -57,6 +57,16 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
         mSeCode = ((AuthenticationActivity) getActivity()).getmSeCode();
     }
 
+    @Override
+    protected String getStuNo() {
+        return ((AuthenticationActivity) getActivity()).getStuNo();
+    }
+
+    @Override
+    protected boolean isComputen() {
+        return ((AuthenticationActivity) getActivity()).isComparison();
+    }
+
 
     @Override
     public View onInitDataBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {

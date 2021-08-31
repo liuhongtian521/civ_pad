@@ -101,6 +101,14 @@ public class AuthenticationActivity extends BaseActivity {
         return mSeCode;
     }
 
+    public boolean isComparison() {
+        return isComparison;
+    }
+
+    public String getStuNo() {
+        return mDbExaminee.getStuNo();
+    }
+
     private int TIME = 1000;  //每隔1s执行一次.
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
@@ -405,7 +413,7 @@ public class AuthenticationActivity extends BaseActivity {
 //                    //有数据刷脸 普通刷脸无效
 //                    faceResultDialog.setType(false);
 //                } else {
-                    faceResultDialog.setType(true);
+                faceResultDialog.setType(true);
 //                }
             }
         });

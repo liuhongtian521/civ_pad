@@ -59,6 +59,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     public String mSeCode;
 
+
     @Override
     public void onInit() {
     }
@@ -77,6 +78,10 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     protected abstract void setUI(FaceDetectResult detectResult);
 
     protected abstract void getmSeCode();
+
+    protected abstract String getStuNo();
+
+    protected abstract boolean isComputen();
 
     public void setmSeCode(String seCode) {
         mSeCode = seCode;
@@ -138,8 +143,9 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                         goContinueDetectFace();
                         return;
                     }
-                    LogUtils.e("detect result ->", detectResult.similarity);
-                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
+                    Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
+//                    LogUtils.e("detect result ->", detectResult.similarity);
+//                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
 
                     frames = 0;
                     if (detectResult != null) {
@@ -152,11 +158,16 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                             bitmap = ImageUtil.imageCrop(bitmap, faceRect);
                         }
                         bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-
                         if (mSeCode == null) {
                             getmSeCode();
                         }
-                        if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
+
+
+                        if (isComputen()) {
+                            com.blankj.utilcode.util.ImageUtils.save(bitmap,
+                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg",
+                                    Bitmap.CompressFormat.PNG);
+                        } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
                             com.blankj.utilcode.util.ImageUtils.save(bitmap,
                                     Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg",
                                     Bitmap.CompressFormat.PNG);

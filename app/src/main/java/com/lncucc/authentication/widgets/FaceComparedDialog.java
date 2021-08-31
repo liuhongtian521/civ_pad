@@ -110,7 +110,7 @@ public class FaceComparedDialog extends BaseDialog {
             ivPhotoOne.setImageBitmap(bt);
         }
 
-        if (success) {
+//        if (success) {
             String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
             //转换file
             File file = new File(pathT);
@@ -119,9 +119,9 @@ public class FaceComparedDialog extends BaseDialog {
                 Bitmap bt = BitmapFactory.decodeFile(pathT);
                 ivPhotoTwo.setImageBitmap(bt);
             }
-        } else {
-            ivPhotoTwo.setVisibility(View.INVISIBLE);
-        }
+//        } else {
+//            ivPhotoTwo.setVisibility(View.INVISIBLE);
+//        }
     }
 
 
