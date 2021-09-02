@@ -3,6 +3,7 @@ package com.lncucc.authentication.widgets;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -78,8 +79,9 @@ public class PopExamPlan extends PopupWindow {
         mAdapter = new PopExamPlanAdapter(context, list, chooseItem, new PopExamPlanAdapter.OnItemListener() {
             @Override
             public void onItemClick(int item) {
+                Log.e("TagSnake",item+":item click");
                 chooseItem = item;
-
+                mAdapter.setChooseInt(chooseItem);
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -103,6 +105,7 @@ public class PopExamPlan extends PopupWindow {
 
     public void setIndex(){
         chooseItem = -1;
+        mAdapter.setChooseInt(chooseItem);
         mAdapter.notifyDataSetChanged();
     }
 

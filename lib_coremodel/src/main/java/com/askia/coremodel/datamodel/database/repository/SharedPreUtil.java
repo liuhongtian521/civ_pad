@@ -21,6 +21,7 @@ public class SharedPreUtil {
     public final static String PASSWORD = "password";
     public final static String PHONENUM = "phonenum";
     public final static String AGORAID = "agoraid";
+    public final static String ROUND = "ROUND";//相机旋转模式
 
     // zip包时间戳
     public final static String KEY_ZIP_TIMESTAMP = "KEY_ZIP_TIMESTAMP";
@@ -50,6 +51,17 @@ public class SharedPreUtil {
     private SharedPreUtil(Context context) {
         msp = context.getSharedPreferences("SharedPreUtil",
                 Context.MODE_PRIVATE);
+    }
+
+    public synchronized void putROUND(int round) {
+        Editor editor = msp.edit();
+        editor.putInt(ROUND, round);
+        editor.commit();
+    }
+
+    public synchronized int getRound() {
+        int str = msp.getInt(SharedPreUtil.ROUND, 1);
+        return str;
     }
 
     public SharedPreferences getSharedPref() {

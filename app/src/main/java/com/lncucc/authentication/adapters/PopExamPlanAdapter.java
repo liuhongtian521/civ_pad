@@ -1,6 +1,7 @@
 package com.lncucc.authentication.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,15 @@ public class PopExamPlanAdapter extends RecyclerView.Adapter<PopExamPlanAdapter.
     int chooseInt;
     OnItemListener onItemListener;
 
-    public PopExamPlanAdapter(Context context,  List<DBExamPlan> list, int chooseInt, OnItemListener onItemListener) {
+    public PopExamPlanAdapter(Context context, List<DBExamPlan> list, int chooseInt, OnItemListener onItemListener) {
         this.context = context;
         this.list = list;
         this.chooseInt = chooseInt;
         this.onItemListener = onItemListener;
+    }
+
+    public void setChooseInt(int chooseInt) {
+        this.chooseInt = chooseInt;
     }
 
     @Override
@@ -46,6 +51,9 @@ public class PopExamPlanAdapter extends RecyclerView.Adapter<PopExamPlanAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+        Log.e("TagSnake", position + "::" + chooseInt);
+
         if (position == chooseInt) {
             holder.checkBox.setChecked(true);
         } else {
@@ -60,10 +68,7 @@ public class PopExamPlanAdapter extends RecyclerView.Adapter<PopExamPlanAdapter.
                 onItemListener.onItemClick(position);
             }
         });
-
 //        line_bg_itm
-
-
     }
 
     @Override

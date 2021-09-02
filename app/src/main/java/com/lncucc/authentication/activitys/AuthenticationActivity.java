@@ -3,15 +3,15 @@ package com.lncucc.authentication.activitys;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -92,6 +92,9 @@ public class AuthenticationActivity extends BaseActivity {
     long timeStart, timeEnd;
 
     int mStudentNumber = 0;
+    //屏幕旋转处理
+    int showTime = 0;
+    boolean isToUp = true;
 
 
     private ArrayList<String> mExamCodeList = new ArrayList<>();
@@ -123,12 +126,28 @@ public class AuthenticationActivity extends BaseActivity {
         }
     };
 
+
     public void timer() {
         long nowTime = System.currentTimeMillis();
         mDataBinding.tvTime.setText(TimeUtils.millis2String(nowTime));
         if (nowTime > timeEnd) {
             startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
             finish();
+        }
+    }
+
+    public void setShowTime(int orientation) {
+        if (orientation > 265) {        //翻转 向上
+            if (!isToUp) {
+                isToUp = true;
+                faceFragment.setToUp(1);
+
+            }
+        } else if (orientation < 80) {            //反转向下
+            if (isToUp) {
+                isToUp = false;
+                faceFragment.setToUp(3);
+            }
         }
     }
 
@@ -145,6 +164,7 @@ public class AuthenticationActivity extends BaseActivity {
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
+        Log.e("TagSnake Auth", mExanCode);
         this.mExanCode = mExanCode;
         //获取场次数据
         mViewModel.getPlanByCode(mExanCode);
@@ -161,6 +181,7 @@ public class AuthenticationActivity extends BaseActivity {
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
         semExanCode(getIntent().getExtras().getString("exanCode"));
+        mViewModel.getPlane(mExanCode);
         mExamCodeList = getIntent().getExtras().getStringArrayList("list");
         if (mExamCodeList == null) {
             mExamCodeList = new ArrayList<>();
@@ -253,15 +274,16 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 faceResultDialog.dismiss();
-                faceFragment.goContinueDetectFace();
+                if (!inquiryDialog.isShowing())
+                    faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
                 faceResultDialog.dismiss();
 
-
-                faceFragment.goContinueDetectFace();
+                if (!inquiryDialog.isShowing())
+                    faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
                     mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
@@ -349,15 +371,36 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
-        mDataBinding.ivChooseExam.setOnClickListener(new View.OnClickListener() {
+        mDataBinding.lineChooseExam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+                mPopExamPlan.setIndex();
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
             }
         });
         handler.postDelayed(runnable, TIME);
+    }
+
+    OrientationEventListener mOrientationEventListener;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mOrientationEventListener == null)
+            mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+                @Override
+                public void onOrientationChanged(int orientation) {
+//                    Log.e("TagSnake", orientation + ":");
+                    setShowTime(orientation);
+                }
+            };
+
+        if (mOrientationEventListener.canDetectOrientation())
+            mOrientationEventListener.enable();
+        else
+            mOrientationEventListener.disable();
     }
 
     @Override
@@ -377,7 +420,10 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     protected void onPause() {
+
         super.onPause();
+
+        mOrientationEventListener.disable();
         faceFragment.closeFace();
         faceFragment.releaseCamera();
         if (faceComparedDialog.isShowing())
@@ -404,17 +450,25 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
+        //
+        mViewModel.getmDBExamPlan().observe(this, new Observer<DBExamPlan>() {
+            @Override
+            public void onChanged(DBExamPlan dbExamPlan) {
+                mDataBinding.tvExamname.setText(dbExamPlan.getExamName());
+            }
+        });
+
         //判断是否可以刷脸
         mViewModel.getmCanSign().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 Log.e("TagSnake", integer + ":数据是否拥有");
+                faceResultDialog.setType(true);
 //                if (integer > 0) {
 //                    //有数据刷脸 普通刷脸无效
 //                    faceResultDialog.setType(false);
 //                } else {
-                faceResultDialog.setType(true);
-//                }
+//              }
             }
         });
 

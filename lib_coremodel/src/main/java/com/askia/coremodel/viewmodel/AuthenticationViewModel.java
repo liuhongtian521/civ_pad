@@ -113,6 +113,11 @@ public class AuthenticationViewModel extends BaseViewModel {
         mArrange.postValue(list);
     }
 
+    public  void getPlane(String examCode){
+        DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
+        mDBExamPlan.postValue(dbExamPlan);
+    }
+
     public void getPlanByCode(String examCode) {
         DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
         List<DBExamArrange> list = DBOperation.getExamArrange(examCode);

@@ -2,11 +2,13 @@ package com.askia.common.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -104,7 +106,7 @@ public class ImageUtil {
         if (bitmap == null || rect == null || rect.isEmpty() || bitmap.getWidth() < rect.right || bitmap.getHeight() < rect.bottom) {
             return null;
         }
-        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height(), null, false);
+        return Bitmap.createBitmap(bitmap, rect.left , rect.top , rect.width(), rect.height() , null, false);
     }
 
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {
@@ -135,6 +137,15 @@ public class ImageUtil {
         byte[] bytes = baos.toByteArray();
         String strbm = Base64.encodeToString(bytes, Base64.NO_WRAP);
         return strbm;
+    }
+
+    public static Bitmap sampleSize(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos); //参数如果为100那么就不压缩
+        byte[] jpegData = baos.toByteArray();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
     }
 
     /**

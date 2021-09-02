@@ -67,6 +67,12 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
         return ((AuthenticationActivity) getActivity()).isComparison();
     }
 
+    public void setToUp(int type) {
+        releaseCamera();
+
+        setCameraHelper(type);
+    }
+
 
     @Override
     public View onInitDataBinding(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {

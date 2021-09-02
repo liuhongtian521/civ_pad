@@ -98,6 +98,7 @@ public class MainActivity extends BaseActivity {
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
+        Log.e("TagSnake",mExanCode);
         this.mExanCode = mExanCode;
         //获取场次数据
         mViewModel.getSiteCode(mExanCode);

@@ -86,14 +86,14 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     public void setmSeCode(String seCode) {
         mSeCode = seCode;
     }
-
+    CameraListener cameraListener;
     /**
      * 初始化相机
      */
     protected void initCamera() {
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        CameraListener cameraListener = new CameraListener() {
+          cameraListener = new CameraListener() {
             @Override
             public void onCameraOpened(Camera camera, int cameraId, int displayOrientation, boolean isMirror) {
                 previewSize = camera.getParameters().getPreviewSize();
@@ -127,10 +127,9 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
                     YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
                     ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
-                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 70, outputSteam);
+                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
                     byte[] jpegData = outputSteam.toByteArray();
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inSampleSize = 1;
+
                     float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
                     FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
                     //获取人脸特征
@@ -146,32 +145,47 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
 //                    LogUtils.e("detect result ->", detectResult.similarity);
 //                    Log.e("TagSnake", detectResult.faceId + ":" + detectResult.similarity + ":" + detectResult.faceNum);
-
                     frames = 0;
                     if (detectResult != null) {
-                        byte[] newNav21 = new byte[nv21.length];
-                        System.arraycopy(nv21, 0, newNav21, 0, nv21.length);//数据处理用的
-                        NV21ToBitmap nv21Tool = new NV21ToBitmap(getContext());
-                        Bitmap bitmap = nv21Tool.nv21ToBitmap(newNav21, previewSize.width, previewSize.height);
+                        Bitmap bitmap = null;
+                        try {
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+//                            options.inSampleSize = 2;
+                            options.inPreferredConfig = Bitmap.Config.RGB_565;
+                            bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
+                        } catch (Exception e) {
+                            Log.e("TagSnake", Log.getStackTraceString(e));
+                        }
                         Rect faceRect = faceResult.faceRect;
                         if (faceRect != null) {
                             bitmap = ImageUtil.imageCrop(bitmap, faceRect);
                         }
                         bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+                        bitmap = ImageUtil.sampleSize(bitmap);
                         if (mSeCode == null) {
                             getmSeCode();
                         }
-
-
+                        String path = "";
                         if (isComputen()) {
-                            com.blankj.utilcode.util.ImageUtils.save(bitmap,
-                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg",
-                                    Bitmap.CompressFormat.PNG);
+                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
                         } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
-                            com.blankj.utilcode.util.ImageUtils.save(bitmap,
-                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg",
-                                    Bitmap.CompressFormat.JPEG);
+                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
+
+                        if (!"".equals(path)) {
+//                            com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                            //图片二次压缩
+
+//                            Bitmap bitmap1 = BitmapFactory.decodeFile(path, options);
+//                            Log.e("TagSnake","二次压缩");
+                            com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                        }
+
+//                            com.blankj.utilcode.util.ImageUtils.save(bitmap,
+//                                    Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg",
+//                                    Bitmap.CompressFormat.JPEG);
 //                        String base64 = ImageUtil.encodeImage(bitmap);
+
+
                         setUI(detectResult);
                         bitmap.recycle();
                     } else {
@@ -198,18 +212,24 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 Log.i(TAG, "onCameraConfigurationChanged: " + cameraID + "  " + displayOrientation);
             }
         };
+        isCameraInit = true;
+        setCameraHelper(1);
+    }
 
+
+    public void setCameraHelper(int type) {
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(mPreview.getWidth(), mPreview.getHeight()))
                 .rotation(getActivity().getWindowManager().getDefaultDisplay().getRotation())
                 .specificCameraId(rgbCameraID != null ? rgbCameraID : Camera.CameraInfo.CAMERA_FACING_FRONT)
                 .isMirror(mIsMirror)
                 .previewOn(mPreview)
+                .rotation(type)
                 .cameraListener(cameraListener)
                 .build();
         cameraHelper.init();
-        isCameraInit = true;
         cameraHelper.start();
+
     }
 
     @Override
