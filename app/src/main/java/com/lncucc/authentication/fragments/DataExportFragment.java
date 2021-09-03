@@ -2,7 +2,6 @@ package com.lncucc.authentication.fragments;
 
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
@@ -15,27 +14,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
-import com.askia.common.widget.NetLoadingDialog;
+import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
-import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.LogUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
-import com.github.mjdev.libaums.fs.UsbFileInputStream;
-import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentExportBinding;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
 import com.ttsea.jrxbus2.RxBus2;
@@ -44,22 +42,18 @@ import com.ttsea.jrxbus2.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
 import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
-import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 /**
  * 数据导出
  */
 public class DataExportFragment extends BaseFragment {
-    private List<Boolean> list;
+    private List<DataImportListBean> dataExportList = new ArrayList<>();
     private List<DBExamArrange> sessionList;
     private String seCode = "";
     private UsbMassStorageDevice[] storageDevices;
@@ -74,6 +68,8 @@ public class DataExportFragment extends BaseFragment {
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             | View.SYSTEM_UI_FLAG_FULLSCREEN;
     private DBExamArrange itemArrange;
+    private DataImportAdapter dataImportAdapter;
+    private int defaultIndex = 2;
 
     @Override
     public void onInit() {
@@ -85,7 +81,45 @@ public class DataExportFragment extends BaseFragment {
             seCode = sessionList.get(0).getSeCode();
             siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
         }
+        for (int i = 0; i < 3; i++) {
+            DataImportListBean bean = new DataImportListBean();
+            switch (i) {
+                case 0:
+                    bean.setChecked(false);
+                    bean.setTitle("网络导出");
+                    dataExportList.add(bean);
+                    break;
+                case 1:
+                    bean.setChecked(false);
+                    bean.setTitle("U盘导出");
+                    dataExportList.add(bean);
+                    break;
+                case 2:
+                    bean.setChecked(true);
+                    bean.setTitle("SD卡导出");
+                    dataExportList.add(bean);
+                    break;
+
+            }
+        }
+        exportBinding.rcyDataExport.setLayoutManager(new LinearLayoutManager(getActivity()));
+        dataImportAdapter = new DataImportAdapter(dataExportList);
+        exportBinding.rcyDataExport.setAdapter(dataImportAdapter);
+        initEvent();
         RxBus2.getInstance().register(this);
+    }
+
+    private void initEvent(){
+        dataImportAdapter.setOnItemClickListener((adapter, view, position) -> {
+            if (defaultIndex == position) {
+                return;
+            } else {
+                dataExportList.get(defaultIndex).setChecked(false);
+                dataExportList.get(position).setChecked(true);
+                defaultIndex = position;
+            }
+            dataImportAdapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -207,10 +241,10 @@ public class DataExportFragment extends BaseFragment {
         exportViewModel.zip().observe(this, result -> {
             if (result.getUnZipProcess() == 100) {
                 //如果选择U盘导出，从本地sd中拷贝到U盘根目录
-                if (exportBinding.sbUsb.isChecked()) {
+                if (defaultIndex == 1) {
                     redUDiskDevsList();
                     //选择网络导出
-                } else if (exportBinding.sbNet.isChecked()) {
+                } else if (defaultIndex == 0) {
                     String examCode = itemArrange.getExamCode();
                     String seCode = itemArrange.getSeCode();
                     exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
@@ -249,24 +283,6 @@ public class DataExportFragment extends BaseFragment {
     }
 
     public void export(View view) {
-        list = new ArrayList<>();
-        list.add(exportBinding.sbNet.isChecked());
-        list.add(exportBinding.sbUsb.isChecked());
-        list.add(exportBinding.sbSdcard.isChecked());
-        int count = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i)) {
-                count++;
-            }
-        }
-        if (count > 1) {
-            MyToastUtils.error("只能选择一种导出方式!", Toast.LENGTH_SHORT);
-            return;
-        }
-        if (count == 0) {
-            MyToastUtils.error("请选择一种导出方式!", Toast.LENGTH_SHORT);
-            return;
-        }
         showLogadingDialog();
         exportViewModel.doDataExport(seCode);
     }

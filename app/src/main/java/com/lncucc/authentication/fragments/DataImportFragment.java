@@ -14,20 +14,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
+import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
 import com.ttsea.jrxbus2.RxBus2;
@@ -47,24 +52,59 @@ import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
  * 数据导入
  */
 public class DataImportFragment extends BaseFragment {
-    private FragmentImportBinding leadInBinding;
+    private FragmentImportBinding importBinding;
     private DataImportViewModel viewModel;
-    private ArrayList<Boolean> importList;
+    private ArrayList<DataImportListBean> importList = new ArrayList<>();
     private UsbMassStorageDevice[] storageDevices;
     private UsbFile cFolder;
     private DataLoadingDialog loadingDialog;
+    private DataImportAdapter dataImportAdapter;
+    private int defaultIndex = 2;
 
     @Override
     public void onInit() {
         RxBus2.getInstance().register(this);
         loadingDialog = new DataLoadingDialog(getActivity());
         loadingDialog.setCanceledOnTouchOutside(false);
+        for (int i = 0; i < 3; i++) {
+            DataImportListBean bean = new DataImportListBean();
+            switch (i) {
+                case 0:
+                    bean.setChecked(false);
+                    bean.setTitle("网络导入");
+                    importList.add(bean);
+                    break;
+                case 1:
+                    bean.setChecked(false);
+                    bean.setTitle("U盘导入");
+                    importList.add(bean);
+                    break;
+                case 2:
+                    bean.setChecked(true);
+                    bean.setTitle("SD卡导入");
+                    importList.add(bean);
+                    break;
+
+            }
+        }
+        importBinding.rcyDataImport.setLayoutManager(new LinearLayoutManager(getActivity()));
+        dataImportAdapter = new DataImportAdapter(importList);
+        importBinding.rcyDataImport.setAdapter(dataImportAdapter);
+        initEvent();
     }
 
     public void initEvent() {
-        leadInBinding.sbNet.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.netImport.set(isChecked));
-        leadInBinding.sbUsb.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.usbImport.set(isChecked));
-        leadInBinding.sbSdcard.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.sdCardImport.set(isChecked));
+        dataImportAdapter.setOnItemClickListener((adapter, view, position) -> {
+
+            if (defaultIndex == position) {
+                return;
+            } else {
+                importList.get(defaultIndex).setChecked(false);
+                importList.get(position).setChecked(true);
+                defaultIndex = position;
+            }
+            dataImportAdapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -74,11 +114,10 @@ public class DataImportFragment extends BaseFragment {
 
     @Override
     public View onInitDataBinding(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container) {
-        leadInBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_import, container, false);
-        leadInBinding.setViewmodel(viewModel);
-        leadInBinding.setClick(this);
-        initEvent();
-        return leadInBinding.getRoot();
+        importBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_import, container, false);
+        importBinding.setViewmodel(viewModel);
+        importBinding.setClick(this);
+        return importBinding.getRoot();
     }
 
     @Override
@@ -86,23 +125,20 @@ public class DataImportFragment extends BaseFragment {
         viewModel.doZipHandle().observe(this, result -> {
             closeLogadingDialog();
             int progress = result.getUnZipProcess();
-//            if (result.getCode() != -1){
-//                loadingDialog.setLoadingProgress(progress,result.getMessage());
-//            }
             if (progress == 100) {
                 LogsUtil.saveOperationLogs("数据导入成功");
                 //解析
                 viewModel.getExDataFromLocal(result.getFilePath());
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
             }
-            if (result.getCode() == -1){
+            if (result.getCode() == -1) {
                 closeLogadingDialog();
 //                loadingDialog.dismiss();
-                MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
+                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
             }
         });
 
-        viewModel.doFaceDBHandle().observe(this,result->{
+        viewModel.doFaceDBHandle().observe(this, result -> {
             closeLogadingDialog();
 //            MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
         });
@@ -200,35 +236,18 @@ public class DataImportFragment extends BaseFragment {
     }
 
     public void importData(View view) {
-        importList = new ArrayList<>();
-        importList.add(viewModel.netImport.get());
-        importList.add(viewModel.usbImport.get());
-        importList.add(viewModel.sdCardImport.get());
-        int count = 0;
-        for (int i = 0; i < importList.size(); i++) {
-            if (importList.get(i)) {
-                count++;
-            }
-        }
-        if (count > 1) {
-            MyToastUtils.error("只能选择一种导入方式!", Toast.LENGTH_SHORT);
-            return;
-        }
-        if (count == 0) {
-            MyToastUtils.error("请选择一种导入方式!", Toast.LENGTH_SHORT);
-            return;
-        }
-//        if (loadingDialog != null){
-//            loadingDialog.show();
-//        }
         showLogadingDialog();
-        if (viewModel.netImport.get()) {
-            MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
-        } else if (viewModel.usbImport.get()) {
-            redUDiskDevsList();
-        } else {
-//            viewModel.doSdCardImport();
-            viewModel.doUnzip(this);
+        switch (defaultIndex) {
+            case 0:
+                MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
+                closeLogadingDialog();
+                break;
+            case 1:
+                redUDiskDevsList();
+                break;
+            case 2:
+                viewModel.doUnzip(this);
+                break;
         }
     }
 

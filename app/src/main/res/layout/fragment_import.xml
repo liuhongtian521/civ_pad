@@ -52,114 +52,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top" />
 
-        <LinearLayout
-            android:id="@+id/ll_data_lead_mode"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcy_data_import"
             android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_lead_mode_hint">
-            <RelativeLayout
-                android:id="@+id/rl_data_lead_net"
-                android:layout_width="match_parent"
-                android:layout_height="31dp">
-                <TextView
-                    android:text="@string/data_lead_net"
-                    android:layout_alignParentStart="true"
-                    android:textSize="8sp"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/_666666"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+            android:layout_marginRight="15dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_lead_mode_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-                <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/sb_net"
-                    android:layout_width="45dp"
-                    android:layout_height="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:checked="@{viewmodel.netImport}"
-                    android:layout_centerVertical="true"
-                    app:kswAnimationDuration="300"
-                    app:kswThumbMarginBottom="-1dp"
-                    app:kswThumbMarginTop="-1dp"
-                    app:kswThumbMarginLeft="-1dp"
-                    app:kswThumbMarginRight="-1dp"
-                    app:kswBackDrawable="@drawable/ios_back_drawable"
-                    app:kswThumbDrawable="@drawable/ios_thumb_selector" />
-                <View
-                    android:background="@drawable/bg_driver"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="2px"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_data_lead_usb"
-                android:layout_width="match_parent"
-                android:layout_height="31dp">
-                <TextView
-                    android:text="@string/data_lead_usb"
-                    android:layout_alignParentStart="true"
-                    android:textSize="8sp"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/_666666"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/sb_usb"
-                    android:layout_width="45dp"
-                    android:layout_height="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:checked="@{viewmodel.usbImport}"
-                    android:layout_centerVertical="true"
-                    app:kswAnimationDuration="300"
-                    app:kswThumbMarginBottom="-1dp"
-                    app:kswThumbMarginTop="-1dp"
-                    app:kswThumbMarginLeft="-1dp"
-                    app:kswThumbMarginRight="-1dp"
-                    app:kswBackDrawable="@drawable/ios_back_drawable"
-                    app:kswThumbDrawable="@drawable/ios_thumb_selector" />
-                <View
-                    android:background="@drawable/bg_driver"
-                    android:layout_alignParentBottom="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="2px"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/rl_data_lead_sdcard"
-                android:layout_width="match_parent"
-                android:layout_height="31dp">
-                <TextView
-                    android:text="@string/data_lead_sdcard"
-                    android:layout_alignParentStart="true"
-                    android:textSize="8sp"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/_666666"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/sb_sdcard"
-                    android:layout_width="45dp"
-                    android:layout_height="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:checked="@{viewmodel.sdCardImport}"
-                    android:layout_centerVertical="true"
-                    app:kswAnimationDuration="300"
-                    app:kswThumbMarginBottom="-1dp"
-                    app:kswThumbMarginTop="-1dp"
-                    app:kswThumbMarginLeft="-1dp"
-                    app:kswThumbMarginRight="-1dp"
-                    app:kswBackDrawable="@drawable/ios_back_drawable"
-                    app:kswThumbDrawable="@drawable/ios_thumb_selector" />
-            </RelativeLayout>
-        </LinearLayout>
-<!--
-            android:layout_marginTop="128dp"
--->
         <TextView
             android:id="@+id/tv_lead"
             android:text="@string/data_lead_in"
@@ -167,12 +68,12 @@
             android:gravity="center"
             android:textSize="11sp"
             android:onClick="@{click::importData}"
-            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_mode"
+            app:layout_constraintTop_toBottomOf="@+id/rcy_data_import"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/bg_login_button"
             android:layout_width="390dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="128dp"
             android:layout_height="30dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,32 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-
-//public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHolder> {
-//
-//    public DataViewAdapter(@Nullable List<DBExamLayout> data) {
-//        super(R.layout.item_data_view, data);
-//    }
-//
-//    @Override
-//    protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamLayout s) {
-//        baseViewHolder.setText(R.id.tv_stu_name,s.getStuName());
-//        baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
-//        baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());
-//        baseViewHolder.setText(R.id.tv_exam, s.getSeName());
-//        int position = baseViewHolder.getLayoutPosition();
-//        String color = "";
-//        if (position % 2 != 0) {
-//            color = "#EFF2F7";
-//        } else {
-//            color = "#ffffff";
-//        }
-//        baseViewHolder.itemView.setBackgroundColor(Color.parseColor(color));
-//    }
-//
-//
-//}
-
 public class DataViewAdapter extends RecyclerView.Adapter<DataViewAdapter.ViewHolder> {
 
     private Context context;

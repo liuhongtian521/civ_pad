@@ -1,10 +1,8 @@
 package com.lncucc.authentication.adapters;
 
-import android.graphics.Color;
 import android.view.View;
 
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
-import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lncucc.authentication.R;

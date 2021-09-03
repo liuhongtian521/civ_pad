@@ -45,7 +45,6 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         mAdapter = new ChooseVenueAdapter(mList, this);
         mDataBinding.recChoose.setLayoutManager(new LinearLayoutManager(this));
         mDataBinding.recChoose.setAdapter(mAdapter);
-        LogUtils.e("fetch room list by seCode->", mList);
     }
 
     @Override
@@ -54,7 +53,6 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     }
 
     public void confirm(View view) {
-        int sum = 0;
         ArrayList<String> idList = new ArrayList<>();
         for (int i = 0; i < mList.size(); i++) {
             if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()) {
@@ -64,7 +62,6 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         }
         Intent intent = new Intent();
         intent.putStringArrayListExtra("list", idList);
-//        intent.putExtra("count", sum);
         setResult(1, intent);
         finish();
     }
@@ -118,6 +115,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
                boolean itemChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
                if (!itemChecked){
                    isHasChecked = false;
+                   defaultTag = false;
                }
            }
 

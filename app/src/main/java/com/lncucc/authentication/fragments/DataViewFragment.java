@@ -192,9 +192,6 @@ public class DataViewFragment extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             if (viewBinding != null) {
-//                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-//                tempList.clear();
-//                tempList.addAll(mList);
                 initData();
                 mAdapter.notifyDataSetChanged();
             }
