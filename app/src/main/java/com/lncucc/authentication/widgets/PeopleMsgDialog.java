@@ -21,6 +21,8 @@ import com.askia.coremodel.rtc.Constants;
 import com.lncucc.authentication.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
@@ -113,8 +115,19 @@ public class PeopleMsgDialog extends BaseDialog {
         File file1 = new File(pathT);
         if (file1.exists()) {
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(pathT);
-            ivPhotoRight.setImageBitmap(bt);
+//            Bitmap bt = BitmapFactory.decodeFile(pathT);
+            try {
+                FileInputStream fiss = new FileInputStream(file1);
+                Bitmap bt  = BitmapFactory.decodeStream(fiss);
+//                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
+//                viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+                ivPhotoRight.setImageBitmap(bt);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
 //            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
         }
 

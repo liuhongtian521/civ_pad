@@ -25,6 +25,8 @@ import com.lncucc.authentication.R;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
@@ -204,9 +206,19 @@ public class InquiryDialog extends BaseDialog {
         //转换file
         File file = new File(path);
         if (file.exists()) {
+            try {
+                FileInputStream fiss = new FileInputStream(file);
+                Bitmap bt  = BitmapFactory.decodeStream(fiss);
+//                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
+//                viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+                ivFace.setImageBitmap(bt);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(path);
-            ivFace.setImageBitmap(bt);
+//            Bitmap bt = BitmapFactory.decodeFile(path);
+//
         }
     }
 

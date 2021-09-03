@@ -49,6 +49,8 @@ import com.lncucc.authentication.widgets.PopExamPlan;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -137,11 +139,13 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     public void setShowTime(int orientation) {
-        if (orientation > 265) {        //翻转 向上
+        if (peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || inquiryDialog.isShowing() || faceComparedDialog.isShowing() || mPopExamPlan.isShowing())
+            return;
+
+        if (orientation >= 270) {        //翻转 向上
             if (!isToUp) {
                 isToUp = true;
                 faceFragment.setToUp(1);
-
             }
         } else if (orientation < 80) {            //反转向下
             if (isToUp) {
@@ -224,8 +228,14 @@ public class AuthenticationActivity extends BaseActivity {
                 File file1 = new File(pathT);
                 if (file1.exists()) {
                     //转换bitmap
-                    Bitmap bt = BitmapFactory.decodeFile(pathT);
-                    viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+                    try {
+                        FileInputStream fiss = new FileInputStream(file1);
+                        Bitmap bt = BitmapFactory.decodeStream(fiss);
+//                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
+                        viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
@@ -274,15 +284,14 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 faceResultDialog.dismiss();
-                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing())
+                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
                     faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
                 faceResultDialog.dismiss();
-
-                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing())
+                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
                     faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过

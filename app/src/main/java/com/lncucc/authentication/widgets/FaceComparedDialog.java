@@ -23,6 +23,8 @@ import com.askia.coremodel.util.OtherUtils;
 import com.lncucc.authentication.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
@@ -110,18 +112,18 @@ public class FaceComparedDialog extends BaseDialog {
             ivPhotoOne.setImageBitmap(bt);
         }
 
-//        if (success) {
             String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
             //转换file
             File file = new File(pathT);
             if (file.exists()) {
-                //转换bitmap
-                Bitmap bt = BitmapFactory.decodeFile(pathT);
-                ivPhotoTwo.setImageBitmap(bt);
+                try {
+                    FileInputStream fiss = new FileInputStream(file);
+                    Bitmap bt  = BitmapFactory.decodeStream(fiss);
+                    ivPhotoTwo.setImageBitmap(bt);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
-//        } else {
-//            ivPhotoTwo.setVisibility(View.INVISIBLE);
-//        }
     }
 
 
