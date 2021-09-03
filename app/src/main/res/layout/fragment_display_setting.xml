@@ -2,67 +2,66 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-    </data>
+    <data></data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@drawable/bg_write_round_five"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_write_round_five">
 
         <LinearLayout
             android:id="@+id/ll_base_setting_top"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
+            android:layout_height="31dp"
             android:gravity="center_vertical"
-            android:layout_height="31dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="显示设置"
-                android:textStyle="bold"
                 android:textColor="#163366"
                 android:textSize="9sp"
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <View
             android:id="@+id/base_setting__line"
-            app:layout_constraintTop_toBottomOf="@+id/ll_base_setting_top"
-            android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="2px"/>
+            android:layout_height="2px"
+            android:background="@drawable/bg_driver"
+            app:layout_constraintTop_toBottomOf="@+id/ll_base_setting_top" />
 
 
         <LinearLayout
             android:id="@+id/ll_base_setting__mode"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/base_setting__line">
-
 
 
             <RelativeLayout
                 android:id="@+id/rl_base_setting__net"
                 android:layout_width="match_parent"
-                android:background="@drawable/bg_base_sound"
-                android:layout_height="31dp">
+                android:layout_height="31dp"
+                android:background="@drawable/bg_base_sound">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:text="亮度"
-
-                    android:textColor="@color/_666666"
                     android:layout_marginLeft="10dp"
+
+                    android:text="亮度"
+                    android:textColor="@color/_666666"
                     android:textSize="8sp" />
 
 
@@ -83,102 +82,100 @@
 
             </RelativeLayout>
 
-<!--            <RelativeLayout-->
-<!--                android:id="@+id/rl_base_setting_usb"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:background="@drawable/bg_base_sound"-->
-<!--                android:layout_marginTop="10dp"-->
+            <!--            <RelativeLayout-->
+            <!--                android:id="@+id/rl_base_setting_usb"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:background="@drawable/bg_base_sound"-->
+            <!--                android:layout_marginTop="10dp"-->
 
 
-<!--                android:layout_height="31dp">-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_alignParentStart="true"-->
-<!--                    android:layout_centerVertical="true"-->
-<!--                    android:text="补光灯亮度"-->
-<!--                    android:layout_marginLeft="10dp"-->
+            <!--                android:layout_height="31dp">-->
+            <!--                <TextView-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_alignParentStart="true"-->
+            <!--                    android:layout_centerVertical="true"-->
+            <!--                    android:text="补光灯亮度"-->
+            <!--                    android:layout_marginLeft="10dp"-->
 
-<!--                    android:textColor="@color/_666666"-->
-<!--                    android:textSize="8sp" />-->
-
-
-<!--                <com.qmuiteam.qmui.widget.QMUISlider-->
-<!--                    android:id="@+id/slider2"-->
-<!--                    android:layout_width="280dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_alignParentEnd="true"-->
-<!--                    android:layout_centerVertical="true"-->
-<!--                    android:layout_marginLeft="40dp"-->
-<!--                    android:layout_marginRight="10dp"-->
-<!--                    android:checked="false"-->
-<!--                    app:qmui_slider_bar_height="8dp"-->
-<!--                    app:qmui_slider_bar_normal_color="@color/DBE2E9"-->
-<!--                    app:qmui_slider_bar_thumb_size="15dp"-->
-
-<!--                    />-->
+            <!--                    android:textColor="@color/_666666"-->
+            <!--                    android:textSize="8sp" />-->
 
 
-<!--            </RelativeLayout>-->
+            <!--                <com.qmuiteam.qmui.widget.QMUISlider-->
+            <!--                    android:id="@+id/slider2"-->
+            <!--                    android:layout_width="280dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_alignParentEnd="true"-->
+            <!--                    android:layout_centerVertical="true"-->
+            <!--                    android:layout_marginLeft="40dp"-->
+            <!--                    android:layout_marginRight="10dp"-->
+            <!--                    android:checked="false"-->
+            <!--                    app:qmui_slider_bar_height="8dp"-->
+            <!--                    app:qmui_slider_bar_normal_color="@color/DBE2E9"-->
+            <!--                    app:qmui_slider_bar_thumb_size="15dp"-->
+
+            <!--                    />-->
+
+
+            <!--            </RelativeLayout>-->
             <RelativeLayout
                 android:id="@+id/rl_base_setting_sdcard"
                 android:layout_width="match_parent"
-                android:background="@drawable/bg_base_sound"
+                android:layout_height="31dp"
                 android:layout_marginTop="10dp"
 
-                android:layout_height="31dp">
+                android:background="@drawable/bg_base_sound">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:text="摄像头设置"
                     android:layout_marginLeft="10dp"
+                    android:text="摄像头设置"
 
                     android:textColor="@color/_666666"
                     android:textSize="8sp" />
 
 
-
-
                 <LinearLayout
+                    android:id="@+id/Cam_set"
                     android:layout_width="100dp"
                     android:layout_height="19dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/bg_display_camer"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:id="@+id/Cam_set"
                     android:layout_marginRight="10dp"
+                    android:background="@drawable/bg_display_camer"
+                    android:clickable="true"
+                    android:gravity="center"
 
                     >
 
                     <TextView
+                        android:id="@+id/camera_set_btn1"
                         android:layout_width="50dp"
                         android:layout_height="16dp"
-                        android:id="@+id/camera_set_btn1"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:gravity="center"
                         android:text="前置"
                         android:textAlignment="center"
                         android:textColor="#666666"
-                        android:textSize="9sp"
-                        android:gravity="center"
-                        />
+                        android:textSize="9sp" />
+
                     <TextView
+                        android:id="@+id/camera_set_btn2"
                         android:layout_width="50dp"
                         android:layout_height="16dp"
-                        android:id="@+id/camera_set_btn2"
-                        android:background="@drawable/bg_network_btn"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:background="@drawable/bg_network_btn"
+                        android:gravity="center"
                         android:text="后置"
                         android:textAlignment="center"
                         android:textColor="#FFF"
-                        android:textSize="9sp"
-                        android:gravity="center"
-                        />
+                        android:textSize="9sp" />
 
                 </LinearLayout>
 
