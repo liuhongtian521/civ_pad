@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        mDataBinding.ivChooseExam.setOnClickListener(new View.OnClickListener() {
+        mDataBinding.lineTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);

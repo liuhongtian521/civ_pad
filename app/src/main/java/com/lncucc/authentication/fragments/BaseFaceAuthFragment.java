@@ -3,6 +3,7 @@ package com.lncucc.authentication.fragments;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -132,9 +133,22 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
                     YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
                     ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
+                    byte[] jpegData = null;
                     image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
-                    byte[] jpegData = outputSteam.toByteArray();
-
+                    jpegData = outputSteam.toByteArray();
+//                    if (type == 3) {//如果图像翻转了进行处理
+//                        Bitmap bitmap = null;
+//                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
+//
+//                        Matrix matrix = new Matrix();
+//                        matrix.setRotate(180);
+//                        Bitmap bitRotate = Bitmap.createBitmap(bitmap, 0, 0, previewSize.width, previewSize.height, matrix, false);
+////                        bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+//                        outputSteam.reset();
+//                        bitRotate.compress(Bitmap.CompressFormat.PNG, 100, outputSteam);
+//                        jpegData = null;
+//                        jpegData = outputSteam.toByteArray();
+//                    }
                     float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
                     FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
                     //获取人脸特征
@@ -143,43 +157,24 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 //                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
                     if (detectResult == null) {
                         frames = 0;
-                        LogUtils.e("detect result ->    null");
+                        Log.e("TagSnakesnake", "detect result ->    null");
+//                        LogUtils.e("detect result ->    null");
                         goContinueDetectFace();
                         return;
                     }
                     Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
                     frames = 0;
                     if (detectResult != null) {
-//                        Bitmap bitmap = null;
-//                        try {
-//                            BitmapFactory.Options options = new BitmapFactory.Options();
-////                            options.inSampleSize = 2;
-//                            options.inPreferredConfig = Bitmap.Config.RGB_565;
-//                            bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
-//                        } catch (Exception e) {
-//                            Log.e("TagSnake", Log.getStackTraceString(e));
-//                        }
-//                        if (faceRect != null) {
-//                            bitmap = ImageUtil.imageCrop(bitmap, faceRect);
-//                        }
-//                        bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-//                        bitmap = ImageUtil.sampleSize(bitmap);
                         Rect faceRect = faceResult.faceRect;
                         if (mSeCode == null) {
                             getmSeCode();
                         }
-
                         String path = "";
                         if (isComputen()) {
                             path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
                         } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
                             path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
-
                         detectorViewModel.savePhoto(jpegData, path, faceRect);
-//                        if (!"".equals(path)) {
-//                            com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
-//                        }
-//                        bitmap.recycle();
                         setUI(detectResult);
                     } else {
                         goContinueDetectFace();
@@ -211,6 +206,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
 
     public void setCameraHelper(int type) {
+        this.type = type;
         rgbCameraID = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 1);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(mPreview.getWidth(), mPreview.getHeight()))
@@ -236,6 +232,9 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             cameraHelper.stop();
         }
     }
+
+    int type = 1;//旋转模式
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {

@@ -374,7 +374,6 @@ public class AuthenticationActivity extends BaseActivity {
         mDataBinding.lineChooseExam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
                 mPopExamPlan.setIndex();
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);

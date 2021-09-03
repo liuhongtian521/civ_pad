@@ -46,7 +46,6 @@ public class FaceDetectorViewModel extends BaseViewModel {
 //                            options.inSampleSize = 2;
                     options.inPreferredConfig = Bitmap.Config.RGB_565;
                     bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
-
                     if (faceRect != null) {
                         bitmap = ImageUtil.imageCrop(bitmap, faceRect);
                     }
