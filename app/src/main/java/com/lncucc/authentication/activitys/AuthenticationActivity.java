@@ -274,7 +274,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 faceResultDialog.dismiss();
-                if (!inquiryDialog.isShowing())
+                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing())
                     faceFragment.goContinueDetectFace();
             }
 
@@ -282,7 +282,7 @@ public class AuthenticationActivity extends BaseActivity {
             public void backType(int type) {
                 faceResultDialog.dismiss();
 
-                if (!inquiryDialog.isShowing())
+                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing())
                     faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
@@ -355,7 +355,7 @@ public class AuthenticationActivity extends BaseActivity {
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {
-
+                mPopExamPlan.dismiss();
                 semExanCode(dbExamPlan.getExamCode());
                 mDataBinding.tvExamname.setText(dbExamPlan.getExamName());
 
@@ -374,6 +374,7 @@ public class AuthenticationActivity extends BaseActivity {
         mDataBinding.lineChooseExam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                faceFragment.closeFace();
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
                 mPopExamPlan.setIndex();
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);

@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity {
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
-        Log.e("TagSnake",mExanCode);
+        Log.e("TagSnake", mExanCode);
         this.mExanCode = mExanCode;
         //获取场次数据
         mViewModel.getSiteCode(mExanCode);
@@ -107,10 +107,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onInit() {
-
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {
+                mPopExamPlan.dismiss();
                 mDataBinding.tvName.setText(dbExamPlan.getExamName());
                 semExanCode(dbExamPlan.getExamCode());
             }
@@ -233,6 +233,7 @@ public class MainActivity extends BaseActivity {
         super.onStart();
         mViewModel.getExamCode();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
