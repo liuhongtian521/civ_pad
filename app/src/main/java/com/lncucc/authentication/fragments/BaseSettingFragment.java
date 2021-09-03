@@ -50,44 +50,44 @@ public class BaseSettingFragment extends BaseFragment {
         mSlider.setCurrentProgress(soundProgress);
         mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
         //静音设置初始化
-        int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING,1);
+        int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING,0);
         mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, silentSound * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-        sbSound.setChecked(silentSound == 1);
-        //按键音初始化
-        int keySound = SharedPreferencesUtils.getInt(getActivity(), KEY_SOUND,1);
-        Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, keySound);
-        sbSoundT.setChecked(keySound == 1);
+        sbSound.setChecked(silentSound == 0);
+//        //按键音初始化
+//        int keySound = SharedPreferencesUtils.getInt(getActivity(), KEY_SOUND,0);
+//        Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, keySound);
+//        sbSoundT.setChecked(keySound == 0);
 
 
-        // 设置键盘音开启关闭
-        sbSoundT.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                // 开启
-                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
-                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
-            } else {
-                // 关闭
-                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
-                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 0);
-                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
-            }
-        });
+//        // 设置键盘音开启关闭
+//        sbSoundT.setOnCheckedChangeListener((compoundButton, b) -> {
+//            if (b) {
+//                // 开启
+//                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+//                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 0);
+//                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+//            } else {
+//                // 关闭
+//                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
+//                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
+//                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+//            }
+//        });
         // 静音设置
         sbSound.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
 //                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);// 设置静音
-                mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 100 , AudioManager.FLAG_PLAY_SOUND);
-                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
-                SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,100);
-                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
-            } else {
-//                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 1);//取消静音
                 mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 0 , AudioManager.FLAG_PLAY_SOUND);
                 SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,0);
                 Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
                 SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 0);
+                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+            } else {
+//                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 1);//取消静音
+                mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 100 , AudioManager.FLAG_PLAY_SOUND);
+                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
+                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
+                SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,100);
                 MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
             }
         });

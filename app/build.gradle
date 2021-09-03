@@ -9,8 +9,8 @@ android {
         applicationId "com.lncucc.authentication"
         minSdkVersion parent.ext.minSdkVersion
         targetSdkVersion parent.ext.targetSdkVersion
-        versionCode 15
-        versionName "0.9.6"
+        versionCode 1
+        versionName "0.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // 设置支持multidex
         multiDexEnabled true

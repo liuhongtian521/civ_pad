@@ -43,7 +43,6 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     public void onInit() {
         confirmDialog = new ConfirmDialog(getActivity(), this,getString(R.string.data_clear_tip),getString(R.string.data_clear_content));
         passWordDialog = new PassWordDialog(getActivity(), this);
-        KeyboardUtils.hideSoftInput(getActivity());
     }
 
     @Override
@@ -64,13 +63,14 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
             KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("导入数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
+            KeyboardUtils.hideSoftInput(getActivity());
         });
         viewModel.delVerifyData().observe(this, result ->{
             KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("验证数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
+            KeyboardUtils.hideSoftInput(getActivity());
         });
-        KeyboardUtils.toggleSoftInput();
     }
 
     /**

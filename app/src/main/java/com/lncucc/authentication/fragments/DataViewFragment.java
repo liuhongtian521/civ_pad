@@ -1,13 +1,14 @@
 package com.lncucc.authentication.fragments;
 
-import android.view.KeyEvent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -17,10 +18,15 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
+import com.lncucc.authentication.adapters.itemclick.ItemClickListener;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 import com.lncucc.authentication.widgets.StudentInfoDialog;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +41,19 @@ public class DataViewFragment extends BaseFragment {
     private DataViewAdapter mAdapter;
     private StudentInfoDialog infoDialog;
     private DBExamLayout itemInfo;
+    private LinearLayoutManager mLinearLayoutManager;
+    private int page = 1;
+    private int pageSize = 15;
 
     @Override
     public void onInit() {
-        mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-        tempList.clear();
-        tempList.addAll(mList);
-        viewBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new DataViewAdapter(tempList);
+        initData();
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        viewBinding.rlDataView.setLayoutManager(mLinearLayoutManager);
+        mAdapter = new DataViewAdapter(getActivity(), tempList);
         infoDialog = new StudentInfoDialog(getActivity(), itemInfo);
-        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+
+        mAdapter.setItemClickListener(position -> {
             itemInfo = DBOperation.getStudentInfo(tempList.get(position).getId());
             if (infoDialog != null && itemInfo != null) {
                 infoDialog.showDialog(itemInfo);
@@ -70,12 +79,17 @@ public class DataViewFragment extends BaseFragment {
         queryStudent();
     }
 
-    private void queryStudent(){
+    private void queryStudent() {
+        page = 1;
         String queryParams = viewBinding.editExamNumber.getText().toString().trim();
         mList = DBOperation.getDBExamLayoutByIdNo(queryParams);
         if (mList.size() > 0) {
             tempList.clear();
-            tempList.addAll(mList);
+            if (mList.size() >= pageSize) {
+                tempList.addAll(mList.subList(0, pageSize));
+            } else {
+                tempList.addAll(mList);
+            }
             mAdapter.notifyDataSetChanged();
         } else {
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
@@ -83,18 +97,37 @@ public class DataViewFragment extends BaseFragment {
         KeyboardUtils.hideSoftInput(getActivity());
     }
 
-    private void initEvent(){
-        viewBinding.editExamNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+    private void initEvent() {
+
+        viewBinding.rlDataView.setLoadingMoreEnabled(true);
+        viewBinding.rlDataView.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
+        viewBinding.rlDataView.getDefaultFootView().setLoadingDoneHint("加载完成");
+        viewBinding.rlDataView.getDefaultFootView().setNoMoreHint("没有更多数据了");
+        viewBinding.rlDataView.getDefaultFootView().setLoadingHint("加载中...");
+        viewBinding.rlDataView.setPullRefreshEnabled(false);
+        viewBinding.editExamNumber.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                queryStudent();
+            }
+            return false;
+        });
+
+        viewBinding.rlDataView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH){
-                    queryStudent();
-                }
-                return false;
+            public void onRefresh() {
+
+            }
+
+            @Override
+            public void onLoadMore() {
+                LogUtils.e("onLoadMore ->", "load more");
+                page++;
+                loadMore();
             }
         });
-    }
 
+
+    }
 
 
     @Override
@@ -102,9 +135,56 @@ public class DataViewFragment extends BaseFragment {
 
     }
 
+    private void loadMore() {
+
+        handler.postDelayed(() -> {
+            int total = mList.size();
+            int current = tempList.size();
+            Message message = new Message();
+            if (current >= total) {
+                message.what = 0;
+                handler.sendMessage(message);
+            } else {
+                int index = (page - 1) * pageSize;
+                int toIndex = page * pageSize;
+                if (page * pageSize > total) {
+                    toIndex = total - (page - 1) * pageSize;
+                }
+                List<DBExamLayout> list = mList.subList(index, toIndex);
+                tempList.addAll(list);
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        }, 1000);
+    }
+
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull @NotNull Message msg) {
+            super.handleMessage(msg);
+            viewBinding.rlDataView.loadMoreComplete();
+            if (msg.what == 0){
+                MyToastUtils.error("没有更多数据了！",Toast.LENGTH_SHORT);
+            }else {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void initData() {
+        mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
+        tempList.clear();
+        if (mList.size() >= pageSize) {
+            tempList.addAll(mList.subList(0, pageSize));
+        } else {
+            tempList.addAll(mList);
+        }
     }
 
     @Override
@@ -112,9 +192,10 @@ public class DataViewFragment extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             if (viewBinding != null) {
-                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
-                tempList.clear();
-                tempList.addAll(mList);
+//                mList = DBOperation.getDBExamLayoutByIdNo(viewBinding.editExamNumber.getText().toString());
+//                tempList.clear();
+//                tempList.addAll(mList);
+                initData();
                 mAdapter.notifyDataSetChanged();
             }
         }

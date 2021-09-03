@@ -1,40 +1,103 @@
 package com.lncucc.authentication.adapters;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.adapters.itemclick.ItemClickListener;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 
-public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHolder> {
+//public class DataViewAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewHolder> {
+//
+//    public DataViewAdapter(@Nullable List<DBExamLayout> data) {
+//        super(R.layout.item_data_view, data);
+//    }
+//
+//    @Override
+//    protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamLayout s) {
+//        baseViewHolder.setText(R.id.tv_stu_name,s.getStuName());
+//        baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
+//        baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());
+//        baseViewHolder.setText(R.id.tv_exam, s.getSeName());
+//        int position = baseViewHolder.getLayoutPosition();
+//        String color = "";
+//        if (position % 2 != 0) {
+//            color = "#EFF2F7";
+//        } else {
+//            color = "#ffffff";
+//        }
+//        baseViewHolder.itemView.setBackgroundColor(Color.parseColor(color));
+//    }
+//
+//
+//}
 
-    public DataViewAdapter(@Nullable List<DBExamLayout> data) {
-        super(R.layout.item_data_view, data);
+public class DataViewAdapter extends RecyclerView.Adapter<DataViewAdapter.ViewHolder> {
+
+    private Context context;
+    private List<DBExamLayout> list;
+    private ItemClickListener mItemClickListener;
+
+    public void setItemClickListener(ItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
+
+    }
+
+    public DataViewAdapter(Context context, List<DBExamLayout> list) {
+        this.context = context;
+        this.list = list;
+    }
+
+
+    @NonNull
+    @NotNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_data_view, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        return viewHolder;
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamLayout s) {
-        baseViewHolder.setText(R.id.tv_stu_name,s.getStuName());
-        baseViewHolder.setText(R.id.tv_stu_num,s.getIdCard());
-        baseViewHolder.setText(R.id.tv_stu_exa_num,s.getExReNum());
-        baseViewHolder.setText(R.id.tv_exam, s.getSeName());
-        int position = baseViewHolder.getLayoutPosition();
-        String color = "";
-        if (position % 2 != 0) {
-            color = "#EFF2F7";
-        } else {
-            color = "#ffffff";
-        }
-        baseViewHolder.itemView.setBackgroundColor(Color.parseColor(color));
+    public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
+        holder.tvName.setText(list.get(position).getStuName());
+        holder.tvNum.setText(list.get(position).getIdCard());
+        holder.tvExamNum.setText(list.get(position).getExReNum());
+        holder.tvExam.setText(list.get(position).getSeName());
+        holder.linearLayout.setOnClickListener(v -> mItemClickListener.onItemClick(position));
     }
 
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvName;
+        TextView tvNum;
+        TextView tvExamNum;
+        TextView tvExam;
+        LinearLayout linearLayout;
+
+        public ViewHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            tvName = itemView.findViewById(R.id.tv_stu_name);
+            tvNum = itemView.findViewById(R.id.tv_stu_exa_num);
+            tvExamNum = itemView.findViewById(R.id.tv_stu_exa_num);
+            tvExam = itemView.findViewById(R.id.tv_exam);
+            linearLayout = itemView.findViewById(R.id.ll_item_container);
+        }
+    }
 }

@@ -114,7 +114,6 @@ public class DataImportViewModel extends BaseViewModel {
                     } catch (Exception e) {
                         Log.e("TagSnake 02", Log.getStackTraceString(e));
                     }
-
                 }
             }
         }
@@ -226,7 +225,7 @@ public class DataImportViewModel extends BaseViewModel {
                 //如果多个压缩包 进行批量复制到sdcard
                 for (UsbFile file : descFile.listFiles()) {
                     is = new UsbFileInputStream(file);
-                    boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/" + file.getName() + ".zip", is);
+                    boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/" + file.getName(), is);
                     event.setResult(result);
                     if (!result) break;
                     LogUtils.e("copy result ->", result);

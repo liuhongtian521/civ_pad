@@ -53,9 +53,6 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
 
     }
 
-    private void initEvent() {
-    }
-
     public void confirm(View view) {
         int sum = 0;
         ArrayList<String> idList = new ArrayList<>();
@@ -112,9 +109,11 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         //全选状态 当前item取消选中改变 按钮文字
        boolean isChecked = ((CheckBox)mAdapter.getViewByPosition(position,R.id.cx_ex)).isChecked();
        if (!isChecked){
+           defaultTag = false;
            mDataBinding.tvChooseAll.setText("全选");
        }else {
            boolean isHasChecked = true;
+           defaultTag = true;
            for (int i = 0; i < mList.size(); i++) {
                boolean itemChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
                if (!itemChecked){

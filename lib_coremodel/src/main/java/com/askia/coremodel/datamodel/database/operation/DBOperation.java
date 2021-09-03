@@ -351,6 +351,10 @@ public class DBOperation {
         return query.findAll();
     }
 
+    /**
+     * @param id id
+     * @return 根据id获取验证信息详情
+     */
     public static DBExamExport getExamportById(String id){
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
@@ -358,4 +362,16 @@ public class DBOperation {
         query.endGroup();
         return query.findFirst();
     }
+
+//    /**
+//     * @param page page
+//     * @param pageSize pageSize
+//     * @return 分页查询
+//     */
+//    public static List<DBExamLayout> getMore(int page, int pageSize){
+//        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+//        query.beginGroup();
+//        query.l
+//
+//    }
 }
