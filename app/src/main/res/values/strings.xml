@@ -76,4 +76,11 @@
     <string name="logs_clear_all">全部清空</string>
     <string name="logs_clear_title">确定要清空日志？</string>
     <string name="logs_clear_content">日志一旦清除无法恢复</string>
+
+    <!--系统测试-->
+    <string name="camera_test">拍照测试</string>
+    <string name="screen_test">屏幕测试</string>
+    <string name="voice_test">语音测试</string>
+    <string name="face_test">人脸测试</string>
+    <string name="test_all">全部测试</string>
 </resources>

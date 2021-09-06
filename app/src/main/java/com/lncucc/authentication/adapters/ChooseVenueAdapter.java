@@ -1,7 +1,5 @@
 package com.lncucc.authentication.adapters;
 
-import android.view.View;
-
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -24,13 +22,6 @@ public class ChooseVenueAdapter extends BaseQuickAdapter<DBExamLayout, BaseViewH
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, DBExamLayout s) {
         baseViewHolder.setText(R.id.tv_room_name,s.getRoomNo());
-        baseViewHolder.getView(R.id.cx_ex).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mItemClick.onItemClickListener(baseViewHolder.getLayoutPosition());
-            }
-        });
+        baseViewHolder.getView(R.id.cx_ex).setOnClickListener(v -> mItemClick.onItemClickListener(baseViewHolder.getLayoutPosition()));
     }
-
-
 }

@@ -1,0 +1,26 @@
+{
+  "data": [
+    {
+      "name": "拍照测试",
+      "pic": "camera"
+    },
+    {
+      "name": "屏幕测试",
+      "pic": "screen"
+    },
+    {
+      "name": "语音测试",
+      "pic": "voice"
+    },
+    {
+      "name": "人脸测试",
+      "pic": "face"
+    }
+  ],
+  "name": "",
+  "description": "系统测试",
+  "minimumCoreVersion": "",
+  "title": "",
+  "version":"",
+  "author": ""
+}

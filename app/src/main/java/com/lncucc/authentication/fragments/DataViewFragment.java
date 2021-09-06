@@ -22,7 +22,6 @@ import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataViewAdapter;
-import com.lncucc.authentication.adapters.itemclick.ItemClickListener;
 import com.lncucc.authentication.databinding.FragmentDataViewBinding;
 import com.lncucc.authentication.widgets.StudentInfoDialog;
 
@@ -100,7 +99,7 @@ public class DataViewFragment extends BaseFragment {
     private void initEvent() {
 
         viewBinding.rlDataView.setLoadingMoreEnabled(true);
-        viewBinding.rlDataView.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
+        viewBinding.rlDataView.setLoadingMoreProgressStyle(ProgressStyle.BallScaleRipple);
         viewBinding.rlDataView.getDefaultFootView().setLoadingDoneHint("加载完成");
         viewBinding.rlDataView.getDefaultFootView().setNoMoreHint("没有更多数据了");
         viewBinding.rlDataView.getDefaultFootView().setLoadingHint("加载中...");

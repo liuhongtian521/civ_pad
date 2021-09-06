@@ -60,10 +60,6 @@ import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
  */
 public class DataImportViewModel extends BaseViewModel {
 
-    public ObservableField<Boolean> netImport = new ObservableField<>(false);
-    public ObservableField<Boolean> usbImport = new ObservableField<>(false);
-    public ObservableField<Boolean> sdCardImport = new ObservableField<>(true);
-
     //usb
     private MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
     //unzip
@@ -177,6 +173,8 @@ public class DataImportViewModel extends BaseViewModel {
                     //如果人脸库中没有此人则把照片插入人脸库
                     if (!isHave) {
                         String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
+                        //照片总数
+                        event.setTotal(photoList.size());
                         event.setFaceId(faceId);
                         emitter.onNext(event);
                     }
@@ -227,8 +225,6 @@ public class DataImportViewModel extends BaseViewModel {
                     is = new UsbFileInputStream(file);
                     boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/" + file.getName(), is);
                     event.setResult(result);
-                    if (!result) break;
-                    LogUtils.e("copy result ->", result);
                 }
                 emitter.onNext(event);
             } catch (IOException e) {
@@ -294,79 +290,80 @@ public class DataImportViewModel extends BaseViewModel {
                         ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
                         progressMonitor.endProgressMonitor();
 
-                      new Thread(() -> {
-                            int percentDone = 0;
-//                            LogUtils.e("life owner ->", isWorking);
-                            while (true) {
+//                      new Thread(() -> {
+//                            int percentDone = 0;
+////                            LogUtils.e("life owner ->", isWorking);
+//                            while (true) {
+////                                percentDone = progressMonitor.getPercentDone();
+//////                                unZipHandleEvent.setUnZipProcess(percentDone);
+//////                                unZipHandleEvent.setMessage("正在解压中...");
+//////                                unZipObservable.postValue(unZipHandleEvent);
+////                                if (percentDone >= 100) {
+////                                    unZipHandleEvent.setCode(0);
+////                                    unZipHandleEvent.setUnZipProcess(percentDone);
+////                                    unZipHandleEvent.setMessage("解压完成");
+////                                    unZipObservable.postValue(unZipHandleEvent);
+////                                    //解析
+////                                    getExDataFromLocal(toPath);
+////                                    break;
+////                                }
 //                                percentDone = progressMonitor.getPercentDone();
-////                                unZipHandleEvent.setUnZipProcess(percentDone);
-////                                unZipHandleEvent.setMessage("正在解压中...");
-////                                unZipObservable.postValue(unZipHandleEvent);
+//                                LogUtils.e("zip success ->", percentDone + "");
 //                                if (percentDone >= 100) {
 //                                    unZipHandleEvent.setCode(0);
 //                                    unZipHandleEvent.setUnZipProcess(percentDone);
 //                                    unZipHandleEvent.setMessage("解压完成");
+//                                    unZipHandleEvent.setFilePath(toPath);
 //                                    unZipObservable.postValue(unZipHandleEvent);
-//                                    //解析
-//                                    getExDataFromLocal(toPath);
 //                                    break;
 //                                }
-                                percentDone = progressMonitor.getPercentDone();
-                                LogUtils.e("zip success ->", percentDone + "");
-                                if (percentDone >= 100) {
-                                    unZipHandleEvent.setCode(0);
+//                            }
+//                        }).start();
+//
+//                        try {
+////                            zipFile.setRunInThread(true);
+//                            zipFile.extractAll(toPath);
+//                        } catch (ZipException e) {
+//                            e.printStackTrace();
+//                        }
+
+                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+                            isWorking = event != Lifecycle.Event.ON_DESTROY;
+                            Thread thread = new Thread(() -> {
+                                int percentDone = 0;
+                                LogUtils.e("life owner ->", isWorking);
+                                while (isWorking) {
+                                    percentDone = progressMonitor.getPercentDone();
                                     unZipHandleEvent.setUnZipProcess(percentDone);
-                                    unZipHandleEvent.setMessage("解压完成");
-                                    unZipHandleEvent.setFilePath(toPath);
+                                    unZipHandleEvent.setMessage("正在解压中...");
                                     unZipObservable.postValue(unZipHandleEvent);
-                                    break;
-                                }
-                            }
-                        }).start();
-
-                        try {
-//                            zipFile.setRunInThread(true);
-                            zipFile.extractAll(toPath);
-                        } catch (ZipException e) {
-                            e.printStackTrace();
-                        }
-
-//                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-//                            isWorking = event != Lifecycle.Event.ON_DESTROY;
-//                            Thread thread = new Thread(() -> {
-//                                int percentDone = 0;
-//                                LogUtils.e("life owner ->", isWorking);
-//                                while (isWorking) {
-//                                    percentDone = progressMonitor.getPercentDone();
-//                                    unZipHandleEvent.setUnZipProcess(percentDone);
-//                                    unZipHandleEvent.setMessage("正在解压中...");
-//                                    unZipObservable.postValue(unZipHandleEvent);
-//                                    if (percentDone >= 100) {
-//                                        unZipHandleEvent.setCode(0);
-//                                        unZipHandleEvent.setUnZipProcess(percentDone);
-//                                        unZipHandleEvent.setMessage("解压完成");
-//                                        unZipObservable.postValue(unZipHandleEvent);
-//                                        //解析
+                                    if (percentDone >= 100) {
+                                        unZipHandleEvent.setCode(0);
+                                        unZipHandleEvent.setUnZipProcess(percentDone);
+                                        unZipHandleEvent.setFilePath(toPath);
+                                        unZipHandleEvent.setMessage("解压完成");
+                                        unZipObservable.postValue(unZipHandleEvent);
+                                        //解析
 //                                        getExDataFromLocal(toPath);
-//                                        break;
-//                                    }
-//                                }
-//                            });
-//                            thread.start();
-//                            if (!isWorking){
-//                                thread.interrupt();
-//                                progressMonitor.setCancelAllTasks(true);
-//                            }
-//                            // 解压缩所有文件以及文件夹
-//                            try {
-//                                zipFile.setRunInThread(true);
+                                        break;
+                                    }
+                                }
+                            });
+                            thread.start();
+                            if (!isWorking){
+                                thread.interrupt();
+                                progressMonitor.setCancelAllTasks(true);
+                            }
+                            // 解压缩所有文件以及文件夹
+                            try {
+                                zipFile.setRunInThread(true);
 //                                if (progressMonitor.getState() != ProgressMonitor.State.BUSY){
-//                                    zipFile.extractAll(toPath);
+                                    zipFile.extractAll(toPath);
 //                                }
-//                            } catch (ZipException e) {
-//                                e.printStackTrace();
-//                            }
-//                        });
+                            } catch (ZipException e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -383,10 +380,6 @@ public class DataImportViewModel extends BaseViewModel {
             unZipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
             unZipObservable.postValue(unZipHandleEvent);
         }
-    }
-
-    public void doSdCardImport() {
-//        checkZipFile();
     }
 
 }

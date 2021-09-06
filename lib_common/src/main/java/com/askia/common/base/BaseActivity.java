@@ -269,6 +269,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         ARouter.getInstance().build(path).with(b).navigation(BaseActivity.this, requestCode);
     }
 
+    // 通过Arouter 启动其他Activity 并期待返回结果  无传递参数
+    public void startActivityForResultByRouterNoParams(String path, int requestCode){
+        ARouter.getInstance().build(path).navigation(BaseActivity.this, requestCode);
+    }
+
     // 通过Arouter 获取Fragment
     public BaseFragment getFragment(String path)
     {

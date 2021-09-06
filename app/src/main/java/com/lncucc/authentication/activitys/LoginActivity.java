@@ -64,23 +64,20 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
-        loginViewModel.getLoginDate().observe(this, new Observer<LoginData>() {
-            @Override
-            public void onChanged(LoginData loginData) {
-                Log.e("TagSnake", loginData.getMessage() + loginData.isSuccess());
-                if (loginData.isSuccess()) {
-                    Log.e("TagSnake", loginData.getResult().getUserInfo().toString());
-                }
+        loginViewModel.getLoginDate().observe(this, loginData -> {
+            Log.e("TagSnake", loginData.getMessage() + loginData.isSuccess());
+            if (loginData.isSuccess()) {
+                Log.e("TagSnake", loginData.getResult().getUserInfo().toString());
+            }
 
-                if (loginData.isSuccess()) {
-                    SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
-                    Bundle _b = new Bundle();
-                    _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
-                    startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
-                    finish();
-                }else {
-                    MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
-                }
+            if (loginData.isSuccess()) {
+                SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
+                Bundle _b = new Bundle();
+                _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
+                startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
+                finish();
+            }else {
+                MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
         });
     }

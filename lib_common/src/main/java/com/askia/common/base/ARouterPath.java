@@ -34,5 +34,9 @@ public class ARouterPath {
     public static final String LOGS_ACTIVITY = "/activity/logs";
     /*系统日志*/
     public static final String SYSTEM_INFO = "/activity/setting";
+    /*系统测试*/
+    public static final String SYSTEM_TEST = "/activity/system/test";
+    /*屏幕测试*/
+    public static final String SCREEN_TEST = "/activity/screen";
 
 }

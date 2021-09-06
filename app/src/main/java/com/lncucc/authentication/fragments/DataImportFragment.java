@@ -123,9 +123,9 @@ public class DataImportFragment extends BaseFragment {
     @Override
     public void onSubscribeViewModel() {
         viewModel.doZipHandle().observe(this, result -> {
-            closeLogadingDialog();
             int progress = result.getUnZipProcess();
             if (progress == 100) {
+                closeLogadingDialog();
                 LogsUtil.saveOperationLogs("数据导入成功");
                 //解析
                 viewModel.getExDataFromLocal(result.getFilePath());
@@ -144,6 +144,7 @@ public class DataImportFragment extends BaseFragment {
         });
 
         viewModel.usbWriteObservable().observe(this, result -> {
+            closeLogadingDialog();
             if (result.getCode() == 0) {
                 viewModel.doUnzip(this);
             } else {
@@ -190,7 +191,6 @@ public class DataImportFragment extends BaseFragment {
                 closeLogadingDialog();
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
-
             }
         }
         if (storageDevices.length == 0) {
