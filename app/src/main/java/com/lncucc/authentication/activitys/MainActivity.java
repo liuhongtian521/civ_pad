@@ -78,26 +78,38 @@ public class MainActivity extends BaseActivity {
     public void timer() {
         long nowTime = System.currentTimeMillis();
 //        Log.e("TagSnake", "now" + nowTime + ":staet" + timeStart + ":end" + timeEnd);
-        if (nowTime > timeStart) {
-            Bundle _d = new Bundle();
-            _d.putString("exanCode", mExanCode);
-            _d.putStringArrayList("list", mExamCodeList);
-            _d.putLong("startTIME", timeStart);
-            _d.putLong("endTIME", timeEnd);
-            startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY, _d);
-            finish();
-        } else {
-            long betten = timeStart - nowTime;
-            long hour = betten / (1000 * 60 * 60);//小时
-            long min = (betten - (hour * 1000 * 60 * 60)) / (1000 * 60);
-            long sercend = (betten - (hour * 1000 * 60 * 60) - (min * 1000 * 60)) / 1000;
-            mDataBinding.tvTime.setText((hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min) + ":" + (sercend < 10 ? "0" + sercend : sercend));
-        }
+        if (timeStart > 0)
+            if (nowTime > timeStart) {
+                Bundle _d = new Bundle();
+                _d.putString("exanCode", mExanCode);
+                _d.putStringArrayList("list", mExamCodeList);
+                _d.putLong("startTIME", timeStart);
+                _d.putLong("endTIME", timeEnd);
+                startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY, _d);
+                finish();
+            } else {
+                long betten = timeStart - nowTime;
+                long hour = betten / (1000 * 60 * 60);//小时
+                long min = (betten - (hour * 1000 * 60 * 60)) / (1000 * 60);
+                long sercend = (betten - (hour * 1000 * 60 * 60) - (min * 1000 * 60)) / 1000;
+                mDataBinding.tvTime.setText((hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min) + ":" + (sercend < 10 ? "0" + sercend : sercend));
+            }
     }
 
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
+
+        timeStart = 0;
+        timeEnd = 0;
+
+        mDataBinding.tvSite.setText("");
+        mDataBinding.tvTime.setText("");
+        mDataBinding.tvExaminationTime.setText("");
+        mDataBinding.tvVerificationTime.setText("");
+        mDataBinding.tvSuject.setText("");
+
+
         Log.e("TagSnake", mExanCode);
         this.mExanCode = mExanCode;
         //获取场次数据
@@ -105,8 +117,13 @@ public class MainActivity extends BaseActivity {
         mViewModel.getExamLayout(mExanCode);
     }
 
+    String exancode;
+
     @Override
     public void onInit() {
+        exancode = getIntent().getExtras().getString("exanCode");
+
+
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {
@@ -217,7 +234,10 @@ public class MainActivity extends BaseActivity {
         mViewModel.getmDBExamLayout().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
-                mDataBinding.tvSite.setText(dbExamLayout.getSiteName());
+                if (dbExamLayout != null)
+                    mDataBinding.tvSite.setText(dbExamLayout.getSiteName());
+                else
+                    mDataBinding.tvSite.setText("");
             }
         });
     }
@@ -231,7 +251,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mViewModel.getExamCode();
+        mViewModel.getExamCode(exancode);
     }
 
     @Override

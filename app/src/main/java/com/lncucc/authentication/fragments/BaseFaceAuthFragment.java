@@ -147,11 +147,11 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                     }
                     if (isComputen()) {
                         detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, getStuNo());
+                        return;
                     } else {
                         detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, null);
-
+                        return;
                     }
-
 //                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
 //                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
 //                    byte[] jpegData = null;

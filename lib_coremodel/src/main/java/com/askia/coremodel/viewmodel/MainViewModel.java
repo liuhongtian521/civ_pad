@@ -69,12 +69,18 @@ public class MainViewModel extends BaseViewModel {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void getExamCode() {
-        List<DBExamPlan> planList = DBOperation.getExamPlan();
-        if (planList.size() > 0)
-            mDbExamPlan.postValue(planList.get(0));
-        else
-            mDbExamPlan.postValue(null);
+    public void getExamCode(String examCode) {
+
+        if (examCode != null) {
+            DBExamPlan plan = DBOperation.getExamPlan(examCode);
+            mDbExamPlan.postValue(plan);
+        } else {
+            List<DBExamPlan> planList = DBOperation.getExamPlan();
+            if (planList.size() > 0)
+                mDbExamPlan.postValue(planList.get(0));
+            else
+                mDbExamPlan.postValue(null);
+        }
     }
 
     public void getSiteCode(String examCode) {//String examCode) {
@@ -105,7 +111,7 @@ public class MainViewModel extends BaseViewModel {
 
     public void getExamLayout(String examCode) {
         List<DBExamLayout> layList = DBOperation.getDBExamLayout(examCode);
-        if (layList == null)
+        if (layList == null || layList.size() == 0)
             mDBExamLayout.postValue(null);
         else
             mDBExamLayout.postValue(layList.get(0));

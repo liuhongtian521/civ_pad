@@ -66,7 +66,7 @@ import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 @Route(path = ARouterPath.IDENTIFY_ACTIVITY)
 public class AuthenticationActivity extends BaseActivity {
     private ActAuthenticationBinding mDataBinding;
-    //ZhjyBU@202104
+    //ZhjyBU@202104`1
     private AuthenticationViewModel mViewModel;
     //考生信息 dialog
     private PeopleMsgDialog peopleMsgDialog;
@@ -517,6 +517,10 @@ public class AuthenticationActivity extends BaseActivity {
             public void onChanged(DBExamArrange dbExamArrange) {
                 if (dbExamArrange == null) {
                     Toast.makeText(getApplicationContext(), "当前考试计划没有正在进行中的场次", Toast.LENGTH_SHORT).show();
+                    Bundle _d = new Bundle();
+                    _d.putString("exanCode", mExanCode);
+                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY,_d);
+                    finish();
                     return;
                 }
                 setmSeCode(dbExamArrange.getSeCode());

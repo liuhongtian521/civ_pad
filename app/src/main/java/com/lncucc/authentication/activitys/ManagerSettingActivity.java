@@ -1,8 +1,11 @@
 package com.lncucc.authentication.activitys;
 
 
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,12 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.manager.ManagerItemBean;
 import com.askia.coremodel.util.AssetsUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ManagerSettingAdapter;
 import com.lncucc.authentication.databinding.ActManagerBinding;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 管理员设置

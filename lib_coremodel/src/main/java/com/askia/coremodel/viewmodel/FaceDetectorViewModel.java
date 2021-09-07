@@ -52,7 +52,7 @@ public class FaceDetectorViewModel extends BaseViewModel {
     }
 
     public void dataPross(Rect faceRect, byte[] nv21, Camera.Size previewSize, boolean isComputen, String seCode, String stuNo) {
-        YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
+         YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
         ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
         byte[] jpegData = null;
         image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
@@ -86,25 +86,28 @@ public class FaceDetectorViewModel extends BaseViewModel {
                 File file = FileUtils.getFileByPath(path);
                 if (file != null)
                     file.delete();
+
 //                    StorageUtil.deleteFile(file);
             }
 
             bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
             bitmap = ImageUtil.sampleSize(bitmap);
-            FileOutputStream out = null;
-            try {
-                out = new FileOutputStream(path);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                out.flush();
-                out.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Log.e("TagSnake",Log.getStackTraceString(e));
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e("TagSnake",Log.getStackTraceString(e));
 
-            }
+            boolean back = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+//            FileOutputStream out = null;
+//            try {
+//                out = new FileOutputStream(path);
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+//                out.flush();
+//                out.close();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//                Log.e("TagSnake",Log.getStackTraceString(e));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                Log.e("TagSnake",Log.getStackTraceString(e));
+//
+//            }
 //            boolean back = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
             bitmap.recycle();
 

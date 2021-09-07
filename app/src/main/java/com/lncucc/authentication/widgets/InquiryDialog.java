@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -165,23 +166,20 @@ public class InquiryDialog extends BaseDialog {
         editExamNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (!"".equals(editExamNum.getText().toString().trim()))
-                        onSearch.search(editExamNum.getText().toString().trim(), 0);
-                }
-                return false;
+                Log.e("TagSnake","editExamNum.setOnEditorActionListener");
+                if (!"".equals(editExamNum.getText().toString().trim()))
+                    onSearch.search(editExamNum.getText().toString().trim(), 0);
+                return true;
             }
         });
 
         editCard.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (!"".equals(editCard.getText().toString().trim())) {
-                        onSearch.search(editCard.getText().toString().trim(), 1);
-                    }
+                if (!"".equals(editCard.getText().toString().trim())) {
+                    onSearch.search(editCard.getText().toString().trim(), 1);
                 }
-                return false;
+                return true;
             }
         });
 
