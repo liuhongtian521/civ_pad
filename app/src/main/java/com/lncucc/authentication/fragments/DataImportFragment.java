@@ -20,16 +20,11 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
-import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
-import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
-import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataImportAdapter;
@@ -41,12 +36,11 @@ import com.ttsea.jrxbus2.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
-import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 /**
  * 数据导入
@@ -60,10 +54,15 @@ public class DataImportFragment extends BaseFragment {
     private DataLoadingDialog loadingDialog;
     private DataImportAdapter dataImportAdapter;
     private int defaultIndex = 2;
+    private NumberFormat numberFormat;
+    private String currentIOPercent = "";
+    private boolean ioTag = false;
 
     @Override
     public void onInit() {
         RxBus2.getInstance().register(this);
+        numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(2);
         loadingDialog = new DataLoadingDialog(getActivity());
         loadingDialog.setCanceledOnTouchOutside(false);
         for (int i = 0; i < 3; i++) {
@@ -124,34 +123,48 @@ public class DataImportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         viewModel.doZipHandle().observe(this, result -> {
             int progress = result.getUnZipProcess();
+            loadingDialog.setLoadingProgress(result.getUnZipProcess()+"", result.getMessage());
             if (progress == 100) {
-                closeLogadingDialog();
-                LogsUtil.saveOperationLogs("数据导入成功");
-                //解析
+                LogUtils.e("file unzip success ->", result.getUnZipProcess());
+                //解析 插入数据/插入人脸库
                 viewModel.getExDataFromLocal(result.getFilePath());
-                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
             }
             if (result.getCode() == -1) {
-                closeLogadingDialog();
-//                loadingDialog.dismiss();
+                closeLoading();
                 MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
             }
         });
 
         viewModel.doFaceDBHandle().observe(this, result -> {
+            float number = (float) result.getCurrent() / (float) result.getTotal() * 100;
+            String percent = numberFormat.format(number);
+            loadingDialog.setLoadingProgress(percent, String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
+            if (result.getState() == 1) {
+                closeLoading();
+                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+            }
             closeLogadingDialog();
-//            MyToastUtils.error(result.getMessage(),Toast.LENGTH_SHORT);
         });
 
         viewModel.usbWriteObservable().observe(this, result -> {
-            closeLogadingDialog();
-            if (result.getCode() == 0) {
-                viewModel.doUnzip(this);
-            } else {
-                MyToastUtils.error(result.getMessage(), Toast.LENGTH_SHORT);
+            showLoading();
+            //压缩包IO操作进度
+            float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+            String percentDone = numberFormat.format(ioPercentDone);
+            if (!currentIOPercent.equals(percentDone)){
+                loadingDialog.setLoadingProgress(percentDone,result.getMessage());
             }
+            if (result.getCode() == 0) {
+                LogUtils.e("file copy success ->", result.getCode());
+                ioTag = !ioTag;
+                if (ioTag){
+                    viewModel.doUnzip(this);
+                }
+            }
+            currentIOPercent = percentDone;
         });
     }
+
 
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
@@ -186,15 +199,17 @@ public class DataImportFragment extends BaseFragment {
         for (UsbMassStorageDevice device : storageDevices) {
             //读取设备是否有权限
             if (usbManager.hasPermission(device.getUsbDevice())) {
+                showLoading();
                 readDevice(device);
             } else {
-                closeLogadingDialog();
+                closeLoading();
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
             }
         }
         if (storageDevices.length == 0) {
-            closeLogadingDialog();
+//            closeLogadingDialog();
+            closeLoading();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
@@ -213,6 +228,7 @@ public class DataImportFragment extends BaseFragment {
             readFromUDisk();
 
         } catch (Exception e) {
+            closeLoading();
             MyToastUtils.error("USB读取超时，请插拔重试！", Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
@@ -236,18 +252,33 @@ public class DataImportFragment extends BaseFragment {
     }
 
     public void importData(View view) {
-        showLogadingDialog();
+        showLoading();
         switch (defaultIndex) {
             case 0:
                 MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
-                closeLogadingDialog();
+                closeLoading();
                 break;
             case 1:
                 redUDiskDevsList();
                 break;
             case 2:
+                ioTag = false;
                 viewModel.doUnzip(this);
+//                viewModel.getExDataFromLocal("/mnt/sdcard/ExModel/GK202501");
                 break;
+        }
+    }
+
+    private void closeLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.clearLoadingProgress();
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void showLoading(){
+        if (!loadingDialog.isShowing() && loadingDialog != null){
+            loadingDialog.show();
         }
     }
 

@@ -5,6 +5,28 @@ import java.io.Serializable;
 public class UsbWriteEvent implements Serializable {
 
     private int code;
+    private String message;
+    private boolean result;
+
+    public long getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(long current) {
+        this.current = current;
+    }
+
+    private long current;
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    private long total;//文件大小
 
     public int getCode() {
         return code;
@@ -30,6 +52,4 @@ public class UsbWriteEvent implements Serializable {
         this.result = result;
     }
 
-    private String message;
-    private boolean result;
 }

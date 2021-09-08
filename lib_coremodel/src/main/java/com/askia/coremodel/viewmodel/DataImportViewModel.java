@@ -1,11 +1,7 @@
 package com.askia.coremodel.viewmodel;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.ObservableField;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -13,18 +9,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
-import com.askia.coremodel.datamodel.database.db.DBExamInfo;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.event.FaceDBHandleEvent;
-import com.askia.coremodel.event.FaceHandleEvent;
-import com.askia.coremodel.event.UsbWriteEvent;
-import com.askia.coremodel.event.ZipHandleEvent;
 import com.askia.coremodel.event.UnZipHandleEvent;
+import com.askia.coremodel.event.UsbWriteEvent;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.JsonUtil;
-import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.CloseUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -37,11 +30,13 @@ import net.lingala.zip4j.progress.ProgressMonitor;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
-import java.util.logging.Handler;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -51,8 +46,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 
-import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
+import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 
 /**
@@ -69,7 +64,6 @@ public class DataImportViewModel extends BaseViewModel {
 
     private String pwd = "123456";
     private boolean isWorking = true;
-
 
     public MutableLiveData<UnZipHandleEvent> doZipHandle() {
         return unZipObservable;
@@ -91,13 +85,12 @@ public class DataImportViewModel extends BaseViewModel {
      */
     public void getExDataFromLocal(String path) {
         List<File> list = FileUtils.listFilesInDir(path);
-        if (list!= null && list.size() > 0){
+        if (list != null && list.size() > 0) {
             //空
             for (int i = 0; i < list.size(); i++) {
                 //是否是json文件
                 if (list.get(i).isFile()) {
                     try {
-                        LogUtils.e("json file name ->", list.get(i).getName());
                         insert2db(path + File.separator + list.get(i).getName(), list.get(i).getName());
                     } catch (Exception e) {
                         Log.e("TagSnake 01", Log.getStackTraceString(e));
@@ -164,20 +157,29 @@ public class DataImportViewModel extends BaseViewModel {
             if (photoList.isEmpty())
                 return;
             FaceDBHandleEvent event = new FaceDBHandleEvent();
+            int current = 1;
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
                 try {
                     byte[] bytes = FileUtil.getBytesByFile(file.getPath());
                     //根据faceNumber获取人脸库中是否有此信息
-                    boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
+//                    boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
+                    event.setTotal(photoList.size());
+                    event.setCurrent(current);
                     //如果人脸库中没有此人则把照片插入人脸库
-                    if (!isHave) {
+//                    if (!isHave) {
                         String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
                         //照片总数
-                        event.setTotal(photoList.size());
                         event.setFaceId(faceId);
-                        emitter.onNext(event);
-                    }
+                        if (current == photoList.size()) {
+                            //人脸库插入完成
+                            event.setState(1);
+                        } else {
+                            event.setState(0);
+                        }
+                        current++;
+
+                    emitter.onNext(event);
                 } catch (Exception e) {
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
@@ -194,9 +196,7 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(FaceDBHandleEvent result) {
-                        FaceDBHandleEvent faceDBHandleEvent = new FaceDBHandleEvent();
-                        faceDBHandleEvent.setFaceId(result.getFaceId());
-                        faceDbObservable.postValue(faceDBHandleEvent);
+                        faceDbObservable.postValue(result);
                         LogUtils.e("faceid ->", result.getFaceId());
                     }
 
@@ -211,6 +211,7 @@ public class DataImportViewModel extends BaseViewModel {
 
                     }
                 });
+
     }
 
     public void readZipFromUDisk(UsbFile usbFile) {
@@ -223,10 +224,42 @@ public class DataImportViewModel extends BaseViewModel {
                 //如果多个压缩包 进行批量复制到sdcard
                 for (UsbFile file : descFile.listFiles()) {
                     is = new UsbFileInputStream(file);
-                    boolean result = FileIOUtils.writeFileFromIS(ZIP_PATH + "/" + file.getName(), is);
-                    event.setResult(result);
+                    String path = ZIP_PATH + File.separator + file.getName();
+                    OutputStream os = null;
+                    File targetFile = new File(path);
+                    try {
+                        os = new BufferedOutputStream(new FileOutputStream(targetFile));
+                        //获取文件大小
+                        long fileLength = file.getLength();
+                        long current = 0l;
+
+                        byte data[] = new byte[8192];
+                        int len;
+                        while ((len = is.read(data, 0, 8192)) != -1) {
+                            os.write(data, 0, len);
+                            //文件写入进度
+                            current = current + len;
+                            LogUtils.e("file current->", current);
+                            event.setCurrent(current);
+                            event.setTotal(fileLength);
+                            if (current < fileLength) {
+                                event.setMessage("正在复制数据包...");
+                                event.setCode(1);
+                                emitter.onNext(event);
+                            } else {
+                                event.setMessage("复制完成");
+                                event.setCode(0);
+                                emitter.onNext(event);
+                                break;
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        CloseUtils.closeIO(is, os);
+                    }
+
                 }
-                emitter.onNext(event);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -240,11 +273,6 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull UsbWriteEvent usbWriteEvent) {
-                        if (usbWriteEvent.getResult()) {
-                            usbWriteEvent.setCode(0);
-                        } else {
-                            usbWriteEvent.setCode(1);
-                        }
                         usbImportObservable.postValue(usbWriteEvent);
                     }
 
@@ -288,82 +316,39 @@ public class DataImportViewModel extends BaseViewModel {
                         zipFile.setPassword(pwd.toCharArray());
                         //解压进度
                         ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
-                        progressMonitor.endProgressMonitor();
-
-//                      new Thread(() -> {
-//                            int percentDone = 0;
-////                            LogUtils.e("life owner ->", isWorking);
-//                            while (true) {
-////                                percentDone = progressMonitor.getPercentDone();
-//////                                unZipHandleEvent.setUnZipProcess(percentDone);
-//////                                unZipHandleEvent.setMessage("正在解压中...");
-//////                                unZipObservable.postValue(unZipHandleEvent);
-////                                if (percentDone >= 100) {
-////                                    unZipHandleEvent.setCode(0);
-////                                    unZipHandleEvent.setUnZipProcess(percentDone);
-////                                    unZipHandleEvent.setMessage("解压完成");
-////                                    unZipObservable.postValue(unZipHandleEvent);
-////                                    //解析
-////                                    getExDataFromLocal(toPath);
-////                                    break;
-////                                }
-//                                percentDone = progressMonitor.getPercentDone();
-//                                LogUtils.e("zip success ->", percentDone + "");
-//                                if (percentDone >= 100) {
-//                                    unZipHandleEvent.setCode(0);
-//                                    unZipHandleEvent.setUnZipProcess(percentDone);
-//                                    unZipHandleEvent.setMessage("解压完成");
-//                                    unZipHandleEvent.setFilePath(toPath);
-//                                    unZipObservable.postValue(unZipHandleEvent);
-//                                    break;
-//                                }
-//                            }
-//                        }).start();
-//
-//                        try {
-////                            zipFile.setRunInThread(true);
-//                            zipFile.extractAll(toPath);
-//                        } catch (ZipException e) {
-//                            e.printStackTrace();
-//                        }
-
-                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                            isWorking = event != Lifecycle.Event.ON_DESTROY;
-                            Thread thread = new Thread(() -> {
-                                int percentDone = 0;
-                                LogUtils.e("life owner ->", isWorking);
-                                while (isWorking) {
-                                    percentDone = progressMonitor.getPercentDone();
+                        Thread thread = new Thread(() -> {
+                            int percentDone = 0;
+                            LogUtils.e("life owner ->", "thread created");
+                            while (true) {
+                                percentDone = progressMonitor.getPercentDone();
+                                unZipHandleEvent.setUnZipProcess(percentDone);
+                                unZipHandleEvent.setMessage("正在解压中...");
+                                unZipObservable.postValue(unZipHandleEvent);
+                                if (percentDone >= 100) {
+                                    unZipHandleEvent.setCode(0);
                                     unZipHandleEvent.setUnZipProcess(percentDone);
-                                    unZipHandleEvent.setMessage("正在解压中...");
+                                    unZipHandleEvent.setFilePath(toPath);
+                                    unZipHandleEvent.setMessage("解压完成");
                                     unZipObservable.postValue(unZipHandleEvent);
-                                    if (percentDone >= 100) {
-                                        unZipHandleEvent.setCode(0);
-                                        unZipHandleEvent.setUnZipProcess(percentDone);
-                                        unZipHandleEvent.setFilePath(toPath);
-                                        unZipHandleEvent.setMessage("解压完成");
-                                        unZipObservable.postValue(unZipHandleEvent);
-                                        //解析
-//                                        getExDataFromLocal(toPath);
-                                        break;
-                                    }
+                                    break;
                                 }
-                            });
-                            thread.start();
-                            if (!isWorking){
+                            }
+                        });
+                        thread.start();
+                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+                            if (event == Lifecycle.Event.ON_DESTROY){
+                                LogUtils.e("owner destroy ->", event);
                                 thread.interrupt();
                                 progressMonitor.setCancelAllTasks(true);
                             }
-                            // 解压缩所有文件以及文件夹
-                            try {
-                                zipFile.setRunInThread(true);
-//                                if (progressMonitor.getState() != ProgressMonitor.State.BUSY){
-                                    zipFile.extractAll(toPath);
-//                                }
-                            } catch (ZipException e) {
-                                e.printStackTrace();
-                            }
                         });
+                        // 解压缩所有文件以及文件夹
+                        try {
+                            zipFile.setRunInThread(true);
+                            zipFile.extractAll(toPath);
+                        } catch (ZipException e) {
+                            e.printStackTrace();
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -381,5 +366,4 @@ public class DataImportViewModel extends BaseViewModel {
             unZipObservable.postValue(unZipHandleEvent);
         }
     }
-
 }
