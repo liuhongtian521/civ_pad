@@ -212,11 +212,15 @@ public class InquiryDialog extends BaseDialog {
                 ivFace.setImageBitmap(bt);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+                ivFace.setVisibility(View.INVISIBLE);
             }
 
             //转换bitmap
 //            Bitmap bt = BitmapFactory.decodeFile(path);
 //
+        }else {
+            ivFace.setVisibility(View.INVISIBLE);
+
         }
     }
 

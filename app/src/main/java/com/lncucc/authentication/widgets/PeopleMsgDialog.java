@@ -103,15 +103,21 @@ public class PeopleMsgDialog extends BaseDialog {
 
     public void setMsg(DBExamExport model) {
         String path = UN_ZIP_PATH + File.separator + model.getExamCode() + "/photo/" + model.getStuNo() + ".jpg";
+        Log.e("TagSnake path",path);
         //转换file
         File file = new File(path);
         if (file.exists()) {
+            if (ivPhotoLeft.getVisibility()!=View.VISIBLE)
+                ivPhotoLeft.setVisibility(View.VISIBLE);
             //转换bitmap
             Bitmap bt = BitmapFactory.decodeFile(path);
 //            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
-            ivPhotoLeft.setImageBitmap(bt);
+             ivPhotoLeft.setImageBitmap(bt);
+        }else {
+            ivPhotoLeft.setVisibility(View.INVISIBLE);
         }
         String pathT = Constants.STU_EXPORT + File.separator + model.getSeCode() + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";
+        Log.e("TagSnake pathT",pathT);
         File file1 = new File(pathT);
         if (file1.exists()) {
             //转换bitmap
@@ -126,8 +132,6 @@ public class PeopleMsgDialog extends BaseDialog {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-
-
 //            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
         }
 

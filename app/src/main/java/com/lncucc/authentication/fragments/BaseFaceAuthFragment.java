@@ -23,6 +23,7 @@ import com.askia.common.util.NV21ToBitmap;
 import com.askia.common.util.faceUtils.DrawHelper;
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
+import com.askia.coremodel.datamodel.face.FaceMsgBase;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.FaceDetectorViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
@@ -81,10 +82,46 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
         detectorViewModel.getmFaceDetect().observe(this, new Observer<FaceDetectResult>() {
             @Override
             public void onChanged(FaceDetectResult faceDetectResult) {
+//                FaceDetectResult faceBack = new FaceDetectResult();
+//                faceBack.similarity = 0.8574669403f;
+//                faceBack.faceNum = "030103000000";
+//                setUI(faceBack);
                 if (faceDetectResult == null) {
                     goContinueDetectFace();
                 } else {
                     setUI(faceDetectResult);
+                }
+            }
+        });
+
+        detectorViewModel.getmFace().observe(this, new Observer<FaceMsgBase>() {
+            @Override
+            public void onChanged(FaceMsgBase faceResult) {
+//                frames = 0;
+//                mFaceDecting = true;
+                if (faceResult.getFaceColorResult() == null || faceResult.getFaceColorResult().faceBmp == null || faceResult.getFaceColorResult().faceRect == null) {
+//                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
+                    frames = 0;
+                    mFaceDecting = true;
+                } else {
+                    if (frames < 10) {
+                        frames++;
+                        mFaceDecting = true;
+                        return;
+                    }
+                    if (mSeCode == null) {
+                        getmSeCode();
+                    }
+
+                    if (isComputen()) {
+                        Log.e("TagSnake", "isComputen");
+                        detectorViewModel.dataPross(faceResult.getFaceColorResult().faceRect, faceResult.getNv21(), previewSize, isComputen(), mSeCode, getStuNo());
+                        return;
+                    } else {
+                        Log.e("TagSnake", "isComputen not");
+                        detectorViewModel.dataPross(faceResult.getFaceColorResult().faceRect, faceResult.getNv21(), previewSize, isComputen(), mSeCode, null);
+                        return;
+                    }
                 }
             }
         });
@@ -129,29 +166,35 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             public void onPreview(final byte[] nv21, Camera camera) {
                 if (!mFaceDecting)
                     return;
-                //人脸处理，检测照片中是否有人脸
-                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
-                if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
-//                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
-                    frames = 0;
-                } else {
-                    if (frames < 10) {
-                        frames++;
-                        return;
-                    } else {
-                        mFaceDecting = false;
-                    }
 
-                    if (mSeCode == null) {
-                        getmSeCode();
-                    }
-                    if (isComputen()) {
-                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, getStuNo());
-                        return;
-                    } else {
-                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, null);
-                        return;
-                    }
+
+                mFaceDecting = false;
+                detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation());
+
+//                //人脸处理，检测照片中是否有人脸
+//                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
+//                if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
+////                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
+//                    frames = 0;
+//                } else {
+//                    if (frames < 10) {
+//                        frames++;
+//                        return;
+//                    } else {
+//                        mFaceDecting = false;
+//                    }
+//
+//                    if (mSeCode == null) {
+//                        getmSeCode();
+//                    }
+//                    if (isComputen()) {
+//                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, getStuNo());
+//                        return;
+//                    } else {
+//                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, null);
+//                        return;
+//                    }
+
 //                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
 //                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
 //                    byte[] jpegData = null;
@@ -200,7 +243,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 //                    } else {
 //                        goContinueDetectFace();
 //                    }
-                }
+
+//                }
             }
 
             @Override

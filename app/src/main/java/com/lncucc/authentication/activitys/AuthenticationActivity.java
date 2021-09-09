@@ -219,6 +219,8 @@ public class AuthenticationActivity extends BaseActivity {
                     //转换bitmap
                     Bitmap bt = BitmapFactory.decodeFile(path);
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
+                }else {
+                    viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.INVISIBLE);
                 }
 
                 String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";

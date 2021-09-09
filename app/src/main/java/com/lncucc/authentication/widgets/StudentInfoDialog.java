@@ -61,6 +61,7 @@ public class StudentInfoDialog extends BaseDialog{
     }
 
     public void  showDialog(DBExamLayout layout){
+        this.show();
         if (layout != null){
             //获取stuNo
             String stuNo = layout.getStuNo();
@@ -84,9 +85,13 @@ public class StudentInfoDialog extends BaseDialog{
             //转换file
             File file = new File(path);
             if (file.exists()){
+                if (mImageView.getVisibility()!=View.VISIBLE)
+                    mImageView.setVisibility(View.VISIBLE);
                 //转换bitmap
                 Bitmap bt  = BitmapFactory.decodeFile(path);
                 mImageView.setImageBitmap(bt);
+            }else {
+                mImageView.setVisibility(View.INVISIBLE);
             }
             mName.setText(layout.getStuName());
             mSex.setText(layout.getGender());
@@ -98,7 +103,6 @@ public class StudentInfoDialog extends BaseDialog{
             mSeatNum.setText(layout.getSeatNo());
             mIdNo.setText(layout.getIdCard());
         }
-        this.show();
     }
 
 

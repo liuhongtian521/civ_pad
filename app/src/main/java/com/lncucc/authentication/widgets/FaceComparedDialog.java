@@ -110,20 +110,21 @@ public class FaceComparedDialog extends BaseDialog {
             //转换bitmap
             Bitmap bt = BitmapFactory.decodeFile(path);
             ivPhotoOne.setImageBitmap(bt);
-        }
+        } else
+            ivPhotoOne.setVisibility(View.INVISIBLE);
 
-            String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
-            //转换file
-            File file = new File(pathT);
-            if (file.exists()) {
-                try {
-                    FileInputStream fiss = new FileInputStream(file);
-                    Bitmap bt  = BitmapFactory.decodeStream(fiss);
-                    ivPhotoTwo.setImageBitmap(bt);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
+        String pathT = Constants.STU_EXPORT + File.separator + dbExamLayout.getSeCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
+        //转换file
+        File file = new File(pathT);
+        if (file.exists()) {
+            try {
+                FileInputStream fiss = new FileInputStream(file);
+                Bitmap bt = BitmapFactory.decodeStream(fiss);
+                ivPhotoTwo.setImageBitmap(bt);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
+        }
     }
 
 

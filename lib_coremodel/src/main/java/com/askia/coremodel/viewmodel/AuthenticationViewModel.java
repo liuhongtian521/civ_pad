@@ -55,9 +55,7 @@ public class AuthenticationViewModel extends BaseViewModel {
     private MutableLiveData<Integer> mLayoutSize = new MutableLiveData<>();
     private MutableLiveData<DBExamPlan> mDBExamPlan = new MutableLiveData<>();
     private MutableLiveData<DBExamArrange> mDBExamArrange = new MutableLiveData<>();
-
     private MutableLiveData<Integer> mCanSign = new MutableLiveData<>();
-
     private MutableLiveData<Integer> mDBExamExportNumber = new MutableLiveData<>();
 
     public MutableLiveData<Integer> getmDBExamExportNumber() {
