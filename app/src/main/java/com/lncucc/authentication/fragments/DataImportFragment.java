@@ -169,10 +169,8 @@ public class DataImportFragment extends BaseFragment {
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
         if (event.isConnected) {
-//            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
         } else if (event.isGetPermission) {
             UsbDevice usbDevice = event.usbDevice;
-//            MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
             readDevice(getUsbMass(usbDevice));
         }
     }

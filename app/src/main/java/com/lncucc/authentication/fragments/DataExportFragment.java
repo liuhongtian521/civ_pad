@@ -26,6 +26,7 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
@@ -35,6 +36,7 @@ import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentExportBinding;
+import com.lncucc.authentication.widgets.DataLoadingDialog;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
@@ -43,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,11 +73,17 @@ public class DataExportFragment extends BaseFragment {
     private DBExamArrange itemArrange;
     private DataImportAdapter dataImportAdapter;
     private int defaultIndex = 2;
+    private DataLoadingDialog loadingDialog;
+    private NumberFormat numberFormat;
 
     @Override
     public void onInit() {
         exportBinding.rlArrange.setOnClickListener(v -> showPopUp());
         sessionList = DBOperation.getDBExamArrange();
+        loadingDialog = new DataLoadingDialog(getActivity());
+        loadingDialog.setCanceledOnTouchOutside(false);
+        numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(2);
         if (sessionList != null && sessionList.size() > 0) {
             exportBinding.tvSession.setText(sessionList.get(0).getSeName());
             itemArrange = sessionList.get(0);
@@ -174,7 +183,7 @@ public class DataExportFragment extends BaseFragment {
             }
         }
         if (storageDevices.length == 0) {
-            closeLogadingDialog();
+            closeLoading();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
@@ -228,18 +237,27 @@ public class DataExportFragment extends BaseFragment {
     public void onSubscribeViewModel() {
         //导出到sdcard
         exportViewModel.doExport().observe(this, result -> {
-            closeLogadingDialog();
+            closeLoading();
             MyToastUtils.error(result, Toast.LENGTH_SHORT);
         });
         //写入U盘
         exportViewModel.write2UDisk().observe(this, result -> {
-            closeLogadingDialog();
+            //压缩包IO操作进度
+            float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+            String percentDone = numberFormat.format(ioPercentDone);
+            loadingDialog.setLoadingProgress(percentDone,result.getMessage());
+            if (result.getCode() == 0) {
+                closeLoading();
+                MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
+            }
             LogsUtil.saveOperationLogs("数据导出");
-            MyToastUtils.success(result, Toast.LENGTH_LONG);
         });
 
         exportViewModel.zip().observe(this, result -> {
-            if (result.getUnZipProcess() == 100) {
+            int process = result.getUnZipProcess();
+            String message = result.getMessage();
+            loadingDialog.setLoadingProgress(process+"", message);
+            if (process == 100) {
                 //如果选择U盘导出，从本地sd中拷贝到U盘根目录
                 if (defaultIndex == 1) {
                     redUDiskDevsList();
@@ -250,7 +268,7 @@ public class DataExportFragment extends BaseFragment {
                     exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
                     LogsUtil.saveOperationLogs("数据导出");
                 } else {
-                    closeLogadingDialog();
+                    closeLoading();
                     LogsUtil.saveOperationLogs("数据导出");
                     MyToastUtils.error("导出成功", Toast.LENGTH_SHORT);
                 }
@@ -258,8 +276,17 @@ public class DataExportFragment extends BaseFragment {
         });
 
         exportViewModel.upLoad().observe(this, result -> {
-            closeLogadingDialog();
-            MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
+            if (result!= null && result.getInfo() != null){
+                float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+                String percentDone = numberFormat.format(ioPercentDone);
+                loadingDialog.setLoadingProgress(percentDone,result.getInfo());
+            }
+            if (result.getState() == 0) {
+                closeLoading();
+                if (result.getMessage() != null){
+                    MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
+                }
+            }
         });
     }
 
@@ -283,7 +310,7 @@ public class DataExportFragment extends BaseFragment {
     }
 
     public void export(View view) {
-        showLogadingDialog();
+        showLoading();
         exportViewModel.doDataExport(seCode);
     }
 
@@ -297,6 +324,19 @@ public class DataExportFragment extends BaseFragment {
                 seCode = sessionList.get(0).getSeCode();
                 siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
             }
+        }
+    }
+
+    private void closeLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.clearLoadingProgress();
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void showLoading(){
+        if (!loadingDialog.isShowing() && loadingDialog != null){
+            loadingDialog.show();
         }
     }
 

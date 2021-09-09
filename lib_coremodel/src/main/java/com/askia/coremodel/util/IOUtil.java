@@ -12,7 +12,7 @@ import java.io.OutputStream;
 
 public class IOUtil {
 
-    public static void saveSDFile2OTG(final File f, final UsbFile usbFile) {
+    public static void saveSDFile2OTG(final File f, final UsbFile usbFile, IOProcess listener) {
         UsbFile uFile = null;
         FileInputStream fis = null;
         try {//开始写入
@@ -29,7 +29,7 @@ public class IOUtil {
                 uFile = usbFile.createFile(f.getName());
                 UsbFileOutputStream uos = new UsbFileOutputStream(uFile);
                 try {
-                    redFileStream(uos, fis);
+                    redFileStream(uos, fis,listener,f.length());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -39,18 +39,21 @@ public class IOUtil {
         }
     }
 
-    private static void redFileStream(OutputStream os, InputStream is) throws IOException {
+    private static void redFileStream(OutputStream os, InputStream is,IOProcess listener,long len) throws IOException {
         int bytesRead = 0;
         byte[] buffer = new byte[1024 * 8];
         long sumBytes = 0l;
         while ((bytesRead = is.read(buffer)) != -1) {
             os.write(buffer, 0, bytesRead);
-            LogUtils.e("current buffer length ->", sumBytes += buffer.length);
+            sumBytes += bytesRead;
+            listener.onProcessDoneListener(sumBytes, len);
         }
-        LogUtils.e("buffer length ->", is.available());
-
         os.flush();
         os.close();
         is.close();
+    }
+
+    public interface IOProcess{
+        void onProcessDoneListener(long current,long total);
     }
 }

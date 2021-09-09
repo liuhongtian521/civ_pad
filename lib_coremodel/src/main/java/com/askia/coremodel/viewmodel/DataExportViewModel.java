@@ -10,7 +10,11 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
+import com.askia.coremodel.datamodel.http.requestBody.ProgressListener;
+import com.askia.coremodel.datamodel.http.requestBody.UploadRequestBody;
 import com.askia.coremodel.event.UnZipHandleEvent;
+import com.askia.coremodel.event.Write2OGTEvent;
+import com.askia.coremodel.event.ZipUploadEvent;
 import com.askia.coremodel.util.IOUtil;
 import com.askia.coremodel.util.JsonUtil;
 import com.askia.coremodel.util.NetUtils;
@@ -62,7 +66,7 @@ public class DataExportViewModel extends BaseViewModel {
     //导出到SDCard
     MutableLiveData<String> exportObservable = new MutableLiveData<>();
     //usb 写入
-    MutableLiveData<String> usbWriteObservable = new MutableLiveData<>();
+    MutableLiveData<Write2OGTEvent> usbWriteObservable = new MutableLiveData<>();
     //压缩
     MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
     //导出数据上传
@@ -75,7 +79,7 @@ public class DataExportViewModel extends BaseViewModel {
         return exportObservable;
     }
 
-    public MutableLiveData<String> write2UDisk() {
+    public MutableLiveData<Write2OGTEvent> write2UDisk() {
         return usbWriteObservable;
     }
 
@@ -217,7 +221,12 @@ public class DataExportViewModel extends BaseViewModel {
             UnZipHandleEvent zipHandleEvent = new UnZipHandleEvent();
             while (true) {
                 percentDone = monitor.getPercentDone();
-                LogUtils.e("zip success ->", percentDone + "");
+                zipHandleEvent.setUnZipProcess(percentDone);
+                zipHandleEvent.setCode(1);
+                zipHandleEvent.setFileName(zipName);
+                zipHandleEvent.setFilePath(zipFilePath);
+                zipHandleEvent.setMessage("正在压缩...");
+                unZipObservable.postValue(zipHandleEvent);
                 if (percentDone >= 100) {
                     //解析
                     zipHandleEvent.setUnZipProcess(100);
@@ -233,6 +242,7 @@ public class DataExportViewModel extends BaseViewModel {
 
         if (filePath_.isDirectory()) {
             try {
+                zipFile.setRunInThread(true);
                 zipFile.addFolder(filePath_, parameters);
             } catch (ZipException e) {
                 e.printStackTrace();
@@ -240,20 +250,38 @@ public class DataExportViewModel extends BaseViewModel {
         }
     }
 
+    //sdcard 写入到U盘
     public void write2UDiskByOTG(File sourceFile, UsbFile file) {
         if (file != null) {
-            Observable.create((ObservableOnSubscribe<String>) emitter -> {
-                IOUtil.saveSDFile2OTG(sourceFile, file);
-                emitter.onNext("已导入到U盘根目录下的ExamExport下");
+            Write2OGTEvent event = new Write2OGTEvent();
+            Observable.create((ObservableOnSubscribe<Write2OGTEvent>) emitter -> {
+                IOUtil.saveSDFile2OTG(sourceFile, file, new IOUtil.IOProcess() {
+                    @Override
+                    public void onProcessDoneListener(long current, long total) {
+                        LogUtils.e("current buffer length ->", current,total);
+                        event.setCurrent(current);
+                        event.setTotal(total);
+                        if (current < total) {
+                            event.setMessage("正在写入到U盘中...");
+                            event.setCode(1);
+                            emitter.onNext(event);
+                        } else {
+                            event.setMessage("导出完成");
+                            event.setCode(0);
+                            emitter.onNext(event);
+                        }
+                    }
+                });
+                emitter.onNext(null);
             }).subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<String>() {
+                    .subscribe(new Observer<Write2OGTEvent>() {
                         @Override
                         public void onSubscribe(@NotNull Disposable d) {
                             mDisposable.add(d);
                         }
 
                         @Override
-                        public void onNext(@NotNull String s) {
+                        public void onNext(@NotNull Write2OGTEvent s) {
                             usbWriteObservable.postValue(s);
                         }
 
@@ -279,9 +307,24 @@ public class DataExportViewModel extends BaseViewModel {
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM);
         File file = new File(filePath);
-        RequestBody body = RequestBody.create(MediaType.parse("application/octet-stream"), file);
-        builder.addFormDataPart("file",file.getName(),body);
-        MultipartBody.Part multipartBody =MultipartBody.Part.createFormData("file",file.getName(),body);
+//        RequestBody body = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+        UpLoadResult event = new UpLoadResult();
+        UploadRequestBody uploadRequestBody = new UploadRequestBody(file, (hasWrittenLen, totalLen) -> {
+            LogUtils.e("upload progress total->", totalLen,"hasWritten->",hasWrittenLen);
+            event.setCurrent(hasWrittenLen);
+            event.setTotal(totalLen);
+            if (hasWrittenLen < totalLen){
+                event.setState(1);
+                event.setInfo("正在上传...");
+            }else {
+                event.setState(0);
+                event.setInfo("上传成功");
+            }
+            upLoadObservable.postValue(event);
+        });
+
+//        builder.addFormDataPart("file",file.getName(),body);
+        MultipartBody.Part multipartBody =MultipartBody.Part.createFormData("file",file.getName(),uploadRequestBody);
 
         NetDataRepository.verifyfacecontrast(map,multipartBody)
                 .subscribeOn(Schedulers.io())
