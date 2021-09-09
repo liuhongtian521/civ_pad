@@ -14,6 +14,7 @@ import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  *
@@ -320,7 +321,7 @@ public class DBOperation {
      * @return 获取验证数据列表
      */
     public static List<DBExamExport> getVerifyList() {
-        return Realm.getDefaultInstance().where(DBExamExport.class).findAll();
+        return Realm.getDefaultInstance().where(DBExamExport.class).findAllSorted("verifyTime", Sort.DESCENDING);
     }
 
     /**
