@@ -94,37 +94,22 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             }
         });
 
+
         detectorViewModel.getmFace().observe(this, new Observer<FaceMsgBase>() {
             @Override
-            public void onChanged(FaceMsgBase faceResult) {
-//                frames = 0;
-//                mFaceDecting = true;
-                if (faceResult.getFaceColorResult() == null || faceResult.getFaceColorResult().faceBmp == null || faceResult.getFaceColorResult().faceRect == null) {
-//                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
-                    frames = 0;
-                    mFaceDecting = true;
+            public void onChanged(FaceMsgBase faceMsgBase) {
+                if (faceMsgBase.getType() < 0) {
+                    goContinueDetectFace();
                 } else {
-                    if (frames < 10) {
-                        frames++;
-                        mFaceDecting = true;
-                        return;
-                    }
-                    if (mSeCode == null) {
-                        getmSeCode();
-                    }
 
-                    if (isComputen()) {
-                        Log.e("TagSnake", "isComputen");
-                        detectorViewModel.dataPross(faceResult.getFaceColorResult().faceRect, faceResult.getNv21(), previewSize, isComputen(), mSeCode, getStuNo());
-                        return;
-                    } else {
-                        Log.e("TagSnake", "isComputen not");
-                        detectorViewModel.dataPross(faceResult.getFaceColorResult().faceRect, faceResult.getNv21(), previewSize, isComputen(), mSeCode, null);
-                        return;
-                    }
+                    if (!isComputen() && faceMsgBase.getFaceColorResult() == null) {
+                        goContinueDetectFace();
+                    } else
+                        setUI(faceMsgBase.getFaceColorResult());
                 }
             }
         });
+
     }
 
     protected abstract void setUI(FaceDetectResult detectResult);
@@ -167,84 +152,13 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 if (!mFaceDecting)
                     return;
 
-
                 mFaceDecting = false;
-                detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation());
+                if (isComputen()) {
+                    detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation(), isComputen(), mSeCode, getStuNo());
 
-//                //人脸处理，检测照片中是否有人脸
-//                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
-//                if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
-////                    MyToastUtils.error("未检测到人脸", Toast.LENGTH_SHORT);
-//                    frames = 0;
-//                } else {
-//                    if (frames < 10) {
-//                        frames++;
-//                        return;
-//                    } else {
-//                        mFaceDecting = false;
-//                    }
-//
-//                    if (mSeCode == null) {
-//                        getmSeCode();
-//                    }
-//                    if (isComputen()) {
-//                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, getStuNo());
-//                        return;
-//                    } else {
-//                        detectorViewModel.dataPross(faceResult.faceRect, nv21, previewSize, isComputen(), mSeCode, null);
-//                        return;
-//                    }
-
-//                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
-//                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
-//                    byte[] jpegData = null;
-//                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
-//                    jpegData = outputSteam.toByteArray();
-////                    if (type == 3) {//如果图像翻转了进行处理
-////                        Bitmap bitmap = null;
-////                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
-////
-////                        Matrix matrix = new Matrix();
-////                        matrix.setRotate(180);
-////                        Bitmap bitRotate = Bitmap.createBitmap(bitmap, 0, 0, previewSize.width, previewSize.height, matrix, false);
-//////                        bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-////                        outputSteam.reset();
-////                        bitRotate.compress(Bitmap.CompressFormat.PNG, 100, outputSteam);
-////                        jpegData = null;
-////                        jpegData = outputSteam.toByteArray();
-////                    }
-//                    float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
-//                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
-//                    //获取人脸特征
-////                    float[] feature = FaceDetectManager.getInstance().getLocalFaceFeatureByBGRData(faceResult.faceBmp, previewSize.width, previewSize.height, faceResult.keypoints);
-//                    //人脸对比
-////                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.7f);
-//                    if (detectResult == null) {
-//                        frames = 0;
-//                        Log.e("TagSnakesnake", "detect result ->    null");
-////                        LogUtils.e("detect result ->    null");
-//                        goContinueDetectFace();
-//                        return;
-//                    }
-//                    Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
-//                    frames = 0;
-//                    if (detectResult != null) {
-//                        Rect faceRect = faceResult.faceRect;
-//                        if (mSeCode == null) {
-//                            getmSeCode();
-//                        }
-//                        String path = "";
-//                        if (isComputen()) {
-//                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
-//                        } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum))
-//                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
-//                        detectorViewModel.savePhoto(jpegData, path, faceRect);
-//                        setUI(detectResult);
-//                    } else {
-//                        goContinueDetectFace();
-//                    }
-
-//                }
+                } else {
+                    detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation(), isComputen(), mSeCode, null);
+                }
             }
 
             @Override

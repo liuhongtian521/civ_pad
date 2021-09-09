@@ -62,12 +62,73 @@ public class FaceDetectorViewModel extends BaseViewModel {
         return mFaceDetect;
     }
 
-    public void faceHandle(byte[] nv21, Camera.Size previewSize, int cameraDisplayOrientation) {
+    int frames = 0;
+
+    public void faceHandle(byte[] nv21, Camera.Size previewSize, int cameraDisplayOrientation, boolean isComputen, String seCode, String stuNo) {
         Observable.create((ObservableOnSubscribe<FaceMsgBase>) emitter -> {
             FaceMsgBase faceMsgBase = new FaceMsgBase();
             FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, cameraDisplayOrientation);
-            faceMsgBase.setFaceColorResult(faceResult);
-            faceMsgBase.setNv21(nv21);
+            if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
+                 frames = 0;
+                faceMsgBase.setType(-1);
+            } else {
+                if (frames < 5) {
+                    frames++;
+                    faceMsgBase.setType(-1);
+                } else {
+                    faceMsgBase.setType(1);
+                    //人脸识别
+                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
+                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
+                    byte[] jpegData = null;
+                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
+                    jpegData = outputSteam.toByteArray();
+
+                    float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
+                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.75f);
+                    faceMsgBase.setFaceColorResult(detectResult);
+
+                    if (detectResult == null) {
+                        Log.e("TagSnakesnake", "detect result ->    null");
+                    } else {
+                        Bitmap bitmap = null;
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+//                            options.inSampleSize = 2;
+                        Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
+                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
+                        if (faceResult.faceRect != null) {
+                            bitmap = ImageUtil.imageCrop(bitmap, faceResult.faceRect);
+                        }
+                        String path = "";
+                        if (isComputen) {
+                            path = Constants.STU_EXPORT + File.separator + seCode + File.separator + "photo" + File.separator + stuNo + ".jpg";
+                        } else if (seCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum)) {
+                            path = Constants.STU_EXPORT + File.separator + seCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
+                        }
+
+
+                        if (FileUtils.isFileExists(path)) {
+                            File file = FileUtils.getFileByPath(path);
+                            if (file != null)
+                                file.delete();
+                        }
+                        bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+                        bitmap = ImageUtil.sampleSize(bitmap);
+                        boolean back = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                        bitmap.recycle();
+                        File file1 = new File(path);
+                        if (file1.exists()) {
+                            try {
+                                FileInputStream fis = new FileInputStream(file1);
+                                Bitmap bt = BitmapFactory.decodeStream(fis);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                     }
+                }
+            }
             emitter.onNext(faceMsgBase);
         })
                 .subscribeOn(Schedulers.io())
@@ -93,147 +154,4 @@ public class FaceDetectorViewModel extends BaseViewModel {
                     }
                 });
     }
-
-    public void dataPross(Rect faceRect, byte[] nv21, Camera.Size previewSize, boolean isComputen, String seCode, String stuNo) {
-
-        Observable.create((ObservableOnSubscribe<FaceDetectResult>) emitter -> {
-
-            YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
-            ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
-            byte[] jpegData = null;
-            image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
-            jpegData = outputSteam.toByteArray();
-
-            float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
-            FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.85f);
-            if (detectResult == null) {
-                Log.e("TagSnakesnake", "detect result ->    null");
-                emitter.onNext(null);
-//                mFaceDetect.postValue(null);
-                return;
-            }
-            if (detectResult != null) {
-                Bitmap bitmap = null;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-//                            options.inSampleSize = 2;
-                Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
-                options.inPreferredConfig = Bitmap.Config.RGB_565;
-                bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
-                if (faceRect != null) {
-                    bitmap = ImageUtil.imageCrop(bitmap, faceRect);
-                }
-                String path = "";
-                if (isComputen) {
-                    path = Constants.STU_EXPORT + File.separator + seCode + File.separator + "photo" + File.separator + stuNo + ".jpg";
-                } else if (seCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum)) {
-                    path = Constants.STU_EXPORT + File.separator + seCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
-                }
-
-
-                if (FileUtils.isFileExists(path)) {
-                    File file = FileUtils.getFileByPath(path);
-                    if (file != null)
-                        file.delete();
-//                    StorageUtil.deleteFile(file);
-                }
-                bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-                bitmap = ImageUtil.sampleSize(bitmap);
-                boolean back = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
-
-                bitmap.recycle();
-                File file1 = new File(path);
-                if (file1.exists()) {
-                    try {
-                        FileInputStream fis = new FileInputStream(file1);
-                        Bitmap bt = BitmapFactory.decodeStream(fis);
-//                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    //转换bitmap
-//                Bitmap bt = BitmapFactory.decodeFile(path);
-                }
-                emitter.onNext(detectResult);
-
-            } else {
-                emitter.onNext(null);
-//                mFaceDetect.postValue(null);
-            }
-
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<FaceDetectResult>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(FaceDetectResult result) {
-                        mFaceDetect.postValue(result);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mFaceDetect.postValue(null);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-
-
-    }
-
-    public void savePhoto(byte[] jpegData, String path, Rect faceRect) {
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            //                        Log.i(TAG, "subscribe: fr search end = " + System.currentTimeMillis() + " trackId = " + requestId);
-            if (!"".equals(path)) {
-                Bitmap bitmap = null;
-                try {
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-//                            options.inSampleSize = 2;
-                    options.inPreferredConfig = Bitmap.Config.RGB_565;
-                    bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
-                    if (faceRect != null) {
-                        bitmap = ImageUtil.imageCrop(bitmap, faceRect);
-                    }
-                    bitmap = com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-                    bitmap = ImageUtil.sampleSize(bitmap);
-                    com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
-                    bitmap.recycle();
-                } catch (Exception e) {
-                    Log.e("TagSnake", Log.getStackTraceString(e));
-                }
-            }
-
-            emitter.onNext(1);
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Integer result) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-
 }

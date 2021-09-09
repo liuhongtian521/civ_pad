@@ -1,6 +1,7 @@
 package com.askia.coremodel.datamodel.face;
 
 import com.bigdata.facedetect.FaceDetect;
+import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.Serializable;
 
@@ -10,21 +11,22 @@ import java.io.Serializable;
  * @date 2021/9/9
  */
 public class FaceMsgBase implements Serializable {
-    private FaceDetect.FaceColorResult faceColorResult;
-    private byte[] nv21;
-    public FaceDetect.FaceColorResult getFaceColorResult() {
+    private FaceDetectResult faceColorResult;
+    private int type;
+
+    public FaceDetectResult getFaceColorResult() {
         return faceColorResult;
     }
 
-    public void setFaceColorResult(FaceDetect.FaceColorResult faceColorResult) {
+    public void setFaceColorResult(FaceDetectResult faceColorResult) {
         this.faceColorResult = faceColorResult;
     }
 
-    public byte[] getNv21() {
-        return nv21;
+    public int getType() {
+        return type;
     }
 
-    public void setNv21(byte[] nv21) {
-        this.nv21 = nv21;
+    public void setType(int type) {
+        this.type = type;
     }
 }
