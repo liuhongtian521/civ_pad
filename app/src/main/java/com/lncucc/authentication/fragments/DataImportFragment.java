@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
@@ -27,6 +29,7 @@ import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.activitys.InitializeActivity;
 import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
@@ -253,8 +256,9 @@ public class DataImportFragment extends BaseFragment {
         showLoading();
         switch (defaultIndex) {
             case 0:
-                MyToastUtils.error("敬请期待！", Toast.LENGTH_SHORT);
-                closeLoading();
+               Intent intent = new Intent(getActivity(),InitializeActivity.class);
+               intent.putExtra("type", -1);
+               startActivity(intent);
                 break;
             case 1:
                 redUDiskDevsList();

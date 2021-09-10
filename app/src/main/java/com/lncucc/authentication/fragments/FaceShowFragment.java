@@ -42,14 +42,19 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
 
         mPreview = mDataBinding.preview;
         mPreview.setScaleX(-1);
+        mPreview.setRotationY(180); // 镜面对称
     }
 
     @Override
     protected void setUI(FaceDetectResult detectResult) {
         //获取到了数据
         Log.e("TagSnake", "getmsg");
-        ((AuthenticationActivity) getActivity()).getFace(detectResult);
-
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((AuthenticationActivity) getActivity()).getFace(detectResult);
+            }
+        });
     }
 
     @Override

@@ -150,7 +150,7 @@
         <!--身份验证-->
         <activity
             android:name=".activitys.AuthenticationActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:configChanges="orientation"
             android:windowSoftInputMode="stateHidden" >

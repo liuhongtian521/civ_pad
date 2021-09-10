@@ -117,15 +117,6 @@ public class FaceDetectorViewModel extends BaseViewModel {
                         bitmap = ImageUtil.sampleSize(bitmap);
                         boolean back = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
                         bitmap.recycle();
-                        File file1 = new File(path);
-                        if (file1.exists()) {
-                            try {
-                                FileInputStream fis = new FileInputStream(file1);
-                                Bitmap bt = BitmapFactory.decodeStream(fis);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
                      }
                 }
             }

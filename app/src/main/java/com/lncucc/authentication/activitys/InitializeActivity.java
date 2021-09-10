@@ -25,6 +25,7 @@ import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.askia.coremodel.viewmodel.InitializeViewModel;
 import com.askia.coremodel.viewmodel.ZIPDownloadViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActInitializeBinding;
@@ -66,9 +67,21 @@ public class InitializeActivity extends BaseActivity {
     int timeHave = 180;
     int downloadFaile = 0;
 
+    int type = 0;
+
+
     @Override
     public void onInit() {
-        siteCode = getIntent().getExtras().getString("code");
+        type = getIntent().getExtras().getInt("type");
+
+        if (type > 0)
+            siteCode = getIntent().getExtras().getString("code");
+        else
+            siteCode = SharedPreferencesUtils.getString(getApplicationContext(), "code");
+
+        if (null == siteCode)
+            siteCode = "";
+
         mDownList = new ArrayList<>();
         mDownUrlList = new ArrayList<>();
         mCountDownTimer = new CountDownTimer(20 * 1000, 1000) {
@@ -299,13 +312,15 @@ public class InitializeActivity extends BaseActivity {
     }
 
     public void breakthis(View view) {
-        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-            Log.e("TagSnake", "tomain");
-            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-        } else {
-            Log.e("TagSnake", "tosetting");
-            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-        }
+
+        if (type > 0)
+            if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+                Log.e("TagSnake", "tomain");
+                startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+            } else {
+                Log.e("TagSnake", "tosetting");
+                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+            }
         finish();
 
 //

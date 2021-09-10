@@ -8,16 +8,20 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.TextureView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.askia.common.base.BaseFragment;
-import com.askia.common.util.ImageUtil;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.NV21ToBitmap;
 import com.askia.common.util.faceUtils.DrawHelper;
@@ -25,9 +29,11 @@ import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
 import com.askia.coremodel.datamodel.face.FaceMsgBase;
 import com.askia.coremodel.rtc.Constants;
+import com.askia.coremodel.util.ImageUtil;
 import com.askia.coremodel.viewmodel.FaceDetectorViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.bigdata.facedetect.FaceDetect;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.detect.FaceDetectResult;
@@ -78,38 +84,6 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     @Override
     public void onSubscribeViewModel() {
-        //人脸识别
-        detectorViewModel.getmFaceDetect().observe(this, new Observer<FaceDetectResult>() {
-            @Override
-            public void onChanged(FaceDetectResult faceDetectResult) {
-//                FaceDetectResult faceBack = new FaceDetectResult();
-//                faceBack.similarity = 0.8574669403f;
-//                faceBack.faceNum = "030103000000";
-//                setUI(faceBack);
-                if (faceDetectResult == null) {
-                    goContinueDetectFace();
-                } else {
-                    setUI(faceDetectResult);
-                }
-            }
-        });
-
-
-        detectorViewModel.getmFace().observe(this, new Observer<FaceMsgBase>() {
-            @Override
-            public void onChanged(FaceMsgBase faceMsgBase) {
-                if (faceMsgBase.getType() < 0) {
-                    goContinueDetectFace();
-                } else {
-
-                    if (!isComputen() && faceMsgBase.getFaceColorResult() == null) {
-                        goContinueDetectFace();
-                    } else
-                        setUI(faceMsgBase.getFaceColorResult());
-                }
-            }
-        });
-
     }
 
     protected abstract void setUI(FaceDetectResult detectResult);
@@ -125,6 +99,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     }
 
     CameraListener cameraListener;
+
+    Handler handler;
 
     /**
      * 初始化相机
@@ -151,14 +127,75 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             public void onPreview(final byte[] nv21, Camera camera) {
                 if (!mFaceDecting)
                     return;
-
                 mFaceDecting = false;
-                if (isComputen()) {
-                    detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation(), isComputen(), mSeCode, getStuNo());
 
-                } else {
-                    detectorViewModel.faceHandle(nv21, previewSize, drawHelper.getCameraDisplayOrientation(), isComputen(), mSeCode, null);
-                }
+                if (handler != null)
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.e("TagSake", "in handle01");
+                            FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
+                            if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
+                                frames = 0;
+                                goContinueDetectFace();
+                            } else {
+                                if (frames < 10) {
+                                    frames++;
+                                    goContinueDetectFace();
+                                } else {
+                                    frames = 0;
+                                    //人脸识别
+                                    //人脸识别
+                                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
+                                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
+                                    byte[] jpegData = null;
+                                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
+                                    jpegData = outputSteam.toByteArray();
+
+                                    float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
+                                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.75f);
+
+                                    if (detectResult == null) {
+                                        Log.e("TagSnakesnake", "detect result ->    null");
+                                    } else {
+                                        String path = "";
+                                        if (isComputen()) {
+                                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
+                                        } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum)) {
+                                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
+                                        }
+                                        if (!"".equals(path)) {
+                                            Bitmap bitmap = null;
+                                            BitmapFactory.Options options = new BitmapFactory.Options();
+//                            options.inSampleSize = 2;
+                                            Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
+
+                                            options.inPreferredConfig = Bitmap.Config.RGB_565;
+                                            bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
+                                            if (faceResult.faceRect != null) {
+                                                bitmap = com.askia.coremodel.util.ImageUtil.imageCrop(bitmap, faceResult.faceRect);
+                                            }
+
+                                            if (FileUtils.isFileExists(path)) {
+                                                File file = FileUtils.getFileByPath(path);
+                                                if (file != null)
+                                                    file.delete();
+                                            }
+                                            bitmap = ImageUtil.converBitmap(bitmap);// com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+                                            bitmap = ImageUtil.sampleSize(bitmap);
+                                            com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                                            bitmap.recycle();
+                                        }
+                                    }
+                                    Message message = new Message();
+                                    message.obj = detectResult;
+                                    handler.sendMessage(message);
+                                }
+                            }
+                        }
+                    });
+//                FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
+
             }
 
             @Override
@@ -197,7 +234,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 .cameraListener(cameraListener)
                 .build();
         cameraHelper.init();
-        cameraHelper.start();
+        startCamera();
+//        cameraHelper.start();
     }
 
     @Override
@@ -205,7 +243,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             if (!isCameraInit)
-                cameraHelper.start();
+                startCamera();
+//                cameraHelper.start();
         } else {
             //相当于Fragment的onPause
             cameraHelper.stop();
@@ -223,7 +262,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
             return;
         } else {  // 在最前端显示 相当于调用了onResume();
             if (!isCameraInit)
-                cameraHelper.start();
+                startCamera();
+//                cameraHelper.start();
         }
     }
 
@@ -236,10 +276,31 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     }
 
     public void releaseCamera() {
+        if (handler != null) {
+            mHandlerThread.quit();
+
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
         cameraHelper.stop();
     }
 
+    HandlerThread mHandlerThread;
+
     public void startCamera() {
+        if (handler == null) {
+            mHandlerThread = new HandlerThread("faceThread");
+            mHandlerThread.start();
+            Looper mLooper = mHandlerThread.getLooper();
+            handler = new Handler(mLooper) {
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    super.handleMessage(msg);
+                    setUI((FaceDetectResult) msg.obj);
+                }
+            };
+        }
+
         cameraHelper.start();
     }
 

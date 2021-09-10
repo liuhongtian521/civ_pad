@@ -78,7 +78,6 @@ public class AuthenticationActivity extends BaseActivity {
     private FaceComparedDialog faceComparedDialog;
     //选择考试计划
     private PopExamPlan mPopExamPlan;
-
     //右侧列表适配器
     private FRecyclerViewAdapter<DBExamExport> mAdapter;
     //存储list
@@ -404,7 +403,8 @@ public class AuthenticationActivity extends BaseActivity {
                 @Override
                 public void onOrientationChanged(int orientation) {
 //                    Log.e("TagSnake", orientation + ":");
-                    setShowTime(orientation);
+                    //屏幕角度监听
+//                    setShowTime(orientation);
                 }
             };
 
@@ -670,7 +670,7 @@ public class AuthenticationActivity extends BaseActivity {
             }
         } else {
 //            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
-            if (detectResult.similarity > 0.7f) {
+            if (detectResult!=null && detectResult.similarity > 0.7f) {
                 this.mDetectResult = detectResult;
 //                mDetectResult.faceNum = "210221112007641";
                 mViewModel.quickPeople(mDetectResult.faceNum, mExanCode);

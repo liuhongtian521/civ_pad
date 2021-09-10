@@ -105,7 +105,7 @@ public class ImageUtil {
         if (bitmap == null || rect == null || rect.isEmpty() || bitmap.getWidth() < rect.right || bitmap.getHeight() < rect.bottom) {
             return null;
         }
-        return Bitmap.createBitmap(bitmap, rect.left , rect.top , rect.width(), rect.height() , null, false);
+        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height(), null, false);
     }
 
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {
@@ -127,6 +127,14 @@ public class ImageUtil {
         Matrix matrix = new Matrix();
         matrix.postRotate(rotateDegree);
         return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, false);
+    }
+
+
+    public static Bitmap converBitmap(Bitmap b) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(-1, 1);
+        return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix,true);
+
     }
 
     public static String encodeImage(Bitmap bitmap) {
