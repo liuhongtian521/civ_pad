@@ -139,7 +139,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                 frames = 0;
                                 goContinueDetectFace();
                             } else {
-                                if (frames < 10) {
+                                if (frames < 5) {
                                     frames++;
                                     goContinueDetectFace();
                                 } else {
@@ -189,7 +189,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                     }
                                     Message message = new Message();
                                     message.obj = detectResult;
-                                    handler.sendMessage(message);
+                                    if (handler != null)
+                                        handler.sendMessage(message);
                                 }
                             }
                         }
@@ -300,8 +301,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 }
             };
         }
-
         cameraHelper.start();
+        goContinueDetectFace();
     }
 
 }
