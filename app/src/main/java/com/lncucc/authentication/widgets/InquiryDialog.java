@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -21,7 +22,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.activitys.AuthenticationActivity;
 
 import org.w3c.dom.Text;
 
@@ -47,13 +50,13 @@ public class InquiryDialog extends BaseDialog {
 
     EditText editExamNum, editCard;
 
-    ImageView ivBack, ivDel, ivFace;
+    ImageView  ivDel, ivFace;
 
     TextView tvName, tvExamNum, tvIdCard, tvAddress, tvAddressNum;
 
     Button btnSearch, btnClose, btnNext;
 
-    LinearLayout linePeople;
+    LinearLayout linePeople,ivBack;
 
     private DBExamLayout dbExamLayout;
 
@@ -126,6 +129,7 @@ public class InquiryDialog extends BaseDialog {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyboardUtils.hideSoftInput(v);
                 onListener.dissMiss();
             }
         });
@@ -149,6 +153,7 @@ public class InquiryDialog extends BaseDialog {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyboardUtils.hideSoftInput(v);
                 onListener.dissMiss();
             }
         });
@@ -156,6 +161,7 @@ public class InquiryDialog extends BaseDialog {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyboardUtils.hideSoftInput(v);
                 onListener.backType(1);
             }
         });
@@ -166,9 +172,10 @@ public class InquiryDialog extends BaseDialog {
         editExamNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.e("TagSnake","editExamNum.setOnEditorActionListener");
-                if (!"".equals(editExamNum.getText().toString().trim()))
+                Log.e("TagSnake", "editExamNum.setOnEditorActionListener");
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onSearch.search(editExamNum.getText().toString().trim(), 0);
+                }
                 return true;
             }
         });
@@ -176,13 +183,14 @@ public class InquiryDialog extends BaseDialog {
         editCard.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (!"".equals(editCard.getText().toString().trim())) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     onSearch.search(editCard.getText().toString().trim(), 1);
                 }
                 return true;
             }
         });
-
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     public void setSearchListener(Search onSearch) {

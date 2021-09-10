@@ -9,11 +9,12 @@
             name="handles"
             type="com.lncucc.authentication.fragments.DataViewFragment" />
     </data>
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_data_lead_top"
@@ -32,6 +33,7 @@
                 android:textSize="9sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/rl_search"
             android:layout_width="275dp"
@@ -93,6 +95,7 @@
                 android:src="@drawable/icon_search" />
 
         </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/ll_header"
             android:layout_width="match_parent"
@@ -157,8 +160,7 @@
         <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/rl_data_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>

@@ -36,6 +36,7 @@ import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
@@ -181,18 +182,22 @@ public class AuthenticationActivity extends BaseActivity {
 
     @Override
     public void onInit() {
+        KeyboardUtils.hideSoftInput(this);
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
-        semExanCode(getIntent().getExtras().getString("exanCode"));
-        mViewModel.getPlane(mExanCode);
-        mExamCodeList = getIntent().getExtras().getStringArrayList("list");
+        if (getIntent().getExtras() != null) {
+            semExanCode(getIntent().getExtras().getString("exanCode"));
+            mViewModel.getPlane(mExanCode);
+            mExamCodeList = getIntent().getExtras().getStringArrayList("list");
+
+            timeStart = getIntent().getExtras().getLong("startTIME");
+            timeEnd = getIntent().getExtras().getLong("endTIME");
+        }
         if (mExamCodeList == null) {
             mExamCodeList = new ArrayList<>();
         } else
             mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
 
-        timeStart = getIntent().getExtras().getLong("startTIME");
-        timeEnd = getIntent().getExtras().getLong("endTIME");
         saveList = new ArrayList<>();
 
         mAdapter = new FRecyclerViewAdapter<DBExamExport>(mDataBinding.rvList, R.layout.item_verify) {
@@ -218,7 +223,7 @@ public class AuthenticationActivity extends BaseActivity {
                     //转换bitmap
                     Bitmap bt = BitmapFactory.decodeFile(path);
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
-                }else {
+                } else {
                     viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.INVISIBLE);
                 }
 
@@ -351,6 +356,7 @@ public class AuthenticationActivity extends BaseActivity {
                 isComparison = true;
                 inquiryDialog.dismiss();
                 faceFragment.goContinueDetectFace();
+                KeyboardUtils.hideSoftInput(AuthenticationActivity.this);
             }
         });
 
@@ -433,7 +439,7 @@ public class AuthenticationActivity extends BaseActivity {
     protected void onPause() {
 
         super.onPause();
-
+        KeyboardUtils.hideSoftInput(this);
         mOrientationEventListener.disable();
         faceFragment.closeFace();
         faceFragment.releaseCamera();
