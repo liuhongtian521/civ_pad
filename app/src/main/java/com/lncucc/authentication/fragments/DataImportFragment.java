@@ -253,7 +253,6 @@ public class DataImportFragment extends BaseFragment {
     }
 
     public void importData(View view) {
-        showLoading();
         switch (defaultIndex) {
             case 0:
                Intent intent = new Intent(getActivity(),InitializeActivity.class);
@@ -261,9 +260,11 @@ public class DataImportFragment extends BaseFragment {
                startActivity(intent);
                 break;
             case 1:
+                showLoading();
                 redUDiskDevsList();
                 break;
             case 2:
+                showLoading();
                 ioTag = false;
                 viewModel.doUnzip(this);
 //                viewModel.getExDataFromLocal("/mnt/sdcard/ExModel/GK202501");
