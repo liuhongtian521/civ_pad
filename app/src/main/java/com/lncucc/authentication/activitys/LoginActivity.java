@@ -45,7 +45,8 @@ public class LoginActivity extends BaseActivity {
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
 
-        loginViewModel.account.set("K210106005");
+//        loginViewModel.account.set(defaultAccount);
+        loginViewModel.account.set("K210203001");
         loginViewModel.password.set("Sjzt_2020@!");
     }
 
@@ -72,11 +73,13 @@ public class LoginActivity extends BaseActivity {
 
             if (loginData.isSuccess()) {
                 SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
+                SharedPreferencesUtils.putString(getApplicationContext(), "code", loginData.getResult().getUserInfo().getOrgCode());
                 Bundle _b = new Bundle();
                 _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
+                _b.putInt("type", 1);
                 startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
                 finish();
-            }else {
+            } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
         });
@@ -89,7 +92,7 @@ public class LoginActivity extends BaseActivity {
             loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
-            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.password.get());
+            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.account.get());
             //本地账号密码登录
             if (account.equals(loginViewModel.account.get()) && password.equals(loginViewModel.password.get())) {
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {

@@ -312,7 +312,6 @@ public class InitializeActivity extends BaseActivity {
     }
 
     public void breakthis(View view) {
-
         if (type > 0)
             if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
                 Log.e("TagSnake", "tomain");
@@ -322,7 +321,6 @@ public class InitializeActivity extends BaseActivity {
                 startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
             }
         finish();
-
 //
 //        Log.e("TagSnake", "tosetting");
 //        //跳过流程
