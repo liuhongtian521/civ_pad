@@ -6,6 +6,9 @@
     <CheckBox
         android:id="@+id/check"
         style="@style/CustomCheckboxTheme"
+        android:clickable="false"
+        android:enabled="false"
+        android:focusable="false"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_alignParentRight="true"
