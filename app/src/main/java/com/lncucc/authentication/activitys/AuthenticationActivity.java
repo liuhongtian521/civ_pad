@@ -483,12 +483,10 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onChanged(Integer integer) {
                 Log.e("TagSnake", integer + ":数据是否拥有");
+                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                    return;
                 faceResultDialog.setType(true);
-//                if (integer > 0) {
-//                    //有数据刷脸 普通刷脸无效
-//                    faceResultDialog.setType(false);
-//                } else {
-//              }
+
             }
         });
 
@@ -557,12 +555,14 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
             @Override
             public void onChanged(DBExaminee dbExaminee) {
-                if (dbExaminee == null)
+                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                    return;
+                if (dbExaminee == null) {
                     if (!isComparison) {
                         faceResultDialog.setType(false);
                     } else
                         faceFragment.goContinueDetectFace();
-                else {
+                } else {
                     mDbExaminee = dbExaminee;
                     if (!faceComparedDialog.getSuccess()) {
                         mViewModel.getSeatAbout(mDbExaminee.getStuNo(), mExanCode, mSeCode);
@@ -577,6 +577,8 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getmSeat().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
+                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                    return;
                 if (dbExamLayout != null) {
                     mDbExamLayout = dbExamLayout;
                     if (isComparison) {
