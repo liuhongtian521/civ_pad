@@ -1,9 +1,11 @@
 package com.lncucc.authentication.activitys;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -35,6 +37,8 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.realm.internal.android.JsonUtils;
 
+import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
+
 /**
  * 系统测试页
  */
@@ -51,6 +55,7 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
     private SystemTestAdapter mAdapter;
     private String TAG;
     private Disposable mDisposable;
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -117,6 +122,7 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
                 break;
             //voice
             case 2:
+                voiceTest();
                 break;
             //face
             case 3:
@@ -152,6 +158,20 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
         String data = JsonUtil.JsonBean2Str(bean);
         SharedPreferencesUtils.putString(SystemTestActivity.this,"local_state",data);
     }
+
+    //语音测试
+    private void voiceTest(){
+        boolean isOpen = SharedPreferencesUtils.getBoolean(this,VOICE_SETTING);
+        if (isOpen){
+            mediaPlayer = MediaPlayer.create(this,R.raw.tongguo);
+            mediaPlayer.start();
+            bean.getData().get(2).setState(1);
+            saveData2Local(bean);
+        }else {
+            MyToastUtils.error("请在系统设置模块，打开语音提示！", Toast.LENGTH_SHORT);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {

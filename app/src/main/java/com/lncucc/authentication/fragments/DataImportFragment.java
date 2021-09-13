@@ -97,7 +97,6 @@ public class DataImportFragment extends BaseFragment {
 
     public void initEvent() {
         dataImportAdapter.setOnItemClickListener((adapter, view, position) -> {
-
             if (defaultIndex == position) {
                 return;
             } else {

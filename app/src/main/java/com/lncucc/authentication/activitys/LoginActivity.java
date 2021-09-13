@@ -92,7 +92,7 @@ public class LoginActivity extends BaseActivity {
             loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
-            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.account.get());
+            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.password.get());
             //本地账号密码登录
             if (account.equals(loginViewModel.account.get()) && password.equals(loginViewModel.password.get())) {
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {

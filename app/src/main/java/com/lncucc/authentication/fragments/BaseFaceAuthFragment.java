@@ -139,7 +139,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                 frames = 0;
                                 goContinueDetectFace();
                             } else {
-                                if (frames < 5) {
+                                if (frames < 2) {
                                     frames++;
                                     goContinueDetectFace();
                                 } else {

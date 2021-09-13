@@ -39,6 +39,7 @@ public class Constants {
     public static final String CAMERA_DEFAULT = "camera_default";
     public static final String KEY_SOUND = "key_sound";
     public static final String SOUND_SETTING = "sound_setting";
+    public static final String VOICE_SETTING = "voice_setting";
     public static final String DEFAULT_SOUND_SETTING = "default_sound_setting";
     public static final String VOICE_SOUND = "voice_sound";
 
