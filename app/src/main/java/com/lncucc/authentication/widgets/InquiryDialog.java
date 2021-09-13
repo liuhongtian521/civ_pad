@@ -213,6 +213,8 @@ public class InquiryDialog extends BaseDialog {
         File file = new File(path);
         if (file.exists()) {
             try {
+                if (ivFace.getVisibility()!=View.VISIBLE)
+                    ivFace.setVisibility(View.VISIBLE);
                 FileInputStream fiss = new FileInputStream(file);
                 Bitmap bt  = BitmapFactory.decodeStream(fiss);
 //                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));

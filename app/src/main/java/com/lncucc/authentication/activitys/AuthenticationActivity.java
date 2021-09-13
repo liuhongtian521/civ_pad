@@ -220,6 +220,8 @@ public class AuthenticationActivity extends BaseActivity {
                 //转换file
                 File file = new File(path);
                 if (file.exists()) {
+                    if (viewHolderHelper.getView(R.id.iv_item_head_one).getVisibility() != View.VISIBLE)
+                        viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.VISIBLE);
                     //转换bitmap
                     Bitmap bt = BitmapFactory.decodeFile(path);
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
@@ -527,7 +529,7 @@ public class AuthenticationActivity extends BaseActivity {
                     Toast.makeText(getApplicationContext(), "当前考试计划没有正在进行中的场次", Toast.LENGTH_SHORT).show();
                     Bundle _d = new Bundle();
                     _d.putString("exanCode", mExanCode);
-                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY,_d);
+                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY, _d);
                     finish();
                     return;
                 }
@@ -657,28 +659,22 @@ public class AuthenticationActivity extends BaseActivity {
     /*这个是返回人脸数据和图片
      * */
     public void getFace(FaceDetectResult detectResult) {
-//        this.base64 = base64;
+        if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+            return;
         if (isComparison) {
-//            Log.e("TagSnake", mDbExaminee.getStuNo() + ":" + detectResult.faceNum);
-
             if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
-//                mDetectResult.faceNum = "210221112007641";
                 faceComparedDialog.setSuccess(true);
                 mViewModel.quickPeople(detectResult.faceNum, mExanCode);
             } else {
                 //比对失败
                 faceComparedDialog.setSuccess(false);
                 mViewModel.quickPeople(mDbExaminee.getStuNo(), mExanCode);
-//                isComparison = false;
-//                faceFragment.goContinueDetectFace();
             }
         } else {
-//            Log.e("TagSnake", detectResult.similarity + ":" + detectResult.faceNum);
-            if (detectResult!=null && detectResult.similarity > 0.7f) {
+            if (detectResult != null && detectResult.similarity > 0.7f) {
                 this.mDetectResult = detectResult;
-//                mDetectResult.faceNum = "210221112007641";
                 mViewModel.quickPeople(mDetectResult.faceNum, mExanCode);
             } else {
                 faceResultDialog.setType(false);

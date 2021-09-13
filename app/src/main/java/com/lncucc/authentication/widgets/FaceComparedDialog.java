@@ -107,6 +107,10 @@ public class FaceComparedDialog extends BaseDialog {
         String path = UN_ZIP_PATH + File.separator + dbExamLayout.getExamCode() + File.separator + "photo" + File.separator + dbExamLayout.getStuNo() + ".jpg";
         File file1 = new File(path);
         if (file1.exists()) {
+            if (ivPhotoOne.getVisibility()!=View.VISIBLE)
+                ivPhotoOne.setVisibility(View.VISIBLE);
+
+
             //转换bitmap
             Bitmap bt = BitmapFactory.decodeFile(path);
             ivPhotoOne.setImageBitmap(bt);
