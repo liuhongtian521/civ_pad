@@ -147,7 +147,7 @@ public class PeopleMsgDialog extends BaseDialog {
         String liveAddress = DBOperation.getLiveAddress(dbExaminee.getStuNo());
         tvAddress.setText(liveAddress);
         tvFaceValue.setText(model.getMatchRate());
-        DBExamLayout layout = DBOperation.getStudentInfo(model.getExamCode(), model.getStuNo());
+        DBExamLayout layout = DBOperation.getStudentInfo(model.getExamCode(), model.getStuNo(),model.getSeCode());
         tvTicketNumber.setText(layout.getExReNum());
         tvIdCard.setText(layout.getIdCard());
         setSubjectsName(layout.getSeName());

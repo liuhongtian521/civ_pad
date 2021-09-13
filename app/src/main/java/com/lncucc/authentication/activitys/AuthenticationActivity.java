@@ -288,6 +288,7 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
+
         faceResultDialog = new FaceResultDialog(this, new DialogClickBackListener() {
             @Override
             public void dissMiss() {

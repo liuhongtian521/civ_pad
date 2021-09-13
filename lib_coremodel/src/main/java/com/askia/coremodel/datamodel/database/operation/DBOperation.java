@@ -207,11 +207,12 @@ public class DBOperation {
      * @param stuNo    学生编号
      * @return 详细信息
      */
-    public static DBExamLayout getStudentInfo(String examCode, String stuNo) {
+    public static DBExamLayout getStudentInfo(String examCode, String stuNo, String secode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("examCode", examCode);
         query.equalTo("stuNo", stuNo);
+        query.equalTo("seCode", secode);
         query.endGroup();
         return query.findFirst();
     }
@@ -356,10 +357,10 @@ public class DBOperation {
      * @param id id
      * @return 根据id获取验证信息详情
      */
-    public static DBExamExport getExamportById(String id){
+    public static DBExamExport getExamportById(String id) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
-        query.equalTo("id",id,Case.SENSITIVE);
+        query.equalTo("id", id, Case.SENSITIVE);
         query.endGroup();
         return query.findFirst();
     }
