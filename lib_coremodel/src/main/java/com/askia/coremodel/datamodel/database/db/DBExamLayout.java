@@ -33,6 +33,16 @@ public class DBExamLayout extends RealmObject implements Serializable {
     private Long updateTime;
     private String roomNo;
     private String seName;
+    //考场选中状态
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    private boolean isChecked = true;
 
     public String getCreateBy() {
         return createBy;

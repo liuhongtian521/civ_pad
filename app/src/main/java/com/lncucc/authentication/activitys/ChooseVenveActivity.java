@@ -3,6 +3,7 @@ package com.lncucc.authentication.activitys;
 import android.content.Intent;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,18 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ChooseVenueAdapter;
-import com.lncucc.authentication.adapters.DataViewAdapter;
 import com.lncucc.authentication.callback.VenveItemClick;
 import com.lncucc.authentication.databinding.ActChooseVenueBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import io.realm.Realm;
 
 /**
  * Create bt she:
@@ -35,12 +36,13 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     private ActChooseVenueBinding mDataBinding;
     private List<DBExamLayout> mList;
     private boolean defaultTag = true;
+    private Realm realm;
 
     @Override
     public void onInit() {
         mDataBinding.llBack.setOnClickListener(v -> finish());
         String seCode = getIntent().getStringExtra("SE_CODE");
-
+        realm = Realm.getDefaultInstance();
         mList = DBOperation.getRoomList(seCode);
         mAdapter = new ChooseVenueAdapter(mList, this);
         mDataBinding.recChoose.setLayoutManager(new LinearLayoutManager(this));
@@ -49,17 +51,30 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
 
     @Override
     public void onInitViewModel() {
-
     }
 
     public void confirm(View view) {
         ArrayList<String> idList = new ArrayList<>();
         for (int i = 0; i < mList.size(); i++) {
             if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()) {
-//                sum++;
                 idList.add(mList.get(i).getExamCode());
+                int finalI = i;
+
             }
+            boolean isChecked = ((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked();
+            int finalI = i;
+            realm.executeTransaction(realm -> {
+                DBExamLayout layout = mList.get(finalI);
+                layout.setChecked(isChecked);
+            });
         }
+
+
+        if (idList.size() == 0){
+            MyToastUtils.error("请选择考场！", Toast.LENGTH_SHORT);
+            return;
+        }
+
         Intent intent = new Intent();
         intent.putStringArrayListExtra("list", idList);
         setResult(1, intent);

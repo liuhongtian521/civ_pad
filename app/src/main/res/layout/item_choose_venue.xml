@@ -17,13 +17,13 @@
 
     <CheckBox
         android:id="@+id/cx_ex"
-        android:background="@drawable/bg_check_box"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:checked="true"
+        android:background="@drawable/bg_check_box"
         android:button="@null"
-        android:layout_width="14dp"
-        android:layout_height="14dp"/>
+        android:checked="true" />
 
     <View
         android:layout_width="match_parent"
