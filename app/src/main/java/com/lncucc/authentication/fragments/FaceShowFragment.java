@@ -48,7 +48,6 @@ public class FaceShowFragment extends BaseFaceAuthFragment {
     @Override
     protected void setUI(FaceDetectResult detectResult) {
         //获取到了数据
-        Log.e("TagSnake", "getmsg");
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

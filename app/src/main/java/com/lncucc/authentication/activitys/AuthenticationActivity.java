@@ -667,7 +667,7 @@ public class AuthenticationActivity extends BaseActivity {
         if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
             return;
         if (isComparison) {
-            if (mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
+            if (detectResult.faceNum!=null  && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
                 faceComparedDialog.setSuccess(true);

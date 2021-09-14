@@ -188,7 +188,7 @@ public class FaceComparedDialog extends BaseDialog {
         super.show();
         fullScreenImmersive(getWindow().getDecorView());
         this.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-        Window window = this.getWindow();
+        Window window =  getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
