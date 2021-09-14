@@ -600,7 +600,7 @@ public class AuthenticationActivity extends BaseActivity {
                         if (mExamCodeList.size() == 0)
                             mViewModel.canSign(dbExamLayout.getId());
 //                            faceResultDialog.setType(true);
-                        else if (mExamCodeList.indexOf(dbExamLayout.getSiteCode()) > 0) {
+                        else if (mExamCodeList.indexOf(dbExamLayout.getRoomNo()) > -1) {
                             mViewModel.canSign(dbExamLayout.getId());
 //                            faceResultDialog.setType(true);
                         } else

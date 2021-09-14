@@ -140,11 +140,14 @@ public class InquiryDialog extends BaseDialog {
             public void onClick(View v) {
                 if (relRight.getVisibility() == View.VISIBLE) {
                     //准考证查询
-                    if (!"".equals(editExamNum.getText().toString().trim()))
+                    if (!"".equals(editExamNum.getText().toString().trim())){
+                        KeyboardUtils.hideSoftInput(v);
                         onSearch.search(editExamNum.getText().toString().trim(), 0);
+                    }
                 } else if (relLeft.getVisibility() == View.VISIBLE) {
                     //身份证号查询
                     if (!"".equals(editCard.getText().toString().trim())) {
+                        KeyboardUtils.hideSoftInput(v);
                         onSearch.search(editCard.getText().toString().trim(), 1);
                     }
                 }
@@ -175,7 +178,11 @@ public class InquiryDialog extends BaseDialog {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Log.e("TagSnake", "editExamNum.setOnEditorActionListener");
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    onSearch.search(editExamNum.getText().toString().trim(), 0);
+
+                    if (!"".equals(editExamNum.getText().toString().trim())){
+                        KeyboardUtils.hideSoftInput(v);
+                        onSearch.search(editExamNum.getText().toString().trim(), 0);
+                    }
                 }
                 return true;
             }
@@ -185,7 +192,10 @@ public class InquiryDialog extends BaseDialog {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    onSearch.search(editCard.getText().toString().trim(), 1);
+                    if (!"".equals(editCard.getText().toString().trim())) {
+                        KeyboardUtils.hideSoftInput(v);
+                        onSearch.search(editCard.getText().toString().trim(), 1);
+                    }
                 }
                 return true;
             }

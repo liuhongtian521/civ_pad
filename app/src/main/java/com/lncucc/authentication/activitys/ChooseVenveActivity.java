@@ -57,7 +57,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         ArrayList<String> idList = new ArrayList<>();
         for (int i = 0; i < mList.size(); i++) {
             if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()) {
-                idList.add(mList.get(i).getExamCode());
+                idList.add(mList.get(i).getRoomNo());
                 int finalI = i;
 
             }
