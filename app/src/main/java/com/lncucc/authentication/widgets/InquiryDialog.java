@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.lncucc.authentication.R;
@@ -216,7 +217,8 @@ public class InquiryDialog extends BaseDialog {
                 if (ivFace.getVisibility()!=View.VISIBLE)
                     ivFace.setVisibility(View.VISIBLE);
                 FileInputStream fiss = new FileInputStream(file);
-                Bitmap bt  = BitmapFactory.decodeStream(fiss);
+//                Bitmap bt  = BitmapFactory.decodeStream(fiss);
+                 Bitmap bt = ImageUtil.getRotateNewBitmap(path);
 //                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
 //                viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
                 ivFace.setImageBitmap(bt);

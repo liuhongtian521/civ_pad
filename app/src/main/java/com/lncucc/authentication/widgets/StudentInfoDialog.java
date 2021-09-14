@@ -3,18 +3,21 @@ package com.lncucc.authentication.widgets;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.blankj.utilcode.util.FileUtils;
 import com.lncucc.authentication.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
@@ -23,7 +26,7 @@ import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 /**
  * 考生详情dialog
  */
-public class StudentInfoDialog extends BaseDialog{
+public class StudentInfoDialog extends BaseDialog {
 
     private DBExamLayout stuInfo;
     private View mView;
@@ -38,15 +41,15 @@ public class StudentInfoDialog extends BaseDialog{
     private TextView mSeatNum; //座位号
     private TextView mIdNo;//身份证号
 
-    public StudentInfoDialog(Context context, DBExamLayout layout){
+    public StudentInfoDialog(Context context, DBExamLayout layout) {
         super(context, R.style.DialogTheme);
         this.stuInfo = layout;
-        mView = getLayoutInflater().inflate(R.layout.dialog_student_info,null);
+        mView = getLayoutInflater().inflate(R.layout.dialog_student_info, null);
         initView();
         setContentView(mView);
     }
 
-    private void initView(){
+    private void initView() {
         mView.findViewById(R.id.iv_back).setOnClickListener(v -> dismiss());
         mImageView = mView.findViewById(R.id.iv_photo);
         mName = mView.findViewById(R.id.tv_student_name);
@@ -60,9 +63,9 @@ public class StudentInfoDialog extends BaseDialog{
         mIdNo = mView.findViewById(R.id.tv_idCard);
     }
 
-    public void  showDialog(DBExamLayout layout){
+    public void showDialog(DBExamLayout layout) {
         this.show();
-        if (layout != null){
+        if (layout != null) {
             //获取stuNo
             String stuNo = layout.getStuNo();
             //现在没有数据暂时写死
@@ -76,21 +79,23 @@ public class StudentInfoDialog extends BaseDialog{
             //获取所有解压的文件夹
             List<File> list = FileUtils.listFilesInDir(UN_ZIP_PATH);
             //遍历获取包含当前examCode的 文件夹名称
-            for (File file : list){
-                if (file.getName().contains(examCode)){
+            for (File file : list) {
+                if (file.getName().contains(examCode)) {
                     filePath = file.getName();
                 }
             }
             String path = UN_ZIP_PATH + File.separator + examCode + "/photo/" + stuNo + ".jpg";
             //转换file
             File file = new File(path);
-            if (file.exists()){
-                if (mImageView.getVisibility()!=View.VISIBLE)
+            if (file.exists()) {
+                if (mImageView.getVisibility() != View.VISIBLE)
                     mImageView.setVisibility(View.VISIBLE);
                 //转换bitmap
-                Bitmap bt  = BitmapFactory.decodeFile(path);
+//                Bitmap bt = BitmapFactory.decodeFile(path);
+                Bitmap bt = ImageUtil.getRotateNewBitmap(path);
+
                 mImageView.setImageBitmap(bt);
-            }else {
+            } else {
                 mImageView.setVisibility(View.INVISIBLE);
             }
             mName.setText(layout.getStuName());
@@ -104,7 +109,6 @@ public class StudentInfoDialog extends BaseDialog{
             mIdNo.setText(layout.getIdCard());
         }
     }
-
 
 
 }

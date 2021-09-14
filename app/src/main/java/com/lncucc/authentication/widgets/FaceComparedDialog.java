@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.rtc.Constants;
@@ -112,7 +113,8 @@ public class FaceComparedDialog extends BaseDialog {
 
 
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(path);
+//            Bitmap bt = BitmapFactory.decodeFile(path);
+            Bitmap bt = ImageUtil.getRotateNewBitmap(path);
             ivPhotoOne.setImageBitmap(bt);
         } else
             ivPhotoOne.setVisibility(View.INVISIBLE);

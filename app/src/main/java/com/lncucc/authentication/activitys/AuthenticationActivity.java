@@ -28,6 +28,7 @@ import com.askia.common.recyclerview.FOnItemChildClickListener;
 import com.askia.common.recyclerview.FOnRVItemClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
+import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -223,7 +224,8 @@ public class AuthenticationActivity extends BaseActivity {
                     if (viewHolderHelper.getView(R.id.iv_item_head_one).getVisibility() != View.VISIBLE)
                         viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.VISIBLE);
                     //转换bitmap
-                    Bitmap bt = BitmapFactory.decodeFile(path);
+//                    Bitmap bt = BitmapFactory.decodeFile(path);
+                    Bitmap bt = ImageUtil.getRotateNewBitmap(path);
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
                 } else {
                     viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.INVISIBLE);

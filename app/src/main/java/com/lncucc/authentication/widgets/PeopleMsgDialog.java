@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
@@ -110,7 +111,8 @@ public class PeopleMsgDialog extends BaseDialog {
             if (ivPhotoLeft.getVisibility()!=View.VISIBLE)
                 ivPhotoLeft.setVisibility(View.VISIBLE);
             //转换bitmap
-            Bitmap bt = BitmapFactory.decodeFile(path);
+//            Bitmap bt = BitmapFactory.decodeFile(path);
+            Bitmap bt = ImageUtil.getRotateNewBitmap(path);
 //            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
              ivPhotoLeft.setImageBitmap(bt);
         }else {
