@@ -93,6 +93,7 @@ import io.realm.RealmConfiguration;
 import static com.askia.common.util.baidutts.MainHandlerConstant.INIT_SUCCESS;
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
 import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
+import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
 
 
 /**

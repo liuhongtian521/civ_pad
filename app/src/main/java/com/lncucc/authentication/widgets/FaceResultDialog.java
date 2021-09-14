@@ -1,6 +1,7 @@
 package com.lncucc.authentication.widgets;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -30,14 +31,16 @@ public class FaceResultDialog extends BaseDialog {
     private CountDownTimer mCountDownTimer;
 
     LinearLayout linSuccess, linFaile;
+    private MediaPlayer player;
+    private Context mContext;
 
 
     public FaceResultDialog(Context context, DialogClickBackListener dialogClickBackListener) {
         super(context, R.style.DialogTheme);
         mView = getLayoutInflater().inflate(R.layout.dialog_face_finish, null);
         setContentView(mView);
+        this.mContext = context;
         setCanceledOnTouchOutside(false);
-
         ivClose = mView.findViewById(R.id.iv_close);
         linSuccess = mView.findViewById(R.id.line_face_success);
         linFaile = mView.findViewById(R.id.line_face_faile);
@@ -116,13 +119,18 @@ public class FaceResultDialog extends BaseDialog {
         window.setAttributes(layoutParams);
         mCountDownTimer.start();
         if (type) {
+            player = MediaPlayer.create(mContext,R.raw.tongguo);
             linSuccess.setVisibility(View.VISIBLE);
             linFaile.setVisibility(View.GONE);
         } else {
+            player = MediaPlayer.create(mContext,R.raw.qingchongshi);
             linSuccess.setVisibility(View.GONE);
             linFaile.setVisibility(View.VISIBLE);
         }
 
+        if (player != null){
+            player.start();
+        }
 
     }
 

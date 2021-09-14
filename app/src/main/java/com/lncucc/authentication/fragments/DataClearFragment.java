@@ -1,6 +1,5 @@
 package com.lncucc.authentication.fragments;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataClearViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDataClearBinding;
 import com.lncucc.authentication.widgets.ConfirmDialog;
@@ -60,13 +58,11 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     @Override
     public void onSubscribeViewModel() {
         viewModel.delImportData().observe(this, result -> {
-            KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("导入数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
             KeyboardUtils.hideSoftInput(getActivity());
         });
         viewModel.delVerifyData().observe(this, result ->{
-            KeyboardUtils.hideSoftInput(getActivity());
             LogsUtil.saveOperationLogs("验证数据清空");
             MyToastUtils.success(result, Toast.LENGTH_SHORT);
             KeyboardUtils.hideSoftInput(getActivity());

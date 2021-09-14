@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.db.DBLogs;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.blankj.utilcode.util.LogUtils;
 import com.lncucc.authentication.R;
@@ -63,7 +64,7 @@ public class LogsClearFragment extends BaseFragment implements DialogClickBackLi
     @Override
     public void backType(int type) {
         if (type == 0){
-            Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.deleteAll(), () -> {
+            Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.delete(DBLogs.class), () -> {
                 confirmDialog.dismiss();
                 MyToastUtils.success("清除成功", Toast.LENGTH_SHORT);
             });

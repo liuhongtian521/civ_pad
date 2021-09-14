@@ -153,7 +153,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                     jpegData = outputSteam.toByteArray();
 
                                     float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
-                                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.75f);
+                                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.80f);
 
                                     if (detectResult == null) {
                                         Log.e("TagSnakesnake", "detect result ->    null");
