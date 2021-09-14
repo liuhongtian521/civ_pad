@@ -22,6 +22,7 @@ import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
@@ -144,6 +145,7 @@ public class DataImportFragment extends BaseFragment {
             if (result.getState() == 1) {
                 closeLoading();
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                LogsUtil.saveOperationLogs("数据导入");
             }
             closeLogadingDialog();
         });

@@ -139,16 +139,20 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
     }
     //人脸测试
     private void testFace(){
+        showNetDialog();
         FaceDetectManager.getInstance().init(this, "", new FaceDetectInitListener() {
             @Override
             public void onInitComplete() {
                 bean.getData().get(REQUEST_CODE_FACE).setState(1);
                 saveData2Local(bean);
                 mAdapter.notifyDataSetChanged();
+                dismissNetDialog();
+                MyToastUtils.error("人脸识别检查成功",1);
             }
 
             @Override
             public void onInitFailure(String s) {
+                dismissNetDialog();
                 MyToastUtils.error("人脸初始化异常，请退出应用重启再试！",1);
             }
         });
@@ -167,6 +171,7 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
             mediaPlayer.start();
             bean.getData().get(2).setState(1);
             saveData2Local(bean);
+            mAdapter.notifyDataSetChanged();
         }else {
             MyToastUtils.error("请在系统设置模块，打开语音提示！", Toast.LENGTH_SHORT);
         }

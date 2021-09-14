@@ -52,6 +52,7 @@ import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.baidu.tts.client.TtsMode;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.EncryptUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 
@@ -167,6 +168,9 @@ public class APP extends Application {
         Realm.init(this);
         //初始化摄像头前置
         SharedPreferencesUtils.putInt(this,CAMERA_DEFAULT, 1);
+        //初始化语音提示
+        boolean isOpen = SharedPreferencesUtils.getBoolean(this,VOICE_SETTING,true);
+        SharedPreferencesUtils.putBoolean(this,VOICE_SETTING,isOpen);
         try {
             Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
         } catch (FileNotFoundException e) {
