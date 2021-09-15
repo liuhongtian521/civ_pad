@@ -70,7 +70,6 @@ public class MainViewModel extends BaseViewModel {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void getExamCode(String examCode) {
-
         if (examCode != null) {
             DBExamPlan plan = DBOperation.getExamPlan(examCode);
             mDbExamPlan.postValue(plan);

@@ -106,8 +106,6 @@ public class MainActivity extends BaseActivity {
         mDataBinding.tvExaminationTime.setText("");
         mDataBinding.tvVerificationTime.setText("");
         mDataBinding.tvSuject.setText("");
-
-
         Log.e("TagSnake", mExanCode);
         this.mExanCode = mExanCode;
         //获取场次数据
@@ -120,8 +118,6 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onInit() {
         exancode = getIntent().getExtras().getString("exanCode");
-
-
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {
@@ -249,7 +245,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mViewModel.getExamCode(exancode);
+        mViewModel.getExamCode(null);
     }
 
     @Override
