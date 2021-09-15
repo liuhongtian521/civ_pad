@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.IdRes;
 import androidx.appcompat.app.ActionBar;
@@ -62,6 +64,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         onSubscribeViewModel();
         QMUIStatusBarHelper.translucent(this);
         QMUIStatusBarHelper.setStatusBarDarkMode(this);
+        //常亮
+        keepScreenLightOn();
     }
 
     /**
@@ -326,6 +330,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (null != wNetLoadingDialog && wNetLoadingDialog.isShowing()) {
             wNetLoadingDialog.dismiss();
         }
+    }
+
+    public void keepScreenLightOn(){
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 }

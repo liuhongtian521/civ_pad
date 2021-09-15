@@ -46,7 +46,7 @@ public class LoginActivity extends BaseActivity {
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
 
         loginViewModel.account.set(defaultAccount);
-        loginViewModel.account.set("K210203001");
+        loginViewModel.account.set("K210106004");
         loginViewModel.password.set("Sjzt_2020@!");
     }
 
