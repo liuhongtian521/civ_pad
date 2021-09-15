@@ -87,6 +87,8 @@ public class AuthenticationActivity extends BaseActivity {
     private FaceShowFragment faceFragment;
     private FaceDetectResult mDetectResult;
     private DBExaminee mDbExaminee;
+
+    private String stuNo;
     private String base64;
     private DBExamLayout mDbExamLayout;
     private String mSeCode = "changcima01";//场次码
@@ -112,7 +114,7 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     public String getStuNo() {
-        return mDbExaminee.getStuNo();
+        return stuNo;
     }
 
     private int TIME = 1000;  //每隔1s执行一次.
@@ -359,6 +361,7 @@ public class AuthenticationActivity extends BaseActivity {
                 mDbExaminee = newDbExamine;
                 //对比
                 isComparison = true;
+                stuNo = mDbExaminee.getStuNo();
                 inquiryDialog.dismiss();
                 faceFragment.goContinueDetectFace();
                 KeyboardUtils.hideSoftInput(AuthenticationActivity.this);
@@ -667,7 +670,7 @@ public class AuthenticationActivity extends BaseActivity {
         if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
             return;
         if (isComparison) {
-            if (detectResult.faceNum!=null  && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
+            if (detectResult.faceNum != null && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
                 faceComparedDialog.setSuccess(true);
