@@ -99,10 +99,8 @@ public class MainActivity extends BaseActivity {
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
-
         timeStart = 0;
         timeEnd = 0;
-
         mDataBinding.tvSite.setText("");
         mDataBinding.tvTime.setText("");
         mDataBinding.tvExaminationTime.setText("");

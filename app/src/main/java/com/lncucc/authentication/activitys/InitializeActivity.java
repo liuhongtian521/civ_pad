@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.DounloadZipData;
@@ -32,6 +33,7 @@ import com.lncucc.authentication.databinding.ActInitializeBinding;
 import com.ttsea.jrxbus2.Subscribe;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -69,11 +71,13 @@ public class InitializeActivity extends BaseActivity {
 
     int type = 0;
 
+    private NumberFormat numberFormat;
 
     @Override
     public void onInit() {
         type = getIntent().getExtras().getInt("type");
-
+        numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(2);
         if (type > 0)
             siteCode = getIntent().getExtras().getString("code");
         else
@@ -179,10 +183,6 @@ public class InitializeActivity extends BaseActivity {
     public void onSubscribeViewModel() {
         //获取考场数据
         zipDownloadViewModel.getSelectExma().observe(this, selectpalnbysitecodeData -> {
-//            Log.e("TagSnake", selectpalnbysitecodeData.isSuccess() + ":" + selectpalnbysitecodeData.getMessage() + ":" );
-//            for (SelectpalnbysitecodeData.ResultBean resultBean : selectpalnbysitecodeData.getResult()) {
-//                Log.e("TagSnake", resultBean.toString());
-//            }
             actInitializeBinding.qmProcess.setProgress(Integer.parseInt(10 + ""));
             actInitializeBinding.tvProgress.setText("10%");
             //获取到数据
@@ -190,8 +190,6 @@ public class InitializeActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), "获取数据失败", Toast.LENGTH_SHORT).show();
 
                 breakthis(null);
-//                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-//                finish();
                 return;
             }
             mList = selectpalnbysitecodeData.getResult();
@@ -299,13 +297,33 @@ public class InitializeActivity extends BaseActivity {
                     actInitializeBinding.tvProgress.setText(s.getUnZipProcess() + "%");
                 } else {
                     Log.e("TagSnake", "s.getCode() == 100");
-                    //验证是否成功
-                    if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-                        startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-                        finish();
-                    } else {
-                        breakthis(null);
-                    }
+                    dataImportViewModel.getExDataFromLocal(s.getFilePath());
+//                    //验证是否成功
+//                    if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+//                        startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+//                        finish();
+//                    } else {
+//                        breakthis(null);
+//                    }
+                }
+            }
+        });
+
+        dataImportViewModel.doFaceDBHandle().observe(this, result -> {
+
+            int number = (int) result.getCurrent() / (int) result.getTotal() * 100;
+//            String percent = numberFormat.format(number);
+            actInitializeBinding.tvMsg.setText(String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
+            actInitializeBinding.qmProcess.setProgress(Integer.parseInt(number * 10 + ""));
+            actInitializeBinding.tvProgress.setText(number + "%");
+            if (result.getState() == 1) {
+                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                //验证是否成功
+                if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+                    finish();
+                } else {
+                    breakthis(null);
                 }
             }
         });
@@ -321,11 +339,6 @@ public class InitializeActivity extends BaseActivity {
                 startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
             }
         finish();
-//
-//        Log.e("TagSnake", "tosetting");
-//        //跳过流程
-//        startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-//        finish();
     }
 
     public void refuildthis(View view) {
@@ -382,14 +395,6 @@ public class InitializeActivity extends BaseActivity {
         } else {
             return dbDataVersion.getDataVersion() == null ? "" : dbDataVersion.getDataVersion();
         }
-//        try {
-//            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-//            return pi.versionCode + "";
-//        } catch (PackageManager.NameNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//            return "0";
-//        }
     }
 
     @Override

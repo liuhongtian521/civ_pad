@@ -67,9 +67,6 @@ public class LoginActivity extends BaseActivity {
 
         loginViewModel.getLoginDate().observe(this, loginData -> {
             Log.e("TagSnake", loginData.getMessage() + loginData.isSuccess());
-            if (loginData.isSuccess()) {
-                Log.e("TagSnake", loginData.getResult().getUserInfo().toString());
-            }
 
             if (loginData.isSuccess()) {
                 SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
