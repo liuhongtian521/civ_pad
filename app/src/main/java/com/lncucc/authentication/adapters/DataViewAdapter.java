@@ -68,7 +68,7 @@ public class DataViewAdapter extends RecyclerView.Adapter<DataViewAdapter.ViewHo
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_stu_name);
-            tvNum = itemView.findViewById(R.id.tv_stu_exa_num);
+            tvNum = itemView.findViewById(R.id.tv_stu_num);
             tvExamNum = itemView.findViewById(R.id.tv_stu_exa_num);
             tvExam = itemView.findViewById(R.id.tv_exam);
             linearLayout = itemView.findViewById(R.id.ll_item_container);
