@@ -46,31 +46,20 @@ import io.reactivex.disposables.Disposable;
  */
 @Route(path = ARouterPath.INITIALIZE_ACTIVITY)
 public class InitializeActivity extends BaseActivity {
-
     private ActInitializeBinding actInitializeBinding;
-
     private InitializeViewModel initializeViewModel;
     private DataImportViewModel dataImportViewModel;
     private ZIPDownloadViewModel zipDownloadViewModel;
-
     private Disposable mDisposable;
-
-
     List<SelectpalnbysitecodeData.ResultBean> mList;
-
     List<GetZipData> mDownList;
-
     List<GetZipData> mDownUrlList;
     String siteCode;
-
     int index = 0;
-
     private CountDownTimer mCountDownTimer;
     int timeHave = 180;
     int downloadFaile = 0;
-
     int type = 0;
-
     private NumberFormat numberFormat;
 
     @Override
@@ -122,7 +111,6 @@ public class InitializeActivity extends BaseActivity {
         //请求接口判断是否有新数据，有数据更新
         //有更新下载数据 解压 建表
         //无更新 判断本地是否有数据 无->管理员设置页 有->判断是否在识别时间范围内 在范围内？人脸识别页面: 进入首页
-
         actInitializeBinding.tvMsg.setText("获取下载数据中");
         zipDownloadViewModel.getExam(siteCode);
     }

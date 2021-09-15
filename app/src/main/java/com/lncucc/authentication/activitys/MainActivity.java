@@ -77,7 +77,6 @@ public class MainActivity extends BaseActivity {
 
     public void timer() {
         long nowTime = System.currentTimeMillis();
-//        Log.e("TagSnake", "now" + nowTime + ":staet" + timeStart + ":end" + timeEnd);
         if (timeStart > 0)
             if (nowTime > timeStart) {
                 Bundle _d = new Bundle();
@@ -96,6 +95,7 @@ public class MainActivity extends BaseActivity {
             }
     }
 
+    //修改考试编号
     public void semExanCode(String mExanCode) {
         if (mExanCode == null)
             return;
@@ -113,11 +113,8 @@ public class MainActivity extends BaseActivity {
         mViewModel.getExamLayout(mExanCode);
     }
 
-    String exancode;
-
     @Override
     public void onInit() {
-        exancode = getIntent().getExtras().getString("exanCode");
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {
@@ -186,6 +183,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
+        //获取考试极化
         mViewModel.getmDbExamPlan().observe(this, new Observer<DBExamPlan>() {
             @Override
             public void onChanged(DBExamPlan dbExamPlan) {
@@ -200,6 +198,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //获取场次数据
         mViewModel.getmDBexamArrange().observe(this, new Observer<DBExamArrange>() {
             @Override
             public void onChanged(DBExamArrange dbExamArrange) {
@@ -210,11 +209,6 @@ public class MainActivity extends BaseActivity {
                 //获取场次数据
                 mSeCode = dbExamArrange.getSeCode();
                 mDataBinding.tvSuject.setText(dbExamArrange.getSeName());
-//                String start = simpleDateFormat.format(new Date(Long.valueOf(dbExamArrange.getStartTime())));
-//                String end = simpleDateFormat.format(new Date(Long.valueOf(dbExamArrange.getEndTime())));
-
-//                Log.e("TagSnake", TimeUtils.string2Millis(dbExamArrange.getStartTime()) + "::" + dbExamArrange.getStartTime()+"::"+mVerifyStartTime);
-
                 mDataBinding.tvExaminationTime.setText(dbExamArrange.getStartTime() + "~" + dbExamArrange.getEndTime());
                 timeStart = Long.valueOf(TimeUtils.string2Millis(dbExamArrange.getStartTime())) - (Long.valueOf(mVerifyStartTime) * 60 * 1000);
                 timeEnd = Long.valueOf(TimeUtils.string2Millis(dbExamArrange.getStartTime())) + (Long.valueOf(mVerifyEndTime) * 60 * 1000);
@@ -225,6 +219,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //获取考场编排数据
         mViewModel.getmDBExamLayout().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {

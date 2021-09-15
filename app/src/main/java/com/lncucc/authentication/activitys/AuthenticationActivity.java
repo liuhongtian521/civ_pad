@@ -92,7 +92,7 @@ public class AuthenticationActivity extends BaseActivity {
     private String base64;
     private DBExamLayout mDbExamLayout;
     private String mSeCode = "changcima01";//场次码
-    private String mExanCode = "examCode01";
+    private String mExamCode = "examCode01";
     private boolean isComparison = false;
     long timeStart, timeEnd;
 
@@ -141,6 +141,7 @@ public class AuthenticationActivity extends BaseActivity {
         }
     }
 
+    //相机翻转
     public void setShowTime(int orientation) {
         if (peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || inquiryDialog.isShowing() || faceComparedDialog.isShowing() || mPopExamPlan.isShowing())
             return;
@@ -159,28 +160,29 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
 
+    //修改secode
     public void setmSeCode(String seCode) {
         if (seCode == null)
             return;
         mSeCode = seCode;
         if (faceFragment != null)
             faceFragment.setmSeCode(seCode);
-//        mViewModel.getSize(seCode);
     }
 
-    public void semExanCode(String mExanCode) {
-        if (mExanCode == null)
+    //修改examcode
+    public void semExamCode(String mExamCode) {
+        if (mExamCode == null)
             return;
-        Log.e("TagSnake Auth", mExanCode);
-        this.mExanCode = mExanCode;
+        Log.e("TagSnake Auth", mExamCode);
+        this.mExamCode = mExamCode;
         //获取场次数据
-        mViewModel.getPlanByCode(mExanCode);
+        mViewModel.getPlanByCode(mExamCode);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        semExanCode(this.mExanCode);
+        semExamCode(this.mExamCode);
     }
 
     @Override
@@ -189,8 +191,8 @@ public class AuthenticationActivity extends BaseActivity {
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
         if (getIntent().getExtras() != null) {
-            semExanCode(getIntent().getExtras().getString("exanCode"));
-            mViewModel.getPlane(mExanCode);
+            semExamCode(getIntent().getExtras().getString("exanCode"));
+            mViewModel.getPlane(mExamCode);
             mExamCodeList = getIntent().getExtras().getStringArrayList("list");
 
             timeStart = getIntent().getExtras().getLong("startTIME");
@@ -203,6 +205,9 @@ public class AuthenticationActivity extends BaseActivity {
 
         saveList = new ArrayList<>();
 
+
+
+        //记录列表展示
         mAdapter = new FRecyclerViewAdapter<DBExamExport>(mDataBinding.rvList, R.layout.item_verify) {
             @Override
             protected void fillData(FViewHolderHelper viewHolderHelper, int position, DBExamExport model) {
@@ -210,7 +215,6 @@ public class AuthenticationActivity extends BaseActivity {
                     return;
                 }
                 viewHolderHelper.setText(R.id.tv_item_verify_name, model.getStuName());
-                Log.e("TagSnake itemType", model.getVerifyResult());
                 if ("1".equals(model.getVerifyResult())) {
                     viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_success);
                 } else if ("2".equals(model.getVerifyResult())) {
@@ -219,14 +223,13 @@ public class AuthenticationActivity extends BaseActivity {
                     viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_cunyi);
 
                 }
-                String path = UN_ZIP_PATH + File.separator + mExanCode + "/photo/" + model.getStuNo() + ".jpg";
+                String path = UN_ZIP_PATH + File.separator + mExamCode + "/photo/" + model.getStuNo() + ".jpg";
                 //转换file
                 File file = new File(path);
                 if (file.exists()) {
                     if (viewHolderHelper.getView(R.id.iv_item_head_one).getVisibility() != View.VISIBLE)
                         viewHolderHelper.getView(R.id.iv_item_head_one).setVisibility(View.VISIBLE);
                     //转换bitmap
-//                    Bitmap bt = BitmapFactory.decodeFile(path);
                     Bitmap bt = ImageUtil.getRotateNewBitmap(path);
                     viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
                 } else {
@@ -234,9 +237,6 @@ public class AuthenticationActivity extends BaseActivity {
                 }
 
                 String pathT = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + model.getStuNo() + ".jpg";
-//                Log.e("TagSnake itemT", pathT);
-
-//                Log.e("TagSnake list", pathT);
                 File file1 = new File(pathT);
                 if (file1.exists()) {
                     //转换bitmap
@@ -255,28 +255,25 @@ public class AuthenticationActivity extends BaseActivity {
         mAdapter.setOnRVItemClickListener(new FOnRVItemClickListener() {
             @Override
             public void onRVItemClick(ViewGroup parent, View itemView, int position) {
-                Log.e("TagSnake list", "item =" + position);
                 faceFragment.closeFace();
                 peopleMsgDialog.show();
                 peopleMsgDialog.setMsg(saveList.get(position));
             }
         });
 
-        mAdapter.setOnItemChildClickListener(new FOnItemChildClickListener() {
-            @Override
-            public void onItemChildClick(ViewGroup parent, View childView, int position) {
-                Log.e("TagSnake list", "item =" + position);
-                peopleMsgDialog.show();
-            }
-        });
+//        mAdapter.setOnItemChildClickListener(new FOnItemChildClickListener() {
+//            @Override
+//            public void onItemChildClick(ViewGroup parent, View childView, int position) {
+//                peopleMsgDialog.show();
+//            }
+//        });
 
         mAdapter.setData(saveList);
-        mAdapter.setListLength(6);
+        mAdapter.setListLength(6);//列表最多只显示六条
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDataBinding.rvList.setLayoutManager(linearLayoutManager);
         mDataBinding.rvList.setAdapter(mAdapter);
-
 
         peopleMsgDialog = new PeopleMsgDialog(this, new DialogClickBackListener() {
             @Override
@@ -372,7 +369,7 @@ public class AuthenticationActivity extends BaseActivity {
         inquiryDialog.setSearchListener(new InquiryDialog.Search() {
             @Override
             public void search(String msg, int type) {
-                mViewModel.getStudent(type, msg, mExanCode, mSeCode);
+                mViewModel.getStudent(type, msg, mExamCode, mSeCode);
             }
         });
 
@@ -380,9 +377,8 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void close(DBExamPlan dbExamPlan) {
                 mPopExamPlan.dismiss();
-                semExanCode(dbExamPlan.getExamCode());
+                semExamCode(dbExamPlan.getExamCode());
                 mDataBinding.tvExamname.setText(dbExamPlan.getExamName());
-
             }
         });
 
@@ -416,7 +412,6 @@ public class AuthenticationActivity extends BaseActivity {
             mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
                 @Override
                 public void onOrientationChanged(int orientation) {
-//                    Log.e("TagSnake", orientation + ":");
                     //屏幕角度监听
 //                    setShowTime(orientation);
                 }
@@ -475,7 +470,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     public void onSubscribeViewModel() {
 
-        //
+        //考试名字
         mViewModel.getmDBExamPlan().observe(this, new Observer<DBExamPlan>() {
             @Override
             public void onChanged(DBExamPlan dbExamPlan) {
@@ -500,10 +495,6 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getmDBExamExport().observe(this, new Observer<DBExamExport>() {
             @Override
             public void onChanged(DBExamExport dbExamExport) {
-//                for (DBExamExport item : saveList) {
-//                    if (item.getStuNo().equals(dbExamExport.getStuNo())) {
-//                    }
-//                }
                 boolean have = false;
                 int haveIndex = -1;
                 for (int index = 0; index < saveList.size(); index++) {
@@ -519,7 +510,7 @@ public class AuthenticationActivity extends BaseActivity {
                 } else {
                     saveList.add(0, dbExamExport);
                 }
-                mViewModel.getExamNumber(mSeCode, mExanCode);
+                mViewModel.getExamNumber(mSeCode, mExamCode);
 //                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
                 mAdapter.notifyDataSetChanged();
             }
@@ -532,7 +523,7 @@ public class AuthenticationActivity extends BaseActivity {
                 if (dbExamArrange == null) {
                     Toast.makeText(getApplicationContext(), "当前考试计划没有正在进行中的场次", Toast.LENGTH_SHORT).show();
                     Bundle _d = new Bundle();
-                    _d.putString("exanCode", mExanCode);
+                    _d.putString("exanCode", mExamCode);
                     startActivityByRouter(ARouterPath.MAIN_ACTIVITY, _d);
                     finish();
                     return;
@@ -541,8 +532,8 @@ public class AuthenticationActivity extends BaseActivity {
                 mDataBinding.tvSession.setText(dbExamArrange.getSeName());
                 //考场总数
                 mDataBinding.tvSessionAll.setText(DBOperation.getRoomList(dbExamArrange.getSeCode()).size() + "");
-                mStudentNumber = DBOperation.getStudentNumber(mExanCode, mSeCode);
-                mViewModel.getExamNumber(mSeCode, mExanCode);
+                mStudentNumber = DBOperation.getStudentNumber(mExamCode, mSeCode);
+                mViewModel.getExamNumber(mSeCode, mExamCode);
 //                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
                 mViewModel.getExamNumber(dbExamArrange.getSeCode(), dbExamArrange.getExamCode());
                 saveList.clear();
@@ -556,7 +547,7 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
-        //用户基础数据，
+        //查询学生返回
         mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
             @Override
             public void onChanged(DBExaminee dbExaminee) {
@@ -570,9 +561,9 @@ public class AuthenticationActivity extends BaseActivity {
                 } else {
                     mDbExaminee = dbExaminee;
                     if (!faceComparedDialog.getSuccess()) {
-                        mViewModel.getSeatAbout(mDbExaminee.getStuNo(), mExanCode, mSeCode);
+                        mViewModel.getSeatAbout(mDbExaminee.getStuNo(), mExamCode, mSeCode);
                     } else {
-                        mViewModel.getSeatAbout(mDetectResult.faceNum, mExanCode, mSeCode);
+                        mViewModel.getSeatAbout(mDetectResult.faceNum, mExamCode, mSeCode);
                     }
                 }
             }
@@ -586,8 +577,8 @@ public class AuthenticationActivity extends BaseActivity {
                     return;
                 if (dbExamLayout != null) {
                     mDbExamLayout = dbExamLayout;
+                    //比对状态
                     if (isComparison) {
-                        //比对状态
                         faceComparedDialog.show();
                         //人员的考场和座位
                         faceComparedDialog.setSate(dbExamLayout);
@@ -595,17 +586,13 @@ public class AuthenticationActivity extends BaseActivity {
                             faceComparedDialog.setNumber("----");
                         } else {
                             faceComparedDialog.setNumber(Float.toString(mDetectResult.similarity));
-
                         }
-//                        faceComparedDialog.setLeftPhoto(base64);
                     } else {
                         //识别状态
                         if (mExamCodeList.size() == 0)
                             mViewModel.canSign(dbExamLayout.getId());
-//                            faceResultDialog.setType(true);
                         else if (mExamCodeList.indexOf(dbExamLayout.getRoomNo()) > -1) {
                             mViewModel.canSign(dbExamLayout.getId());
-//                            faceResultDialog.setType(true);
                         } else
                             faceResultDialog.setType(false);
                     }
@@ -619,6 +606,7 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
+        //获取学生数据
         mViewModel.getmStudent().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
@@ -670,20 +658,19 @@ public class AuthenticationActivity extends BaseActivity {
         if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
             return;
         if (isComparison) {
-            if (detectResult.faceNum != null && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {//detectResult.faceNum)) {
+            if (detectResult.faceNum != null && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {
                 //对比数据成功
                 this.mDetectResult = detectResult;
                 faceComparedDialog.setSuccess(true);
-                mViewModel.quickPeople(detectResult.faceNum, mExanCode);
-            } else {
-                //比对失败
+                mViewModel.quickPeople(detectResult.faceNum, mExamCode);
+            } else {//比对失败
                 faceComparedDialog.setSuccess(false);
-                mViewModel.quickPeople(mDbExaminee.getStuNo(), mExanCode);
+                mViewModel.quickPeople(mDbExaminee.getStuNo(), mExamCode);
             }
         } else {
             if (detectResult != null && detectResult.similarity > 0.7f) {
                 this.mDetectResult = detectResult;
-                mViewModel.quickPeople(mDetectResult.faceNum, mExanCode);
+                mViewModel.quickPeople(mDetectResult.faceNum, mExamCode);//查询学生
             } else {
                 faceResultDialog.setType(false);
             }
