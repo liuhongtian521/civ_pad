@@ -29,7 +29,7 @@ public class SessionFragment extends BaseFragment {
 
     @Override
     public void onInit() {
-        List<DBExamArrange> list = DBOperation.getDBExamArrange();
+        List<DBExamArrange> list = DBOperation.getAllExamArrange();
         mBinding.examRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         SessionAdapter adapter = new SessionAdapter(list);
         mBinding.examRecycler.setAdapter(adapter);

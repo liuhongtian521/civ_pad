@@ -63,6 +63,10 @@ public class DBOperation {
 //        return Realm.getDefaultInstance().where(DBExamArrange.class).distinct("seCode").fin;
     }
 
+    public static List<DBExamArrange> getAllExamArrange(){
+        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
+    }
+
     public static List<DBExamArrange> getDBExamArrange(String examCode) {
         return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
     }
