@@ -191,7 +191,7 @@ public class AuthenticationActivity extends BaseActivity {
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
         if (getIntent().getExtras() != null) {
-            semExamCode(getIntent().getExtras().getString("exanCode"));
+            semExamCode(getIntent().getExtras().getString("mExamCode"));
             mViewModel.getPlane(mExamCode);
             mExamCodeList = getIntent().getExtras().getStringArrayList("list");
 
@@ -396,7 +396,7 @@ public class AuthenticationActivity extends BaseActivity {
             public void onClick(View v) {
                 faceFragment.closeFace();
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
-                mPopExamPlan.setIndex();
+                mPopExamPlan.setIndex(mExamCode);
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
             }
         });
@@ -523,7 +523,7 @@ public class AuthenticationActivity extends BaseActivity {
                 if (dbExamArrange == null) {
                     Toast.makeText(getApplicationContext(), "当前考试计划没有正在进行中的场次", Toast.LENGTH_SHORT).show();
                     Bundle _d = new Bundle();
-                    _d.putString("exanCode", mExamCode);
+                    _d.putString("mExamCode", mExamCode);
                     startActivityByRouter(ARouterPath.MAIN_ACTIVITY, _d);
                     finish();
                     return;

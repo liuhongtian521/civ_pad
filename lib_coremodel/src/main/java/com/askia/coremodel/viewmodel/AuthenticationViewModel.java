@@ -216,7 +216,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e("TagSnake up", db.toString());
+//        Log.e("TagSnake up", db.toString());
         NetDataRepository.uploadverifydetail(convertPostBody(db))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

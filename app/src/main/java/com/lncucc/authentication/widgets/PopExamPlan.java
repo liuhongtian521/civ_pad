@@ -79,7 +79,7 @@ public class PopExamPlan extends PopupWindow {
         mAdapter = new PopExamPlanAdapter(context, list, chooseItem, new PopExamPlanAdapter.OnItemListener() {
             @Override
             public void onItemClick(int item) {
-                Log.e("TagSnake",item+":item click");
+                Log.e("TagSnake", item + ":item click");
                 chooseItem = item;
                 mAdapter.setChooseInt(chooseItem);
                 mAdapter.notifyDataSetChanged();
@@ -103,8 +103,15 @@ public class PopExamPlan extends PopupWindow {
         setAnimationStyle(R.style.PopAnim);
     }
 
-    public void setIndex(){
+    public void setIndex(String examCode) {
         chooseItem = -1;
+        for (int index = 0; index < list.size(); index++) {
+            if (list.get(index).getExamCode().equals(examCode)) {
+                chooseItem = index;
+            }
+        }
+
+
         mAdapter.setChooseInt(chooseItem);
         mAdapter.notifyDataSetChanged();
     }

@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity {
     private PopExamPlan mPopExamPlan;
     private MainViewModel mViewModel;
     private String mSeCode;//场次码
-    private String mExanCode;
+    private String mExamCode;
     private boolean isComparison = false;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     long timeStart, timeEnd;
@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity {
         if (timeStart > 0)
             if (nowTime > timeStart) {
                 Bundle _d = new Bundle();
-                _d.putString("exanCode", mExanCode);
+                _d.putString("mExamCode", mExamCode);
                 _d.putStringArrayList("list", mExamCodeList);
                 _d.putLong("startTIME", timeStart);
                 _d.putLong("endTIME", timeEnd);
@@ -96,8 +96,8 @@ public class MainActivity extends BaseActivity {
     }
 
     //修改考试编号
-    public void semExanCode(String mExanCode) {
-        if (mExanCode == null)
+    public void semExamCode(String mExamCode) {
+        if (mExamCode == null)
             return;
         timeStart = 0;
         timeEnd = 0;
@@ -106,11 +106,10 @@ public class MainActivity extends BaseActivity {
         mDataBinding.tvExaminationTime.setText("");
         mDataBinding.tvVerificationTime.setText("");
         mDataBinding.tvSuject.setText("");
-        Log.e("TagSnake", mExanCode);
-        this.mExanCode = mExanCode;
+        this.mExamCode = mExamCode;
         //获取场次数据
-        mViewModel.getSiteCode(mExanCode);
-        mViewModel.getExamLayout(mExanCode);
+        mViewModel.getSiteCode(mExamCode);
+        mViewModel.getExamLayout(mExamCode);
     }
 
     @Override
@@ -120,7 +119,7 @@ public class MainActivity extends BaseActivity {
             public void close(DBExamPlan dbExamPlan) {
                 mPopExamPlan.dismiss();
                 mDataBinding.tvName.setText(dbExamPlan.getExamName());
-                semExanCode(dbExamPlan.getExamCode());
+                semExamCode(dbExamPlan.getExamCode());
             }
         });
 
@@ -154,6 +153,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+                mPopExamPlan.setIndex(mExamCode);
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
             }
         });
@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity {
                     mVerifyStartTime = dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime();
                     mVerifyEndTime = dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime();
 
-                    semExanCode(dbExamPlan.getExamCode());
+                    semExamCode(dbExamPlan.getExamCode());
                 }
             }
         });
