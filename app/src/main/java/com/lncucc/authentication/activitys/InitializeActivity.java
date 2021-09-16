@@ -277,6 +277,7 @@ public class InitializeActivity extends BaseActivity {
         dataImportViewModel.doZipHandle().observe(this, new Observer<UnZipHandleEvent>() {
             @Override
             public void onChanged(UnZipHandleEvent s) {
+                Log.e("TagSnake", s.toString());
                 actInitializeBinding.tvMsg.setText(s.getMessage());
                 if (s.getUnZipProcess() < 0) {
                 } else if (s.getUnZipProcess() < 100) {
@@ -299,10 +300,10 @@ public class InitializeActivity extends BaseActivity {
 
         dataImportViewModel.doFaceDBHandle().observe(this, result -> {
 
-            int number = (int) result.getCurrent() / (int) result.getTotal() * 100;
+            int number = (int) result.getCurrent() * 100 / (int) result.getTotal();
 //            String percent = numberFormat.format(number);
             actInitializeBinding.tvMsg.setText(String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
-            actInitializeBinding.qmProcess.setProgress(Integer.parseInt(number * 10 + ""));
+            actInitializeBinding.qmProcess.setProgress(Integer.parseInt(number + ""));
             actInitializeBinding.tvProgress.setText(number + "%");
             if (result.getState() == 1) {
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
@@ -347,10 +348,16 @@ public class InitializeActivity extends BaseActivity {
         zipDownloadViewModel.downloadZip(mDownUrlList.get(index).getResult());
     }
 
+    private boolean canUnzip = true;
+
     public void downloadFinish() {
-        actInitializeBinding.tvMsg.setText("系统正在初始化数据请稍后...");
-        //全部下载完成
-        dataImportViewModel.doUnzip(this);
+        if (canUnzip) {
+            canUnzip = false;
+            actInitializeBinding.tvMsg.setText("系统正在初始化数据请稍后...");
+            //全部下载完成
+            dataImportViewModel.doUnzip(this);
+        }
+
     }
 
     public void downloadFaile() {

@@ -48,4 +48,15 @@ public class UnZipHandleEvent implements Serializable {
     private String fileName; //压缩包名称
     private String filePath; //压缩包路径
     private int code; //状态码
+
+    @Override
+    public String toString() {
+        return "UnZipHandleEvent{" +
+                "unZipProcess=" + unZipProcess +
+                ", message='" + message + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", code=" + code +
+                '}';
+    }
 }

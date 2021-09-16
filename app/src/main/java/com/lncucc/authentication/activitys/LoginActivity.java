@@ -79,6 +79,7 @@ public class LoginActivity extends BaseActivity {
             } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
+            loginBinding.btnLogin.setEnabled(true);
         });
     }
 
@@ -101,11 +102,13 @@ public class LoginActivity extends BaseActivity {
             } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
+            loginBinding.btnLogin.setEnabled(true);
         }
     }
 
     public class ProxyClick {
         public void login() {
+            loginBinding.btnLogin.setEnabled(false);
             if (TextUtils.isEmpty(loginViewModel.account.get())) {
                 MyToastUtils.error("请输入用户名！", 0);
                 return;

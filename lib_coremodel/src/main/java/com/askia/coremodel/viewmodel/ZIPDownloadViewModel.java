@@ -155,7 +155,7 @@ public class ZIPDownloadViewModel extends BaseViewModel {
         }
 
         FileDownloader.getImpl().create(resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
-                .setPath(Constants.ZIP_PATH + File.separator + resultBean.getFilename())
+                .setPath(Constants.ZIP_PATH + File.separator + resultBean.getFilename().substring(0, resultBean.getFilename().indexOf("_")) + ".zip")
                 .setForceReDownload(true)
                 .setListener(new FileDownloadListener() {
                     @Override
@@ -163,6 +163,7 @@ public class ZIPDownloadViewModel extends BaseViewModel {
                         Log.d("TagSnake", "下载任务正在等待：" + soFarBytes + "/" + totalBytes);
 
                     }
+
                     @Override
                     protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                         Log.d("TagSnake", "下载任务正在下载：" + soFarBytes + "/" + totalBytes);
