@@ -71,7 +71,6 @@ public class InitializeActivity extends BaseActivity {
             siteCode = getIntent().getExtras().getString("code");
         else
             siteCode = SharedPreferencesUtils.getString(getApplicationContext(), "code");
-
         if (null == siteCode)
             siteCode = "";
 
@@ -80,7 +79,6 @@ public class InitializeActivity extends BaseActivity {
         mCountDownTimer = new CountDownTimer(20 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Log.e("TagSnake", "gettime" + timeHave);
                 if (timeHave > 0) {
                     timeHave--;
                 } else {
@@ -93,8 +91,6 @@ public class InitializeActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
-                Log.e("TagSnake", "gettime" + timeHave);
-
                 if (timeHave > 0) {
                     timeHave--;
                     mCountDownTimer.start();
@@ -113,33 +109,6 @@ public class InitializeActivity extends BaseActivity {
         //无更新 判断本地是否有数据 无->管理员设置页 有->判断是否在识别时间范围内 在范围内？人脸识别页面: 进入首页
         actInitializeBinding.tvMsg.setText("获取下载数据中");
         zipDownloadViewModel.getExam(siteCode);
-    }
-
-    /**
-     * 请求接口 获取更新数据
-     */
-    private void checkDataByNet() {
-
-    }
-
-    /**
-     * 检查本地数据
-     */
-    private void checkDataByLocal() {
-        //检查本地数据
-        if (initializeViewModel.hasExaData()) {
-            //判断时间范围
-            //获取当前时间戳
-            long currentTime = System.currentTimeMillis();
-            //获取验证开始时间
-            //获取验证结束时间
-
-
-        } else {
-            //管理员设置页
-            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-            this.finish();
-        }
     }
 
     @Override

@@ -46,8 +46,8 @@ public class LoginActivity extends BaseActivity {
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
 
         loginViewModel.account.set(defaultAccount);
-        loginViewModel.account.set("K210106004");
-        loginViewModel.password.set("Sjzt_2020@!");
+//        loginViewModel.account.set("K210106005");
+//        loginViewModel.password.set("Sjzt_2020@!");
     }
 
     @Override
@@ -84,7 +84,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin() {
-
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
             loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());

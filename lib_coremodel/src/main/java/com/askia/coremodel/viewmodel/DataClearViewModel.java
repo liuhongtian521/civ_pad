@@ -3,6 +3,7 @@ package com.askia.coremodel.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -58,6 +59,7 @@ public class DataClearViewModel extends BaseViewModel {
 
         //清空数据库
         Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+            realm.delete(DBDataVersion.class);
             realm.delete(DBExamLayout.class);
             realm.delete(DBExamArrange.class);
             realm.delete(DBExaminee.class);
