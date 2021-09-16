@@ -328,6 +328,7 @@ public class DataImportViewModel extends BaseViewModel {
                                     unZipHandleEvent.setCode(0);
                                     unZipHandleEvent.setUnZipProcess(percentDone);
                                     unZipHandleEvent.setFilePath(toPath);
+                                    unZipHandleEvent.setZipPath(path);
                                     unZipHandleEvent.setMessage("解压完成");
                                     unZipObservable.postValue(unZipHandleEvent);
                                     break;

@@ -1,6 +1,7 @@
 package com.lncucc.authentication.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,13 @@ public class DataViewAdapter extends RecyclerView.Adapter<DataViewAdapter.ViewHo
         holder.tvExamNum.setText(list.get(position).getExReNum());
         holder.tvExam.setText(list.get(position).getSeName());
         holder.linearLayout.setOnClickListener(v -> mItemClickListener.onItemClick(position));
+        String color = "";
+        if (position % 2 != 0) {
+            color = "#F9F9F9";
+        } else {
+            color = "#ffffff";
+        }
+        holder.linearLayout.setBackgroundColor(Color.parseColor(color));
     }
 
     @Override
