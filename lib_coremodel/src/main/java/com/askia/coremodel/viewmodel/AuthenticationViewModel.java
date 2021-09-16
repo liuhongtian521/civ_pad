@@ -185,7 +185,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setIdCard(cardNo);
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
-//        upMsg(db);
+        upMsg(db);
 
     }
 
