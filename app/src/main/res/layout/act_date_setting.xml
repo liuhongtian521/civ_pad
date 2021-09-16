@@ -3,85 +3,98 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="handles"
             type="com.lncucc.authentication.activitys.DateSettingActivity" />
     </data>
 
     <LinearLayout
-        android:background="#EFF2F7"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#EFF2F7"
+        android:orientation="vertical">
 
-        <include layout="@layout/common_title_layout"/>
+        <include layout="@layout/common_title_layout" />
 
         <LinearLayout
-            android:orientation="vertical"
-            android:background="@drawable/bg_login_white"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_login_white"
+            android:orientation="vertical">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/date_title"
                 android:textColor="@color/_163366"
-                android:layout_marginTop="10dp"
                 android:textSize="9sp"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
+
             <View
+                android:layout_width="match_parent"
+                android:layout_height="2px"
                 android:layout_marginTop="9dp"
-                android:background="@drawable/bg_driver"
-                android:layout_width="match_parent"
-                android:layout_height="2px"/>
+                android:background="@drawable/bg_driver" />
+
             <RelativeLayout
-                android:background="#f2f7ff"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:background="#f2f7ff">
+
                 <TextView
                     android:id="@+id/date_title"
-                    android:textSize="11sp"
-                    android:text="2021年5月"
-                    android:layout_centerInParent="true"
-                    android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="2021年5月"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
             </RelativeLayout>
+
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="26dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="17dp"
-                android:background="#f8f9fa">
+                android:background="#f8f9fa"
+                android:orientation="horizontal">
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="日" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="一" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
-                    android:text="二"/>
+                    android:text="二" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="三" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="四" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="五" />
+
                 <TextView
                     style="@style/weekIndicatorStyle"
                     android:text="六" />
             </LinearLayout>
+
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
@@ -90,89 +103,92 @@
                 <com.ldf.calendar.view.MonthPager
                     android:id="@+id/calendar_view"
                     android:layout_width="match_parent"
+                    android:layout_height="200dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
-                    android:layout_height="200dp"
-                    android:background="#f8f9fa">
-                </com.ldf.calendar.view.MonthPager>
+                    android:background="#f8f9fa"></com.ldf.calendar.view.MonthPager>
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_marginTop="14dp"
-                android:layout_height="30dp">
+                android:layout_height="30dp"
+                android:layout_marginTop="14dp">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="15dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/tv_hour"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/bg_time"
                         android:gravity="center"
                         android:text="--"
                         android:textColor="@color/_163366"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_time"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"/>
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:text=":"
-                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="7dp"
                         android:layout_marginEnd="7dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:text=":"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tv_min"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/bg_time"
                         android:gravity="center"
                         android:text="--"
                         android:textColor="@color/_163366"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_time"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"/>
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:text=":"
-                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="7dp"
                         android:layout_marginEnd="7dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:text=":"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tv_sec"
+                        android:layout_width="50dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/bg_time"
                         android:gravity="center"
                         android:text="--"
                         android:textColor="@color/_163366"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_time"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_setting"
-                    android:layout_toLeftOf="@+id/btn_to_system"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/setting"
-                    android:onClick="@{handles::setting}"
-                    android:background="@drawable/bg_login_button"
-                    android:textColor="@color/white"
                     android:layout_width="103dp"
-                    android:layout_height="30dp"/>
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@+id/btn_to_system"
+                    android:background="@drawable/bg_login_button"
+                    android:onClick="@{handles::setting}"
+                    android:text="@string/setting"
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/btn_to_system"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/bg_login_button"
-                    android:text="@string/login_system"
-                    android:onClick="@{handles::loginSystem}"
-                    android:layout_marginRight="15dp"
-                    android:textColor="@color/white"
                     android:layout_width="320dp"
-                    android:layout_height="30dp"/>
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/bg_login_button"
+                    android:onClick="@{handles::loginSystem}"
+                    android:text="@string/login_system"
+                    android:textColor="@color/white" />
             </RelativeLayout>
         </LinearLayout>
 
