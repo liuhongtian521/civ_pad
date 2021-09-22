@@ -63,7 +63,6 @@ public class DataImportViewModel extends BaseViewModel {
     private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
 
     private String pwd = "123456";
-    private boolean isWorking = true;
 
     public MutableLiveData<UnZipHandleEvent> doZipHandle() {
         return unZipObservable;
@@ -365,6 +364,19 @@ public class DataImportViewModel extends BaseViewModel {
             unZipHandleEvent.setUnZipProcess(-1);
             unZipHandleEvent.setMessage("请检查压缩包存放地址是否正确");
             unZipObservable.postValue(unZipHandleEvent);
+        }
+    }
+
+    public void removeZipFile(){
+        File folder = new File(ZIP_PATH);
+        File [] files = folder.listFiles();
+        if (files != null && files.length > 0){
+            for (File file : files){
+                //获取.zip文件
+                if (file.getName().toUpperCase().contains(".ZIP")){
+                    FileUtils.deleteFile(file);
+                }
+            }
         }
     }
 }
