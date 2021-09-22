@@ -172,6 +172,9 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
             bean.getData().get(2).setState(1);
             saveData2Local(bean);
             mAdapter.notifyDataSetChanged();
+            if ("test_all".equals(TAG)){
+                testFace();
+            }
         }else {
             MyToastUtils.error("请在系统设置模块，打开语音提示！", Toast.LENGTH_SHORT);
         }
@@ -197,7 +200,8 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
                     bean.getData().get(REQUEST_CODE_SCREEN).setState(1);
                     saveData2Local(bean);
                     if ("test_all".equals(TAG)){
-                        testFace();
+//                        testFace();
+                        voiceTest();
                     }
                 }
                 break;

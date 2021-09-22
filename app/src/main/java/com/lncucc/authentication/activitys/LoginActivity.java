@@ -70,6 +70,7 @@ public class LoginActivity extends BaseActivity {
 
             if (loginData.isSuccess()) {
                 SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
+                SharedPreferencesUtils.putString(getApplicationContext(), "password", loginViewModel.password.get());
                 SharedPreferencesUtils.putString(getApplicationContext(), "code", loginData.getResult().getUserInfo().getOrgCode());
                 Bundle _b = new Bundle();
                 _b.putString("code", loginData.getResult().getUserInfo().getOrgCode());
