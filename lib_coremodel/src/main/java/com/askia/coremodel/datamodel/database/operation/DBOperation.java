@@ -332,6 +332,19 @@ public class DBOperation {
     }
 
     /**
+     * 根据场次编码获取 验证数据信息
+     * @param seCode 场次码
+     * @return
+     */
+    public static List<DBExamExport> getVerifyListBySeCode(String seCode){
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("seCode",seCode, Case.SENSITIVE);
+        query.endGroup();
+        return query.findAll();
+    }
+
+    /**
      * 根据examCode 获取sitCode
      *
      * @return siteCode

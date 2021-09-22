@@ -34,7 +34,9 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
     @Override
     public void onInit() {
         findViewById(R.id.rel_title1).setOnClickListener(v -> finish());
-        mList = DBOperation.getVerifyList();
+        String seCode = getIntent().getStringExtra("seCode");
+//        mList = DBOperation.getVerifyList();
+        mList = DBOperation.getVerifyListBySeCode(seCode);
         peopleMsgDialog = new PeopleMsgDialog(this,this);
         tempList.clear();
         tempList.addAll(mList);

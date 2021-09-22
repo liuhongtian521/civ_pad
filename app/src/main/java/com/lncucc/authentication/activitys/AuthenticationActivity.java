@@ -638,7 +638,9 @@ public class AuthenticationActivity extends BaseActivity {
 
 
     public void toSeeMore(View view) {
-        startActivityByRouter(ARouterPath.DATA_VIEW);
+        Bundle bundle = new Bundle();
+        bundle.putString("seCode",mSeCode);
+        startActivityByRouter(ARouterPath.DATA_VIEW,bundle);
     }
 
     //页面返回接收
