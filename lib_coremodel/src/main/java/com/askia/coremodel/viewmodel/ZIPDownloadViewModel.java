@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.http.ApiClient;
+import com.askia.coremodel.datamodel.http.ApiConstants;
 import com.askia.coremodel.datamodel.http.ResponseCode;
 import com.askia.coremodel.datamodel.http.download.StorageUtil;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
@@ -92,7 +94,7 @@ public class ZIPDownloadViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(SelectpalnbysitecodeData data) {
-                        Log.e("TagSnake back", data.getMessage());
+                        Log.e("TagSnake back", data.getMessage()+data.getResult().size());
                         selectExma.postValue(data);
                     }
 
@@ -153,9 +155,9 @@ public class ZIPDownloadViewModel extends BaseViewModel {
             if (file != null)
                 StorageUtil.deleteFile(file);
         }
-
-        FileDownloader.getImpl().create(resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
-                .setPath(Constants.ZIP_PATH + File.separator + resultBean.getFilename().substring(0, resultBean.getFilename().indexOf("_")) + ".zip")
+// resultBean.getFilename().substring(0, resultBean.getFilename().indexOf("_"))
+        FileDownloader.getImpl().create(ApiConstants.HOST+"/api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
+                .setPath(Constants.ZIP_PATH + File.separator +resultBean.getExamCode()+ ".zip")
                 .setForceReDownload(true)
                 .setListener(new FileDownloadListener() {
                     @Override

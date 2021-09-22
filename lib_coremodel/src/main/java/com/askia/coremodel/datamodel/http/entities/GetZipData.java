@@ -25,7 +25,6 @@ public class GetZipData extends BaseResponseData {
         private String minioPass;//密码
         private String result;//
         private String msg;//错误信息
-
         private String examCode;
 
         public String getExamCode() {

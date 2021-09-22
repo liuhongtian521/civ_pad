@@ -18,6 +18,7 @@ public class SelectpalnbysitecodeData extends BaseResponseData {
         this.result = result;
     }
 
+
     public static class ResultBean {
 
         private String examCode;

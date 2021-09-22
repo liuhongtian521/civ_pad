@@ -38,9 +38,11 @@ public interface NetDataService {
     Observable<GetZipData> getpackurl(@Query("examCode") String examCode, @Query("siteCode") String siteCode, @Query("dataVersion") String dataVersion);
 
     //查询考试列表
+    @GET("/api/pad/getpack")
+    Observable<SelectpalnbysitecodeData> getpack(@Query("examCode") String examCode);
+
     @GET("/api/pad/selectpalnbysitecode")
     Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("orgCode") String orgCode);
-
     //实时数据上传
     @Multipart
     @POST("/api/pad/importverifypack")
