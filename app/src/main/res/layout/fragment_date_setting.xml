@@ -54,11 +54,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="当前时间:"
-                        android:textColor="#FF2A6DE5"
-                        android:textSize="12sp"
-
-                        />
-
+                        android:textStyle="bold"
+                        android:textColor="#2A6DE5"
+                        android:textSize="12sp" />
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="#D5D5D5"
+                        android:layout_height="10dp"/>
                     <TextView
                         android:id="@+id/date_wrap"
                         android:layout_width="wrap_content"
@@ -66,7 +70,7 @@
                         android:clickable="true"
                         android:text="@={viewmodel.timeStr}"
                         android:textColor="#FF2A6DE5"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

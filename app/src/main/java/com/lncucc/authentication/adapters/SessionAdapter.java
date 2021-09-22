@@ -29,7 +29,7 @@ public class SessionAdapter extends BaseQuickAdapter<DBExamArrange, BaseViewHold
         int position = baseViewHolder.getLayoutPosition();
         String color = "";
         if (position % 2 != 0) {
-            color = "#EFF2F7";
+            color = "#F9F9F9";
         } else {
             color = "#ffffff";
         }

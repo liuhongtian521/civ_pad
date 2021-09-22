@@ -56,7 +56,7 @@ public class SystemSettingActivity extends BaseActivity {
         mTitleList.add("基本设置");
         mTitleList.add("高级设置");
         mTitleList.add("时间设置");
-        mTitleList.add("网路设置");
+        mTitleList.add("网络设置");
         mTitleList.add("显示设置");
 //        mTitleList.add("用户管理");
         mTitleList.add("退出登录");

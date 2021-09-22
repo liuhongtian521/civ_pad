@@ -5,8 +5,8 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="@dimen/dp_300"
-        android:layout_height="@dimen/dp_254"
+        android:layout_width="300dp"
+        android:layout_height="264dp"
         android:background="@drawable/bg_write_round_five"
         android:orientation="vertical"
         android:visibility="visible">
