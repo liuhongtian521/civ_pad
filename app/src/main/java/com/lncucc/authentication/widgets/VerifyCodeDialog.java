@@ -31,7 +31,7 @@ public class VerifyCodeDialog extends BaseDialog{
         mView.findViewById(R.id.tv_pwd_confirm).setOnClickListener(v -> {
             String pwd = editText.getText().toString();
             if (TextUtils.isEmpty(pwd)){
-                MyToastUtils.error("请输入验证码", Toast.LENGTH_SHORT);
+                MyToastUtils.error("请输入密码", Toast.LENGTH_SHORT);
             }else {
                 callback.confirm(pwd);
             }

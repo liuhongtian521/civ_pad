@@ -7,6 +7,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.db.DBLogs;
+import com.blankj.utilcode.util.LogUtils;
 
 import java.util.List;
 
@@ -63,8 +64,8 @@ public class DBOperation {
 //        return Realm.getDefaultInstance().where(DBExamArrange.class).distinct("seCode").fin;
     }
 
-    public static List<DBExamArrange> getAllExamArrange(){
-        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
+    public static List<DBExamArrange> getAllExamArrange() {
+        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll().sort("seCode");
     }
 
     public static List<DBExamArrange> getDBExamArrange(String examCode) {
@@ -225,17 +226,15 @@ public class DBOperation {
     }
 
     public static void updateVerifyTime(String startTime, String endTime) {
-        Realm realm = Realm.getDefaultInstance();
 
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
-                plan.setVerifyStartTime(startTime);
-                plan.setVerifyEndTime(endTime);
-                realm.copyToRealmOrUpdate(plan);
-            }
-        });
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+                    DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
+                    plan.setVerifyStartTime(startTime);
+                    plan.setVerifyEndTime(endTime);
+                    realm.copyToRealmOrUpdate(plan);
+                },
+                () -> LogUtils.e("verify time insert success ->", "insert success!"),
+                error -> LogUtils.e("verify time insert error->", error.getMessage()));
     }
 
 

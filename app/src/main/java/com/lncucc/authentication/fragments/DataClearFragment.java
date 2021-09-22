@@ -112,7 +112,7 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
 
     @Override
     public void confirm(String pwd) {
-        String localPwd = SharedPreferencesUtils.getString(getActivity(), "pwd", "123456");
+        String localPwd = SharedPreferencesUtils.getString(getActivity(), "password", "123456");
         if (!TextUtils.isEmpty(localPwd) && localPwd.equals(pwd)) {
             if (null != passWordDialog) {
                 passWordDialog.clearPwd();
