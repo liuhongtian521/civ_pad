@@ -64,8 +64,13 @@ public class DBOperation {
 //        return Realm.getDefaultInstance().where(DBExamArrange.class).distinct("seCode").fin;
     }
 
+    /**
+     * 场次查看
+     * @return
+     */
     public static List<DBExamArrange> getAllExamArrange() {
-        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll().sort("seCode");
+        //根据时间排序
+        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll().sort("startTime");
     }
 
     public static List<DBExamArrange> getDBExamArrange(String examCode) {
