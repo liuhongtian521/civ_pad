@@ -144,7 +144,6 @@ public class DataImportFragment extends BaseFragment {
             loadingDialog.setLoadingProgress(percent, String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
             if (result.getState() == 1) {
                 closeLoading();
-                viewModel.removeZipFile();
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
                 LogsUtil.saveOperationLogs("数据导入");
             }

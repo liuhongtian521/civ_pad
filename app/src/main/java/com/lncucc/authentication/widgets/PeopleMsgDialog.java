@@ -141,21 +141,22 @@ public class PeopleMsgDialog extends BaseDialog {
         tvName.setText(model.getStuName());
         Log.e("TagSnake", model.getStuNo() + "::" + model.getExamCode());
         Log.e("TagSnake", DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).size() + ":");
-        DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).get(0);
-        tvSex.setText(dbExaminee.getGender());
-        tvNationality.setText(dbExaminee.getNation());
-        setResult(model.getVerifyResult());
+        if (DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).size() > 0 ){
+            DBExaminee dbExaminee = DBOperation.quickPeople(model.getStuNo(), model.getExamCode()).get(0);
+            tvSex.setText(dbExaminee.getGender());
+            tvNationality.setText(dbExaminee.getNation());
+            setResult(model.getVerifyResult());
 
-        String liveAddress = DBOperation.getLiveAddress(dbExaminee.getStuNo());
-        tvAddress.setText(liveAddress);
-        tvFaceValue.setText(model.getMatchRate());
-        DBExamLayout layout = DBOperation.getStudentInfo(model.getExamCode(), model.getStuNo(),model.getSeCode());
-        tvTicketNumber.setText(layout.getExReNum());
-        tvIdCard.setText(layout.getIdCard());
-        setSubjectsName(layout.getSeName());
-        setExaminationRoom(layout.getRoomNo());
-        setSeatNumber(layout.getSiteName());
-
+            String liveAddress = DBOperation.getLiveAddress(dbExaminee.getStuNo());
+            tvAddress.setText(liveAddress);
+            tvFaceValue.setText(model.getMatchRate());
+            DBExamLayout layout = DBOperation.getStudentInfo(model.getExamCode(), model.getStuNo(),model.getSeCode());
+            tvTicketNumber.setText(layout.getExReNum());
+            tvIdCard.setText(layout.getIdCard());
+            setSubjectsName(layout.getSeName());
+            setExaminationRoom(layout.getRoomNo());
+            setSeatNumber(layout.getSiteName());
+        }
     }
 
     public void setName(String name) {

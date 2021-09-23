@@ -195,6 +195,9 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(FaceDBHandleEvent result) {
+                        if (result.getState() == 1){
+                            removeZipFile();
+                        }
                         faceDbObservable.postValue(result);
                         LogUtils.e("faceid ->", result.getFaceId());
                     }
