@@ -155,8 +155,7 @@ public class ZIPDownloadViewModel extends BaseViewModel {
             if (file != null)
                 StorageUtil.deleteFile(file);
         }
-// resultBean.getFilename().substring(0, resultBean.getFilename().indexOf("_"))
-        FileDownloader.getImpl().create(ApiConstants.HOST+"/api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
+         FileDownloader.getImpl().create(ApiConstants.HOST+"/api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
                 .setPath(Constants.ZIP_PATH + File.separator +resultBean.getExamCode()+ ".zip")
                 .setForceReDownload(true)
                 .setListener(new FileDownloadListener() {

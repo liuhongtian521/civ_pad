@@ -15,6 +15,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.data.DataImportBean;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.DounloadZipData;
@@ -30,6 +31,8 @@ import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActInitializeBinding;
+import com.lncucc.authentication.widgets.DataImportDialog;
+import com.lncucc.authentication.widgets.DataImportDialogListener;
 import com.ttsea.jrxbus2.Subscribe;
 
 import java.io.File;
@@ -61,6 +64,9 @@ public class InitializeActivity extends BaseActivity {
     int downloadFaile = 0;
     int type = 0;
     private NumberFormat numberFormat;
+
+    private DataImportDialog importDialog;
+    private List<DataImportBean> mChooseList = new ArrayList<>();
 
     @Override
     public void onInit() {
@@ -102,8 +108,25 @@ public class InitializeActivity extends BaseActivity {
                 }
             }
         };
-//                            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-//                            finish();
+        importDialog = new DataImportDialog(this, new DataImportDialogListener() {
+            @Override
+            public void confirm(int position) {
+                importDialog.dismiss();
+                //选择了一个开始下载  牵扯到了过多的逻辑这里选择保留原先的列表下载逻辑，所以选择清除列表重新赋值
+                GetZipData data = new GetZipData();
+                data.setResult(mDownUrlList.get(position).getResult());
+                mDownUrlList.clear();
+                mDownUrlList.add(data);
+                download();
+            }
+
+            @Override
+            public void cancel() {
+                //跳过
+                breakthis(null);
+            }
+        });
+
         //请求接口判断是否有新数据，有数据更新
         //有更新下载数据 解压 建表
         //无更新 判断本地是否有数据 无->管理员设置页 有->判断是否在识别时间范围内 在范围内？人脸识别页面: 进入首页
@@ -177,8 +200,14 @@ public class InitializeActivity extends BaseActivity {
                         break;
                     }
                 }
-                if (!have)
+                if (!have) {
+                    DataImportBean bean = new DataImportBean();
+                    bean.setImportType(1);
+                    bean.setFileName(getZipData.getResult().getExamCode());
+                    bean.setFilePath(getZipData.getResult().getExamCode());
+                    mChooseList.add(bean);
                     mDownUrlList.add(getZipData);
+                }
             } else if ("1".equals(getZipData.getResult().getResult())) {//打包中
                 boolean have = false;
                 for (GetZipData item : mDownList) {
@@ -202,20 +231,21 @@ public class InitializeActivity extends BaseActivity {
             @Override
             public void onChanged(String s) {
                 Log.e("TagSnake", mList.size() + ":" + index);
-                if (index < mList.size() - 1) {
+                if (index < mList.size() - 1) {//数据量不对继续获取下载数据
                     index++;
                     getList();
                 } else {
-                    if (mDownList.size() > 0) {
+                    if (mDownList.size() > 0) {//服务器打包中等待
                         write();
                     } else {
-                        if (mDownList.size() == 0 && mDownUrlList.size() == 0) {
+                        if (mDownList.size() == 0 && mDownUrlList.size() == 0) {//没有需要下载的压缩包
                             breakthis(null);
                             return;
                         }
-                        if (mDownUrlList.size() > 0) {
+                        if (mDownUrlList.size() > 0) { //下载
                             index = 0;
-                            download();
+                            importDialog.showImportDialog(0, mChooseList);
+//                            download();
                         } else {
                             downldFaile();
                         }
@@ -268,7 +298,6 @@ public class InitializeActivity extends BaseActivity {
         });
 
         dataImportViewModel.doFaceDBHandle().observe(this, result -> {
-
             int number = (int) result.getCurrent() * 100 / (int) result.getTotal();
 //            String percent = numberFormat.format(number);
             actInitializeBinding.tvMsg.setText(String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
@@ -324,9 +353,11 @@ public class InitializeActivity extends BaseActivity {
             canUnzip = false;
             actInitializeBinding.tvMsg.setText("系统正在初始化数据请稍后...");
             //全部下载完成
-            dataImportViewModel.doUnzip(this,null);
+            DataImportBean bean = new DataImportBean();
+            bean.setFileName(mDownUrlList.get(0).getResult().getExamCode() + ".zip");
+            bean.setFilePath(Constants.ZIP_PATH + File.separator + mDownUrlList.get(0).getResult().getExamCode() + ".zip");
+            dataImportViewModel.doUnzip(this, bean);
         }
-
     }
 
     public void downloadFaile() {
