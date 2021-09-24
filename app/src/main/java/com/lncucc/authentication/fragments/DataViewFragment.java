@@ -147,7 +147,8 @@ public class DataViewFragment extends BaseFragment {
                 int index = (page - 1) * pageSize;
                 int toIndex = page * pageSize;
                 if (page * pageSize > total) {
-                    toIndex = total - (page - 1) * pageSize;
+                    toIndex = total - (page - 1) * pageSize + current;
+//                    toIndex = total;
                 }
                 List<DBExamLayout> list = mList.subList(index, toIndex);
                 tempList.addAll(list);
@@ -164,6 +165,7 @@ public class DataViewFragment extends BaseFragment {
             super.handleMessage(msg);
             viewBinding.rlDataView.loadMoreComplete();
             if (msg.what == 0){
+                page--;
                 MyToastUtils.error("没有更多数据了！",Toast.LENGTH_SHORT);
             }else {
                 mAdapter.notifyDataSetChanged();
@@ -191,6 +193,7 @@ public class DataViewFragment extends BaseFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             if (viewBinding != null) {
+                page = 1;
                 initData();
                 mAdapter.notifyDataSetChanged();
             }

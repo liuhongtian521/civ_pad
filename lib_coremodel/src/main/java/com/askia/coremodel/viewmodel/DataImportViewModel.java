@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
+import com.askia.coremodel.datamodel.data.DataImportBean;
+import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -36,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -167,16 +170,16 @@ public class DataImportViewModel extends BaseViewModel {
                     event.setCurrent(current);
                     //如果人脸库中没有此人则把照片插入人脸库
 //                    if (!isHave) {
-                        String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
-                        //照片总数
-                        event.setFaceId(faceId);
-                        if (current == photoList.size()) {
-                            //人脸库插入完成
-                            event.setState(1);
-                        } else {
-                            event.setState(0);
-                        }
-                        current++;
+                    String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
+                    //照片总数
+                    event.setFaceId(faceId);
+                    if (current == photoList.size()) {
+                        //人脸库插入完成
+                        event.setState(1);
+                    } else {
+                        event.setState(0);
+                    }
+                    current++;
 
                     emitter.onNext(event);
                 } catch (Exception e) {
@@ -195,7 +198,7 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(FaceDBHandleEvent result) {
-                        if (result.getState() == 1){
+                        if (result.getState() == 1) {
                             removeZipFile();
                         }
                         faceDbObservable.postValue(result);
@@ -218,53 +221,57 @@ public class DataImportViewModel extends BaseViewModel {
 
     public void readZipFromUDisk(UsbFile usbFile) {
         Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter -> {
-            UsbFile descFile = usbFile;
+//            UsbFile descFile = usbFile;
             InputStream is = null;
-            try {
-                UsbWriteEvent event = new UsbWriteEvent();
+            UsbWriteEvent event = new UsbWriteEvent();
 
-                //如果多个压缩包 进行批量复制到sdcard
-                for (UsbFile file : descFile.listFiles()) {
-                    is = new UsbFileInputStream(file);
-                    String path = ZIP_PATH + File.separator + file.getName();
-                    OutputStream os = null;
-                    File targetFile = new File(path);
-                    try {
-                        os = new BufferedOutputStream(new FileOutputStream(targetFile));
-                        //获取文件大小
-                        long fileLength = file.getLength();
-                        long current = 0l;
+            //如果多个压缩包 进行批量复制到sdcard
+//                for (UsbFile file : descFile.listFiles()) {
+            is = new UsbFileInputStream(usbFile);
+            String path = ZIP_PATH + File.separator + usbFile.getName();
+            OutputStream os = null;
+            File targetFile = new File(path);
+            File folder = new File(ZIP_PATH);
+            boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
+            if (hasFolder) {
+                try {
+                    os = new BufferedOutputStream(new FileOutputStream(targetFile));
+                    //获取文件大小
+                    long fileLength = usbFile.getLength();
+                    long current = 0l;
 
-                        byte data[] = new byte[8192];
-                        int len;
-                        while ((len = is.read(data, 0, 8192)) != -1) {
-                            os.write(data, 0, len);
-                            //文件写入进度
-                            current = current + len;
-                            LogUtils.e("file current->", current);
-                            event.setCurrent(current);
-                            event.setTotal(fileLength);
-                            if (current < fileLength) {
-                                event.setMessage("正在复制数据包...");
-                                event.setCode(1);
-                                emitter.onNext(event);
-                            } else {
-                                event.setMessage("复制完成");
-                                event.setCode(0);
-                                emitter.onNext(event);
-                                break;
-                            }
+                    byte data[] = new byte[8192];
+                    int len;
+                    while ((len = is.read(data, 0, 8192)) != -1) {
+                        os.write(data, 0, len);
+                        //文件写入进度
+                        current = current + len;
+                        LogUtils.e("file current->", current);
+                        event.setCurrent(current);
+                        event.setTotal(fileLength);
+                        Thread.sleep(100);
+                        if (current < fileLength) {
+                            event.setMessage("正在复制数据包...");
+                            event.setCode(1);
+                            emitter.onNext(event);
+                        } else {
+                            event.setMessage("复制完成");
+                            event.setCode(0);
+                            event.setZipPath(path);
+                            event.setFileName(usbFile.getName());
+                            emitter.onNext(event);
+                            break;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        CloseUtils.closeIO(is, os);
                     }
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    CloseUtils.closeIO(is, os);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+
+
+//                }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UsbWriteEvent>() {
@@ -298,18 +305,18 @@ public class DataImportViewModel extends BaseViewModel {
      * 校验sdcard根目录下是否存在examination文件
      * 并解压.zip文件到Examination/data下
      */
-    public void doUnzip(LifecycleOwner owner) {
+    public void doUnzip(LifecycleOwner owner, DataImportBean bean) {
         UnZipHandleEvent unZipHandleEvent = new UnZipHandleEvent();
         if (FileUtils.isFileExists(ZIP_PATH)) {
             //文件夹存在，获取zip list
             List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
             if (list != null && list.size() > 0) {
                 try {
-                    for (int i = 0; i < list.size(); i++) {
+//                    for (int i = 0; i < list.size(); i++) {
                         //压缩包路径
-                        String path = ZIP_PATH + File.separator + list.get(i).getName();
+                        String path = ZIP_PATH + File.separator + bean.getFileName();
                         //文件名
-                        String fileName = list.get(i).getName().split("\\.")[0];
+                        String fileName = bean.getFileName().split("\\.")[0];
                         //解压存放路径
                         String toPath = UN_ZIP_PATH + File.separator + fileName;
                         // 生成的压缩文件
@@ -339,7 +346,7 @@ public class DataImportViewModel extends BaseViewModel {
                         });
                         thread.start();
                         owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                            if (event == Lifecycle.Event.ON_DESTROY){
+                            if (event == Lifecycle.Event.ON_DESTROY) {
                                 LogUtils.e("owner destroy ->", event);
                                 thread.interrupt();
                                 progressMonitor.setCancelAllTasks(true);
@@ -352,7 +359,7 @@ public class DataImportViewModel extends BaseViewModel {
                         } catch (ZipException e) {
                             e.printStackTrace();
                         }
-                    }
+//                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -370,16 +377,60 @@ public class DataImportViewModel extends BaseViewModel {
         }
     }
 
-    public void removeZipFile(){
+    public void removeZipFile() {
         File folder = new File(ZIP_PATH);
-        File [] files = folder.listFiles();
-        if (files != null && files.length > 0){
-            for (File file : files){
+        File[] files = folder.listFiles();
+        if (files != null && files.length > 0) {
+            for (File file : files) {
                 //获取.zip文件
-                if (file.getName().toUpperCase().contains(".ZIP")){
+                if (file.getName().toUpperCase().contains(".ZIP")) {
                     FileUtils.deleteFile(file);
                 }
             }
         }
+    }
+
+    /**
+     * 获取USB 路径下的数据包
+     *
+     * @param usbFile u盘文件夹路径
+     */
+    public List<DataImportBean> fetchDataFromUsb(UsbFile usbFile) {
+        List<DataImportBean> list = new ArrayList<>();
+        if (usbFile == null) return list;
+        DataImportBean bean;
+
+        try {
+            for (UsbFile file : usbFile.listFiles()) {
+                bean = new DataImportBean();
+                bean.setFileName(file.getName());
+                bean.setImportType(1);
+                bean.setUsbFile(file);
+                list.add(bean);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public List<DataImportBean> fetchDataFromSdCard(){
+        List<DataImportBean> list = new ArrayList<>();
+        DataImportBean bean;
+
+        File folder = new File(ZIP_PATH);
+        boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
+
+        if (hasFolder){
+            for (File file : folder.listFiles()){
+                String zipPath = ZIP_PATH + File.separator + file.getName();
+                bean = new DataImportBean();
+                bean.setFileName(file.getName());
+                bean.setFilePath(zipPath);
+                list.add(bean);
+            }
+        }
+        return list;
     }
 }

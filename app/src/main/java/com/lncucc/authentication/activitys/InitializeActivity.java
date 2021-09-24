@@ -324,7 +324,7 @@ public class InitializeActivity extends BaseActivity {
             canUnzip = false;
             actInitializeBinding.tvMsg.setText("系统正在初始化数据请稍后...");
             //全部下载完成
-            dataImportViewModel.doUnzip(this);
+            dataImportViewModel.doUnzip(this,null);
         }
 
     }

@@ -157,7 +157,6 @@
 
         <com.jcodecraeer.xrecyclerview.XRecyclerView
             android:id="@+id/rl_data_view"
-            android:background="@drawable/bg_write_line"
             android:paddingLeft="0.5dp"
             android:paddingRight="0.5dp"
             android:paddingBottom="0.5dp"

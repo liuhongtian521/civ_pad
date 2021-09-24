@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:background="@drawable/bg_write_round_five"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:layout_height="30dp">
+            <TextView
+                android:layout_marginStart="10dp"
+                android:textSize="10sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/_163366"
+                android:textStyle="bold"
+                android:text="@string/data_import_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_close"
+                android:padding="10dp"
+                android:layout_alignParentEnd="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp">
+                <ImageView
+                    android:id="@+id/iv_close"
+                    android:background="@drawable/cha"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <View
+            android:background="@drawable/bg_driver"
+            android:layout_width="match_parent"
+            android:layout_height="2px"/>
+
+        <TextView
+            android:text="@string/data_import_tips"
+            android:textSize="9sp"
+            android:textColor="@color/_666666"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <View
+            android:background="@drawable/bg_driver"
+            android:layout_marginTop="9dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="2px"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:id="@+id/tv_pwd_cancel"
+                android:text="@string/btn_data_clear"
+                android:gravity="center"
+                android:textSize="9sp"
+                android:layout_marginStart="43dp"
+                android:layout_alignParentStart="true"
+                android:textColor="#2A6DE5"
+                android:background="@drawable/bg_btn_line_blue"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"/>
+            <TextView
+                android:id="@+id/tv_pwd_confirm"
+                android:text="@string/btn_data_confirm"
+                android:gravity="center"
+                android:textSize="9sp"
+                android:layout_marginEnd="43dp"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_login_button"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

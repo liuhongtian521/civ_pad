@@ -8,6 +8,26 @@ public class UsbWriteEvent implements Serializable {
     private String message;
     private boolean result;
 
+    public String getZipPath() {
+        return zipPath;
+    }
+
+    public void setZipPath(String zipPath) {
+        this.zipPath = zipPath;
+    }
+
+    private String zipPath;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    private String fileName;
+
     public long getCurrent() {
         return current;
     }

@@ -8,7 +8,6 @@
 
     <ImageView
         android:id="@+id/iv_manager_holder"
-        android:background="@mipmap/icon_check"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -21,6 +21,7 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
+import com.askia.coremodel.datamodel.data.DataImportBean;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
@@ -33,6 +34,8 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.InitializeActivity;
 import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
+import com.lncucc.authentication.widgets.DataImportDialog;
+import com.lncucc.authentication.widgets.DataImportDialogListener;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
@@ -42,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
@@ -49,7 +53,7 @@ import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
 /**
  * 数据导入
  */
-public class DataImportFragment extends BaseFragment {
+public class DataImportFragment extends BaseFragment implements DataImportDialogListener {
     private FragmentImportBinding importBinding;
     private DataImportViewModel viewModel;
     private ArrayList<DataImportListBean> importList = new ArrayList<>();
@@ -60,7 +64,8 @@ public class DataImportFragment extends BaseFragment {
     private int defaultIndex = 2;
     private NumberFormat numberFormat;
     private String currentIOPercent = "";
-    private boolean ioTag = false;
+    private DataImportDialog importDialog;
+    private List<DataImportBean> mList = new ArrayList<>();
 
     @Override
     public void onInit() {
@@ -68,6 +73,7 @@ public class DataImportFragment extends BaseFragment {
         numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
         loadingDialog = new DataLoadingDialog(getActivity());
+        importDialog = new DataImportDialog(getActivity(),this);
         loadingDialog.setCanceledOnTouchOutside(false);
         for (int i = 0; i < 3; i++) {
             DataImportListBean bean = new DataImportListBean();
@@ -160,10 +166,13 @@ public class DataImportFragment extends BaseFragment {
             }
             if (result.getCode() == 0) {
                 LogUtils.e("file copy success ->", result.getCode());
-                ioTag = !ioTag;
-                if (ioTag){
-                    viewModel.doUnzip(this);
-                }
+//                ioTag = !ioTag;
+//                if (ioTag){
+                DataImportBean bean = new DataImportBean();
+                bean.setFilePath(result.getZipPath());
+                bean.setFileName(result.getFileName());
+                viewModel.doUnzip(this,bean);
+//                }
             }
             currentIOPercent = percentDone;
         });
@@ -201,17 +210,17 @@ public class DataImportFragment extends BaseFragment {
         for (UsbMassStorageDevice device : storageDevices) {
             //读取设备是否有权限
             if (usbManager.hasPermission(device.getUsbDevice())) {
-                showLoading();
+//                showLoading();
                 readDevice(device);
             } else {
-                closeLoading();
+//                closeLoading();
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
             }
         }
         if (storageDevices.length == 0) {
 //            closeLogadingDialog();
-            closeLoading();
+//            closeLoading();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }
@@ -247,7 +256,10 @@ public class DataImportFragment extends BaseFragment {
 
             for (UsbFile usbFile : usbFiles) {
                 if (usbFile.getName().equals("Examination")) {
-                    viewModel.readZipFromUDisk(usbFile);
+                    mList.clear();
+                    mList.addAll(viewModel.fetchDataFromUsb(usbFile));
+                    importDialog.showImportDialog(1,mList);
+//                    viewModel.readZipFromUDisk(usbFile);
                 }
             }
         }
@@ -261,14 +273,15 @@ public class DataImportFragment extends BaseFragment {
                startActivity(intent);
                 break;
             case 1:
-                showLoading();
+//                showLoading();
                 redUDiskDevsList();
                 break;
             case 2:
-                showLoading();
-                ioTag = false;
-                viewModel.doUnzip(this);
-//                viewModel.getExDataFromLocal("/mnt/sdcard/ExModel/GK202501");
+//                showLoading();
+//                ioTag = false;
+                mList.clear();
+                mList.addAll(viewModel.fetchDataFromSdCard());
+                importDialog.showImportDialog(2,mList);
                 break;
         }
     }
@@ -290,5 +303,28 @@ public class DataImportFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         RxBus2.getInstance().unRegister(this);
+    }
+
+    @Override
+    public void confirm(int position) {
+        importDialog.dismiss();
+        //USB导入
+        if (defaultIndex == 1){
+            UsbFile file = mList.get(position).getUsbFile();
+            if (file!= null){
+                showLoading();
+                viewModel.readZipFromUDisk(file);
+            }
+        }else if (defaultIndex == 2){
+            showLoading();
+            viewModel.doUnzip(this,mList.get(position));
+        }
+    }
+
+    @Override
+    public void cancel() {
+        if (importDialog != null){
+            importDialog.dismiss();
+        }
     }
 }
