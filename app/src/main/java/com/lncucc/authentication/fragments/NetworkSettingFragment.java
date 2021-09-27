@@ -36,7 +36,7 @@ public class NetworkSettingFragment extends BaseFragment {
             return;
         }
     });
-        String ip = ApiConstants.HOST.substring(7,ApiConstants.HOST.length()-7);
+        String ip = ApiConstants.HOST.substring(7,ApiConstants.HOST.length()-5);
         String ipArray[] = ip.split("\\.");
         networkSetting.ipInput4.setText(ipArray[0]);
         networkSetting.ipInput3.setText(ipArray[1]);

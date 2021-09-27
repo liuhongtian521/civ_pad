@@ -21,7 +21,7 @@
             <TextView
                 android:text="@string/logs_title"
                 android:textColor="#163366"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="2px"/>
+            android:layout_height="0.5dp"/>
 
         <LinearLayout
             app:layout_constraintTop_toBottomOf="@+id/data_lead_line"

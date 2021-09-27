@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:layout_height="19dp"
-        android:layout_width="60dp"
-        >
+    <item android:layout_width="60dp" android:layout_height="25dp">
         <shape android:shape="rectangle">
-            <solid android:color="#FFFFFFFF"/>
-            <stroke android:width="1dp" android:color="#FFCCD1D9" />
             <corners android:radius="3dp" />
-
+            <item android:name="android:shadowDx">
+                1
+            </item>
+            <item android:name="android:shadowDy">
+                1
+            </item>
+            <item android:name="android:shadowRadius">
+                2
+            </item>
+            <item android:name="android:shadowColor">
+                #FFCCD1D9
+            </item>
+            <solid android:color="#FFFFFFFF" />
+            <stroke android:width="0.8dp" android:color="#FFCCD1D9" />
         </shape>
     </item>
 </selector>

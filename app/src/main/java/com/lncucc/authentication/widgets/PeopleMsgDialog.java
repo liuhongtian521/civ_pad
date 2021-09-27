@@ -86,16 +86,16 @@ public class PeopleMsgDialog extends BaseDialog {
 
     public void setResult(String type) {
         if ("1".equals(type)) {
-            ivType.setImageResource(R.drawable.icon_type_success);
+            ivType.setImageResource(R.mipmap.icon_type_success);
             tvTypeSuccess.setVisibility(View.VISIBLE);
             tvTypeFaile.setVisibility(View.GONE);
         } else if ("2".equals(type)) {
-            ivType.setImageResource(R.drawable.icon_type_faile);
+            ivType.setImageResource(R.mipmap.icon_type_faile);
             tvTypeSuccess.setVisibility(View.GONE);
             tvTypeFaile.setVisibility(View.VISIBLE);
             tvTypeFaile.setText("失败");
         } else {
-            ivType.setImageResource(R.drawable.icon_cunyi);
+            ivType.setImageResource(R.mipmap.icon_cunyi);
             tvTypeSuccess.setVisibility(View.GONE);
             tvTypeFaile.setVisibility(View.VISIBLE);
             tvTypeFaile.setText("存疑");

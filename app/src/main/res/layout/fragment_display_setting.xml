@@ -24,14 +24,14 @@
                 android:layout_marginLeft="10dp"
                 android:text="显示设置"
                 android:textColor="#163366"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <View
             android:id="@+id/base_setting__line"
             android:layout_width="match_parent"
-            android:layout_height="2px"
+            android:layout_height="0.5dp"
             android:background="@drawable/bg_driver"
             app:layout_constraintTop_toBottomOf="@+id/ll_base_setting_top" />
 
@@ -62,7 +62,7 @@
 
                     android:text="亮度"
                     android:textColor="@color/_666666"
-                    android:textSize="8sp" />
+                    android:textSize="9sp" />
 
 
                 <com.qmuiteam.qmui.widget.QMUISlider
@@ -99,7 +99,7 @@
             <!--                    android:layout_marginLeft="10dp"-->
 
             <!--                    android:textColor="@color/_666666"-->
-            <!--                    android:textSize="8sp" />-->
+            <!--                    android:textSize="9sp" />-->
 
 
             <!--                <com.qmuiteam.qmui.widget.QMUISlider-->
@@ -136,7 +136,7 @@
                     android:text="摄像头设置"
 
                     android:textColor="@color/_666666"
-                    android:textSize="8sp" />
+                    android:textSize="9sp" />
 
 
                 <LinearLayout

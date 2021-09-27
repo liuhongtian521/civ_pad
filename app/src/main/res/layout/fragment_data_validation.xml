@@ -21,7 +21,7 @@
                 android:layout_marginLeft="10dp"
                 android:text="@string/validation_data_check"
                 android:textColor="#163366"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -45,7 +45,7 @@
                 android:gravity="center"
                 android:text="@string/verify_time"
                 android:textColor="@color/_333333"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -55,7 +55,7 @@
                 android:gravity="center"
                 android:text="@string/stu_name"
                 android:textColor="@color/_333333"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:gravity="center"
                 android:text="@string/stu_id_no"
                 android:textColor="@color/_333333"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:textStyle="bold" />
 
 
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:text="@string/verify_result"
                 android:textColor="@color/_333333"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -148,7 +148,7 @@
         <View
             android:id="@+id/data_lead_line"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="0.5dp"
             android:background="@drawable/bg_driver"
             app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top" />
 

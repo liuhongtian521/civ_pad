@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.coremodel.datamodel.database.db.DBLogs;
@@ -45,11 +46,27 @@ public class LogsInfoFragment extends BaseFragment {
         loginfoBinding.rlPoint.setLayoutManager(new LinearLayoutManager(getActivity()));
         loginfoBinding.recycleLogs.setAdapter(infoAdapter);
         loginfoBinding.rlPoint.setAdapter(pointAdapter);
+        initEvent();
     }
 
     @Override
     public void onInitViewModel() {
 
+    }
+
+    private void initEvent(){
+        loginfoBinding.recycleLogs.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull @NotNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                loginfoBinding.rlPoint.scrollBy(dx,dy);
+            }
+        });
     }
 
     @Override

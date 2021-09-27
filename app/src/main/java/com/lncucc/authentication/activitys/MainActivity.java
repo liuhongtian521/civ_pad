@@ -44,6 +44,8 @@ import java.util.Date;
 
 import io.reactivex.functions.Consumer;
 
+import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
+
 
 @Route(path = ARouterPath.MAIN_ACTIVITY)
 public class MainActivity extends BaseActivity {
@@ -163,7 +165,12 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
                 mPopExamPlan.setIndex(mExamCode);
-                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
+//                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
+                mPopExamPlan.setFocusable(false);
+                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.CENTER, 0, 0);
+                mPopExamPlan.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
+                mPopExamPlan.setFocusable(true);
+                mPopExamPlan.update();
             }
         });
 

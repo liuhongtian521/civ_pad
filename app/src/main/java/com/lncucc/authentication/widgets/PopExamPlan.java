@@ -95,12 +95,19 @@ public class PopExamPlan extends PopupWindow {
 
 
         setContentView(mMenuView);
-        setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
-        setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
-        setFocusable(true);
+        this.setHeight(RelativeLayout.LayoutParams.MATCH_PARENT);
+        this.setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
+
+        // 设置弹出窗体可点击
+        this.setFocusable(true);
+
+        // 实例化一个ColorDrawable颜色为半透明
         ColorDrawable dw = new ColorDrawable(0xb0000000);
-        setBackgroundDrawable(dw);
-        setAnimationStyle(R.style.PopAnim);
+        // 设置弹出窗体的背景
+        this.setBackgroundDrawable(dw);
+
+        // 设置弹出窗体显示时的动画，从底部向上弹出
+        this.setAnimationStyle(R.style.take_photo_anim);
     }
 
     public void setIndex(String examCode) {

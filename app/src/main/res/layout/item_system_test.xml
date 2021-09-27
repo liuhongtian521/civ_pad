@@ -18,7 +18,6 @@
             android:layout_height="100dp">
             <ImageView
                 android:id="@+id/iv_sys"
-                android:background="@mipmap/face"
                 android:layout_centerInParent="true"
                 android:layout_width="55dp"
                 android:layout_height="55dp"/>

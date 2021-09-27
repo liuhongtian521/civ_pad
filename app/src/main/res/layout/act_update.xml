@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#EFF2F7"
+        android:background="@drawable/bg_driver"
         >
 
         <include layout="@layout/common_title_layout"/>
@@ -20,7 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_margin="10dp"
-            android:paddingTop="10dp"
+            android:paddingTop="20dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="@drawable/bg_write_round_five"
@@ -37,8 +37,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:background="@drawable/bg_driver"
+                    android:layout_height="0.5dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -51,8 +51,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="身份信息总数"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_one"
@@ -63,13 +64,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -82,8 +83,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="存储数据量"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_two"
@@ -94,13 +96,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -113,8 +115,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="设备ID"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_three"
@@ -125,13 +128,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -144,8 +147,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="软件版本"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_four"
@@ -156,13 +160,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -175,8 +179,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="出厂日期"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_five"
@@ -187,13 +192,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -206,8 +211,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="制造商"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_six"
@@ -218,26 +224,26 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_alignParentRight="true"
                 android:layout_width="@dimen/dp_300"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="0.5dp"
                 android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -250,8 +256,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="验证记录总数"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_seven"
@@ -262,13 +269,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -281,8 +288,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="记录剩余储量"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_eight"
@@ -293,13 +301,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -312,8 +320,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="设备型号"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_nine"
@@ -324,13 +333,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -343,8 +352,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="算法版本"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_teen"
@@ -355,13 +365,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -374,8 +384,9 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_5"
                         android:text="固件版本"
+                        android:textStyle="bold"
                         android:textColor="#333333"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
 
                     <TextView
                         android:id="@+id/tv_view_elen"
@@ -386,13 +397,13 @@
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="100"
                         android:textColor="#999999"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="9sp" />
                 </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="#EFF2F7" />
+                    android:layout_height="0.5dp"
+                    android:background="@drawable/bg_driver" />
 
             </LinearLayout>
             <Button

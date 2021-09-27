@@ -48,6 +48,7 @@ import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
 import com.lncucc.authentication.widgets.PopExamPlan;
+import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.File;
@@ -58,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
+import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
 
 /**
  * Create bt she:
@@ -216,11 +218,11 @@ public class AuthenticationActivity extends BaseActivity {
                 }
                 viewHolderHelper.setText(R.id.tv_item_verify_name, model.getStuName());
                 if ("1".equals(model.getVerifyResult())) {
-                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_success);
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.mipmap.icon_type_success);
                 } else if ("2".equals(model.getVerifyResult())) {
-                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_type_faile);
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.mipmap.icon_type_faile);
                 } else {
-                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.drawable.icon_cunyi);
+                    viewHolderHelper.getImageView(R.id.iv_type).setImageResource(R.mipmap.icon_cunyi);
 
                 }
                 String path = UN_ZIP_PATH + File.separator + mExamCode + "/photo/" + model.getStuNo() + ".jpg";
@@ -397,7 +399,11 @@ public class AuthenticationActivity extends BaseActivity {
                 faceFragment.closeFace();
                 mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
                 mPopExamPlan.setIndex(mExamCode);
-                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
+                mPopExamPlan.setFocusable(false);
+                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.CENTER, 0, 0);
+                mPopExamPlan.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
+                mPopExamPlan.setFocusable(true);
+                mPopExamPlan.update();
             }
         });
         handler.postDelayed(runnable, TIME);

@@ -44,17 +44,17 @@ public class DataClearViewModel extends BaseViewModel {
      * 清空导入数据
      */
     public void delImport() {
-        //导出
-        if (!FileUtils.isFileExists(ZIP_PATH)){
-            dataClearObservable.postValue("暂无导入数据");
-            return;
-        }
-
-        if ((FileUtils.listFilesInDir(ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(ZIP_PATH) == null)
-                && (FileUtils.listFilesInDir(UN_ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(UN_ZIP_PATH) == null)) {
-            dataClearObservable.postValue("暂无导入数据");
-            return;
-        }
+//        //导出
+//        if (!FileUtils.isFileExists(ZIP_PATH)){
+//            dataClearObservable.postValue("暂无导入数据");
+//            return;
+//        }
+//
+//        if ((FileUtils.listFilesInDir(ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(ZIP_PATH) == null)
+//                && (FileUtils.listFilesInDir(UN_ZIP_PATH).size() == 0 || FileUtils.listFilesInDir(UN_ZIP_PATH) == null)) {
+//            dataClearObservable.postValue("暂无导入数据");
+//            return;
+//        }
 
 
         //清空数据库

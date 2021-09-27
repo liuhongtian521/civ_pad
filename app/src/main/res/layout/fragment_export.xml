@@ -22,7 +22,7 @@
             <TextView
                 android:text="@string/data_export"
                 android:textColor="@color/_163366"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
@@ -32,14 +32,16 @@
         <View
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="2px"/>
+            android:layout_height="0.5dp"/>
 
         <TextView
             android:text="@string/export_session"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textColor="#5392FF"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
+            android:drawableBottom="@mipmap/icon_bg_import"
+            android:drawablePadding="-5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -49,7 +51,7 @@
             android:layout_height="30dp">
             <TextView
                 android:text="@string/session"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:layout_marginStart="15dp"
                 android:layout_alignParentStart="true"
                 android:textColor="@color/_333333"
@@ -61,7 +63,7 @@
                 android:id="@+id/tv_session"
                 android:layout_toLeftOf="@+id/iv_right"
                 android:text="--"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:layout_marginRight="5dp"
                 android:layout_centerVertical="true"
                 android:textColor="@color/_666666"
@@ -87,8 +89,10 @@
 
         <TextView
             android:text="@string/export_type"
-            android:textSize="8sp"
+            android:textSize="9sp"
             android:textColor="#5392FF"
+            android:drawableBottom="@mipmap/icon_bg_import"
+            android:drawablePadding="-5dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
@@ -119,7 +123,7 @@
 <!--                <TextView-->
 <!--                    android:text="@string/data_export_net"-->
 <!--                    android:layout_alignParentStart="true"-->
-<!--                    android:textSize="8sp"-->
+<!--                    android:textSize="9sp"-->
 <!--                    android:layout_centerVertical="true"-->
 <!--                    android:textColor="@color/_666666"-->
 <!--                    android:layout_width="wrap_content"-->
@@ -153,7 +157,7 @@
 <!--                <TextView-->
 <!--                    android:text="@string/data_export_usb"-->
 <!--                    android:layout_alignParentStart="true"-->
-<!--                    android:textSize="8sp"-->
+<!--                    android:textSize="9sp"-->
 <!--                    android:layout_centerVertical="true"-->
 <!--                    android:textColor="@color/_666666"-->
 <!--                    android:layout_width="wrap_content"-->
@@ -186,7 +190,7 @@
 <!--                <TextView-->
 <!--                    android:text="@string/data_export_sdcard"-->
 <!--                    android:layout_alignParentStart="true"-->
-<!--                    android:textSize="8sp"-->
+<!--                    android:textSize="9sp"-->
 <!--                    android:layout_centerVertical="true"-->
 <!--                    android:textColor="@color/_666666"-->
 <!--                    android:layout_width="wrap_content"-->

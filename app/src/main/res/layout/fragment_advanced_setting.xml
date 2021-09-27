@@ -28,13 +28,13 @@
                 android:text="@string/advanced__setting"
                 android:textStyle="bold"
                 android:textColor="#163366"
-                android:textSize="9sp" />
+                android:textSize="10sp" />
         </LinearLayout>
 
         <View
             android:id="@+id/base_setting__line"
             android:layout_width="match_parent"
-            android:layout_height="2px"
+            android:layout_height="0.5dp"
             android:background="@drawable/bg_driver"
             app:layout_constraintTop_toBottomOf="@+id/ll_base_setting_top" />
 
@@ -61,7 +61,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/start_valid_time"
                     android:textColor="@color/_666666"
-                    android:textSize="8sp" />
+                    android:textSize="9sp" />
 
                 <EditText
                     android:id="@+id/edt_start_time"
@@ -71,7 +71,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_width="88dp"
                     android:maxLength="3"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:textColor="@color/_333333"
                     android:hint="请输入开始时间(分钟)"
                     android:layout_marginRight="35dp"
@@ -79,7 +79,7 @@
                     android:layout_height="match_parent"/>
                 <TextView
                     android:text="分钟"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:textColor="#999999"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
@@ -97,7 +97,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2px"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
             </RelativeLayout>
@@ -114,7 +114,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/end_valid_time"
                     android:textColor="@color/_666666"
-                    android:textSize="8sp" />
+                    android:textSize="9sp" />
 
                 <EditText
                     android:id="@+id/edt_end_time"
@@ -126,14 +126,14 @@
                     android:gravity="right|center_vertical"
                     android:layout_width="88dp"
                     android:maxLength="3"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:textColor="@color/_333333"
                     android:hint="请输入开始时间(分钟)"
                     android:background="@null"
                     android:layout_height="match_parent"/>
                 <TextView
                     android:text="分钟"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:textColor="#999999"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
@@ -152,7 +152,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2px"
+                    android:layout_height="0.5dp"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
             </RelativeLayout>

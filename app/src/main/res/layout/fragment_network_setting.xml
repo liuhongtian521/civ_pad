@@ -22,7 +22,7 @@
                 android:text="网络设置"
                 android:textStyle="bold"
                 android:textColor="#163366"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_network_setting_top"
             android:background="@drawable/bg_driver"
             android:layout_width="match_parent"
-            android:layout_height="2px"/>
+            android:layout_height="0.5dp"/>
 
 
         <LinearLayout
@@ -55,7 +55,7 @@
                     android:id="@+id/tv_setting"
                     android:text="考点客户端IP设置"
                     android:layout_alignParentStart="true"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:layout_centerVertical="true"
                     android:textColor="@color/_666666"
                     android:layout_width="wrap_content"
@@ -85,8 +85,8 @@
                         android:layout_marginRight="4dp"
                         android:layout_marginBottom="4dp"
                         android:layout_gravity="bottom"
-                        android:layout_width="2dp"
-                        android:layout_height="2dp"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
                     <TextView
                         android:layout_width="60dp"
                         android:layout_height="19dp"
@@ -147,7 +147,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="2px"/>
+                    android:layout_height="0.5dp"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rl_network_setting_sdcard"
@@ -156,7 +156,7 @@
                 <TextView
                     android:text="本机网络设置"
                     android:layout_alignParentStart="true"
-                    android:textSize="8sp"
+                    android:textSize="9sp"
                     android:layout_centerVertical="true"
                     android:textColor="@color/_666666"
                     android:layout_width="wrap_content"
@@ -183,7 +183,7 @@
                     android:background="@drawable/bg_driver"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"
-                    android:layout_height="2px"/>
+                    android:layout_height="0.5dp"/>
             </RelativeLayout>
         </LinearLayout>
 
