@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.askia.common.base.APP;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyTimeUtils;
@@ -79,6 +80,9 @@ public class MainActivity extends BaseActivity {
         long nowTime = System.currentTimeMillis();
         if (timeStart > 0)
             if (nowTime > timeStart) {
+                if (!APP.isInitFaceSuccess) {
+                    return;
+                }
                 Bundle _d = new Bundle();
                 _d.putString("mExamCode", mExamCode);
                 _d.putStringArrayList("list", mExamCodeList);
@@ -114,6 +118,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onInit() {
+
+        if (!APP.isInitFaceSuccess) {
+            Toast.makeText(this, "人脸扫描初始化失败，无法启动身份认证功能", Toast.LENGTH_SHORT).show();
+        }
+
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
             public void close(DBExamPlan dbExamPlan) {

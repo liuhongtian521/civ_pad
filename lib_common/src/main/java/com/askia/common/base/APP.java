@@ -120,7 +120,7 @@ public class APP extends Application {
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
     private Boolean isTTSInit = false;
-    public boolean isInitFaceSuccess = false;
+    public static boolean isInitFaceSuccess = false;
 
     @Override
     protected void attachBaseContext(Context base) {
