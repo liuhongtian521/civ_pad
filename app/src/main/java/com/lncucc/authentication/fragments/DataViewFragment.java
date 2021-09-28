@@ -98,7 +98,12 @@ public class DataViewFragment extends BaseFragment {
 
     private void initEvent() {
 
-        viewBinding.rlDataView.setLoadingMoreEnabled(true);
+        if (tempList.size() > 0){
+            viewBinding.rlDataView.setLoadingMoreEnabled(true);
+        }else {
+            viewBinding.rlDataView.setLoadingMoreEnabled(false);
+        }
+//        viewBinding.rlDataView.setLoadingMoreEnabled(true);
         viewBinding.rlDataView.setLoadingMoreProgressStyle(ProgressStyle.BallScaleRipple);
         viewBinding.rlDataView.getDefaultFootView().setLoadingDoneHint("加载完成");
         viewBinding.rlDataView.getDefaultFootView().setNoMoreHint("没有更多数据了");
