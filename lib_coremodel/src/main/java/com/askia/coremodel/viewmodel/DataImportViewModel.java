@@ -347,7 +347,6 @@ public class DataImportViewModel extends BaseViewModel {
                         thread.start();
                         owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
                             if (event == Lifecycle.Event.ON_DESTROY) {
-                                LogUtils.e("owner destroy ->", event);
                                 thread.interrupt();
                                 progressMonitor.setCancelAllTasks(true);
                             }
