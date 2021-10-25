@@ -87,7 +87,11 @@ public class DataExportFragment extends BaseFragment {
         if (sessionList != null && sessionList.size() > 0) {
             exportBinding.tvSession.setText(sessionList.get(0).getSeName());
             itemArrange = sessionList.get(0);
+            //默认选择list中的第一个场次
             seCode = sessionList.get(0).getSeCode();
+            //根据seCode获取当前你场次验证数据数量
+            int currentCount = getCurrentVerifyCount();
+            exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount+""));
             siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
         }
         for (int i = 0; i < 3; i++) {
@@ -141,6 +145,13 @@ public class DataExportFragment extends BaseFragment {
         exportBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_export, container, false);
         exportBinding.setHandles(this);
         return exportBinding.getRoot();
+    }
+
+    /**
+     * @return 获取当前场次验证数据数量
+     */
+    private int getCurrentVerifyCount(){
+        return DBOperation.getVerifyListBySeCode(seCode).size();
     }
 
     @Subscribe
@@ -290,6 +301,10 @@ public class DataExportFragment extends BaseFragment {
         });
     }
 
+    /**
+     * 考试场次接收
+     * @param index list position
+     */
     @Subscribe(code = 0)
     public void onGetSessionEvent(String index) {
         int position = Integer.parseInt(index);
@@ -297,6 +312,9 @@ public class DataExportFragment extends BaseFragment {
         exportBinding.tvSession.setText(itemArrange.getSeName());
         seCode = itemArrange.getSeCode();
         siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+        //更新验证数据数量
+        int currentCount = getCurrentVerifyCount();
+        exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount+""));
     }
 
     private void showPopUp() {

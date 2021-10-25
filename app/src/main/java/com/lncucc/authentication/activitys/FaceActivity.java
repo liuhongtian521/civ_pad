@@ -13,12 +13,9 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
-import com.bigdata.facedetect.FaceDetect;
 import com.lncucc.authentication.R;
 
 /*

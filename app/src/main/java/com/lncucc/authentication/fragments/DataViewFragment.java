@@ -42,7 +42,7 @@ public class DataViewFragment extends BaseFragment {
     private DBExamLayout itemInfo;
     private LinearLayoutManager mLinearLayoutManager;
     private int page = 1;
-    private int pageSize = 15;
+    private final int pageSize = 15;
 
     @Override
     public void onInit() {

@@ -38,5 +38,8 @@ public class ARouterPath {
     public static final String SYSTEM_TEST = "/activity/system/test";
     /*屏幕测试*/
     public static final String SCREEN_TEST = "/activity/screen";
-
+    /*人工审核*/
+    public static final String MANUAL_CHECK = "/activity/manual/check";
+    /* 人工审核--自动拍照 */
+    public static final String TAKE_PHOTO = "/activity/take/photo";
 }

@@ -1,8 +1,5 @@
 package com.askia.coremodel.viewmodel;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -13,11 +10,8 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.askia.coremodel.datamodel.database.repository.DBRepository;
 import com.askia.coremodel.datamodel.http.entities.BaseResponseData;
-import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.datamodel.http.entities.UPMsgData;
-import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.util.DeviceUtils;
@@ -28,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,9 +29,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 /**
  * Create bt she:
@@ -167,13 +156,13 @@ public class AuthenticationViewModel extends BaseViewModel {
         mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode));
     }
 
-    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String id, String cardNo) {
+    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number) {
         Log.e("TagSnake", type + ":状态" + "::" + time);
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
         db.setStuNo(dbExamLayout.getStuNo());
         db.setStuName(dbExamLayout.getStuName());
-        db.setExamineeId(id);
+//        db.setExamineeId(id);
         db.setVerifyTime(time);
         db.setVerifyResult(type);
         db.setMatchRate(number.substring(0, 4));
@@ -182,7 +171,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setExamCode(dbExamLayout.getExamCode());
         db.setSysOrgCode(dbExamLayout.getSysOrgCode());
         db.setSiteCode(dbExamLayout.getSiteCode());
-        db.setIdCard(cardNo);
+        db.setIdCard(dbExamLayout.getIdCard());
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
         upMsg(db);

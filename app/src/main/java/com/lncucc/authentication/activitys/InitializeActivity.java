@@ -1,7 +1,5 @@
 package com.lncucc.authentication.activitys;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +26,6 @@ import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.askia.coremodel.viewmodel.InitializeViewModel;
 import com.askia.coremodel.viewmodel.ZIPDownloadViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
-import com.liulishuo.filedownloader.FileDownloader;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActInitializeBinding;
 import com.lncucc.authentication.widgets.DataImportDialog;
@@ -39,7 +36,6 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.disposables.Disposable;
 

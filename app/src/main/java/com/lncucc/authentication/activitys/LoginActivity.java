@@ -65,8 +65,6 @@ public class LoginActivity extends BaseActivity {
     public void onSubscribeViewModel() {
 
         loginViewModel.getLoginDate().observe(this, loginData -> {
-            Log.e("TagSnake", loginData.getMessage() + loginData.isSuccess());
-
             if (loginData.isSuccess()) {
                 SharedPreferencesUtils.putString(getApplicationContext(), "account", loginViewModel.account.get());
                 SharedPreferencesUtils.putString(getApplicationContext(), "password", loginViewModel.password.get());

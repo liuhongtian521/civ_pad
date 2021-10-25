@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
-import com.askia.common.recyclerview.FOnItemChildClickListener;
 import com.askia.common.recyclerview.FOnRVItemClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
@@ -48,7 +47,6 @@ import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
 import com.lncucc.authentication.widgets.PopExamPlan;
-import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.File;
@@ -56,7 +54,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
@@ -70,14 +67,14 @@ import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN
 @Route(path = ARouterPath.IDENTIFY_ACTIVITY)
 public class AuthenticationActivity extends BaseActivity {
     private ActAuthenticationBinding mDataBinding;
-    //ZhjyBU@202104`1
+
     private AuthenticationViewModel mViewModel;
     //考生信息 dialog
     private PeopleMsgDialog peopleMsgDialog;
     //刷脸结果
     private FaceResultDialog faceResultDialog;
     //搜索学生
-    private InquiryDialog inquiryDialog;
+//    private InquiryDialog inquiryDialog;
     //对比结果
     private FaceComparedDialog faceComparedDialog;
     //选择考试计划
@@ -145,7 +142,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     //相机翻转
     public void setShowTime(int orientation) {
-        if (peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || inquiryDialog.isShowing() || faceComparedDialog.isShowing() || mPopExamPlan.isShowing())
+        if (peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing() || mPopExamPlan.isShowing())
             return;
 
         if (orientation >= 270) {        //翻转 向上
@@ -296,24 +293,24 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void dissMiss() {
                 faceResultDialog.dismiss();
-                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
+                if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
                     faceFragment.goContinueDetectFace();
             }
 
             @Override
             public void backType(int type) {
                 faceResultDialog.dismiss();
-                if (!inquiryDialog.isShowing() && !mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
+                if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
                     faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 }
             }
         });
@@ -333,47 +330,47 @@ public class AuthenticationActivity extends BaseActivity {
                 faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), mDbExaminee.getId(), mDbExaminee.getCardNo());
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity));
                 }
             }
         });
 
-        inquiryDialog = new InquiryDialog(this, new DialogClickBackListener() {
-            @Override
-            public void dissMiss() {
-                inquiryDialog.dismiss();
-                faceFragment.goContinueDetectFace();
-            }
+//        inquiryDialog = new InquiryDialog(this, new DialogClickBackListener() {
+//            @Override
+//            public void dissMiss() {
+//                inquiryDialog.dismiss();
+//                faceFragment.goContinueDetectFace();
+//            }
+//
+//            @Override
+//            public void backType(int type) {
+//                mDbExamLayout = inquiryDialog.getDbExamLayout();
+//                DBExaminee newDbExamine = new DBExaminee();
+//                newDbExamine.setStuNo(mDbExamLayout.getStuNo());
+//                newDbExamine.setStuName(mDbExamLayout.getStuName());
+//                mDbExaminee = newDbExamine;
+//                //对比
+//                isComparison = true;
+//                stuNo = mDbExaminee.getStuNo();
+//                inquiryDialog.dismiss();
+//                faceFragment.goContinueDetectFace();
+//                KeyboardUtils.hideSoftInput(AuthenticationActivity.this);
+//            }
+//        });
 
-            @Override
-            public void backType(int type) {
-                mDbExamLayout = inquiryDialog.getDbExamLayout();
-                DBExaminee newDbExamine = new DBExaminee();
-                newDbExamine.setStuNo(mDbExamLayout.getStuNo());
-                newDbExamine.setStuName(mDbExamLayout.getStuName());
-                mDbExaminee = newDbExamine;
-                //对比
-                isComparison = true;
-                stuNo = mDbExaminee.getStuNo();
-                inquiryDialog.dismiss();
-                faceFragment.goContinueDetectFace();
-                KeyboardUtils.hideSoftInput(AuthenticationActivity.this);
-            }
-        });
 
-
-        inquiryDialog.setSearchListener(new InquiryDialog.Search() {
-            @Override
-            public void search(String msg, int type) {
-                mViewModel.getStudent(type, msg, mExamCode, mSeCode);
-            }
-        });
+//        inquiryDialog.setSearchListener(new InquiryDialog.Search() {
+//            @Override
+//            public void search(String msg, int type) {
+//                mViewModel.getStudent(type, msg, mExamCode, mSeCode);
+//            }
+//        });
 
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
@@ -456,8 +453,6 @@ public class AuthenticationActivity extends BaseActivity {
             faceComparedDialog.dismiss();
         if (faceResultDialog.isShowing())
             faceResultDialog.dismiss();
-        if (inquiryDialog.isShowing())
-            inquiryDialog.dismiss();
         if (peopleMsgDialog.isShowing())
             peopleMsgDialog.dismiss();
     }
@@ -489,7 +484,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onChanged(Integer integer) {
                 Log.e("TagSnake", integer + ":数据是否拥有");
-                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
                     return;
                 faceResultDialog.setType(true);
 
@@ -557,7 +552,7 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getmCheckVersionData().observe(this, new Observer<DBExaminee>() {
             @Override
             public void onChanged(DBExaminee dbExaminee) {
-                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
                     return;
                 if (dbExaminee == null) {
                     if (!isComparison) {
@@ -579,7 +574,7 @@ public class AuthenticationActivity extends BaseActivity {
         mViewModel.getmSeat().observe(this, new Observer<DBExamLayout>() {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
-                if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
                     return;
                 if (dbExamLayout != null) {
                     mDbExamLayout = dbExamLayout;
@@ -617,7 +612,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onChanged(DBExamLayout dbExamLayout) {
                 if (dbExamLayout != null) {
-                    inquiryDialog.setDbExamLayout(dbExamLayout);
+//                    inquiryDialog.setDbExamLayout(dbExamLayout);
                 } else {
                     Toast.makeText(getApplicationContext(), "没有数据", Toast.LENGTH_SHORT).show();
                 }
@@ -636,10 +631,15 @@ public class AuthenticationActivity extends BaseActivity {
         startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
     }
 
+    //人工审核
     public void audit(View view) {
         faceFragment.closeFace();
-        inquiryDialog.show();
-        inquiryDialog.search();
+//        inquiryDialog.show();
+//        inquiryDialog.search();
+        Bundle bundle = new Bundle();
+        bundle.putString("examCode",mExamCode);
+        bundle.putString("seCode",mSeCode);
+        startActivityByRouter(ARouterPath.MANUAL_CHECK,bundle);
     }
 
 
@@ -663,7 +663,7 @@ public class AuthenticationActivity extends BaseActivity {
     /*这个是返回人脸数据和图片
      * */
     public void getFace(FaceDetectResult detectResult) {
-        if (inquiryDialog.isShowing() || mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+        if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
             return;
         if (isComparison) {
             if (detectResult.faceNum != null && mDbExaminee.getStuNo().equals(detectResult.faceNum)) {

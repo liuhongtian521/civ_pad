@@ -75,10 +75,6 @@
             android:screenOrientation="landscape"
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
         </activity>
 
         <!--登录 -->
@@ -86,10 +82,6 @@
             android:name=".activitys.LoginActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/BaseNoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
 
         <!-- 主页-->
@@ -192,6 +184,16 @@
             android:theme="@style/BaseNoActionBar"
             android:windowSoftInputMode="stateHidden"/>
 
+        <!-- 人工审核 -->
+        <activity android:name=".activitys.ManualCheckActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <!-- 人工审核拍照 -->
+        <activity android:name=".activitys.TakePhotoActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/activity_styles"/>
 
         <!-- usb receiver-->
         <receiver android:name="com.askia.common.util.receiver.USBReceiver">

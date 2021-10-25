@@ -4,33 +4,24 @@ import android.content.ContentResolver;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
-import com.askia.common.util.MyToastUtils;
-import com.askia.coremodel.rtc.Constants;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.kyleduo.switchbutton.SwitchButton;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDisplaySettingBinding;
 import com.qmuiteam.qmui.widget.QMUISlider;
-
-
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 

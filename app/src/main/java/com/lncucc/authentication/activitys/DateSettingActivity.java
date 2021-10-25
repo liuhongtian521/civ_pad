@@ -2,7 +2,9 @@ package com.lncucc.authentication.activitys;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,8 +16,7 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.base.ViewManager;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
-import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.LogUtils;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.ldf.calendar.Utils;
 import com.ldf.calendar.component.CalendarAttr;
@@ -221,9 +222,32 @@ public class DateSettingActivity extends BaseActivity {
         initCurrentDate();
     }
 
+    /**
+     * 点击进入系统
+     * @param view
+     */
     public void loginSystem(View view) {
-        startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+        if (autoLogin()){
+            Bundle _b = new Bundle();
+            String code = SharedPreferencesUtils.getString(this,"code");
+            _b.putString("code", code);
+            _b.putInt("type", 1);
+            startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
+        }else {
+            startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+        }
         finish();
+    }
+
+    /**
+     * 新增自动登录
+     */
+    private boolean autoLogin(){
+        String account = SharedPreferencesUtils.getString(this,"account");
+        String password = SharedPreferencesUtils.getString(this, "password");
+        String code = SharedPreferencesUtils.getString(this,"code");
+        //账号 密码 OrgCode都不为空 触发自动登录
+        return !TextUtils.isEmpty(account) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(code);
     }
 
     public void setting(View view) {

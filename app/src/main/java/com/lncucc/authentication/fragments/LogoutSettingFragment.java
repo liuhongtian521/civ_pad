@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.LoginActivity;
 import com.lncucc.authentication.databinding.FragmentLogoutSettingBinding;
@@ -60,6 +61,10 @@ public class LogoutSettingFragment extends BaseFragment implements DialogClickBa
         if (logoutDialog != null){
             logoutDialog.dismiss();
             getActivity().finish();
+            //清除密码
+            SharedPreferencesUtils.putString(getActivity(), "password", "");
+            //清除orgCode
+            SharedPreferencesUtils.putString(getActivity(), "code", "");
             startActivity(new Intent(getActivity(), LoginActivity.class));
         }
     }

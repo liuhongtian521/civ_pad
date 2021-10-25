@@ -14,11 +14,10 @@ import java.util.List;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- *
+ * 数据库管理
  */
 public class DBOperation {
 
@@ -234,9 +233,11 @@ public class DBOperation {
 
         Realm.getDefaultInstance().executeTransactionAsync(realm -> {
                     DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
-                    plan.setVerifyStartTime(startTime);
-                    plan.setVerifyEndTime(endTime);
-                    realm.copyToRealmOrUpdate(plan);
+                    if (plan != null){
+                        plan.setVerifyStartTime(startTime);
+                        plan.setVerifyEndTime(endTime);
+                        realm.copyToRealmOrUpdate(plan);
+                    }
                 },
                 () -> LogUtils.e("verify time insert success ->", "insert success!"),
                 error -> LogUtils.e("verify time insert error->", error.getMessage()));
@@ -289,6 +290,42 @@ public class DBOperation {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("idCard", idCode);
+        query.equalTo("examCode", examCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findFirst();
+    }
+
+    /**
+     * 根据准考证模糊查询学生信息
+     * @param examNum 准考证号
+     * @param examCode 考试编号
+     * @param seCode 场次号
+     * @return 学生信息
+     */
+    public static DBExamLayout getStudentByExamCode(String examNum, String examCode, String seCode){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        //身份证号
+        query.like("exReNum", "?*" + examNum, Case.SENSITIVE);
+        query.equalTo("examCode", examCode);
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        return query.findFirst();
+    }
+
+    /**
+     * 根据准考证模糊查询学生信息
+     * @param idNo 身份证号
+     * @param examCode 考试编号
+     * @param seCode 场次号
+     * @return 学生信息
+     */
+    public static DBExamLayout getStudentByIdCard(String idNo, String examCode, String seCode){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        //身份证号
+        query.like("idCard", "?*" + idNo, Case.SENSITIVE);
         query.equalTo("examCode", examCode);
         query.equalTo("seCode", seCode);
         query.endGroup();
