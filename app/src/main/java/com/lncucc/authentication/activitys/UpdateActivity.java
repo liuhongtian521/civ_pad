@@ -109,7 +109,7 @@ public class UpdateActivity extends BaseActivity {
                     startActivity(intent);
 //                    mViewModel.DownApk(checkVersionData.getResult());
                 } else {
-                    Toast.makeText(UpdateActivity.this, "没有新的更新包", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UpdateActivity.this, checkVersionData.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -174,7 +174,7 @@ public class UpdateActivity extends BaseActivity {
     public String getVersion(Context context) {
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pi.versionName;
+            return pi.versionCode + "";
         } catch (PackageManager.NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
