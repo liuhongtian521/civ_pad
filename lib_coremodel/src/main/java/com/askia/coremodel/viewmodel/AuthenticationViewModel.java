@@ -165,7 +165,9 @@ public class AuthenticationViewModel extends BaseViewModel {
 //        db.setExamineeId(id);
         db.setVerifyTime(time);
         db.setVerifyResult(type);
-        db.setMatchRate(number.substring(0, 4));
+        if(number.length() > 4){
+            db.setMatchRate(number.substring(0, 4));
+        }
         db.setSeCode(dbExamLayout.getSeCode());
         db.setEquipment(DeviceUtils.getDeviceSN());
         db.setExamCode(dbExamLayout.getExamCode());
