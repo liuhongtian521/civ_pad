@@ -47,7 +47,7 @@ public class FaceResultDialog extends BaseDialog {
 
         this.onListener = dialogClickBackListener;
 
-        mCountDownTimer = new CountDownTimer(2 * 1000, 1000) {
+        mCountDownTimer = new CountDownTimer(3 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 

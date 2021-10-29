@@ -14,6 +14,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,6 +64,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         stuNo = getIntent().getStringExtra("stuNo");
         seCode = getIntent().getStringExtra("seCode");
         initHandler();
+        initEvent();
     }
 
     private void initCamera() {
@@ -167,6 +169,13 @@ public class TakePhotoActivity extends AppCompatActivity {
         if (cameraHelper != null) {
             cameraHelper.start();
         }
+    }
+
+    private void initEvent(){
+        findViewById(R.id.iv_close).setOnClickListener(v -> {
+            //关闭当前页面
+            finish();
+        });
     }
 
     HandlerThread mHandlerThread;

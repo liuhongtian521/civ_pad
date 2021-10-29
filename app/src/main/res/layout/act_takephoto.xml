@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="683dp"
+        android:layout_height="384dp">
 
         <RelativeLayout
             android:layout_width="549dp"
@@ -22,10 +22,19 @@
         </RelativeLayout>
 
         <FrameLayout
+            android:id="@+id/rl_area_photo"
             android:background="@mipmap/icon_camera"
             android:layout_centerInParent="true"
             android:layout_width="549dp"
             android:layout_height="312dp"/>
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_toEndOf="@+id/rl_area_photo"
+            android:layout_marginLeft="7dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/icon_close_photo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"/>
     </RelativeLayout>
 
     <data>
