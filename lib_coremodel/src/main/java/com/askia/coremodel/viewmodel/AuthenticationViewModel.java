@@ -156,12 +156,13 @@ public class AuthenticationViewModel extends BaseViewModel {
         mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode));
     }
 
-    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number) {
+    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number,String manualVerifyResult) {
         Log.e("TagSnake", type + ":状态" + "::" + time);
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
         db.setStuNo(dbExamLayout.getStuNo());
         db.setStuName(dbExamLayout.getStuName());
+        db.setManualVerifyResult(manualVerifyResult);
 //        db.setExamineeId(id);
         db.setVerifyTime(time);
         db.setVerifyResult(type);
@@ -179,6 +180,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         upMsg(db);
 
     }
+
 
     private void upMsg(DBExamExport dbExamExport) {
         Log.e("TagSnake up", "upMsg");
@@ -200,6 +202,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setSysOrgCode(dbExamExport.getSysOrgCode());
         db.setSiteCode(dbExamExport.getSiteCode());
         db.setIdCard(dbExamExport.getIdCard());
+        db.setManualVerifyResult(dbExamExport.getManualVerifyResult());
 //        db.setEntrancePhotoUrl();
         String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
         try {

@@ -34,6 +34,8 @@ public class DBExamLayout extends RealmObject implements Serializable {
     private String roomNo;
     private String seName;
     //考场选中状态
+    private boolean isChecked = true;
+
     public boolean isChecked() {
         return isChecked;
     }
@@ -42,7 +44,6 @@ public class DBExamLayout extends RealmObject implements Serializable {
         isChecked = checked;
     }
 
-    private boolean isChecked = true;
 
     public String getCreateBy() {
         return createBy;

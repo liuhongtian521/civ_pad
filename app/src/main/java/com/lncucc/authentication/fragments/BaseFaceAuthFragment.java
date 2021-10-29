@@ -57,7 +57,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     /**
      * 优先打开的摄像头
      */
-    private Integer rgbCameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private Integer rgbCameraID = Camera.CameraInfo.CAMERA_FACING_BACK;
     protected boolean isCameraInit = false;
     public boolean mFaceDecting = true;
     // 连续5帧在指定区 域
@@ -224,7 +224,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     public void setCameraHelper(int type) {
         this.type = type;
-        rgbCameraID = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 1);
+        rgbCameraID = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 0);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(mPreview.getWidth(), mPreview.getHeight()))
                 .rotation(getActivity().getWindowManager().getDefaultDisplay().getRotation())

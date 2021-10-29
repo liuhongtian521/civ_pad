@@ -26,7 +26,7 @@ public class FaceActivity extends AppCompatActivity implements ViewTreeObserver.
 
     private CameraHelper cameraHelper;
     private Camera.Size previewSize;
-    private Integer cameraID = Camera.CameraInfo.CAMERA_FACING_FRONT;//后置还是前置
+    private Integer cameraID = Camera.CameraInfo.CAMERA_FACING_BACK;//后置还是前置
     TextureView previewView;
     int faceHaveTime = 0;
     boolean canFindFace = true;
@@ -103,7 +103,7 @@ public class FaceActivity extends AppCompatActivity implements ViewTreeObserver.
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(previewView.getMeasuredWidth(), previewView.getMeasuredHeight()))
                 .rotation(getWindowManager().getDefaultDisplay().getRotation())
-                .specificCameraId(cameraID != null ? cameraID : Camera.CameraInfo.CAMERA_FACING_BACK)
+                .specificCameraId(cameraID != null ? cameraID : Camera.CameraInfo.CAMERA_FACING_FRONT)
                 .isMirror(false)
                 .previewOn(previewView)
                 .cameraListener(cameraListener)

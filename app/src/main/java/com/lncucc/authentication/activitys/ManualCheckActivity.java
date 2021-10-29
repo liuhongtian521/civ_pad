@@ -84,13 +84,13 @@ public class ManualCheckActivity extends BaseActivity {
                 faceComparedDialog.dismiss();
                 if (type == 0) {
                     //不通过
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "2", similarity);
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "2", similarity,"1");
                 } else if (type == 1) {
                     //存疑
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "3", similarity);
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "3", similarity,"1");
                 } else {
                     //通过
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "1", similarity);
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "1", similarity,"1");
                 }
                 MyToastUtils.success("审核成功！",Toast.LENGTH_SHORT);
             }

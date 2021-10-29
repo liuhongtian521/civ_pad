@@ -166,8 +166,8 @@ public class APP extends Application {
         Utils.init(this);
         // 数据库初始化
         Realm.init(this);
-        //初始化摄像头前置
-        SharedPreferencesUtils.putInt(this,CAMERA_DEFAULT, 1);
+        //初始化摄像头修改为后置
+        SharedPreferencesUtils.putInt(this,CAMERA_DEFAULT, 0);
         //初始化语音提示
         boolean isOpen = SharedPreferencesUtils.getBoolean(this,VOICE_SETTING,true);
         SharedPreferencesUtils.putBoolean(this,VOICE_SETTING,isOpen);

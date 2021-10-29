@@ -26,6 +26,15 @@ public class UPMsgData extends BaseRequestParams {
     private String equipment;//设备id mac 地址
     private String siteCode;//考点编号
     private String idCard;//身份证号码
+    private String manualVerifyResult;//0 自动审核 1人工审核
+
+    public String getManualVerifyResult() {
+        return manualVerifyResult;
+    }
+
+    public void setManualVerifyResult(String manualVerifyResult) {
+        this.manualVerifyResult = manualVerifyResult;
+    }
 
     public String getStuName() {
         return stuName;
