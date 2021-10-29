@@ -32,11 +32,12 @@ import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
  */
 public class DisplaySettingFragment extends BaseFragment {
     private FragmentDisplaySettingBinding displaySetting;
-    LinearLayout linear ;  // 切换外部linear盒子
+    LinearLayout linear;  // 切换外部linear盒子
     TextView te1; // 前置摄像头
     TextView te2; // 后置摄像头
     int currentPos; // 当前选择的是哪个摄像头  前置"1"  后置"0"
     QMUISlider sliderBrightness;
+
     @Override
     public void onInit() {
         linear = displaySetting.CamSet;
@@ -45,7 +46,7 @@ public class DisplaySettingFragment extends BaseFragment {
         sliderBrightness = displaySetting.sliderBrightness;
         sliderBrightness.setCurrentProgress(getScreenBrightness());
         cameraSet();
-            sliderBrightness.setCallback(new QMUISlider.Callback() {
+        sliderBrightness.setCallback(new QMUISlider.Callback() {
             @Override
             public void onProgressChange(QMUISlider slider, int progress, int tickCount, boolean fromUser) {
 
@@ -71,23 +72,22 @@ public class DisplaySettingFragment extends BaseFragment {
 
             }
         });
-        currentPos = SharedPreferencesUtils.getInt(getActivity(),CAMERA_DEFAULT, 1);
+        currentPos = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 1);
         setState();
-        linear.setOnClickListener(new View.OnClickListener(){
+        linear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                currentPos == 0 ? currentPos =1: currentPos= 0;
-                if (currentPos == 0){
+                if (currentPos == 0) {
                     currentPos = 1;
-                }else {
+                } else {
                     currentPos = 0;
                 }
-                SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT,currentPos);
+                SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
                 setState();
             }
-         });
+        });
     }
-
 
 
     @Override
@@ -97,7 +97,7 @@ public class DisplaySettingFragment extends BaseFragment {
 
     @Override
     public View onInitDataBinding(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container) {
-        displaySetting = DataBindingUtil.inflate(inflater, R.layout.fragment_display_setting,container,false);
+        displaySetting = DataBindingUtil.inflate(inflater, R.layout.fragment_display_setting, container, false);
         return displaySetting.getRoot();
     }
 
@@ -107,28 +107,24 @@ public class DisplaySettingFragment extends BaseFragment {
     }
 
 
-
     public void clickCameraSet(View view) {
         LogUtils.e("点击");
     }
 
-    public void setState () {
+    public void setState() {
         if (currentPos == 1) {
             // 当前是前置摄像头  该进行后置摄像头的设置
-            te2.setBackgroundResource(R.drawable.bg_network_btn);
-            te2.setTextColor(Color.parseColor("#FFFFFF"));
-            te1.setBackgroundColor(Color.TRANSPARENT);
-            te1.setTextColor(Color.parseColor("#666666"));
-            return;
-        }
-        else {
-            // 当前是后置摄像头  该进行前置摄像头的切换
-            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT,currentPos);
             te1.setBackgroundResource(R.drawable.bg_network_btn);
             te1.setTextColor(Color.parseColor("#FFFFFF"));
             te2.setBackgroundColor(Color.TRANSPARENT);
             te2.setTextColor(Color.parseColor("#666666"));
-            return;
+        } else {
+            // 当前是后置摄像头  该进行前置摄像头的切换
+            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
+            te2.setBackgroundResource(R.drawable.bg_network_btn);
+            te2.setTextColor(Color.parseColor("#FFFFFF"));
+            te1.setBackgroundColor(Color.TRANSPARENT);
+            te1.setTextColor(Color.parseColor("#666666"));
         }
     }
 
@@ -153,14 +149,16 @@ public class DisplaySettingFragment extends BaseFragment {
         return 100 * Settings.System.getInt(contentResolver,
                 Settings.System.SCREEN_BRIGHTNESS, defVal) / 255;
     }
+
     private void saveScreenBrightness(int process) {
         // 当屏幕亮度模式为0即手动调节时，可以通过如下代码设置屏幕亮度：
         setScrennManualMode();
         ContentResolver contentResolver = getActivity().getContentResolver();
-        int value = process * 255/100; // 设置亮度值为255
+        int value = process * 255 / 100; // 设置亮度值为255
         Settings.System.putInt(contentResolver,
                 Settings.System.SCREEN_BRIGHTNESS, value);
     }
+
     private void setWindowBrightness(int brightness) {
         // 设置当前窗口亮度
         Window window = mActivity.getWindow();
@@ -168,16 +166,17 @@ public class DisplaySettingFragment extends BaseFragment {
         lp.screenBrightness = brightness / 255.0f;
         window.setAttributes(lp);
     }
-    public void cameraSet () {
+
+    public void cameraSet() {
         Camera.CameraInfo info = new Camera.CameraInfo();
         LogUtils.e("camera info ==>>>>>", info.facing, Camera.CameraInfo.CAMERA_FACING_FRONT);
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT){
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             // 前置
-            currentPos =0;
+            currentPos = 0;
             setState();
         } else {
             // 后置
-            currentPos =1;
+            currentPos = 1;
             setState();
         }
     }
