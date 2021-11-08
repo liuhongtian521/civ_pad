@@ -102,6 +102,8 @@ public class ApiClient {
                     builder.addInterceptor(httpLoggingInterceptor);
                     builder.addInterceptor(new ResponseInterceptor());
                     builder.addInterceptor(new CookieInterceptor());
+                    builder.sslSocketFactory(HttpUtils.getSslSocketFactory(null,null,null));
+                    builder.hostnameVerifier((hostname, session) -> true);
                     okHttpClientInstance = builder.build();
                 }
             }

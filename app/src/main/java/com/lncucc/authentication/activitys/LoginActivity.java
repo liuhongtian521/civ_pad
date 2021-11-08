@@ -1,13 +1,11 @@
 package com.lncucc.authentication.activitys;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -16,15 +14,13 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
-import com.askia.coremodel.datamodel.http.entities.LoginData;
 import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActLoginBinding;
-import com.unicom.facedetect.detect.FaceDetectManager;
+import com.askia.coremodel.util.SignUtils;
 
 import java.util.Objects;
 
@@ -85,7 +81,8 @@ public class LoginActivity extends BaseActivity {
 
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
-            loginViewModel.login(loginViewModel.account.get(), loginViewModel.password.get());
+            String pwd = SignUtils.encryptByPublic(loginViewModel.password.get());
+            loginViewModel.login(loginViewModel.account.get(), pwd);
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
             String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.password.get());
