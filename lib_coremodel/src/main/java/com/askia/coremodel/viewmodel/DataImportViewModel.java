@@ -65,7 +65,7 @@ public class DataImportViewModel extends BaseViewModel {
     //face db insert
     private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
 
-    private String pwd = "123456";
+    private String pwd = "Ut9RKOo8d4NCrnll";
 
     public MutableLiveData<UnZipHandleEvent> doZipHandle() {
         return unZipObservable;

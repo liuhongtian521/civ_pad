@@ -61,7 +61,7 @@ import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
  * 数据导出
  */
 public class DataExportViewModel extends BaseViewModel {
-    private String pwd = "123456";
+    private String pwd = "Ut9RKOo8d4NCrnll";
 
     //导出到SDCard
     MutableLiveData<String> exportObservable = new MutableLiveData<>();
