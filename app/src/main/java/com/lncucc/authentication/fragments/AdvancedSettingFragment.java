@@ -1,6 +1,8 @@
 package com.lncucc.authentication.fragments;
 
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +73,11 @@ public class AdvancedSettingFragment extends BaseFragment implements PassWordCli
         if (TextUtils.isEmpty(sVerifyTime) || TextUtils.isEmpty(eVerifyTime)) {
             MyToastUtils.error("请设置验证时间", Toast.LENGTH_LONG);
         } else {
+            int end = Integer.parseInt(eVerifyTime);
+            if (end > 120){
+                MyToastUtils.error("验证结束时间不能大于120分钟",Toast.LENGTH_LONG);
+                return;
+            }
             dialog.show();
         }
     }

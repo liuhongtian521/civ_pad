@@ -60,7 +60,7 @@ public class ImageUtil {
                 int V = (112 * R - 94 * G - 18 * B + 128 >> 8) + 128;
                 nv21[yIndex++] = (byte) (Y < 0 ? 0 : (Y > 255 ? 255 : Y));
                 if (j % 2 == 0 && index % 2 == 0 && uvIndex < nv21.length - 2) {
-                    nv21[uvIndex++] = (byte) (V < 0 ? 0 : (V > 255 ? 255 : V));
+                    nv21[uvIndex++] = (byte) (V < 0 ? 0 : (Math.min(V, 255)));
                     nv21[uvIndex++] = (byte) (U < 0 ? 0 : (U > 255 ? 255 : U));
                 }
 
@@ -105,7 +105,26 @@ public class ImageUtil {
         if (bitmap == null || rect == null || rect.isEmpty() || bitmap.getWidth() < rect.right || bitmap.getHeight() < rect.bottom) {
             return null;
         }
-        return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height(), null, false);
+        //扩大裁剪区域,在人脸
+        int bh = bitmap.getHeight();
+
+        double scale = 0.8;
+        int rWidth = (int) (bh * scale);
+
+        int rx = 0;
+
+        if (rect.left - 200 < 0) {
+            rx = rect.left;
+        } else {
+            // rx + rWidth < bitmap.width 否则会crash
+            if (rect.left + rWidth > bitmap.getWidth()) {
+                rx = bitmap.getWidth() - rWidth - 10;
+            } else {
+                rx = rect.left - 200;
+            }
+        }
+
+        return Bitmap.createBitmap(bitmap, rx, 0, rWidth, bh, null, false);
     }
 
     public static Bitmap getBitmapFromUri(Uri uri, Context context) {
@@ -133,7 +152,7 @@ public class ImageUtil {
     public static Bitmap converBitmap(Bitmap b) {
         Matrix matrix = new Matrix();
         matrix.postScale(-1, 1);
-        return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix,true);
+        return Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, true);
 
     }
 
