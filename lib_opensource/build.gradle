@@ -174,4 +174,6 @@ dependencies {
     api 'jsc.kit.wheel:wheel-view:0.5.0'
     //otg
     api 'com.github.mjdev:libaums:0.5.5'
+    //添加baseUrl切换
+    api 'me.jessyan:retrofit-url-manager:1.4.0'
 }

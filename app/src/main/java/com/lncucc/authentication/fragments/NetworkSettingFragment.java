@@ -2,6 +2,7 @@ package com.lncucc.authentication.fragments;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,11 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentNetworkSettingBinding;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.net.URI;
+import java.net.URL;
+
+import retrofit2.http.Url;
 
 /**
  * 数据导入
@@ -36,8 +42,9 @@ public class NetworkSettingFragment extends BaseFragment {
             return;
         }
     });
-        String ip = ApiConstants.HOST.substring(7,ApiConstants.HOST.length()-5);
-        String ipArray[] = ip.split("\\.");
+        Uri uri = Uri.parse(ApiConstants.HOST);
+        String host = uri.getHost();
+        String[] ipArray = host.split("\\.");
         networkSetting.ipInput4.setText(ipArray[0]);
         networkSetting.ipInput3.setText(ipArray[1]);
         networkSetting.ipInput2.setText(ipArray[2]);
