@@ -219,8 +219,6 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             }
         }
         if (storageDevices.length == 0) {
-//            closeLogadingDialog();
-//            closeLoading();
             MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
         }
     }

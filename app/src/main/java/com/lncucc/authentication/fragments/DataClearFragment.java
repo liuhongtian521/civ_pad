@@ -137,6 +137,6 @@ public class DataClearFragment extends BaseFragment implements DialogClickBackLi
     @Override
     public void dismiss() {
         passWordDialog.dismiss();
-        KeyboardUtils.toggleSoftInput();
+        KeyboardUtils.hideSoftInput(getView());
     }
 }

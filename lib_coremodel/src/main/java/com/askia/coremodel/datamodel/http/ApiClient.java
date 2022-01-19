@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -93,10 +94,11 @@ public class ApiClient {
         if (okHttpClientInstance == null) {
             synchronized (ApiClient.class) {
                 if (okHttpClientInstance == null) {
-                    OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-                    builder.connectTimeout(60 * 5, TimeUnit.SECONDS)
-                            .writeTimeout(60 * 5, TimeUnit.SECONDS)
-                            .readTimeout(60 * 5, TimeUnit.SECONDS);
+                    //modify 适配动态切换baseUrl,使用RetrofitUrlManager进行获取
+                    OkHttpClient.Builder builder = RetrofitUrlManager.getInstance().with(new OkHttpClient.Builder());
+                    builder.connectTimeout(30, TimeUnit.SECONDS)
+                            .writeTimeout(30, TimeUnit.SECONDS)
+                            .readTimeout(30, TimeUnit.SECONDS);
                     HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
                     httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                     builder.addInterceptor(httpLoggingInterceptor);

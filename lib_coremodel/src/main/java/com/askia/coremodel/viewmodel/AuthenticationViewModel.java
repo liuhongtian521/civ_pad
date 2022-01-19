@@ -132,7 +132,6 @@ public class AuthenticationViewModel extends BaseViewModel {
             mCheckVersionData.postValue(list.get(0));
         }
     }
-
     public void getSeatAbout(String stuNo, String examCode, String seCode) {
         DBExamLayout mDbExamLayout = DBOperation.getStudentInfoTwo(examCode, stuNo, seCode);
         mSeat.postValue(mDbExamLayout);

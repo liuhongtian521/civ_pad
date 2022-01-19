@@ -1,14 +1,12 @@
 package com.lncucc.authentication.widgets;
 
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
+
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import com.askia.common.util.ImageUtil;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -17,10 +15,7 @@ import com.blankj.utilcode.util.FileUtils;
 import com.lncucc.authentication.R;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
-
-import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
 
 
 /**
@@ -68,22 +63,11 @@ public class StudentInfoDialog extends BaseDialog {
         if (layout != null) {
             //获取stuNo
             String stuNo = layout.getStuNo();
-            //现在没有数据暂时写死
-//            String stuNo = "210221112022500";
             //根据stuNo查询居住地址
             String liveAddress = DBOperation.getLiveAddress(stuNo);
             //获取解压包文件夹名称
             //获取照片路径 110206 需替换成考试代码 examCode
             String examCode = layout.getExamCode();
-            String filePath = "";
-            //获取所有解压的文件夹
-            List<File> list = FileUtils.listFilesInDir(UN_ZIP_PATH);
-            //遍历获取包含当前examCode的 文件夹名称
-            for (File file : list) {
-                if (file.getName().contains(examCode)) {
-                    filePath = file.getName();
-                }
-            }
             String path = UN_ZIP_PATH + File.separator + examCode + "/photo/" + stuNo + ".jpg";
             //转换file
             File file = new File(path);

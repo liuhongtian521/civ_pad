@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.askia.common.util.Utils;
 import com.askia.common.widget.CountDownText;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.yanyusong.y_divideritemdecoration.Dp2Px;
 
@@ -195,4 +196,9 @@ public abstract class BaseFragment extends Fragment {
         ((BaseActivity) getActivity()).dismissNetDialog();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        KeyboardUtils.hideSoftInput(getView());
+    }
 }

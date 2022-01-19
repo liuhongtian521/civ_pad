@@ -42,6 +42,7 @@ public class Constants {
     public static final String VOICE_SETTING = "voice_setting";
     public static final String DEFAULT_SOUND_SETTING = "default_sound_setting";
     public static final String VOICE_SOUND = "voice_sound";
+    public static final String AUTO_BASE_URL = "auto_base_url";
 
     //apk下载地址
     public static final String apkPath = Environment.getExternalStorageDirectory().getPath() + File.separator + "CivDownload";

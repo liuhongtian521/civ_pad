@@ -1,41 +1,30 @@
 package com.askia.common.base;
 
+import static com.askia.coremodel.rtc.Constants.AUTO_BASE_URL;
+import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
+import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.apkfuns.logutils.LogUtils;
-import com.askia.common.R;
 import com.askia.common.util.BuglyUtils;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.ScreenUtil;
-import com.askia.common.util.baidutts.AutoCheck;
-import com.askia.common.util.baidutts.InitConfig;
 import com.askia.common.util.baidutts.MySyntherizer;
-import com.askia.common.util.baidutts.NonBlockSyntherizer;
 import com.askia.common.util.baidutts.OfflineResource;
-import com.askia.common.util.baidutts.UiMessageListener;
-import com.askia.common.util.receiver.UsbStateChangeReceiver;
 import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
 import com.askia.coremodel.datamodel.realm.MyMigration;
 import com.askia.coremodel.datamodel.realm.RealmConstant;
 import com.askia.coremodel.event.AuthenticationEvent;
-import com.askia.coremodel.event.CommonImEvent;
 import com.askia.coremodel.event.LoginSuccessEvent;
 import com.askia.coremodel.rtc.AgoraEventHandler;
 import com.askia.coremodel.rtc.Constants;
@@ -44,57 +33,35 @@ import com.askia.coremodel.rtc.EventHandler;
 import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.rtc.PrefManager;
 import com.askia.coremodel.rtc.StatsManager;
-import com.askia.coremodel.rtm.ChatManager;
 import com.askia.coremodel.rtm.IMUtils;
-import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
 import com.baidu.tts.client.SpeechSynthesizer;
-import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.baidu.tts.client.TtsMode;
 import com.baidu.tts.tools.SharedPreferencesUtils;
-import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
-
-import com.bumptech.glide.Glide;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadLog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.ui.UILifecycleListener;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.tinker.loader.app.TinkerApplication;
-import com.tencent.tinker.loader.shareutil.ShareConstants;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 import com.unicom.facedetect.detect.FaceDetectInitListener;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.log.DiagnosisLog;
 import com.unicom.facedetect.log.DiagnosisType;
-import com.yuyh.library.imgsel.ISNav;
-import com.yuyh.library.imgsel.common.ImageLoader;
-
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import io.agora.rtc.RtcEngine;
 import io.agora.rtm.ErrorInfo;
 import io.agora.rtm.ResultCallback;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
-import static com.askia.common.util.baidutts.MainHandlerConstant.INIT_SUCCESS;
-import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
-import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
-import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 
 
 /**
@@ -170,6 +137,9 @@ public class APP extends Application {
         SharedPreferencesUtils.putInt(this,CAMERA_DEFAULT, 0);
         //初始化语音提示
         boolean isOpen = SharedPreferencesUtils.getBoolean(this,VOICE_SETTING,true);
+        String url = SharedPreferencesUtils.getString(this,AUTO_BASE_URL,"https://192.168.1.85:8006");
+        //设置上次保存的IP
+        RetrofitUrlManager.getInstance().setGlobalDomain(url);
         SharedPreferencesUtils.putBoolean(this,VOICE_SETTING,isOpen);
         try {
             Realm.migrateRealm(RealmConstant.getRealmConfig(),new MyMigration());
@@ -218,12 +188,12 @@ public class APP extends Application {
 
         BuglyUtils.init(this, BuglyUtils.APP_ID);
 
-        ISNav.getInstance().init(new ImageLoader() {
-            @Override
-            public void displayImage(Context context, String path, ImageView imageView) {
-                Glide.with(context).asBitmap().load(path).into(imageView);
-            }
-        });
+//        ISNav.getInstance().init(new ImageLoader() {
+//            @Override
+//            public void displayImage(Context context, String path, ImageView imageView) {
+//                Glide.with(context).asBitmap().load(path).into(imageView);
+//            }
+//        });
 
         FaceDetectManager.getInstance().init(getApplicationContext(), "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
             @Override

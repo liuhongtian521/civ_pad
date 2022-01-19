@@ -154,7 +154,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
                                     float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
                                     FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.80f);
-
+                                    //faceNum = "011412100080"
                                     if (detectResult == null) {
                                         Log.e("TagSnakesnake", "detect result ->    null");
                                     } else {

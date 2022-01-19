@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.data.DataImportBean;
-import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -156,9 +155,14 @@ public class DataImportViewModel extends BaseViewModel {
             //文件夹相片数量
             List<File> photoList = FileUtils.listFilesInDir(filePath);
             LogUtils.e("photo list size->", photoList.size());
-            if (photoList.isEmpty())
-                return;
             FaceDBHandleEvent event = new FaceDBHandleEvent();
+            if (photoList.isEmpty()) {
+                event.setState(0);
+                event.setMessage("人脸文件夹中照片为空。");
+                emitter.onNext(event);
+                //照片为空添加提示
+                return;
+            }
             int current = 1;
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
@@ -185,7 +189,6 @@ public class DataImportViewModel extends BaseViewModel {
                 } catch (Exception e) {
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
                 }
-
             }
 
         }).subscribeOn(Schedulers.io())
@@ -231,16 +234,16 @@ public class DataImportViewModel extends BaseViewModel {
             String path = ZIP_PATH + File.separator + usbFile.getName();
             OutputStream os = null;
             File targetFile = new File(path);
-            File folder = new File(ZIP_PATH);
+//            File folder = new File(ZIP_PATH);
             boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
             if (hasFolder) {
                 try {
                     os = new BufferedOutputStream(new FileOutputStream(targetFile));
                     //获取文件大小
                     long fileLength = usbFile.getLength();
-                    long current = 0l;
+                    long current = 0L;
 
-                    byte data[] = new byte[8192];
+                    byte[] data = new byte[8192];
                     int len;
                     while ((len = is.read(data, 0, 8192)) != -1) {
                         os.write(data, 0, len);
@@ -269,9 +272,6 @@ public class DataImportViewModel extends BaseViewModel {
                     CloseUtils.closeIO(is, os);
                 }
             }
-
-
-//                }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UsbWriteEvent>() {
@@ -312,53 +312,51 @@ public class DataImportViewModel extends BaseViewModel {
             List<File> list = FileUtils.listFilesInDir(ZIP_PATH);
             if (list != null && list.size() > 0) {
                 try {
-//                    for (int i = 0; i < list.size(); i++) {
-                        //压缩包路径
-                        String path = ZIP_PATH + File.separator + bean.getFileName();
-                        //文件名
-                        String fileName = bean.getFileName().split("\\.")[0];
-                        //解压存放路径
-                        String toPath = UN_ZIP_PATH + File.separator + fileName;
-                        // 生成的压缩文件
-                        ZipFile zipFile = new ZipFile(path);
-                        // 设置密码
-                        zipFile.setPassword(pwd.toCharArray());
-                        //解压进度
-                        ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
-                        Thread thread = new Thread(() -> {
-                            int percentDone = 0;
-                            LogUtils.e("life owner ->", "thread created");
-                            while (true) {
-                                percentDone = progressMonitor.getPercentDone();
+                    //压缩包路径
+                    String path = ZIP_PATH + File.separator + bean.getFileName();
+                    //文件名
+                    String fileName = bean.getFileName().split("\\.")[0];
+                    //解压存放路径
+                    String toPath = UN_ZIP_PATH + File.separator + fileName;
+                    // 生成的压缩文件
+                    ZipFile zipFile = new ZipFile(path);
+                    // 设置密码
+                    zipFile.setPassword(pwd.toCharArray());
+                    //解压进度
+                    ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+                    Thread thread = new Thread(() -> {
+                        int percentDone = 0;
+                        LogUtils.e("life owner ->", "thread created");
+                        while (true) {
+                            percentDone = progressMonitor.getPercentDone();
+                            unZipHandleEvent.setUnZipProcess(percentDone);
+                            unZipHandleEvent.setMessage("正在解压中...");
+                            unZipObservable.postValue(unZipHandleEvent);
+                            if (percentDone >= 100) {
+                                unZipHandleEvent.setCode(0);
                                 unZipHandleEvent.setUnZipProcess(percentDone);
-                                unZipHandleEvent.setMessage("正在解压中...");
+                                unZipHandleEvent.setFilePath(toPath);
+                                unZipHandleEvent.setZipPath(path);
+                                unZipHandleEvent.setMessage("解压完成");
                                 unZipObservable.postValue(unZipHandleEvent);
-                                if (percentDone >= 100) {
-                                    unZipHandleEvent.setCode(0);
-                                    unZipHandleEvent.setUnZipProcess(percentDone);
-                                    unZipHandleEvent.setFilePath(toPath);
-                                    unZipHandleEvent.setZipPath(path);
-                                    unZipHandleEvent.setMessage("解压完成");
-                                    unZipObservable.postValue(unZipHandleEvent);
-                                    break;
-                                }
+                                break;
                             }
-                        });
-                        thread.start();
-                        owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
-                            if (event == Lifecycle.Event.ON_DESTROY) {
-                                thread.interrupt();
-                                progressMonitor.setCancelAllTasks(true);
-                            }
-                        });
-                        // 解压缩所有文件以及文件夹
-                        try {
-                            zipFile.setRunInThread(true);
-                            zipFile.extractAll(toPath);
-                        } catch (ZipException e) {
-                            e.printStackTrace();
                         }
-//                    }
+                    });
+                    thread.start();
+                    owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
+                        if (event == Lifecycle.Event.ON_DESTROY) {
+                            thread.interrupt();
+                            progressMonitor.setCancelAllTasks(true);
+                        }
+                    });
+                    // 解压缩所有文件以及文件夹
+                    try {
+                        zipFile.setRunInThread(true);
+                        zipFile.extractAll(toPath);
+                    } catch (ZipException e) {
+                        e.printStackTrace();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -414,15 +412,15 @@ public class DataImportViewModel extends BaseViewModel {
         return list;
     }
 
-    public List<DataImportBean> fetchDataFromSdCard(){
+    public List<DataImportBean> fetchDataFromSdCard() {
         List<DataImportBean> list = new ArrayList<>();
         DataImportBean bean;
 
         File folder = new File(ZIP_PATH);
         boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
 
-        if (hasFolder){
-            for (File file : folder.listFiles()){
+        if (hasFolder) {
+            for (File file : folder.listFiles()) {
                 String zipPath = ZIP_PATH + File.separator + file.getName();
                 bean = new DataImportBean();
                 bean.setFileName(file.getName());

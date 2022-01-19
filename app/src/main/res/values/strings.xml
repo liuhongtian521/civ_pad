@@ -68,6 +68,7 @@
     <string name="dialog_confirm_message">确认信息</string>
     <string name="date_title">请校正日期和时间</string>
     <string name="setting">设置</string>
+    <string name="ip_setting">请输入IP和端口(192.168.1.1:8888)</string>
     <string name="verify_result">结果</string>
     <string name="verify_message_count">当前场次共有%s条验证数据</string>
 

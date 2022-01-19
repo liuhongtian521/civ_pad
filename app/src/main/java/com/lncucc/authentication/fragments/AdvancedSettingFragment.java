@@ -1,8 +1,6 @@
 package com.lncucc.authentication.fragments;
 
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.baidu.tts.tools.SharedPreferencesUtils;
-import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentAdvancedSettingBinding;
 import com.lncucc.authentication.widgets.PassWordClickCallBack;
@@ -26,8 +23,6 @@ import com.lncucc.authentication.widgets.VerifyCodeDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import io.realm.Realm;
 
 /**
  * 高级设置

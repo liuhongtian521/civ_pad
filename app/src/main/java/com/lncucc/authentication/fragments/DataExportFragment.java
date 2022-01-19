@@ -1,5 +1,8 @@
 package com.lncucc.authentication.fragments;
 
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -26,9 +29,6 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -48,9 +48,6 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
-import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 
 /**
  * 数据导出
