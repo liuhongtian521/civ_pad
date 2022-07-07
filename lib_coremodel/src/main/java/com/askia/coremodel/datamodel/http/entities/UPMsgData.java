@@ -27,6 +27,15 @@ public class UPMsgData extends BaseRequestParams {
     private String siteCode;//考点编号
     private String idCard;//身份证号码
     private String manualVerifyResult;//0 自动审核 1人工审核
+    private String healthCode; //健康码 0绿码 1黄码 2红码 3未知
+
+    public String getHealthCode() {
+        return healthCode;
+    }
+
+    public void setHealthCode(String healthCode) {
+        this.healthCode = healthCode;
+    }
 
     public String getManualVerifyResult() {
         return manualVerifyResult;

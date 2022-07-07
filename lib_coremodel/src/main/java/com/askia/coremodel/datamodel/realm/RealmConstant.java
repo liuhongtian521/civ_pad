@@ -4,7 +4,7 @@ import io.realm.RealmConfiguration;
 
 public class RealmConstant
 {
-    public static int VERSON = 1;
+    public static int VERSON = 2;
 
     public static RealmConfiguration getRealmConfig()
     {

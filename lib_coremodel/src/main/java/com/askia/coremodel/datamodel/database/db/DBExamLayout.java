@@ -36,6 +36,17 @@ public class DBExamLayout extends RealmObject implements Serializable {
     //考场选中状态
     private boolean isChecked = true;
 
+    //健康码
+    private String healthCode;
+
+    public String getHealthCode() {
+        return healthCode;
+    }
+
+    public void setHealthCode(String healthCode) {
+        this.healthCode = healthCode;
+    }
+
     public boolean isChecked() {
         return isChecked;
     }

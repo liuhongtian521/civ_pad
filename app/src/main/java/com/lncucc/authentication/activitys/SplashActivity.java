@@ -1,6 +1,8 @@
 package com.lncucc.authentication.activitys;
 
 import android.Manifest;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -51,12 +53,12 @@ public class SplashActivity extends BaseActivity
         ).subscribe(aBoolean -> {
             if (aBoolean){
                 //申请的权限全部允许
-                goToMain();
+//                goToMain();
             }else{
                 //只要有一个权限被拒绝，就会执行
                 new QMUIDialog.MessageDialogBuilder(SplashActivity.this)
                         .setTitle("权限异常")
-                        .setMessage("没有允许全部权限授权，将无法正常使用大话机功能。")
+                        .setMessage("没有允许全部权限授权，将无法正常使用。")
                         .addAction("退出应用", new QMUIDialogAction.ActionListener() {
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {

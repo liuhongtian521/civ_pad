@@ -1,23 +1,19 @@
 package com.askia.coremodel.viewmodel;
 
+import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
+
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
-import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.http.entities.UpLoadResult;
 import com.askia.coremodel.datamodel.http.repository.NetDataRepository;
-import com.askia.coremodel.datamodel.http.requestBody.ProgressListener;
 import com.askia.coremodel.datamodel.http.requestBody.UploadRequestBody;
 import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.event.Write2OGTEvent;
-import com.askia.coremodel.event.ZipUploadEvent;
 import com.askia.coremodel.util.IOUtil;
-import com.askia.coremodel.util.JsonUtil;
-import com.askia.coremodel.util.NetUtils;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -46,22 +42,16 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-
-import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 
 /**
  * 数据导出
  */
 public class DataExportViewModel extends BaseViewModel {
-    private String pwd = "Ut9RKOo8d4NCrnll";
 
     //导出到SDCard
     MutableLiveData<String> exportObservable = new MutableLiveData<>();
@@ -71,9 +61,6 @@ public class DataExportViewModel extends BaseViewModel {
     MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
     //导出数据上传
     MutableLiveData<UpLoadResult> upLoadObservable = new MutableLiveData<>();
-
-    private String exportPath = "";
-    private final String fileName = "ea_verify_detail.json";
 
     public MutableLiveData<String> doExport() {
         return exportObservable;
@@ -93,17 +80,6 @@ public class DataExportViewModel extends BaseViewModel {
 
 
     public void doDataExport(String seCode) {
-//        DBExamExport examExport = new DBExamExport();
-//        examExport.setCreateBy("1");
-//        examExport.setExamCode("222");
-//        examExport.setSeCode(seCode);
-//        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                realm.copyToRealmOrUpdate(examExport);
-//            }
-//        });
-
         //是否有导出数据
         List<DBExamExport> list = DBOperation.getExportBySeCode(seCode);
         if (list.isEmpty()) {
@@ -116,7 +92,8 @@ public class DataExportViewModel extends BaseViewModel {
             exportObservable.postValue("暂无验证数据！");
         } else {
             //拼接数据导出文件夹路径 STU_EXPORT + /seCode
-            exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
+            String fileName = "ea_verify_detail.json";
+            String exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
             //文件存在先删除再创建
             boolean isExit = FileUtils.createFileByDeleteOldFile(exportPath);
             //遍历 历史导出文件压缩包
@@ -126,9 +103,8 @@ public class DataExportViewModel extends BaseViewModel {
                     FileUtils.deleteFile(file);
                 }
             }
-            List<DBExamExport> tempList = new ArrayList<>();
             //copy value to fields
-            tempList.addAll(Realm.getDefaultInstance().copyFromRealm(list));
+            List<DBExamExport> tempList = new ArrayList<>(Realm.getDefaultInstance().copyFromRealm(list));
             if (isExit){
                 //写入数据
                 saveData2Local(tempList, exportPath, seCode);
@@ -149,9 +125,8 @@ public class DataExportViewModel extends BaseViewModel {
             OutputStream fileOutputStream = new FileOutputStream(localPath);
             fileOutputStream.write(data.getBytes());
             fileOutputStream.close();
-            String zipPath = STU_EXPORT;
             String filePath = STU_EXPORT + File.separator + seCode;
-            compress2zip(zipPath, filePath, seCode);
+            compress2zip(filePath, seCode);
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<String>() {
@@ -162,12 +137,10 @@ public class DataExportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull String s) {
-//                        exportObservable.postValue(s);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
-                        LogUtils.e("compress error ->", e.getMessage());
                     }
 
                     @Override
@@ -179,13 +152,11 @@ public class DataExportViewModel extends BaseViewModel {
 
     /**
      * 压缩文件
-     *
-     * @param zipPath  压缩文件路径
-     * @param filePath 文件路径
+     *  @param filePath 文件路径
      * @param seCode   场次号
      */
-    private void compress2zip(String zipPath, String filePath, String seCode) {
-        File zipPath_ = new File(zipPath);
+    private void compress2zip(String filePath, String seCode) {
+        File zipPath_ = new File(com.askia.coremodel.rtc.Constants.STU_EXPORT);
         File filePath_ = new File(filePath);
         String macId = DeviceUtils.getAndroidID();
         String zipFilePath = zipPath_ + "/" + seCode + "_" +macId+ ".zip";
@@ -211,13 +182,15 @@ public class DataExportViewModel extends BaseViewModel {
         parameters.setAesKeyStrength(AesKeyStrength.KEY_STRENGTH_256);
 
         // 设置密码
+        //压缩密码
+        String pwd = "Ut9RKOo8d4NCrnll";
         if (!TextUtils.isEmpty(pwd)) {
             zipFile.setPassword(pwd.toCharArray());
         }
 
         final ProgressMonitor monitor = zipFile.getProgressMonitor();
         new Thread(() -> {
-            int percentDone = 0;
+            int percentDone;
             UnZipHandleEvent zipHandleEvent = new UnZipHandleEvent();
             while (true) {
                 percentDone = monitor.getPercentDone();
@@ -255,22 +228,17 @@ public class DataExportViewModel extends BaseViewModel {
         if (file != null) {
             Write2OGTEvent event = new Write2OGTEvent();
             Observable.create((ObservableOnSubscribe<Write2OGTEvent>) emitter -> {
-                IOUtil.saveSDFile2OTG(sourceFile, file, new IOUtil.IOProcess() {
-                    @Override
-                    public void onProcessDoneListener(long current, long total) {
-                        LogUtils.e("current buffer length ->", current,total);
-                        event.setCurrent(current);
-                        event.setTotal(total);
-                        if (current < total) {
-                            event.setMessage("正在写入到U盘中...");
-                            event.setCode(1);
-                            emitter.onNext(event);
-                        } else {
-                            event.setMessage("导出完成");
-                            event.setCode(0);
-                            emitter.onNext(event);
-                        }
+                IOUtil.saveSDFile2OTG(sourceFile, file, (current, total) -> {
+                    event.setCurrent(current);
+                    event.setTotal(total);
+                    if (current < total) {
+                        event.setMessage("正在写入到U盘中...");
+                        event.setCode(1);
+                    } else {
+                        event.setMessage("数据导出完成，已导入到U盘Export文件夹中");
+                        event.setCode(0);
                     }
+                    emitter.onNext(event);
                 });
                 emitter.onNext(null);
             }).subscribeOn(Schedulers.io())
@@ -298,19 +266,23 @@ public class DataExportViewModel extends BaseViewModel {
         }
     }
 
+    /**
+     * 网络导出数据上传
+     * @param examCode 考试代码
+     * @param siteCode 考点编号
+     * @param seCode 场次码
+     * @param filePath 上传文件地址
+     */
     public void postData(String examCode,String siteCode,String seCode,String filePath){
         Map<String,String> map = new HashMap<>();
         map.put("examCode",examCode);
         map.put("siteCode",siteCode);
         map.put("seCode",seCode);
         map.put("equipment",DeviceUtils.getAndroidID());
-        MultipartBody.Builder builder = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM);
         File file = new File(filePath);
-//        RequestBody body = RequestBody.create(MediaType.parse("application/octet-stream"), file);
         UpLoadResult event = new UpLoadResult();
+        //添加自定义请求 requestBody，增加上传进度实时回调
         UploadRequestBody uploadRequestBody = new UploadRequestBody(file, (hasWrittenLen, totalLen) -> {
-            LogUtils.e("upload progress total->", totalLen,"hasWritten->",hasWrittenLen);
             event.setCurrent(hasWrittenLen);
             event.setTotal(totalLen);
             if (hasWrittenLen < totalLen){
@@ -323,7 +295,6 @@ public class DataExportViewModel extends BaseViewModel {
             upLoadObservable.postValue(event);
         });
 
-//        builder.addFormDataPart("file",file.getName(),body);
         MultipartBody.Part multipartBody =MultipartBody.Part.createFormData("file",file.getName(),uploadRequestBody);
 
         NetDataRepository.verifyfacecontrast(map,multipartBody)
@@ -337,14 +308,11 @@ public class DataExportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull UpLoadResult upLoadResult) {
-                        Log.e("TagSnake back",upLoadResult.getMessage());
                         upLoadObservable.postValue(upLoadResult);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
-                        Log.e("TagSnake err",Log.getStackTraceString(e));
-
                         UpLoadResult bean = new UpLoadResult();
                         bean.setMessage(e.getMessage());
                         bean.setSuccess(false);

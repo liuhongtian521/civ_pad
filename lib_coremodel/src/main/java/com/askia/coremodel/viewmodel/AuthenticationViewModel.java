@@ -44,14 +44,14 @@ public class AuthenticationViewModel extends BaseViewModel {
     private MutableLiveData<Integer> mLayoutSize = new MutableLiveData<>();
     private MutableLiveData<DBExamPlan> mDBExamPlan = new MutableLiveData<>();
     private MutableLiveData<DBExamArrange> mDBExamArrange = new MutableLiveData<>();
-    private MutableLiveData<Integer> mCanSign = new MutableLiveData<>();
+    private MutableLiveData<String> mCanSign = new MutableLiveData<>();
     private MutableLiveData<Integer> mDBExamExportNumber = new MutableLiveData<>();
 
     public MutableLiveData<Integer> getmDBExamExportNumber() {
         return mDBExamExportNumber;
     }
 
-    public MutableLiveData<Integer> getmCanSign() {
+    public MutableLiveData<String> getmCanSign() {
         return mCanSign;
     }
 
@@ -148,7 +148,8 @@ public class AuthenticationViewModel extends BaseViewModel {
     }
 
     public void canSign(String id) {
-        mCanSign.postValue(DBOperation.getDBExamExport(id));
+//        mCanSign.postValue(DBOperation.getDBExamExport(id));
+        mCanSign.postValue(DBOperation.getHealthCode(id));
     }
 
     public void getExamNumber(String seCode, String examCode) {
@@ -174,6 +175,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setSysOrgCode(dbExamLayout.getSysOrgCode());
         db.setSiteCode(dbExamLayout.getSiteCode());
         db.setIdCard(dbExamLayout.getIdCard());
+        db.setHealthCode(dbExamLayout.getHealthCode());
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
         upMsg(db);
@@ -202,6 +204,8 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setSiteCode(dbExamExport.getSiteCode());
         db.setIdCard(dbExamExport.getIdCard());
         db.setManualVerifyResult(dbExamExport.getManualVerifyResult());
+        //添加上传健康码
+        db.setHealthCode(dbExamExport.getHealthCode());
 //        db.setEntrancePhotoUrl();
         String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
         try {

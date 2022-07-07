@@ -201,7 +201,6 @@ public class DataExportFragment extends BaseFragment {
             device.init();//初始化
             //设备分区
             Partition partition = device.getPartitions().get(0);
-
             //文件系统
             FileSystem currentFs = partition.getFileSystem();
             currentFs.getVolumeLabel();//可以获取到设备的标识
@@ -214,6 +213,9 @@ public class DataExportFragment extends BaseFragment {
         }
     }
 
+    /**
+     * U盘 io遍历
+     */
     private void readFromUDisk() {
         UsbFile[] usbFiles = new UsbFile[0];
         try {
@@ -221,13 +223,25 @@ public class DataExportFragment extends BaseFragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //查找Export文件夹
         if (null != usbFiles && usbFiles.length > 0) {
-
+            boolean hasFolder = false;
             for (UsbFile usbFile : usbFiles) {
                 if (usbFile.getName().equals("Export")) {
+                    hasFolder = true;
+                    //写入数据
                     writeZip2UDisk(usbFile);
                 }
             }
+            //如果U盘中没有Export文件夹，需先创建文件夹再进行数据包导出
+           if (!hasFolder){
+               try {
+                   UsbFile file = cFolder.createDirectory("Export");
+                   writeZip2UDisk(file);
+               }catch (IOException e){
+                   e.printStackTrace();
+               }
+           }
         }
     }
 
@@ -283,7 +297,9 @@ public class DataExportFragment extends BaseFragment {
             }
         });
 
+        //网络数据导出模式
         exportViewModel.upLoad().observe(this, result -> {
+            //文件上传进度实时回调
             if (result!= null && result.getInfo() != null){
                 float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
                 String percentDone = numberFormat.format(ioPercentDone);
@@ -324,6 +340,10 @@ public class DataExportFragment extends BaseFragment {
         pop.update();
     }
 
+    /**
+     * 数据导出
+     * @param view
+     */
     public void export(View view) {
         showLoading();
         exportViewModel.doDataExport(seCode);

@@ -1,6 +1,7 @@
 package com.lncucc.authentication.widgets;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -10,8 +11,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 
 import com.lncucc.authentication.R;
 
@@ -31,6 +32,8 @@ public class FaceResultDialog extends BaseDialog {
     private CountDownTimer mCountDownTimer;
 
     LinearLayout linSuccess, linFaile;
+    ImageView healthCode;
+    TextView tvStatus;
     private MediaPlayer player;
     private Context mContext;
 
@@ -44,6 +47,9 @@ public class FaceResultDialog extends BaseDialog {
         ivClose = mView.findViewById(R.id.iv_close);
         linSuccess = mView.findViewById(R.id.line_face_success);
         linFaile = mView.findViewById(R.id.line_face_faile);
+
+        healthCode = mView.findViewById(R.id.iv_health_code);
+        tvStatus = mView.findViewById(R.id.tv_health_status);
 
         this.onListener = dialogClickBackListener;
 
@@ -108,7 +114,16 @@ public class FaceResultDialog extends BaseDialog {
         window.setAttributes(layoutParams);
     }
 
-    public void setType(boolean type) {
+    public void setType(boolean type, String code) {
+//        1，验证通过+绿码  语音提示：验证通过
+//
+//        2，验证通过+黄码/红码/未知  语音提示：健康码异常
+//
+//        3，验证失败+绿码，语音提示：验证失败
+//
+//        4，验证失败+黄码/红码/未知，语音提示：健康码异常
+        //code 0绿 1黄  2红 3未知
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
         super.show();
         fullScreenImmersive(getWindow().getDecorView());
@@ -118,20 +133,59 @@ public class FaceResultDialog extends BaseDialog {
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
         mCountDownTimer.start();
+//        if (type) {
+//            player = MediaPlayer.create(mContext,R.raw.tongguo);
+//            linSuccess.setVisibility(View.VISIBLE);
+//            linFaile.setVisibility(View.GONE);
+//        } else {
+//            player = MediaPlayer.create(mContext,R.raw.qingchongshi);
+//            linSuccess.setVisibility(View.GONE);
+//            linFaile.setVisibility(View.VISIBLE);
+//        }
         if (type) {
-            player = MediaPlayer.create(mContext,R.raw.tongguo);
-            linSuccess.setVisibility(View.VISIBLE);
-            linFaile.setVisibility(View.GONE);
-        } else {
-            player = MediaPlayer.create(mContext,R.raw.qingchongshi);
+            switch (code){
+                case "0":
+                    player = MediaPlayer.create(mContext, R.raw.tongguo);
+                    linSuccess.setVisibility(View.VISIBLE);
+                    healthCode.setImageResource(R.mipmap.icon_code_green);
+                    tvStatus.setText("健康码正常");
+                    tvStatus.setTextColor(Color.parseColor("#0EBD35"));
+                    linFaile.setVisibility(View.GONE);
+                    break;
+                case "1":
+                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+                    linSuccess.setVisibility(View.VISIBLE);
+                    healthCode.setImageResource(R.mipmap.icon_code_yellow);
+                    tvStatus.setText("健康码异常");
+                    tvStatus.setTextColor(Color.parseColor("#FFC047"));
+                    linFaile.setVisibility(View.GONE);
+                    break;
+                case "2":
+                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+                    linSuccess.setVisibility(View.VISIBLE);
+                    healthCode.setImageResource(R.mipmap.icon_code_red);
+                    tvStatus.setText("健康码异常");
+                    tvStatus.setTextColor(Color.parseColor("#FF615F"));
+                    linFaile.setVisibility(View.GONE);
+                    break;
+                case "3":
+                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+                    linSuccess.setVisibility(View.VISIBLE);
+                    healthCode.setImageResource(R.mipmap.icon_code_none);
+                    tvStatus.setTextColor(Color.parseColor("#6F7783"));
+                    tvStatus.setText("健康码异常");
+                    linFaile.setVisibility(View.GONE);
+                    break;
+            }
+        }
+        if (!type){
+            player = MediaPlayer.create(mContext, R.raw.qingchongshi);
             linSuccess.setVisibility(View.GONE);
             linFaile.setVisibility(View.VISIBLE);
         }
-
-        if (player != null){
+        if (player != null) {
             player.start();
         }
-
     }
 
 }

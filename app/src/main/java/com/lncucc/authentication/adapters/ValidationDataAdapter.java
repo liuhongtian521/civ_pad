@@ -25,7 +25,23 @@ public class ValidationDataAdapter extends BaseQuickAdapter<DBExamExport, BaseVi
         baseViewHolder.setText(R.id.tv_stu_name, TimeUtils.millis2String(Long.parseLong(s.getVerifyTime())));
         baseViewHolder.setText(R.id.tv_stu_num, s.getStuName());
         baseViewHolder.setText(R.id.tv_stu_exa_num, s.getIdCard());
-
+        String healthStatus = "";
+        switch (s.getHealthCode()){
+            case "0":
+                healthStatus = "绿码";
+                break;
+            case "1":
+                healthStatus = "黄码";
+                break;
+            case "2":
+                healthStatus = "红码";
+                break;
+            case "3":
+            case "":
+                healthStatus = "未知";
+                break;
+        }
+        baseViewHolder.setText(R.id.tv_item_health_code,healthStatus);
         baseViewHolder.setText(R.id.tv_exam, s.getVerifyResult());
         int position = baseViewHolder.getLayoutPosition();
         String color = "";

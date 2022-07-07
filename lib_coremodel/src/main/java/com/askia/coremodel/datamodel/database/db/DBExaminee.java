@@ -29,6 +29,16 @@ public class DBExaminee extends RealmObject implements Serializable {
     private String sysOrgCode;
     private String updateBy;
     private Long updateTime;
+    //健康码
+    private String healthCode;
+
+    public String getHealthCode() {
+        return healthCode;
+    }
+
+    public void setHealthCode(String healthCode) {
+        this.healthCode = healthCode;
+    }
 
     public String getBirthDate() {
         return birthDate;

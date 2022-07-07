@@ -35,6 +35,7 @@ import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.bigdata.facedetect.FaceDetect;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
@@ -224,7 +225,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     public void setCameraHelper(int type) {
         this.type = type;
-        rgbCameraID = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 0);
+        rgbCameraID = SPUtils.getInstance().getInt(CAMERA_DEFAULT,0);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(mPreview.getWidth(), mPreview.getHeight()))
                 .rotation(getActivity().getWindowManager().getDefaultDisplay().getRotation())

@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_view_one"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_7"
                     android:text="性别："
                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
@@ -127,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_view_two"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_7"
                     android:text="民族："
                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_view_three"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/dp_7"
                     android:text="验证结果："
                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
@@ -163,15 +163,26 @@
                     android:layout_toRightOf="@+id/tv_view_four"
                     android:src="@mipmap/icon_type_success" />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/iv_student_faile"-->
-<!--                    android:layout_width="@dimen/dp_34"-->
-<!--                    android:layout_height="@dimen/dp_12"-->
-<!--                    android:layout_alignTop="@+id/tv_view_four"-->
-<!--                    android:layout_alignBottom="@+id/tv_view_four"-->
-<!--                    android:layout_toRightOf="@+id/tv_view_four"-->
-<!--                    android:src="@drawable/icon_type_faile"-->
-<!--                    android:visibility="gone"/>-->
+                <TextView
+                    android:id="@+id/tv_health_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_view_four"
+                    android:layout_marginTop="@dimen/dp_7"
+                    android:text="健康码："
+                    android:textColor="#333333"
+                    android:textSize="@dimen/sp_8" />
+                <TextView
+                    android:id="@+id/tv_health_code_result"
+                    android:text="绿码"
+                    android:layout_alignTop="@+id/tv_health_code"
+                    android:layout_alignBottom="@+id/tv_health_code"
+                    android:layout_toRightOf="@+id/tv_health_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/sp_8"/>
+
             </RelativeLayout>
         </LinearLayout>
 

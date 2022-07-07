@@ -39,7 +39,7 @@ public class PeopleMsgDialog extends BaseDialog {
 
     ImageView ivBack, ivPhotoLeft, ivPhotoRight, ivType;
 
-    TextView tvName, tvSex, tvNationality, tvSubjectsName, tvExaminationRoom, tvTicketNumber, tvSeatNumber, tvIdCard;
+    TextView tvName, tvSex, tvNationality, tvSubjectsName, tvExaminationRoom, tvTicketNumber, tvSeatNumber, tvIdCard,tvHealthCode;
     TextView tvAddress, tvFaceValue;
     TextView tvTypeSuccess, tvTypeFaile;
     RelativeLayout rlBack;
@@ -72,6 +72,7 @@ public class PeopleMsgDialog extends BaseDialog {
 
         tvTypeSuccess = mView.findViewById(R.id.tv_type_success);//结果-成功
         tvTypeFaile = mView.findViewById(R.id.tv_type_faile);//结果-失败
+        tvHealthCode = mView.findViewById(R.id.tv_health_code_result);//健康码结果
 
         rlBack = mView.findViewById(R.id.rl_back);
 
@@ -102,6 +103,10 @@ public class PeopleMsgDialog extends BaseDialog {
         }
     }
 
+    /**
+     * 更新dialog 信息
+     * @param model 数据models
+     */
     public void setMsg(DBExamExport model) {
         String path = UN_ZIP_PATH + File.separator + model.getExamCode() + "/photo/" + model.getStuNo() + ".jpg";
         Log.e("TagSnake path",path);
@@ -110,10 +115,7 @@ public class PeopleMsgDialog extends BaseDialog {
         if (file.exists()) {
             if (ivPhotoLeft.getVisibility()!=View.VISIBLE)
                 ivPhotoLeft.setVisibility(View.VISIBLE);
-            //转换bitmap
-//            Bitmap bt = BitmapFactory.decodeFile(path);
             Bitmap bt = ImageUtil.getRotateNewBitmap(path);
-//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_one, bt);
              ivPhotoLeft.setImageBitmap(bt);
         }else {
             ivPhotoLeft.setVisibility(View.INVISIBLE);
@@ -122,19 +124,14 @@ public class PeopleMsgDialog extends BaseDialog {
         Log.e("TagSnake pathT",pathT);
         File file1 = new File(pathT);
         if (file1.exists()) {
-            //转换bitmap
-//            Bitmap bt = BitmapFactory.decodeFile(pathT);
             try {
                 FileInputStream fiss = new FileInputStream(file1);
                 Bitmap bt  = BitmapFactory.decodeStream(fiss);
-//                    Bitmap bts =BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
-//                viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
                 ivPhotoRight.setImageBitmap(bt);
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-//            viewHolderHelper.setImageBitmap(R.id.iv_item_head_two, bt);
         }
 
 
@@ -156,7 +153,25 @@ public class PeopleMsgDialog extends BaseDialog {
             setSubjectsName(layout.getSeName());
             setExaminationRoom(layout.getRoomNo());
             setSeatNumber(layout.getSiteName());
+            String result = "";
+            switch (model.getHealthCode()){
+                case "0":
+                    result = "绿码";
+                    break;
+                case "1":
+                    result = "黄码";
+                    break;
+                case "2":
+                    result = "红码";
+                    break;
+                case "3":
+                    result = "未知";
+                    break;
+            }
+            //健康码设置
+            tvHealthCode.setText(result);
         }
+
     }
 
     public void setName(String name) {

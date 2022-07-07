@@ -1,6 +1,7 @@
 package com.lncucc.authentication.activitys;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.event.UniAuthInfoEvent;
 import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
@@ -21,6 +23,8 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActLoginBinding;
 import com.askia.coremodel.util.SignUtils;
+import com.ttsea.jrxbus2.RxBus2;
+import com.ttsea.jrxbus2.Subscribe;
 
 import java.util.Objects;
 
@@ -37,6 +41,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void onInit() {
+        RxBus2.getInstance().register(this);
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
@@ -55,6 +60,15 @@ public class LoginActivity extends BaseActivity {
         loginBinding = DataBindingUtil.setContentView(this, R.layout.act_login);
         loginBinding.setViewmodel(loginViewModel);
         loginBinding.setClick(new ProxyClick());
+    }
+
+
+    @Subscribe(receiveStickyEvent = true)
+    public void onReceiveUserInfoEvent(UniAuthInfoEvent event) {
+        //uni跳过过来后，执行鉴权流程
+        loginViewModel.account.set(event.getUserName());
+        loginViewModel.password.set(event.getPassWord());
+        doLogin();
     }
 
     @Override
@@ -125,5 +139,11 @@ public class LoginActivity extends BaseActivity {
             }
             txtPassword.setSelection(Objects.requireNonNull(loginViewModel.password.get()).length());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxBus2.getInstance().unRegister(this);
     }
 }

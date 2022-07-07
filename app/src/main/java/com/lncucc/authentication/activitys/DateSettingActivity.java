@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.base.ViewManager;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
+import com.askia.coremodel.event.UniAuthInfoEvent;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.TimeUtils;
@@ -32,12 +34,15 @@ import com.lncucc.authentication.widgets.calendar.CustomDayView;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.ttsea.jrxbus2.RxBus2;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -54,10 +59,9 @@ public class DateSettingActivity extends BaseActivity {
     private CalendarViewAdapter calendarAdapter;
     private OnSelectDateListener onSelectDateListener;
     private CalendarDate currentDate;
-    private boolean initiated = false;
-    private int mCurrentPage = MonthPager.CURRENT_DAY_INDEX;
     private ArrayList<Calendar> currentCalendars = new ArrayList<>();
     public final CompositeDisposable mDisposable = new CompositeDisposable();
+    private boolean isFromUni = false;
 
     @Override
     public void onInit() {
@@ -92,11 +96,12 @@ public class DateSettingActivity extends BaseActivity {
             if (aBoolean) {
                 //申请的权限全部允许
 //                goToMain();
+                getUniParams();
             } else {
                 //只要有一个权限被拒绝，就会执行
                 new QMUIDialog.MessageDialogBuilder(DateSettingActivity.this)
                         .setTitle("权限异常")
-                        .setMessage("没有允许全部权限授权，将无法正常使用大话机功能。")
+                        .setMessage("没有允许全部权限授权，将无法正常使用。")
                         .addAction("退出应用", new QMUIDialogAction.ActionListener() {
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
@@ -108,6 +113,32 @@ public class DateSettingActivity extends BaseActivity {
                         .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
             }
         });
+    }
+
+    /**
+     * 获取从Uni跳转带过来的参数
+     */
+    public void getUniParams(){
+        Intent intent = getIntent();
+        if (intent == null) return;
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) return;
+        UniAuthInfoEvent event = new UniAuthInfoEvent();
+        for (String key: bundle.keySet()){
+            //获取uni传递的用户信息
+            Log.e("uni app userInfo->", bundle.get(key).toString());
+            String value = bundle.get(key).toString();
+            if ("userName".equals(key)){
+                event.setUserName(value);
+            }else {
+                event.setPassWord(value);
+            }
+        }
+        if (event.getUserName() != null && event.getPassWord() != null){
+            isFromUni = true;
+        }
+        //注册粘性事件
+        RxBus2.getInstance().postStickyEvent(event);
     }
 
 
@@ -186,7 +217,6 @@ public class DateSettingActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                mCurrentPage = position;
                 currentCalendars = calendarAdapter.getPagers();
                 if (currentCalendars.get(position % currentCalendars.size()) != null) {
                     CalendarDate date = currentCalendars.get(position % currentCalendars.size()).getSeedDate();
@@ -221,6 +251,7 @@ public class DateSettingActivity extends BaseActivity {
         initTimer();
         initCalendarView();
         initCurrentDate();
+        getUniParams();
     }
 
     /**
@@ -228,14 +259,22 @@ public class DateSettingActivity extends BaseActivity {
      * @param view
      */
     public void loginSystem(View view) {
-        if (autoLogin()){
+        if (autoLogin() && !isFromUni){
             Bundle _b = new Bundle();
             String code = SharedPreferencesUtils.getString(this,"code");
             _b.putString("code", code);
             _b.putInt("type", 1);
             startActivityByRouter(ARouterPath.INITIALIZE_ACTIVITY, _b);
         }else {
-            startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+//            startActivityByRouter(ARouterPath.LOGIN_ACTIVITY);
+            //清除密码
+            SharedPreferencesUtils.putString(this, "password", "");
+            //清除orgCode
+            SharedPreferencesUtils.putString(this, "code", "");
+            Intent intent = new Intent(this,LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         finish();
     }

@@ -19,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import com.askia.common.base.BaseFragment;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.FragmentDisplaySettingBinding;
 import com.qmuiteam.qmui.widget.QMUISlider;
@@ -72,20 +73,18 @@ public class DisplaySettingFragment extends BaseFragment {
 
             }
         });
-        currentPos = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 1);
+//        currentPos = SharedPreferencesUtils.getInt(getActivity(), CAMERA_DEFAULT, 0);
+        currentPos = SPUtils.getInstance().getInt(CAMERA_DEFAULT,0);
         setState();
-        linear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                currentPos == 0 ? currentPos =1: currentPos= 0;
-                if (currentPos == 0) {
-                    currentPos = 1;
-                } else {
-                    currentPos = 0;
-                }
-                SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
-                setState();
+        linear.setOnClickListener(v -> {
+            if (currentPos == 0) {
+                currentPos = 1;
+            } else {
+                currentPos = 0;
             }
+//            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
+            SPUtils.getInstance().put(CAMERA_DEFAULT,currentPos);
+            setState();
         });
     }
 
@@ -120,7 +119,7 @@ public class DisplaySettingFragment extends BaseFragment {
             te2.setTextColor(Color.parseColor("#666666"));
         } else {
             // 当前是后置摄像头  该进行前置摄像头的切换
-            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
+//            SharedPreferencesUtils.putInt(getActivity(), CAMERA_DEFAULT, currentPos);
             te2.setBackgroundResource(R.drawable.bg_network_btn);
             te2.setTextColor(Color.parseColor("#FFFFFF"));
             te1.setBackgroundColor(Color.TRANSPARENT);
@@ -172,12 +171,11 @@ public class DisplaySettingFragment extends BaseFragment {
         LogUtils.e("camera info ==>>>>>", info.facing, Camera.CameraInfo.CAMERA_FACING_FRONT);
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             // 前置
-            currentPos = 0;
-            setState();
+            currentPos = 1;
         } else {
             // 后置
-            currentPos = 1;
-            setState();
+            currentPos = 0;
         }
+        setState();
     }
 }

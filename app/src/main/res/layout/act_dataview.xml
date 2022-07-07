@@ -130,9 +130,18 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
+                    android:layout_weight="2"
                     android:gravity="center"
                     android:text="@string/verify_result"
+                    android:textColor="@color/_333333"
+                    android:textSize="8sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:text="@string/health_code"
                     android:textColor="@color/_333333"
                     android:textSize="8sp"
                     android:textStyle="bold" />

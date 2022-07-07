@@ -95,6 +95,19 @@ public class DBOperation {
         return query.findAll().size();
     }
 
+    /**
+     * 查询健康码
+     * @param id 编排表id
+     * @return 健康码标识
+     */
+    public static String getHealthCode(String id){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("id",id);
+        query.endGroup();
+        return query.findFirst().getHealthCode();
+    }
+
     public static int getDBExamExportNumber(String seCode, String examCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();

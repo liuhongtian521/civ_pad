@@ -40,7 +40,7 @@
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_weight="4"
+        android:layout_weight="2"
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
@@ -60,5 +60,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
-
+    <TextView
+        android:id="@+id/tv_item_health_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="@string/health_code"
+        android:textColor="@color/_333333"
+        android:textSize="8sp" />
 </LinearLayout>

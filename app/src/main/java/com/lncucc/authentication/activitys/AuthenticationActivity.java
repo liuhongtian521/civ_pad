@@ -260,13 +260,6 @@ public class AuthenticationActivity extends BaseActivity {
             }
         });
 
-//        mAdapter.setOnItemChildClickListener(new FOnItemChildClickListener() {
-//            @Override
-//            public void onItemChildClick(ViewGroup parent, View childView, int position) {
-//                peopleMsgDialog.show();
-//            }
-//        });
-
         mAdapter.setData(saveList);
         mAdapter.setListLength(6);//列表最多只显示六条
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -340,37 +333,6 @@ public class AuthenticationActivity extends BaseActivity {
                 }
             }
         });
-
-//        inquiryDialog = new InquiryDialog(this, new DialogClickBackListener() {
-//            @Override
-//            public void dissMiss() {
-//                inquiryDialog.dismiss();
-//                faceFragment.goContinueDetectFace();
-//            }
-//
-//            @Override
-//            public void backType(int type) {
-//                mDbExamLayout = inquiryDialog.getDbExamLayout();
-//                DBExaminee newDbExamine = new DBExaminee();
-//                newDbExamine.setStuNo(mDbExamLayout.getStuNo());
-//                newDbExamine.setStuName(mDbExamLayout.getStuName());
-//                mDbExaminee = newDbExamine;
-//                //对比
-//                isComparison = true;
-//                stuNo = mDbExaminee.getStuNo();
-//                inquiryDialog.dismiss();
-//                faceFragment.goContinueDetectFace();
-//                KeyboardUtils.hideSoftInput(AuthenticationActivity.this);
-//            }
-//        });
-
-
-//        inquiryDialog.setSearchListener(new InquiryDialog.Search() {
-//            @Override
-//            public void search(String msg, int type) {
-//                mViewModel.getStudent(type, msg, mExamCode, mSeCode);
-//            }
-//        });
 
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
             @Override
@@ -480,15 +442,12 @@ public class AuthenticationActivity extends BaseActivity {
         });
 
         //判断是否可以刷脸
-        mViewModel.getmCanSign().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                Log.e("TagSnake", integer + ":数据是否拥有");
-                if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
-                    return;
-                faceResultDialog.setType(true);
-
-            }
+        mViewModel.getmCanSign().observe(this, (Observer<String>) result -> {
+            Log.e("当前健康码状态->", result);
+            if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
+                return;
+            //刷脸成功
+            faceResultDialog.setType(true,result);
         });
 
 
@@ -556,7 +515,7 @@ public class AuthenticationActivity extends BaseActivity {
                     return;
                 if (dbExaminee == null) {
                     if (!isComparison) {
-                        faceResultDialog.setType(false);
+                        faceResultDialog.setType(false,"");
                     } else
                         faceFragment.goContinueDetectFace();
                 } else {
@@ -595,11 +554,11 @@ public class AuthenticationActivity extends BaseActivity {
                         else if (mExamCodeList.indexOf(dbExamLayout.getRoomNo()) > -1) {
                             mViewModel.canSign(dbExamLayout.getId());
                         } else
-                            faceResultDialog.setType(false);
+                            faceResultDialog.setType(false,"");
                     }
                 } else {
                     if (!isComparison) {
-                        faceResultDialog.setType(false);
+                        faceResultDialog.setType(false,"");
                     } else {
                         faceFragment.goContinueDetectFace();
                     }
@@ -680,7 +639,7 @@ public class AuthenticationActivity extends BaseActivity {
                 this.mDetectResult = detectResult;
                 mViewModel.quickPeople(mDetectResult.faceNum, mExamCode);//查询学生
             } else {
-                faceResultDialog.setType(false);
+                faceResultDialog.setType(false,"");
             }
         }
     }
