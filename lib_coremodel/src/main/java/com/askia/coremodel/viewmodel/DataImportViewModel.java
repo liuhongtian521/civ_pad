@@ -2,6 +2,7 @@ package com.askia.coremodel.viewmodel;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -14,6 +15,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.event.FaceDBHandleEvent;
+import com.askia.coremodel.event.ReImportFaceHandleEvent;
 import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.event.UsbWriteEvent;
 import com.askia.coremodel.rtc.FileUtil;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -63,7 +66,8 @@ public class DataImportViewModel extends BaseViewModel {
     private MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
     //face db insert
     private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
-
+    //face db insert error list
+    private List<String> errorList = new ArrayList<>();
     private String pwd = "Ut9RKOo8d4NCrnll";
 
     public MutableLiveData<UnZipHandleEvent> doZipHandle() {
@@ -163,6 +167,7 @@ public class DataImportViewModel extends BaseViewModel {
                 //照片为空添加提示
                 return;
             }
+            errorList.clear();
             int current = 1;
             for (File file : photoList) {
                 String faceNumber = file.getName().split("\\.")[0];
@@ -172,19 +177,33 @@ public class DataImportViewModel extends BaseViewModel {
 //                    boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
                     event.setTotal(photoList.size());
                     event.setCurrent(current);
-                    //如果人脸库中没有此人则把照片插入人脸库
-//                    if (!isHave) {
+                    Thread.sleep(300);
+                    //插入人脸库返回的faceId
                     String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
+                    //如果faceId为空，记录照片名称并展示
+                    if ("".equals(faceId)){
+                        //添加人脸库插入异常照片合集
+                        errorList.add(faceNumber);
+                    }
                     //照片总数
                     event.setFaceId(faceId);
+                    //人脸库插入完成
                     if (current == photoList.size()) {
-                        //人脸库插入完成
-                        event.setState(1);
+                        //人脸库2次校验,校验人脸库照片数量和导入照片数量是否一样
+                        int faceNum = FaceDetectManager.getInstance().totalNumberOfFace();
+                        Log.e("face num->", faceNum + "");
+                        if (faceNum == photoList.size()) {
+                            event.setState(1);
+                        } else {
+                            event.setState(2);
+                            event.setErrorList(errorList);
+                            event.setMessage("人脸库导入异常，请重试！");
+                        }
                     } else {
                         event.setState(0);
                     }
                     current++;
-
+                    event.setFaceNum(faceNumber);
                     emitter.onNext(event);
                 } catch (Exception e) {
                     Log.e("TagSnake 03", Log.getStackTraceString(e));
@@ -205,7 +224,7 @@ public class DataImportViewModel extends BaseViewModel {
                             removeZipFile();
                         }
                         faceDbObservable.postValue(result);
-                        LogUtils.e("faceid ->", result.getFaceId());
+                        LogUtils.e("faceid ->", result.getFaceId() + "num->"+ result.getFaceNum());
                     }
 
                     @Override

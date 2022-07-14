@@ -30,6 +30,8 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActInitializeBinding;
 import com.lncucc.authentication.widgets.DataImportDialog;
 import com.lncucc.authentication.widgets.DataImportDialogListener;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.FaceImportErrorDialog;
 import com.ttsea.jrxbus2.Subscribe;
 
 import java.io.File;
@@ -60,6 +62,7 @@ public class InitializeActivity extends BaseActivity {
     int downloadFaile = 0;
     int type = 0;
     private NumberFormat numberFormat;
+    private FaceImportErrorDialog errorDialog;
 
     private DataImportDialog importDialog;
     private List<DataImportBean> mChooseList = new ArrayList<>();
@@ -308,6 +311,26 @@ public class InitializeActivity extends BaseActivity {
                 } else {
                     breakthis(null);
                 }
+            }
+            //人脸库插入异常
+            if (result.getState() == 2){
+                MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
+                errorDialog = new FaceImportErrorDialog(InitializeActivity.this, new DialogClickBackListener() {
+                    @Override
+                    public void dissMiss() {
+                        errorDialog.dismiss();
+                        startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+                        finish();
+                    }
+
+                    @Override
+                    public void backType(int type) {
+                        errorDialog.dismiss();
+                        startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+                        finish();
+                    }
+                },result.getErrorList());
+                errorDialog.show();
             }
         });
     }

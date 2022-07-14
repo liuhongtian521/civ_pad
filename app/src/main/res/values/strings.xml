@@ -72,6 +72,8 @@
     <string name="verify_result">结果</string>
     <string name="health_code">健康码</string>
     <string name="verify_message_count">当前场次共有%s条验证数据</string>
+    <string name="import_error">导入异常</string>
+    <string name="face_import_error">人脸库导入异常，是否尝试重新导入?</string>
 
     <!--日志 -->
     <string name="logs_title">日志信息</string>

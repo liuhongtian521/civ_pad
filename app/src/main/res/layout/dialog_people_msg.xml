@@ -172,12 +172,22 @@
                     android:text="健康码："
                     android:textColor="#333333"
                     android:textSize="@dimen/sp_8" />
-                <TextView
-                    android:id="@+id/tv_health_code_result"
-                    android:text="绿码"
+
+                <ImageView
+                    android:id="@+id/iv_health_c"
+                    android:layout_width="10dp"
+                    android:layout_height="8dp"
                     android:layout_alignTop="@+id/tv_health_code"
                     android:layout_alignBottom="@+id/tv_health_code"
                     android:layout_toRightOf="@+id/tv_health_code"
+                    android:background="@mipmap/icon_h_f_g" />
+                <TextView
+                    android:id="@+id/tv_health_code_result"
+                    android:text="绿码"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignTop="@+id/tv_health_code"
+                    android:layout_alignBottom="@+id/tv_health_code"
+                    android:layout_toRightOf="@+id/iv_health_c"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#333333"

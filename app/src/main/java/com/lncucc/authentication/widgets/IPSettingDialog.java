@@ -56,7 +56,7 @@ public class IPSettingDialog extends BaseDialog {
                 Pattern p = Pattern.compile("(\\d+\\.\\d+\\.\\d+\\.\\d+)\\:(\\d+)");
                 Matcher m = p.matcher(ip);
                 if (m.matches()){
-                    String baseUrl = "https://" + ip;
+                    String baseUrl = "http://" + ip;
                     SharedPreferencesUtils.putString(context, Constants.AUTO_BASE_URL, baseUrl);
                     MyToastUtils.success("IP修改成功",0);
                     //切换baseUrl
@@ -66,7 +66,6 @@ public class IPSettingDialog extends BaseDialog {
                 }else {
                     MyToastUtils.error("IP输入错误，请重新输入",0);
                 }
-
             }
 
         });

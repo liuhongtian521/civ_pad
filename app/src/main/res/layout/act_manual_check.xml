@@ -63,7 +63,7 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="9dp"
+                                android:layout_marginTop="5dp"
                                 android:orientation="horizontal">
 
                                 <TextView
@@ -84,7 +84,7 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -108,7 +108,7 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_width="@dimen/dp_120"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -132,7 +132,7 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_width="@dimen/dp_120"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -149,6 +149,28 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:text=" "
+                                    android:textColor="#333333"
+                                    android:textSize="@dimen/sp_9" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="健康码："
+                                    android:textColor="#333333"
+                                    android:textSize="@dimen/sp_9" />
+
+                                <TextView
+                                    android:id="@+id/tv_health_code"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text=""
                                     android:textColor="#333333"
                                     android:textSize="@dimen/sp_9" />
                             </LinearLayout>

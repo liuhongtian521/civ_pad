@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.lncucc.authentication.widgets.DataImportDialog;
 import com.lncucc.authentication.widgets.DataImportDialogListener;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.FaceImportErrorDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 
@@ -66,6 +69,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     private String currentIOPercent = "";
     private DataImportDialog importDialog;
     private List<DataImportBean> mList = new ArrayList<>();
+    private FaceImportErrorDialog errorDialog;
 
     @Override
     public void onInit() {
@@ -150,8 +154,25 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             loadingDialog.setLoadingProgress(percent, String.format("正在插入第%d张,共%d张", result.getCurrent(), result.getTotal()));
             if (result.getState() == 1) {
                 closeLoading();
-                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                MyToastUtils.success("导入成功", Toast.LENGTH_SHORT);
                 LogsUtil.saveOperationLogs("数据导入");
+            }
+            //人脸库导入异常
+            if (result.getState() == 2){
+                MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
+                closeLoading();
+                errorDialog = new FaceImportErrorDialog(getActivity(), new DialogClickBackListener() {
+                    @Override
+                    public void dissMiss() {
+
+                    }
+
+                    @Override
+                    public void backType(int type) {
+                        errorDialog.dismiss();
+                    }
+                },result.getErrorList());
+                errorDialog.show();
             }
             closeLogadingDialog();
         });

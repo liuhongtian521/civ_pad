@@ -37,7 +37,7 @@ public class PeopleMsgDialog extends BaseDialog {
     View mView;
     private DialogClickBackListener onListener;
 
-    ImageView ivBack, ivPhotoLeft, ivPhotoRight, ivType;
+    ImageView ivBack, ivPhotoLeft, ivPhotoRight, ivType,ivHealth;
 
     TextView tvName, tvSex, tvNationality, tvSubjectsName, tvExaminationRoom, tvTicketNumber, tvSeatNumber, tvIdCard,tvHealthCode;
     TextView tvAddress, tvFaceValue;
@@ -73,6 +73,7 @@ public class PeopleMsgDialog extends BaseDialog {
         tvTypeSuccess = mView.findViewById(R.id.tv_type_success);//结果-成功
         tvTypeFaile = mView.findViewById(R.id.tv_type_faile);//结果-失败
         tvHealthCode = mView.findViewById(R.id.tv_health_code_result);//健康码结果
+        ivHealth = mView.findViewById(R.id.iv_health_c);
 
         rlBack = mView.findViewById(R.id.rl_back);
 
@@ -154,22 +155,28 @@ public class PeopleMsgDialog extends BaseDialog {
             setExaminationRoom(layout.getRoomNo());
             setSeatNumber(layout.getSiteName());
             String result = "";
+            int healthResult = 0;
             switch (model.getHealthCode()){
                 case "0":
                     result = "绿码";
+                    healthResult = R.mipmap.icon_h_f_g;
                     break;
                 case "1":
                     result = "黄码";
+                    healthResult = R.mipmap.icon_h_f_y;
                     break;
                 case "2":
                     result = "红码";
+                    healthResult = R.mipmap.icon_h_f_r;
                     break;
                 case "3":
                     result = "未知";
+                    healthResult = R.mipmap.icon_h_f_n;
                     break;
             }
             //健康码设置
             tvHealthCode.setText(result);
+            ivHealth.setImageResource(healthResult);
         }
 
     }

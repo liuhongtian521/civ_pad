@@ -72,17 +72,18 @@
                 android:background="@drawable/bg_btn_line_blue"
                 android:layout_width="75dp"
                 android:layout_height="match_parent"/>
+
             <TextView
                 android:id="@+id/tv_pwd_confirm"
-                android:text="@string/btn_data_confirm"
-                android:gravity="center"
-                android:textSize="9sp"
-                android:layout_marginRight="63dp"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_login_button"
                 android:layout_width="75dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="63dp"
+                android:background="@drawable/bg_login_button"
+                android:gravity="center"
+                android:text="@string/btn_data_confirm"
+                android:textColor="@color/white"
+                android:textSize="9sp" />
         </RelativeLayout>
     </LinearLayout>
 

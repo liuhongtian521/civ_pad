@@ -245,6 +245,24 @@ public class ManualCheckActivity extends BaseActivity {
                 manualBinding.tvIdCard.setText(result.getIdCard());
                 manualBinding.tvAddress.setText(result.getSiteName());
                 manualBinding.tvAddressNo.setText(result.getSeatNo());
+                String healthStatus = "";
+                switch (result.getHealthCode()){
+                    case "0":
+                        healthStatus = "绿码";
+                        break;
+                    case "1":
+                        healthStatus = "黄码";
+                        break;
+                    case "2":
+                        healthStatus = "红码";
+                        break;
+                    case "3":
+                    case "":
+                        healthStatus = "未知";
+                        break;
+                }
+                manualBinding.tvHealthCode.setText(healthStatus);
+
                 String path = UN_ZIP_PATH + File.separator + examCode + File.separator + "photo" + File.separator + result.getStuNo() + ".jpg";
                 //转换file
                 File file = new File(path);
