@@ -79,9 +79,9 @@ public class FileUtil {
             while ((n = fis.read(b)) != -1) {
                 bos.write(b, 0, n);
             }
+            buffer = bos.toByteArray();
             fis.close();
             bos.close();
-            buffer = bos.toByteArray();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

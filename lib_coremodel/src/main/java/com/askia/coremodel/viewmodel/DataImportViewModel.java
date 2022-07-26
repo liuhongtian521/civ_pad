@@ -177,7 +177,7 @@ public class DataImportViewModel extends BaseViewModel {
 //                    boolean isHave = FaceDetectManager.getInstance().fetchByFaceNumber(faceNumber);
                     event.setTotal(photoList.size());
                     event.setCurrent(current);
-                    Thread.sleep(300);
+//                    Thread.sleep(300);
                     //插入人脸库返回的faceId
                     String faceId = FaceDetectManager.getInstance().addFace(faceNumber, faceNumber, bytes);
                     //如果faceId为空，记录照片名称并展示
@@ -224,7 +224,7 @@ public class DataImportViewModel extends BaseViewModel {
                             removeZipFile();
                         }
                         faceDbObservable.postValue(result);
-                        LogUtils.e("faceid ->", result.getFaceId() + "num->"+ result.getFaceNum());
+                        LogUtils.e(result.getFaceNum() + "faceid ->", result.getFaceId());
                     }
 
                     @Override

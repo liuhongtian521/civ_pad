@@ -61,6 +61,7 @@ public class ManualCheckActivity extends BaseActivity {
     private DBExamLayout examLayout;
     private FaceComparedDialog faceComparedDialog;
     private String similarity = "";
+    private String path;
 
     @Override
     public void onInit() {
@@ -222,6 +223,7 @@ public class ManualCheckActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             bundle.putString("stuNo",examLayout.getStuNo());
             bundle.putString("seCode",examLayout.getSeCode());
+            bundle.putString("path", path);
             //点击比对
             startActivityForResultByRouter(ARouterPath.TAKE_PHOTO,PHOTO_REQUEST,bundle);
         });
@@ -263,7 +265,7 @@ public class ManualCheckActivity extends BaseActivity {
                 }
                 manualBinding.tvHealthCode.setText(healthStatus);
 
-                String path = UN_ZIP_PATH + File.separator + examCode + File.separator + "photo" + File.separator + result.getStuNo() + ".jpg";
+                path = UN_ZIP_PATH + File.separator + examCode + File.separator + "photo" + File.separator + result.getStuNo() + ".jpg";
                 //转换file
                 File file = new File(path);
                 if (file.exists()) {

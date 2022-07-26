@@ -14,7 +14,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +24,7 @@ import com.askia.common.util.faceUtils.DrawHelper;
 import com.askia.common.widget.camera.CameraHelper;
 import com.askia.common.widget.camera.CameraListener;
 import com.askia.coremodel.rtc.Constants;
+import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.util.ImageUtil;
 import com.bigdata.facedetect.FaceDetect;
 import com.blankj.utilcode.util.ImageUtils;
@@ -35,6 +35,7 @@ import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.DecimalFormat;
 
 import io.reactivex.disposables.Disposable;
 
@@ -49,6 +50,8 @@ public class TakePhotoActivity extends AppCompatActivity {
     public Disposable mDisposable;
     //学生编号
     private String stuNo, seCode;
+    //查询图片的路径
+    private String sPath;
     protected int frames = 0;
     private DrawHelper drawHelper;
     private Camera.Size previewSize;
@@ -63,6 +66,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         initCamera();
         stuNo = getIntent().getStringExtra("stuNo");
         seCode = getIntent().getStringExtra("seCode");
+        sPath = getIntent().getStringExtra("path");
         initHandler();
         initEvent();
     }
@@ -111,8 +115,8 @@ public class TakePhotoActivity extends AppCompatActivity {
                                 image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
                                 jpegData = outputSteam.toByteArray();
                                 //人脸比对
-                                float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
-                                FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.80f);
+//                                float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
+//                                FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.80f);
 
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length);
 
@@ -126,10 +130,16 @@ public class TakePhotoActivity extends AppCompatActivity {
                                 //保存图片
                                 boolean success = ImageUtils.save(bitmap, imgPath, Bitmap.CompressFormat.PNG);
                                 bitmap.recycle();
+
+                                byte[] b1 = FileUtil.getBytesByFile(sPath);
+                                //添加人脸1：1 比对搜索的学生和当前拍照的人进行比对
+                                FaceDetect detect = new FaceDetect();
+                                float result = detect.nativeCheckFace(jpegData,b1,false);
+                                String a = new DecimalFormat("0.00000").format(result);
                                 //保存成功,释放bitmap,并关闭当前页
                                 if (success) {
                                     Intent intent = new Intent();
-                                    intent.putExtra("similarity", detectResult == null ? "" : detectResult.similarity + "");
+                                    intent.putExtra("similarity", a);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                 }
