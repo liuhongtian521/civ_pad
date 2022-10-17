@@ -226,11 +226,21 @@ public class AuthenticationViewModel extends BaseViewModel {
                     @Override
                     public void onNext(@NotNull BaseResponseData baseResponseData) {
                         Log.e("TagSnake back", baseResponseData.getMessage());
+                        //2022 10.22 达尔哥新增需求，记录实时上传状态DataExport表中，网络导出时弹出实时上传失败数量弹框
+                        //上传成功
+                        if (baseResponseData.isSuccess()){
+                            //存储上传状态
+                            setUpLoadDataStatus(dbExamExport,1);
+                        }else {
+                            setUpLoadDataStatus(dbExamExport,0);
+                        }
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("TagSnake err", Log.getStackTraceString(e));
+                        //上传失败
+                        setUpLoadDataStatus(dbExamExport,0);
                     }
 
                     @Override
@@ -238,5 +248,9 @@ public class AuthenticationViewModel extends BaseViewModel {
 
                     }
                 });
+    }
+
+    private void setUpLoadDataStatus(DBExamExport db,int status){
+        DBOperation.setUpLoadDataStatusOnLine(db,status);
     }
 }

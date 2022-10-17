@@ -16,6 +16,7 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.data.DataImportBean;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.datamodel.http.entities.DounloadZipData;
 import com.askia.coremodel.datamodel.http.entities.GetZipData;
 import com.askia.coremodel.datamodel.http.entities.SelectpalnbysitecodeData;
@@ -304,6 +305,7 @@ public class InitializeActivity extends BaseActivity {
             actInitializeBinding.tvProgress.setText(number + "%");
             if (result.getState() == 1) {
                 MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
+                LogsUtil.saveOperationLogs("数据导入");
                 //验证是否成功
                 if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
                     startActivityByRouter(ARouterPath.MAIN_ACTIVITY);

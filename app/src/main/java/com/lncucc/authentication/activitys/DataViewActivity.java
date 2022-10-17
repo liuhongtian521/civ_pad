@@ -19,7 +19,8 @@ import java.util.List;
 
 /**
  * Create bt she:
- *验证数据查看
+ * 验证数据查看
+ *
  * @date 2021/8/5
  */
 @Route(path = ARouterPath.DATA_VIEW)
@@ -35,9 +36,8 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
     public void onInit() {
         findViewById(R.id.rel_title1).setOnClickListener(v -> finish());
         String seCode = getIntent().getStringExtra("seCode");
-//        mList = DBOperation.getVerifyList();
         mList = DBOperation.getVerifyListBySeCode(seCode);
-        peopleMsgDialog = new PeopleMsgDialog(this,this);
+        peopleMsgDialog = new PeopleMsgDialog(this, this);
         tempList.clear();
         tempList.addAll(mList);
         mDataBinding.recList.setLayoutManager(new LinearLayoutManager(this));

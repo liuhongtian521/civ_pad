@@ -109,7 +109,7 @@
         <TextView
             android:id="@+id/tv_count"
             android:textColor="#3A90FF"
-            android:text="当前场次共有1,000,348条验证数据"
+            android:text="当前场次共有100条验证数据"
             android:layout_marginTop="21dp"
             android:textSize="8sp"
             android:layout_gravity="center_horizontal"

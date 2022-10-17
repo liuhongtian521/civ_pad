@@ -1,12 +1,12 @@
 package com.lncucc.authentication.fragments;
 
+import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
@@ -51,8 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
-
 /**
  * 数据导入
  */
@@ -77,7 +74,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
         loadingDialog = new DataLoadingDialog(getActivity());
-        importDialog = new DataImportDialog(getActivity(),this);
+        importDialog = new DataImportDialog(getActivity(), this);
         loadingDialog.setCanceledOnTouchOutside(false);
         for (int i = 0; i < 3; i++) {
             DataImportListBean bean = new DataImportListBean();
@@ -136,7 +133,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     public void onSubscribeViewModel() {
         viewModel.doZipHandle().observe(this, result -> {
             int progress = result.getUnZipProcess();
-            loadingDialog.setLoadingProgress(result.getUnZipProcess()+"", result.getMessage());
+            loadingDialog.setLoadingProgress(result.getUnZipProcess() + "", result.getMessage());
             if (progress == 100) {
                 LogUtils.e("file unzip success ->", result.getUnZipProcess());
                 //解析 插入数据/插入人脸库
@@ -158,7 +155,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
                 LogsUtil.saveOperationLogs("数据导入");
             }
             //人脸库导入异常
-            if (result.getState() == 2){
+            if (result.getState() == 2) {
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
                 closeLoading();
                 errorDialog = new FaceImportErrorDialog(getActivity(), new DialogClickBackListener() {
@@ -171,7 +168,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
                     public void backType(int type) {
                         errorDialog.dismiss();
                     }
-                },result.getErrorList());
+                }, result.getErrorList());
                 errorDialog.show();
             }
             closeLogadingDialog();
@@ -180,20 +177,17 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         viewModel.usbWriteObservable().observe(this, result -> {
             showLoading();
             //压缩包IO操作进度
-            float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+            float ioPercentDone = (float) result.getCurrent() / (float) result.getTotal() * 100;
             String percentDone = numberFormat.format(ioPercentDone);
-            if (!currentIOPercent.equals(percentDone)){
-                loadingDialog.setLoadingProgress(percentDone,result.getMessage());
+            if (!currentIOPercent.equals(percentDone)) {
+                loadingDialog.setLoadingProgress(percentDone, result.getMessage());
             }
             if (result.getCode() == 0) {
                 LogUtils.e("file copy success ->", result.getCode());
-//                ioTag = !ioTag;
-//                if (ioTag){
                 DataImportBean bean = new DataImportBean();
                 bean.setFilePath(result.getZipPath());
                 bean.setFileName(result.getFileName());
-                viewModel.doUnzip(this,bean);
-//                }
+                viewModel.doUnzip(this, bean);
             }
             currentIOPercent = percentDone;
         });
@@ -231,10 +225,8 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         for (UsbMassStorageDevice device : storageDevices) {
             //读取设备是否有权限
             if (usbManager.hasPermission(device.getUsbDevice())) {
-//                showLoading();
                 readDevice(device);
             } else {
-//                closeLoading();
                 //没有权限，进行申请
                 usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
             }
@@ -249,7 +241,6 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             device.init();//初始化
             //设备分区
             Partition partition = device.getPartitions().get(0);
-
             //文件系统
             FileSystem currentFs = partition.getFileSystem();
             currentFs.getVolumeLabel();//可以获取到设备的标识
@@ -277,30 +268,30 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
                 if (usbFile.getName().equals("Examination")) {
                     mList.clear();
                     mList.addAll(viewModel.fetchDataFromUsb(usbFile));
-                    importDialog.showImportDialog(1,mList);
-//                    viewModel.readZipFromUDisk(usbFile);
+                    importDialog.showImportDialog(1, mList);
                 }
             }
         }
     }
 
+    /**
+     * 数据导入
+     * @param view view
+     */
     public void importData(View view) {
         switch (defaultIndex) {
-            case 0:
-               Intent intent = new Intent(getActivity(),InitializeActivity.class);
-               intent.putExtra("type", -1);
-               startActivity(intent);
+            case 0: //网络导入复用initializeActivity,
+                Intent intent = new Intent(getActivity(), InitializeActivity.class);
+                intent.putExtra("type", -1);
+                startActivity(intent);
                 break;
             case 1:
-//                showLoading();
                 redUDiskDevsList();
                 break;
             case 2:
-//                showLoading();
-//                ioTag = false;
                 mList.clear();
                 mList.addAll(viewModel.fetchDataFromSdCard());
-                importDialog.showImportDialog(2,mList);
+                importDialog.showImportDialog(2, mList);
                 break;
         }
     }
@@ -312,8 +303,8 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         }
     }
 
-    private void showLoading(){
-        if (!loadingDialog.isShowing() && loadingDialog != null){
+    private void showLoading() {
+        if (!loadingDialog.isShowing() && loadingDialog != null) {
             loadingDialog.show();
         }
     }
@@ -328,21 +319,21 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     public void confirm(int position) {
         importDialog.dismiss();
         //USB导入
-        if (defaultIndex == 1){
+        if (defaultIndex == 1) {
             UsbFile file = mList.get(position).getUsbFile();
-            if (file!= null){
+            if (file != null) {
                 showLoading();
                 viewModel.readZipFromUDisk(file);
             }
-        }else if (defaultIndex == 2){
+        } else if (defaultIndex == 2) {
             showLoading();
-            viewModel.doUnzip(this,mList.get(position));
+            viewModel.doUnzip(this, mList.get(position));
         }
     }
 
     @Override
     public void cancel() {
-        if (importDialog != null){
+        if (importDialog != null) {
             importDialog.dismiss();
         }
     }

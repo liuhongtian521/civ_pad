@@ -116,7 +116,6 @@ public class ImageUtil {
         if (rect.left - 200 < 0) {
             rx = rect.left;
         } else {
-            // rx + rWidth < bitmap.width 否则会crash
             if (rect.left + rWidth > bitmap.getWidth()) {
                 rx = bitmap.getWidth() - rWidth - 10;
             } else {

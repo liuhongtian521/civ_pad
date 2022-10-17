@@ -131,68 +131,64 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 mFaceDecting = false;
 
                 if (handler != null)
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.e("TagSake", "in handle01");
-                            FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
-                            if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
-                                frames = 0;
+                    handler.post(() -> {
+                        Log.e("TagSake", "in handle01");
+                        FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
+                        if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
+                            frames = 0;
+                            goContinueDetectFace();
+                        } else {
+                            if (frames < 2) {
+                                frames++;
                                 goContinueDetectFace();
                             } else {
-                                if (frames < 2) {
-                                    frames++;
-                                    goContinueDetectFace();
+                                frames = 0;
+                                //人脸识别
+                                //人脸识别
+                                YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
+                                ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
+                                byte[] jpegData = null;
+                                image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
+                                jpegData = outputSteam.toByteArray();
+
+                                float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
+                                FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.85f);
+                                //faceNum = "011412100080"
+                                if (detectResult == null) {
+                                    Log.e("TagSnakesnake", "detect result ->    null");
                                 } else {
-                                    frames = 0;
-                                    //人脸识别
-                                    //人脸识别
-                                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
-                                    ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
-                                    byte[] jpegData = null;
-                                    image.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 80, outputSteam);
-                                    jpegData = outputSteam.toByteArray();
-
-                                    float[] feature = FaceDetectManager.getInstance().getFaceFeatureByData(jpegData);
-                                    FaceDetectResult detectResult = FaceDetectManager.getInstance().faceDetect(feature, 0.80f);
-                                    //faceNum = "011412100080"
-                                    if (detectResult == null) {
-                                        Log.e("TagSnakesnake", "detect result ->    null");
-                                    } else {
-                                        String path = "";
-                                        if (isComputen()) {
-                                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
-                                        } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum)) {
-                                            path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
-                                        }
-                                        if (!"".equals(path)) {
-                                            Bitmap bitmap = null;
-                                            BitmapFactory.Options options = new BitmapFactory.Options();
-//                            options.inSampleSize = 2;
-                                            Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
-
-                                            options.inPreferredConfig = Bitmap.Config.RGB_565;
-                                            bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
-                                            if (faceResult.faceRect != null) {
-                                                bitmap = com.askia.coremodel.util.ImageUtil.imageCrop(bitmap, faceResult.faceRect);
-                                            }
-
-                                            if (FileUtils.isFileExists(path)) {
-                                                File file = FileUtils.getFileByPath(path);
-                                                if (file != null)
-                                                    file.delete();
-                                            }
-                                            bitmap = ImageUtil.converBitmap(bitmap);// com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
-                                            bitmap = ImageUtil.sampleSize(bitmap);
-                                            com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
-                                            bitmap.recycle();
-                                        }
+                                    String path = "";
+                                    if (isComputen()) {
+                                        path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + getStuNo() + ".jpg";
+                                    } else if (mSeCode != null && detectResult.faceNum != null && !"".equals(detectResult.faceNum)) {
+                                        path = Constants.STU_EXPORT + File.separator + mSeCode + File.separator + "photo" + File.separator + detectResult.faceNum + ".jpg";
                                     }
-                                    Message message = new Message();
-                                    message.obj = detectResult;
-                                    if (handler != null)
-                                        handler.sendMessage(message);
+                                    if (!"".equals(path)) {
+                                        Bitmap bitmap = null;
+                                        BitmapFactory.Options options = new BitmapFactory.Options();
+                                        Log.e("TagSnakesnake", "刷脸分数:" + detectResult.similarity);
+
+                                        options.inPreferredConfig = Bitmap.Config.RGB_565;
+                                        bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
+                                        if (faceResult.faceRect != null) {
+                                            bitmap = ImageUtil.imageCrop(bitmap, faceResult.faceRect);
+                                        }
+
+                                        if (FileUtils.isFileExists(path)) {
+                                            File file = FileUtils.getFileByPath(path);
+                                            if (file != null)
+                                                file.delete();
+                                        }
+                                        bitmap = ImageUtil.converBitmap(bitmap);// com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
+                                        bitmap = ImageUtil.sampleSize(bitmap);
+                                        com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                                        bitmap.recycle();
+                                    }
                                 }
+                                Message message = new Message();
+                                message.obj = detectResult;
+                                if (handler != null)
+                                    handler.sendMessage(message);
                             }
                         }
                     });

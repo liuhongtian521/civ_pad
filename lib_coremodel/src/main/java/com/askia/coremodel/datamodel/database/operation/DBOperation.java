@@ -65,6 +65,7 @@ public class DBOperation {
 
     /**
      * 场次查看
+     *
      * @return
      */
     public static List<DBExamArrange> getAllExamArrange() {
@@ -78,13 +79,7 @@ public class DBOperation {
 
 
     public static void setDBExamExport(DBExamExport db) {
-        Realm.getDefaultInstance().executeTransactionAsync(new Realm.Transaction() {
-
-            @Override
-            public void execute(Realm realm) {
-                realm.insertOrUpdate(db);
-            }
-        });
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.insertOrUpdate(db));
     }
 
     public static int getDBExamExport(String id) {
@@ -97,13 +92,14 @@ public class DBOperation {
 
     /**
      * 查询健康码
+     *
      * @param id 编排表id
      * @return 健康码标识
      */
-    public static String getHealthCode(String id){
+    public static String getHealthCode(String id) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
-        query.equalTo("id",id);
+        query.equalTo("id", id);
         query.endGroup();
         return query.findFirst().getHealthCode();
     }
@@ -246,7 +242,7 @@ public class DBOperation {
 
         Realm.getDefaultInstance().executeTransactionAsync(realm -> {
                     DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
-                    if (plan != null){
+                    if (plan != null) {
                         plan.setVerifyStartTime(startTime);
                         plan.setVerifyEndTime(endTime);
                         realm.copyToRealmOrUpdate(plan);
@@ -311,12 +307,13 @@ public class DBOperation {
 
     /**
      * 根据准考证模糊查询学生信息
-     * @param examNum 准考证号
+     *
+     * @param examNum  准考证号
      * @param examCode 考试编号
-     * @param seCode 场次号
+     * @param seCode   场次号
      * @return 学生信息
      */
-    public static DBExamLayout getStudentByExamCode(String examNum, String examCode, String seCode){
+    public static DBExamLayout getStudentByExamCode(String examNum, String examCode, String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         //身份证号
@@ -329,12 +326,13 @@ public class DBOperation {
 
     /**
      * 根据准考证模糊查询学生信息
-     * @param idNo 身份证号
+     *
+     * @param idNo     身份证号
      * @param examCode 考试编号
-     * @param seCode 场次号
+     * @param seCode   场次号
      * @return 学生信息
      */
-    public static DBExamLayout getStudentByIdCard(String idNo, String examCode, String seCode){
+    public static DBExamLayout getStudentByIdCard(String idNo, String examCode, String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         //身份证号
@@ -388,15 +386,16 @@ public class DBOperation {
 
     /**
      * 根据场次编码获取 验证数据信息
+     *
      * @param seCode 场次码
      * @return
      */
-    public static List<DBExamExport> getVerifyListBySeCode(String seCode){
+    public static List<DBExamExport> getVerifyListBySeCode(String seCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
-        query.equalTo("seCode",seCode, Case.SENSITIVE);
+        query.equalTo("seCode", seCode, Case.SENSITIVE);
         query.endGroup();
-        return query.findAll();
+        return query.findAllSorted("verifyTime",Sort.DESCENDING);
     }
 
     /**
@@ -439,15 +438,28 @@ public class DBOperation {
         return query.findFirst();
     }
 
-//    /**
-//     * @param page page
-//     * @param pageSize pageSize
-//     * @return 分页查询
-//     */
-//    public static List<DBExamLayout> getMore(int page, int pageSize){
-//        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
-//        query.beginGroup();
-//        query.l
-//
-//    }
+    /**
+     * 设置数据上传状态
+     *
+     * @param data   上传数据
+     * @param status 上传状态 0失败 1成功
+     */
+    public static void setUpLoadDataStatusOnLine(DBExamExport data, int status) {
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+            data.setUpLoadStatus(status);
+            realm.insertOrUpdate(data);
+        });
+    }
+
+    /**
+     * 查询实时上传失败的数据条数
+     * @return num
+     */
+    public static int getDataUpLoadFailedNum(){
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("upLoadStatus", 0);
+        query.endGroup();
+        return  query.findAll().size();
+    }
 }

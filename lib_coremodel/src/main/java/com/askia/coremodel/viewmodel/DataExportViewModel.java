@@ -16,7 +16,6 @@ import com.askia.coremodel.event.Write2OGTEvent;
 import com.askia.coremodel.util.IOUtil;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.google.gson.Gson;
 
@@ -96,7 +95,7 @@ public class DataExportViewModel extends BaseViewModel {
             String exportPath = STU_EXPORT + File.separator + seCode + File.separator + fileName;
             //文件存在先删除再创建
             boolean isExit = FileUtils.createFileByDeleteOldFile(exportPath);
-            //遍历 历史导出文件压缩包
+            //遍历历史导出文件压缩包并清理
             List<File> fileList = FileUtils.listFilesInDir(STU_EXPORT);
             for (File file: fileList){
                 if (file.getName().contains(".zip")){
@@ -137,6 +136,7 @@ public class DataExportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull String s) {
+
                     }
 
                     @Override

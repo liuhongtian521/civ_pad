@@ -71,12 +71,7 @@ public class FaceComparedDialog extends BaseDialog {
 
         this.onListener = dialogClickBackListener;
 
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onListener.dissMiss();
-            }
-        });
+        ivClose.setOnClickListener(v -> onListener.dissMiss());
         btnNot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +91,10 @@ public class FaceComparedDialog extends BaseDialog {
                 onListener.backType(2);
             }
         });
+    }
+
+    public void setButtonGone(){
+        ivClose.setVisibility(View.GONE);
     }
 
     public void setSate(DBExamLayout dbExamLayout) {

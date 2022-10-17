@@ -532,7 +532,7 @@ public class FaceServer {
      */
 
     public CompareResult getImgHeardByName(String name) {
-        float maxSimilar = 0.8f;
+        float maxSimilar = 0.85f;
         for (int i = 0; i < faceRegisterInfoList.size(); i++) {
             if (faceRegisterInfoList.get(i).getName().equals(name)) {
                 CompareResult.Messa messa = new CompareResult.Messa(faceRegisterInfoList.get(i).getName(), maxSimilar);
@@ -564,29 +564,18 @@ public class FaceServer {
 
         FaceFeature tempFaceFeature = new FaceFeature();
         FaceSimilar faceSimilar = new FaceSimilar();
-        float maxSimilar = 0.8f;
-        int maxSimilarIndex = -1;
         isProcessing = true;
         for (int i = 0; i < faceRegisterInfoList.size(); i++) {
             tempFaceFeature.setFeatureData(faceRegisterInfoList.get(i).getFeatureData());
             faceEngine.compareFaceFeature(faceFeature, tempFaceFeature, faceSimilar);
-            if (faceSimilar.getScore() > 0.8f) {//人脸分值
+            if (faceSimilar.getScore() > 0.85f) {//人脸分值
                 getfaceList.add(new CompareResult.Messa(faceRegisterInfoList.get(i).getName(), faceSimilar.getScore()));
-//                maxSimilar = faceSimilar.getScore();
-//                maxSimilarIndex = i;
             }
-//            if (faceSimilar.getScore() > maxSimilar) {
-//                maxSimilar = faceSimilar.getScore();
-//                maxSimilarIndex = i;
-//            }
         }
         isProcessing = false;
         if (getfaceList.size() > 0) {
             return new CompareResult(getfaceList);
         }
-//        if (maxSimilarIndex != -1) {
-//            return new CompareResult(faceRegisterInfoList.get(maxSimilarIndex).getName(), maxSimilar);
-//        }
         return null;
     }
 

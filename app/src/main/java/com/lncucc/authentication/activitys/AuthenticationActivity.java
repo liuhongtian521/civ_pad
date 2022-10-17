@@ -135,6 +135,16 @@ public class AuthenticationActivity extends BaseActivity {
         long nowTime = System.currentTimeMillis();
         mDataBinding.tvTime.setText(TimeUtils.millis2String(nowTime));
         if (nowTime > timeEnd) {
+            //关闭dialog
+            if (faceResultDialog != null && faceResultDialog.isShowing()){
+                faceResultDialog.dismiss();
+            }
+            if (peopleMsgDialog != null && peopleMsgDialog.isShowing()){
+                peopleMsgDialog.dismiss();
+            }
+            if (faceComparedDialog != null && faceComparedDialog.isShowing()){
+                faceComparedDialog.dismiss();
+            }
             startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
             finish();
         }
@@ -466,7 +476,12 @@ public class AuthenticationActivity extends BaseActivity {
                 }
                 if (have) {
                     Log.e("TagSnake", "havethis" + haveIndex);
-                    saveList.set(haveIndex, dbExamExport);
+                    //移除旧的验证数据，添加新的验证数据。
+                    saveList.remove(haveIndex);
+                    saveList.add(0,dbExamExport);
+                    //新增排序
+
+
                 } else {
                     saveList.add(0, dbExamExport);
                 }

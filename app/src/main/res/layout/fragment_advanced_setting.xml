@@ -65,18 +65,18 @@
 
                 <EditText
                     android:id="@+id/edt_start_time"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:gravity="right|center_vertical"
-                    android:layout_alignParentEnd="true"
                     android:layout_width="88dp"
-                    android:maxLength="3"
-                    android:textSize="9sp"
-                    android:textColor="@color/_333333"
-                    android:hint="请输入开始时间(分钟)"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginRight="35dp"
                     android:background="@null"
-                    android:layout_height="match_parent"/>
+                    android:gravity="right|center_vertical"
+                    android:hint="请输入开始时间(分钟)"
+                    android:inputType="number"
+                    android:maxLength="3"
+                    android:maxLines="1"
+                    android:textColor="@color/_333333"
+                    android:textSize="9sp" />
                 <TextView
                     android:text="分钟"
                     android:textSize="9sp"

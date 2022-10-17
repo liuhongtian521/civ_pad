@@ -37,6 +37,8 @@ import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentExportBinding;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.ExportByNetDialog;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
@@ -72,6 +74,7 @@ public class DataExportFragment extends BaseFragment {
     private int defaultIndex = 2;
     private DataLoadingDialog loadingDialog;
     private NumberFormat numberFormat;
+    private ExportByNetDialog dialog;
 
     @Override
     public void onInit() {
@@ -88,8 +91,8 @@ public class DataExportFragment extends BaseFragment {
             seCode = sessionList.get(0).getSeCode();
             //根据seCode获取当前你场次验证数据数量
             int currentCount = getCurrentVerifyCount();
-            exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount+""));
-            siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+            exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount + ""));
+            siteCode = DBOperation.getSiteCode(itemArrange.getExamCode());
         }
         for (int i = 0; i < 3; i++) {
             DataImportListBean bean = new DataImportListBean();
@@ -119,7 +122,39 @@ public class DataExportFragment extends BaseFragment {
         RxBus2.getInstance().register(this);
     }
 
-    private void initEvent(){
+    /**
+     * 2022.10.12 达尔哥提的优化需求
+     * 在选择网络导出时，先调用此方法查询并展示本地库中已比对未上传的数据数量。
+     *
+     * @param filePath 压缩包路径
+     */
+    private void showUnUpLoadDataNumberDialog(String filePath) {
+        //未上传验证数据数量
+        int num = DBOperation.getDataUpLoadFailedNum();
+        //dialog展示
+        dialog = new ExportByNetDialog(getActivity(), new DialogClickBackListener() {
+            @Override
+            public void dissMiss() {
+
+            }
+
+            @Override
+            public void backType(int type) {
+                if (type == 0) {
+                    String examCode = itemArrange.getExamCode();
+                    String seCode = itemArrange.getSeCode();
+                    exportViewModel.postData(examCode, siteCode, seCode, filePath);
+                    LogsUtil.saveOperationLogs("数据导出");
+                }
+                dissMiss();
+            }
+        }, "有" + num + "条验证数据未实时上传成功，是否通过网络上传？");
+        if (num > 0) {
+            dialog.show();
+        }
+    }
+
+    private void initEvent() {
         dataImportAdapter.setOnItemClickListener((adapter, view, position) -> {
             if (defaultIndex == position) {
                 return;
@@ -147,14 +182,13 @@ public class DataExportFragment extends BaseFragment {
     /**
      * @return 获取当前场次验证数据数量
      */
-    private int getCurrentVerifyCount(){
+    private int getCurrentVerifyCount() {
         return DBOperation.getVerifyListBySeCode(seCode).size();
     }
 
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
         if (event.isConnected) {
-//            MyToastUtils.error("U盘已连接", Toast.LENGTH_SHORT);
         } else if (event.isGetPermission) {
             UsbDevice usbDevice = event.usbDevice;
             MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
@@ -198,12 +232,14 @@ public class DataExportFragment extends BaseFragment {
 
     private void readDevice(UsbMassStorageDevice device) {
         try {
-            device.init();//初始化
+            //设备初始化
+            device.init();
             //设备分区
             Partition partition = device.getPartitions().get(0);
             //文件系统
             FileSystem currentFs = partition.getFileSystem();
-            currentFs.getVolumeLabel();//可以获取到设备的标识
+            //可以获取到设备的标识
+            currentFs.getVolumeLabel();
             //设置当前文件对象为根目录
             cFolder = currentFs.getRootDirectory();
             readFromUDisk();
@@ -234,14 +270,14 @@ public class DataExportFragment extends BaseFragment {
                 }
             }
             //如果U盘中没有Export文件夹，需先创建文件夹再进行数据包导出
-           if (!hasFolder){
-               try {
-                   UsbFile file = cFolder.createDirectory("Export");
-                   writeZip2UDisk(file);
-               }catch (IOException e){
-                   e.printStackTrace();
-               }
-           }
+            if (!hasFolder) {
+                try {
+                    UsbFile file = cFolder.createDirectory("Export");
+                    writeZip2UDisk(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -265,9 +301,9 @@ public class DataExportFragment extends BaseFragment {
         //写入U盘
         exportViewModel.write2UDisk().observe(this, result -> {
             //压缩包IO操作进度
-            float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+            float ioPercentDone = (float) result.getCurrent() / (float) result.getTotal() * 100;
             String percentDone = numberFormat.format(ioPercentDone);
-            loadingDialog.setLoadingProgress(percentDone,result.getMessage());
+            loadingDialog.setLoadingProgress(percentDone, result.getMessage());
             if (result.getCode() == 0) {
                 closeLoading();
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
@@ -278,17 +314,19 @@ public class DataExportFragment extends BaseFragment {
         exportViewModel.zip().observe(this, result -> {
             int process = result.getUnZipProcess();
             String message = result.getMessage();
-            loadingDialog.setLoadingProgress(process+"", message);
+            loadingDialog.setLoadingProgress(process + "", message);
             if (process == 100) {
                 //如果选择U盘导出，从本地sd中拷贝到U盘根目录
                 if (defaultIndex == 1) {
                     redUDiskDevsList();
                     //选择网络导出
                 } else if (defaultIndex == 0) {
-                    String examCode = itemArrange.getExamCode();
-                    String seCode = itemArrange.getSeCode();
-                    exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
-                    LogsUtil.saveOperationLogs("数据导出");
+                    //新增dialog提示
+                    showUnUpLoadDataNumberDialog(result.getFilePath());
+//                    String examCode = itemArrange.getExamCode();
+//                    String seCode = itemArrange.getSeCode();
+//                    exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
+//                    LogsUtil.saveOperationLogs("数据导出");
                 } else {
                     closeLoading();
                     LogsUtil.saveOperationLogs("数据导出");
@@ -300,14 +338,14 @@ public class DataExportFragment extends BaseFragment {
         //网络数据导出模式
         exportViewModel.upLoad().observe(this, result -> {
             //文件上传进度实时回调
-            if (result!= null && result.getInfo() != null){
-                float ioPercentDone = (float)result.getCurrent() / (float) result.getTotal() * 100;
+            if (result != null && result.getInfo() != null) {
+                float ioPercentDone = (float) result.getCurrent() / (float) result.getTotal() * 100;
                 String percentDone = numberFormat.format(ioPercentDone);
-                loadingDialog.setLoadingProgress(percentDone,result.getInfo());
+                loadingDialog.setLoadingProgress(percentDone, result.getInfo());
             }
             if (result.getState() == 0) {
                 closeLoading();
-                if (result.getMessage() != null){
+                if (result.getMessage() != null) {
                     MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
                 }
             }
@@ -316,6 +354,7 @@ public class DataExportFragment extends BaseFragment {
 
     /**
      * 考试场次接收
+     *
      * @param index list position
      */
     @Subscribe(code = 0)
@@ -324,10 +363,10 @@ public class DataExportFragment extends BaseFragment {
         itemArrange = sessionList.get(position);
         exportBinding.tvSession.setText(itemArrange.getSeName());
         seCode = itemArrange.getSeCode();
-        siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+        siteCode = DBOperation.getSiteCode(itemArrange.getExamCode());
         //更新验证数据数量
         int currentCount = getCurrentVerifyCount();
-        exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount+""));
+        exportBinding.tvCount.setText(String.format(getResources().getString(R.string.verify_message_count), currentCount + ""));
     }
 
     private void showPopUp() {
@@ -342,6 +381,7 @@ public class DataExportFragment extends BaseFragment {
 
     /**
      * 数据导出
+     *
      * @param view
      */
     public void export(View view) {
@@ -357,7 +397,7 @@ public class DataExportFragment extends BaseFragment {
                 exportBinding.tvSession.setText(sessionList.get(0).getSeName());
                 itemArrange = sessionList.get(0);
                 seCode = sessionList.get(0).getSeCode();
-                siteCode= DBOperation.getSiteCode(itemArrange.getExamCode());
+                siteCode = DBOperation.getSiteCode(itemArrange.getExamCode());
             }
         }
     }
@@ -369,8 +409,8 @@ public class DataExportFragment extends BaseFragment {
         }
     }
 
-    private void showLoading(){
-        if (!loadingDialog.isShowing() && loadingDialog != null){
+    private void showLoading() {
+        if (!loadingDialog.isShowing() && loadingDialog != null) {
             loadingDialog.show();
         }
     }

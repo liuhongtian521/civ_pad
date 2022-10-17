@@ -61,6 +61,7 @@
     <string name="session">场次</string>
     <string name="session_name">场次名称</string>
     <string name="export_type">请选择导出方式</string>
+    <string name="dialog_export">数据导出</string>
     <string name="data_clear_tip">确定要清空数据</string>
     <string name="data_clear_content">数据一旦清空无法恢复</string>
     <string name="btn_data_clear">取消</string>

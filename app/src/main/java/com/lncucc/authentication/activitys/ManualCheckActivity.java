@@ -296,6 +296,8 @@ public class ManualCheckActivity extends BaseActivity {
             faceComparedDialog.setSate(examLayout);
             faceComparedDialog.setSuccess(true);
             faceComparedDialog.setNumber(similarity);
+            //隐藏关闭按钮
+            faceComparedDialog.setButtonGone();
             faceComparedDialog.show();
         }
         //手动取消人脸比对

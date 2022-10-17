@@ -23,15 +23,24 @@ public class DBExamExport extends RealmObject implements Serializable {
     private String entrancePhotoUrl;//入场照片地址 base64
     private String examCode;//考试代码
     private String createBy;//创建人
-    private String createTime;//
+    private String createTime;//创建时间
     private String updataUp;//
     private String updataTime;//
     private String sysOrgCode;//组织机构代码
-    private String equipment;//设备id mac 地址
+    private String equipment;//设备id mac 地址int
     private String siteCode;//考点编号
     private String idCard;//身份证号码
     private String manualVerifyResult;//0 自动审核 1人工审核
     private String healthCode; //健康码
+    private int upLoadStatus = 0; //上传状态 0未上传 1上传成功（只有在线导出模式使用，用于增量上传）
+
+    public int getUpLoadStatus() {
+        return upLoadStatus;
+    }
+
+    public void setUpLoadStatus(int upLoadStatus) {
+        this.upLoadStatus = upLoadStatus;
+    }
 
     public String getHealthCode() {
         return healthCode;
