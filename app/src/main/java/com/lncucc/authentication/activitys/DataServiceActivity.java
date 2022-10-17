@@ -20,6 +20,7 @@ import com.lncucc.authentication.fragments.DataImportFragment;
 import com.lncucc.authentication.fragments.DataViewFragment;
 import com.lncucc.authentication.fragments.DataExportFragment;
 import com.lncucc.authentication.widgets.NoSwipeViewPager;
+import com.ttsea.jrxbus2.RxBus2;
 
 import java.util.ArrayList;
 
@@ -85,6 +86,10 @@ public class DataServiceActivity extends BaseActivity {
             @Override
             public void onPageSelected(int position) {
                 tabLayout.setTabSelected(position);
+                //刷新当前场次数据数量
+                if (position == 2){
+                    RxBus2.getInstance().post(0, 0 + "");
+                }
             }
 
             @Override

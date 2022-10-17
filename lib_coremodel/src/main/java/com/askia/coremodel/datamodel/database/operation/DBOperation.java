@@ -59,8 +59,6 @@ public class DBOperation {
     public static List<DBExamArrange> getDBExamArrange() {
         RealmQuery<DBExamArrange> query = Realm.getDefaultInstance().where(DBExamArrange.class);
         return query.distinct("seCode");
-
-//        return Realm.getDefaultInstance().where(DBExamArrange.class).distinct("seCode").fin;
     }
 
     /**
@@ -453,12 +451,14 @@ public class DBOperation {
 
     /**
      * 查询实时上传失败的数据条数
-     * @return num
+     * @param  seCode 场次代码
+     * @return num 当前场次未上传的数据数量
      */
-    public static int getDataUpLoadFailedNum(){
+    public static int getDataUpLoadFailedNum(String seCode){
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("upLoadStatus", 0);
+        query.equalTo("seCode", seCode, Case.SENSITIVE);
         query.endGroup();
         return  query.findAll().size();
     }

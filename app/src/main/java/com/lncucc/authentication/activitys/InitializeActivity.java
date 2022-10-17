@@ -317,6 +317,7 @@ public class InitializeActivity extends BaseActivity {
             //人脸库插入异常
             if (result.getState() == 2){
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
+                MyToastUtils.error("导入成功", Toast.LENGTH_SHORT);
                 errorDialog = new FaceImportErrorDialog(InitializeActivity.this, new DialogClickBackListener() {
                     @Override
                     public void dissMiss() {

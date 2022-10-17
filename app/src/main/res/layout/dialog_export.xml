@@ -24,11 +24,11 @@
 
         <ImageView
             android:id="@+id/iv_del"
-            android:background="@mipmap/icon_logout"
-            android:layout_marginTop="47dp"
-            android:layout_centerHorizontal="true"
             android:layout_width="26dp"
-            android:layout_height="26dp"/>
+            android:layout_height="26dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="37dp"
+            android:background="@mipmap/icon_logout" />
 
         <TextView
             android:id="@+id/tv_data_tips"
@@ -37,6 +37,8 @@
             android:layout_below="@+id/iv_del"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="11dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
             android:textColor="@color/_163366"
             android:textSize="11sp"
             android:textStyle="bold" />
@@ -46,17 +48,18 @@
             android:layout_height="25dp"
             android:layout_below="@+id/tv_data_tips"
             android:layout_marginTop="40dp">
+
             <TextView
                 android:id="@+id/tv_cancel"
-                android:text="@string/btn_data_clear"
-                android:gravity="center"
-                android:textSize="9sp"
-                android:layout_marginLeft="30dp"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_login_button"
                 android:layout_width="75dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/bg_login_button"
+                android:gravity="center"
+                android:text="@string/btn_data_clear"
+                android:textColor="@color/white"
+                android:textSize="9sp" />
             <TextView
                 android:id="@+id/tv_confirm"
                 android:text="@string/btn_data_confirm"

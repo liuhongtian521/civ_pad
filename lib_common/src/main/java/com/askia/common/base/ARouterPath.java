@@ -42,4 +42,6 @@ public class ARouterPath {
     public static final String MANUAL_CHECK = "/activity/manual/check";
     /* 人工审核--自动拍照 */
     public static final String TAKE_PHOTO = "/activity/take/photo";
+    /* 人脸测试 */
+    public static final String FACE_TEST = "/activity/face/test";
 }

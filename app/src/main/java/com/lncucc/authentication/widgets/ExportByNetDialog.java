@@ -27,9 +27,9 @@ public class ExportByNetDialog extends BaseDialog{
     }
 
     private void initEvent(){
-        mView.findViewById(R.id.rl_close).setOnClickListener(v -> dismiss());
+        mView.findViewById(R.id.rl_close).setOnClickListener(v -> mListener.dissMiss());
         //cancel
-        mView.findViewById(R.id.tv_cancel).setOnClickListener(v -> dismiss());
+        mView.findViewById(R.id.tv_cancel).setOnClickListener(v -> mListener.dissMiss());
         //confirm
         mView.findViewById(R.id.tv_confirm).setOnClickListener(v -> mListener.backType(0));
     }

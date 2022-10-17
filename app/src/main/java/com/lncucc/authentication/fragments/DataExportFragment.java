@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.common.util.NetworkUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
@@ -29,6 +31,7 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -130,27 +133,39 @@ public class DataExportFragment extends BaseFragment {
      */
     private void showUnUpLoadDataNumberDialog(String filePath) {
         //未上传验证数据数量
-        int num = DBOperation.getDataUpLoadFailedNum();
+        int num = DBOperation.getDataUpLoadFailedNum(seCode);
         //dialog展示
         dialog = new ExportByNetDialog(getActivity(), new DialogClickBackListener() {
             @Override
             public void dissMiss() {
-
+                closeLoading();
+                dialog.dismiss();
             }
 
             @Override
             public void backType(int type) {
                 if (type == 0) {
-                    String examCode = itemArrange.getExamCode();
-                    String seCode = itemArrange.getSeCode();
-                    exportViewModel.postData(examCode, siteCode, seCode, filePath);
-                    LogsUtil.saveOperationLogs("数据导出");
+                    upLoadData(filePath);
                 }
-                dissMiss();
+                dialog.dismiss();
             }
         }, "有" + num + "条验证数据未实时上传成功，是否通过网络上传？");
         if (num > 0) {
             dialog.show();
+        }else {
+            upLoadData(filePath);
+        }
+    }
+
+    private void upLoadData(String filePath){
+        String examCode = itemArrange.getExamCode();
+        String seCode = itemArrange.getSeCode();
+        if (NetworkUtils.isConnected()){
+            exportViewModel.postData(examCode, siteCode, seCode, filePath);
+            LogsUtil.saveOperationLogs("数据导出");
+        }else {
+            MyToastUtils.error("网络异常，请检查您的网络！", Toast.LENGTH_SHORT);
+            closeLoading();
         }
     }
 
