@@ -20,6 +20,7 @@ public class ExportByNetDialog extends BaseDialog{
         super(context, R.style.DialogTheme);
         mView = LayoutInflater.from(context).inflate(R.layout.dialog_export,null);
         setContentView(mView);
+        this.setCanceledOnTouchOutside(false);
         this.mListener = listener;
         //content
         ((TextView)mView.findViewById(R.id.tv_data_tips)).setText(content);

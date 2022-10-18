@@ -168,7 +168,7 @@ public class APP extends Application {
             public void onInitComplete() {
                 isInitFaceSuccess = true;
                 Log.e("init face", "success");
-                DiagnosisLog.setDebugModel(true);
+                DiagnosisLog.setDebugModel(false);
                 DiagnosisLog.d(DiagnosisType.DETECT,"onInitComplete");
             }
 

@@ -1,15 +1,15 @@
 package com.lncucc.authentication.activitys;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
-import com.bigdata.facedetect.FaceDetect;
+
+import java.io.File;
 
 /**
  * Created by ymy
@@ -26,18 +26,14 @@ public class FaceTestActivity extends AppCompatActivity {
     }
 
     /**
-     * 人脸比对测试
-     *
-     * @param source 报名照片
-     * @param target 入场照片
-     * @return 比对结果
+     * 导入目标文件内的人脸照片到人脸库
      */
-    private Float compare(String source, String target) {
+    private void importFaceModel(){
+        String path = Environment.getExternalStorageDirectory().getPath() + File.separator + "FaceModel";
 
+    }
 
-        FaceDetect detect = new FaceDetect();
-
-
+    private Float compare() {
         return 0f;
     }
 }

@@ -132,7 +132,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
                 if (handler != null)
                     handler.post(() -> {
-                        Log.e("TagSake", "in handle01");
+//                        Log.e("TagSake", "in handle01");
                         FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
                         if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
                             frames = 0;

@@ -28,7 +28,7 @@
             android:layout_height="26dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="37dp"
-            android:background="@mipmap/icon_logout" />
+            android:background="@mipmap/icon_upload" />
 
         <TextView
             android:id="@+id/tv_data_tips"

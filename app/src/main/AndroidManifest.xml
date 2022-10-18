@@ -195,6 +195,11 @@
             android:screenOrientation="landscape"
             android:theme="@style/activity_styles"/>
 
+        <!-- 人脸测试 -->
+        <activity android:name=".activitys.FaceTestActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/activity_styles"/>
+
         <!-- usb receiver-->
         <receiver android:name="com.askia.common.util.receiver.USBReceiver">
             <intent-filter>

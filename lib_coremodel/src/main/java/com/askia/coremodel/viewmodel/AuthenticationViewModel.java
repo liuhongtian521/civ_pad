@@ -184,7 +184,7 @@ public class AuthenticationViewModel extends BaseViewModel {
 
 
     private void upMsg(DBExamExport dbExamExport) {
-        Log.e("TagSnake up", "upMsg");
+//        Log.e("TagSnake up", "upMsg");
 
         UPMsgData db = new UPMsgData();
         db.setId(dbExamExport.getId());
