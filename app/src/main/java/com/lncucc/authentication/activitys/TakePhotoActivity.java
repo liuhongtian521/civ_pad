@@ -57,6 +57,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     private Camera.Size previewSize;
     Handler handler;
     private boolean mDetecting = true;
+    private String similarity = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,13 +136,10 @@ public class TakePhotoActivity extends AppCompatActivity {
                                 //添加人脸1：1 比对搜索的学生和当前拍照的人进行比对
                                 FaceDetect detect = new FaceDetect();
                                 float result = detect.nativeCheckFace(jpegData,b1,false);
-                                String a = new DecimalFormat("0.00000").format(result);
+                                similarity = new DecimalFormat("0.00000").format(result);
                                 //保存成功,释放bitmap,并关闭当前页
                                 if (success) {
-                                    Intent intent = new Intent();
-                                    intent.putExtra("similarity", a);
-                                    setResult(RESULT_OK, intent);
-                                    finish();
+                                    cameraHelper.stop();
                                 }
                             }
                         }
@@ -152,7 +150,10 @@ public class TakePhotoActivity extends AppCompatActivity {
 
             @Override
             public void onCameraClosed() {
-
+                Intent intent = new Intent();
+                intent.putExtra("similarity", similarity);
+                setResult(RESULT_OK, intent);
+                finish();
             }
 
             @Override
@@ -207,9 +208,6 @@ public class TakePhotoActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!cameraHelper.isStopped()) {
-            cameraHelper.stop();
-        }
         if (mDisposable != null) {
             mDisposable.dispose();
         }
@@ -219,6 +217,5 @@ public class TakePhotoActivity extends AppCompatActivity {
             handler = null;
         }
         mDetecting = false;
-        cameraHelper.stop();
     }
 }

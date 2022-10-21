@@ -153,7 +153,7 @@ public class PeopleMsgDialog extends BaseDialog {
             tvIdCard.setText(layout.getIdCard());
             setSubjectsName(layout.getSeName());
             setExaminationRoom(layout.getRoomNo());
-            setSeatNumber(layout.getSiteName());
+            setSeatNumber(layout.getSeatNo());
             String result = "";
             int healthResult = 0;
             switch (model.getHealthCode()){

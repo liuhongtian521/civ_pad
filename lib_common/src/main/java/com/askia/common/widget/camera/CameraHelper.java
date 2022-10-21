@@ -58,7 +58,6 @@ public class CameraHelper implements Camera.PreviewCallback {
         } else if (previewDisplayView instanceof SurfaceView) {
             ((SurfaceView) previewDisplayView).getHolder().addCallback(surfaceCallback);
         }
-
         if (isMirror) {
             previewDisplayView.setScaleX(-1);
         }
@@ -84,9 +83,10 @@ public class CameraHelper implements Camera.PreviewCallback {
                 mCamera = Camera.open(mCameraId);
             }
             displayOrientation = getCameraOri(rotation);
-            if(mCamera != null){
+            if (mCamera != null){
                 mCamera.setDisplayOrientation(displayOrientation);
             }
+
             try {
                 Camera.Parameters parameters = mCamera.getParameters();
                 parameters.setPreviewFormat(ImageFormat.NV21);

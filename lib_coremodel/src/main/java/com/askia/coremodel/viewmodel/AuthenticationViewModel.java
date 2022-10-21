@@ -239,7 +239,7 @@ public class AuthenticationViewModel extends BaseViewModel {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("TagSnake err", Log.getStackTraceString(e));
-                        //上传失败
+                        //上传失败，*不能上传失败状态，会造成数据覆盖问题
                         setUpLoadDataStatus(dbExamExport,0);
                     }
 

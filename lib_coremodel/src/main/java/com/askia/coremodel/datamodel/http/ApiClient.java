@@ -96,9 +96,9 @@ public class ApiClient {
                 if (okHttpClientInstance == null) {
                     //modify 适配动态切换baseUrl,使用RetrofitUrlManager进行获取
                     OkHttpClient.Builder builder = RetrofitUrlManager.getInstance().with(new OkHttpClient.Builder());
-                    builder.connectTimeout(30, TimeUnit.SECONDS)
-                            .writeTimeout(30, TimeUnit.SECONDS)
-                            .readTimeout(30, TimeUnit.SECONDS);
+                    builder.connectTimeout(15, TimeUnit.SECONDS)
+                            .writeTimeout(15, TimeUnit.SECONDS)
+                            .readTimeout(15, TimeUnit.SECONDS);
                     HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
                     httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                     builder.addInterceptor(httpLoggingInterceptor);

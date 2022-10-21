@@ -60,7 +60,7 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rel_title1"
@@ -71,13 +71,16 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_choose"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
+                android:layout_above="@+id/line_choose_clear"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"/>
 
             <LinearLayout
                 android:id="@+id/line_choose_clear"
+                android:layout_above="@+id/btn_save"
+                android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_25"
                 android:layout_gravity="right"
@@ -107,6 +110,8 @@
 
             <LinearLayout
                 android:id="@+id/line_choose_all"
+                android:layout_above="@+id/btn_save"
+                android:layout_alignParentEnd="true"
                 android:layout_width="@dimen/dp_80"
                 android:layout_height="@dimen/dp_25"
                 android:layout_gravity="right"
@@ -141,14 +146,16 @@
                 android:id="@+id/btn_save"
                 android:layout_width="390dp"
                 android:layout_height="@dimen/dp_30"
-                android:text="确定"
-                android:onClick="@{handlers::confirm}"
-                android:textSize="@dimen/sp_11"
-                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@drawable/btn_one" />
-        </LinearLayout>
+                android:background="@drawable/btn_one"
+                android:onClick="@{handlers::confirm}"
+                android:text="确定"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_11" />
+        </RelativeLayout>
 
 
     </RelativeLayout>

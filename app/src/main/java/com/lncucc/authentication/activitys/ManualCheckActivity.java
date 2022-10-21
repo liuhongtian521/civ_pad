@@ -239,13 +239,14 @@ public class ManualCheckActivity extends BaseActivity {
         //搜索结果回调,展示学生信息
         manualViewModel.getStudentInfo().observe(this, result -> {
             if (result != null) {
+                //160349
                 examLayout = result;
                 manualBinding.linePeople.setVisibility(View.VISIBLE);
                 manualBinding.rlBlank.setVisibility(View.GONE);
                 manualBinding.tvPeopleName.setText(result.getStuName());
                 manualBinding.tvCardno.setText(result.getExReNum());
                 manualBinding.tvIdCard.setText(result.getIdCard());
-                manualBinding.tvAddress.setText(result.getSiteName());
+                manualBinding.tvAddress.setText(result.getRoomNo());
                 manualBinding.tvAddressNo.setText(result.getSeatNo());
                 String healthStatus = "";
                 switch (result.getHealthCode()){

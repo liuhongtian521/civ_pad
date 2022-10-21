@@ -10,9 +10,11 @@ import com.askia.coremodel.datamodel.database.db.DBLogs;
 import com.blankj.utilcode.util.LogUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmAsyncTask;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
@@ -77,7 +79,13 @@ public class DBOperation {
 
 
     public static void setDBExamExport(DBExamExport db) {
-        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.insertOrUpdate(db));
+//        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.insertOrUpdate(db));
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.insertOrUpdate(db);
+            }
+        });
     }
 
     public static int getDBExamExport(String id) {
@@ -331,14 +339,35 @@ public class DBOperation {
      * @return 学生信息
      */
     public static DBExamLayout getStudentByIdCard(String idNo, String examCode, String seCode) {
-        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
-        query.beginGroup();
-        //身份证号
-        query.like("idCard", "?*" + idNo, Case.SENSITIVE);
-        query.equalTo("examCode", examCode);
-        query.equalTo("seCode", seCode);
-        query.endGroup();
-        return query.findFirst();
+        DBExamLayout examLayout = null;
+        if (idNo.contains("X")) {
+            RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+            query.beginGroup();
+            query.equalTo("examCode", examCode);
+            query.equalTo("seCode", seCode);
+            query.like("idCard", "?*" + idNo);
+            query.endGroup();
+            examLayout = query.findFirst();
+            if (examLayout == null){
+                String id = idNo.toLowerCase();
+                RealmQuery<DBExamLayout> querySmall = Realm.getDefaultInstance().where(DBExamLayout.class);
+                querySmall.beginGroup();
+                querySmall.equalTo("examCode", examCode);
+                querySmall.equalTo("seCode", seCode);
+                querySmall.like("idCard", "?*" + idNo.toLowerCase());
+                querySmall.endGroup();
+                examLayout = querySmall.findFirst();
+            }
+        }else {
+            RealmQuery<DBExamLayout> queryNormal = Realm.getDefaultInstance().where(DBExamLayout.class);
+            queryNormal.beginGroup();
+            queryNormal.equalTo("examCode", examCode);
+            queryNormal.equalTo("seCode", seCode);
+            queryNormal.like("idCard", "?*" + idNo);
+            queryNormal.endGroup();
+            examLayout = queryNormal.findFirst();
+        }
+        return examLayout;
     }
 
     /*通过考试代码来获取场次
@@ -393,7 +422,7 @@ public class DBOperation {
         query.beginGroup();
         query.equalTo("seCode", seCode, Case.SENSITIVE);
         query.endGroup();
-        return query.findAllSorted("verifyTime",Sort.DESCENDING);
+        return query.findAllSorted("verifyTime", Sort.DESCENDING);
     }
 
     /**
@@ -443,7 +472,7 @@ public class DBOperation {
      * @param status 上传状态 0失败 1成功
      */
     public static void setUpLoadDataStatusOnLine(DBExamExport data, int status) {
-        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+        Realm.getDefaultInstance().executeTransaction(realm -> {
             data.setUpLoadStatus(status);
             realm.insertOrUpdate(data);
         });
@@ -451,15 +480,16 @@ public class DBOperation {
 
     /**
      * 查询实时上传失败的数据条数
-     * @param  seCode 场次代码
+     *
+     * @param seCode 场次代码
      * @return num 当前场次未上传的数据数量
      */
-    public static int getDataUpLoadFailedNum(String seCode){
+    public static int getDataUpLoadFailedNum(String seCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("upLoadStatus", 0);
         query.equalTo("seCode", seCode, Case.SENSITIVE);
         query.endGroup();
-        return  query.findAll().size();
+        return query.findAll().size();
     }
 }

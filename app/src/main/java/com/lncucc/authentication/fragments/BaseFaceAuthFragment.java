@@ -41,6 +41,7 @@ import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Date;
 
 import a.a.a.a.a;
 import io.reactivex.Observable;
@@ -71,6 +72,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
     public FaceDetectorViewModel detectorViewModel;
 
     public String mSeCode;
+    private boolean isSavedSuccess = false;
 
 
     @Override
@@ -129,10 +131,8 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                 if (!mFaceDecting)
                     return;
                 mFaceDecting = false;
-
                 if (handler != null)
                     handler.post(() -> {
-//                        Log.e("TagSake", "in handle01");
                         FaceDetect.FaceColorResult faceResult = FaceDetectManager.getInstance().checkFaceFromNV21(nv21, previewSize.width, previewSize.height, drawHelper.getCameraDisplayOrientation());
                         if (faceResult == null || faceResult.faceBmp == null || faceResult.faceRect == null) {
                             frames = 0;
@@ -143,7 +143,6 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                 goContinueDetectFace();
                             } else {
                                 frames = 0;
-                                //人脸识别
                                 //人脸识别
                                 YuvImage image = new YuvImage(nv21, ImageFormat.NV21, previewSize.width, previewSize.height, null);
                                 ByteArrayOutputStream outputSteam = new ByteArrayOutputStream();
@@ -181,14 +180,15 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
                                         }
                                         bitmap = ImageUtil.converBitmap(bitmap);// com.blankj.utilcode.util.ImageUtils.rotate(bitmap, 0, 0, 0);
                                         bitmap = ImageUtil.sampleSize(bitmap);
-                                        com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
+                                        isSavedSuccess = com.blankj.utilcode.util.ImageUtils.save(bitmap, path, Bitmap.CompressFormat.PNG);
                                         bitmap.recycle();
                                     }
                                 }
                                 Message message = new Message();
                                 message.obj = detectResult;
-                                if (handler != null)
+                                if (handler != null) {
                                     handler.sendMessage(message);
+                                }
                             }
                         }
                     });
@@ -221,7 +221,7 @@ public abstract class BaseFaceAuthFragment extends BaseFragment {
 
     public void setCameraHelper(int type) {
         this.type = type;
-        rgbCameraID = SPUtils.getInstance().getInt(CAMERA_DEFAULT,0);
+        rgbCameraID = SPUtils.getInstance().getInt(CAMERA_DEFAULT, 0);
         cameraHelper = new CameraHelper.Builder()
                 .previewViewSize(new Point(mPreview.getWidth(), mPreview.getHeight()))
                 .rotation(getActivity().getWindowManager().getDefaultDisplay().getRotation())

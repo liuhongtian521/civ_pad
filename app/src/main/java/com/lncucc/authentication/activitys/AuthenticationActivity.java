@@ -650,7 +650,7 @@ public class AuthenticationActivity extends BaseActivity {
                 mViewModel.quickPeople(mDbExaminee.getStuNo(), mExamCode);
             }
         } else {
-            if (detectResult != null && detectResult.similarity > 0.7f) {
+            if (detectResult != null && detectResult.similarity > 0.85f) {
                 this.mDetectResult = detectResult;
                 mViewModel.quickPeople(mDetectResult.faceNum, mExamCode);//查询学生
             } else {

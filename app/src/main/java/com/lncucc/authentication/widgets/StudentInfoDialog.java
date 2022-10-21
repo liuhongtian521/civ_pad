@@ -86,7 +86,7 @@ public class StudentInfoDialog extends BaseDialog {
             mSex.setText(layout.getGender());
             mNation.setText(layout.getNation());
             mCensus.setText(liveAddress);
-            mSubjectName.setText(layout.getSubName());
+            mSubjectName.setText(layout.getSeName());
             mExamination.setText(layout.getRoomNo());
             mTicketNum.setText(layout.getExReNum());
             mSeatNum.setText(layout.getSeatNo());

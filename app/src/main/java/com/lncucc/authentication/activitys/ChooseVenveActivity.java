@@ -14,6 +14,7 @@ import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
+import com.askia.coremodel.datamodel.database.repository.ExamItemCheck;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ChooseVenueAdapter;
 import com.lncucc.authentication.callback.VenveItemClick;
@@ -37,6 +38,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     private List<DBExamLayout> mList;
     private boolean defaultTag = true;
     private Realm realm;
+    private List<ExamItemCheck> mTList = new ArrayList<>();
 
     @Override
     public void onInit() {
@@ -44,9 +46,20 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         String seCode = getIntent().getStringExtra("SE_CODE");
         realm = Realm.getDefaultInstance();
         mList = DBOperation.getRoomList(seCode);
-        mAdapter = new ChooseVenueAdapter(mList, this);
+        copy2TList();
+        mAdapter = new ChooseVenueAdapter(mTList, this);
         mDataBinding.recChoose.setLayoutManager(new LinearLayoutManager(this));
         mDataBinding.recChoose.setAdapter(mAdapter);
+    }
+
+    private void copy2TList(){
+        mTList.clear();
+        for (DBExamLayout layout: mList){
+            ExamItemCheck d = new ExamItemCheck();
+            d.setChecked(layout.isChecked());
+            d.setRoomNo(layout.getRoomNo());
+            mTList.add(d);
+        }
     }
 
     @Override
@@ -55,13 +68,13 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
 
     public void confirm(View view) {
         ArrayList<String> idList = new ArrayList<>();
-        for (int i = 0; i < mList.size(); i++) {
-            if (((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked()) {
-                idList.add(mList.get(i).getRoomNo());
+        for (int i = 0; i < mTList.size(); i++) {
+            if (mTList.get(i).isChecked()) {
+                idList.add(mTList.get(i).getRoomNo());
                 int finalI = i;
 
             }
-            boolean isChecked = ((CheckBox) Objects.requireNonNull(mAdapter.getViewByPosition(i, R.id.cx_ex))).isChecked();
+            boolean isChecked = mTList.get(i).isChecked();
             int finalI = i;
             realm.executeTransaction(realm -> {
                 DBExamLayout layout = mList.get(finalI);
@@ -84,16 +97,16 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     //全部选择按钮 || 取消全选
     public void chooseAll(View view) {
 
-        for (int i = 0; i < mList.size(); i++) {
-            boolean isChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
+        for (int i = 0; i < mTList.size(); i++) {
+            boolean isChecked = mTList.get(i).isChecked();
             //全选 -> 取消全选
             if (defaultTag) {
                 if (isChecked) {
-                    ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).setChecked(!isChecked);
+                    mTList.get(i).setChecked(!isChecked);
                 }
             } else {
                 if (!isChecked) {
-                    ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).setChecked(!isChecked);
+                    mTList.get(i).setChecked(!isChecked);
                 }
             }
         }
@@ -103,6 +116,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         } else {
             mDataBinding.tvChooseAll.setText("全选");
         }
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -119,7 +133,8 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     @Override
     public void onItemClickListener(int position) {
         //全选状态 当前item取消选中改变 按钮文字
-       boolean isChecked = ((CheckBox)mAdapter.getViewByPosition(position,R.id.cx_ex)).isChecked();
+       boolean isChecked = !mTList.get(position).isChecked();
+       mTList.get(position).setChecked(isChecked);
        if (!isChecked){
            defaultTag = false;
            mDataBinding.tvChooseAll.setText("全选");
@@ -127,7 +142,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
            boolean isHasChecked = true;
            defaultTag = true;
            for (int i = 0; i < mList.size(); i++) {
-               boolean itemChecked = ((CheckBox) mAdapter.getViewByPosition(i, R.id.cx_ex)).isChecked();
+               boolean itemChecked = mTList.get(i).isChecked();
                if (!itemChecked){
                    isHasChecked = false;
                    defaultTag = false;
