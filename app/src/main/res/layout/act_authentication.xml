@@ -66,7 +66,7 @@
                             android:layout_width="@dimen/dp_10"
                             android:layout_height="@dimen/dp_10"
                             android:layout_marginLeft="@dimen/dp_4"
-                            android:src="@drawable/icon_todown" />
+                            android:src="@drawable/icon_blue_arrow_down" />
                     </LinearLayout>
 
                     <TextView

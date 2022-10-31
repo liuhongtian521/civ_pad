@@ -158,18 +158,20 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             if (result.getState() == 2) {
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
                 closeLoading();
-                errorDialog = new FaceImportErrorDialog(getActivity(), new DialogClickBackListener() {
-                    @Override
-                    public void dissMiss() {
+                if (getActivity() != null){
+                    errorDialog = new FaceImportErrorDialog(getActivity(), new DialogClickBackListener() {
+                        @Override
+                        public void dissMiss() {
 
-                    }
+                        }
 
-                    @Override
-                    public void backType(int type) {
-                        errorDialog.dismiss();
-                    }
-                }, result.getErrorList());
-                errorDialog.show();
+                        @Override
+                        public void backType(int type) {
+                            errorDialog.dismiss();
+                        }
+                    }, result.getErrorList());
+                    errorDialog.show();
+                }
             }
             closeLogadingDialog();
         });

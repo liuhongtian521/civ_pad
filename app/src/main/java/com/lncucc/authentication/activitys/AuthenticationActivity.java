@@ -356,7 +356,7 @@ public class AuthenticationActivity extends BaseActivity {
         mPopExamPlan.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_todown);
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_blue_arrow_down);
                 isComparison = false;
 
             }
@@ -366,7 +366,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 faceFragment.closeFace();
-                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_blue_arrow_up);
                 mPopExamPlan.setIndex(mExamCode);
                 mPopExamPlan.setFocusable(false);
                 mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.CENTER, 0, 0);

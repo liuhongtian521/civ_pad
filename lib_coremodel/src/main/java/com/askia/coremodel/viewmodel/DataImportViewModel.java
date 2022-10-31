@@ -1,8 +1,10 @@
 package com.askia.coremodel.viewmodel;
 
+import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
+import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
+
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -15,7 +17,6 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.event.FaceDBHandleEvent;
-import com.askia.coremodel.event.ReImportFaceHandleEvent;
 import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.event.UsbWriteEvent;
 import com.askia.coremodel.rtc.FileUtil;
@@ -40,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -50,9 +50,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
-
-import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
-import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 
 /**

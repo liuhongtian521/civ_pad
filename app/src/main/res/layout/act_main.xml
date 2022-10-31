@@ -26,6 +26,9 @@
                 android:id="@+id/line_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_main_white_radius_32"
+                android:paddingStart="@dimen/dp_40"
+                android:paddingEnd="@dimen/dp_40"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal">
                 <TextView
@@ -47,7 +50,7 @@
                     android:layout_marginLeft="@dimen/dp_6"
                     android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/tv_name"
-                    android:src="@drawable/icon_todown" />
+                    android:src="@drawable/icon_blue_arrow_down" />
             </LinearLayout>
 
             <TextView

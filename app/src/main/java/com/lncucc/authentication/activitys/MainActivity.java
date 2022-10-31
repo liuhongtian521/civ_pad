@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity {
         mPopExamPlan.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_todown);
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_blue_arrow_down);
                 isComparison = false;
             }
         });
@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity {
         mDataBinding.lineTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_toup);
+                mDataBinding.ivChooseExam.setImageResource(R.drawable.icon_blue_arrow_up);
                 mPopExamPlan.setIndex(mExamCode);
 //                mPopExamPlan.showAtLocation(mDataBinding.bgMain, Gravity.BOTTOM, 0, 0);
                 mPopExamPlan.setFocusable(false);
@@ -283,25 +283,6 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    public void requestPermissions() {
-        final RxPermissions rxPermission = new RxPermissions(MainActivity.this);
-        rxPermission.requestEach(
-                Manifest.permission.READ_PHONE_STATE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ).subscribe(new Consumer<Permission>() {
-            @Override
-            public void accept(Permission permission) throws Exception {
-                // 如果用户接受了读写权限
-                if (Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission.name) && permission.granted) {
-                /*    // 如果没有初始化sdk
-                    if(!ECApplication.getInstance().isHWSDKInit)
-                    {
-                        ECApplication.getInstance().initHWSDK();
-                    }*/
-                }
-            }
-        });
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -323,11 +304,6 @@ public class MainActivity extends BaseActivity {
                     }
                 })
                 .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
-    }
-
-
-    public interface OnTabChangeListener {
-        public void OnTabChanged(int index);
     }
 
 }
