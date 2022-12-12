@@ -21,6 +21,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bigdata.facedetect.FaceDetect;
 import com.blankj.utilcode.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -343,7 +345,6 @@ public class Utils {
     }
 
 
-
     /**
      * 验证身份证号是否符合规则
      *
@@ -545,5 +546,22 @@ public class Utils {
                 }
             }
         }
+    }
+
+    private static long lastClickTime;
+    private static final long TIME = 800;
+
+    /**
+     *
+     * @return true 连击 false 正常点击
+     */
+    public static boolean doubleClick() {
+        long time = System.currentTimeMillis();
+        if (time - lastClickTime < TIME) {
+            lastClickTime = time;
+            return true;
+        }
+        lastClickTime = time;
+        return false;
     }
 }

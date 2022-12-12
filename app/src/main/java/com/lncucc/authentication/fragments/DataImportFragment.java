@@ -56,7 +56,7 @@ import java.util.Objects;
 public class DataImportFragment extends BaseFragment implements DataImportDialogListener {
     private FragmentImportBinding importBinding;
     private DataImportViewModel viewModel;
-    private ArrayList<DataImportListBean> importList = new ArrayList<>();
+    private final ArrayList<DataImportListBean> importList = new ArrayList<>();
     private UsbMassStorageDevice[] storageDevices;
     private UsbFile cFolder;
     private DataLoadingDialog loadingDialog;
@@ -65,12 +65,16 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     private NumberFormat numberFormat;
     private String currentIOPercent = "";
     private DataImportDialog importDialog;
-    private List<DataImportBean> mList = new ArrayList<>();
+    private final List<DataImportBean> mList = new ArrayList<>();
     private FaceImportErrorDialog errorDialog;
 
     @Override
     public void onInit() {
-        RxBus2.getInstance().register(this);
+        initView();
+        initEvent();
+    }
+
+    private void initView(){
         numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
         loadingDialog = new DataLoadingDialog(getActivity());
@@ -100,10 +104,10 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         importBinding.rcyDataImport.setLayoutManager(new LinearLayoutManager(getActivity()));
         dataImportAdapter = new DataImportAdapter(importList);
         importBinding.rcyDataImport.setAdapter(dataImportAdapter);
-        initEvent();
     }
 
-    public void initEvent() {
+    private void initEvent() {
+        RxBus2.getInstance().register(this);
         dataImportAdapter.setOnItemClickListener((adapter, view, position) -> {
             if (defaultIndex == position) {
                 return;
@@ -198,10 +202,11 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
 
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
-        if (event.isConnected) {
-        } else if (event.isGetPermission) {
-            UsbDevice usbDevice = event.usbDevice;
-            readDevice(getUsbMass(usbDevice));
+        if (!event.isConnected) {
+            if (event.isGetPermission) {
+                UsbDevice usbDevice = event.usbDevice;
+                readDevice(getUsbMass(usbDevice));
+            }
         }
     }
 
@@ -218,23 +223,25 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
      * U盘设备读取
      */
     private void redUDiskDevsList() {
-        //设备管理器
-        UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
-        //获取U盘存储设备
-        storageDevices = UsbMassStorageDevice.getMassStorageDevices(getActivity());
+        if (getActivity() != null){
+            //设备管理器
+            UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+            //获取U盘存储设备
+            storageDevices = UsbMassStorageDevice.getMassStorageDevices(getActivity());
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent(ACTION_USB_PERMISSION), 0);
-        for (UsbMassStorageDevice device : storageDevices) {
-            //读取设备是否有权限
-            if (usbManager.hasPermission(device.getUsbDevice())) {
-                readDevice(device);
-            } else {
-                //没有权限，进行申请
-                usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+            for (UsbMassStorageDevice device : storageDevices) {
+                //读取设备是否有权限
+                if (usbManager.hasPermission(device.getUsbDevice())) {
+                    readDevice(device);
+                } else {
+                    //没有权限，进行申请
+                    usbManager.requestPermission(device.getUsbDevice(), pendingIntent);
+                }
             }
-        }
-        if (storageDevices.length == 0) {
-            MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
+            if (storageDevices.length == 0) {
+                MyToastUtils.success("请插入可用的U盘", Toast.LENGTH_SHORT);
+            }
         }
     }
 

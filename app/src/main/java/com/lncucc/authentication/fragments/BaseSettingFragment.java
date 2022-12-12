@@ -1,7 +1,13 @@
 package com.lncucc.authentication.fragments;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
@@ -45,7 +52,7 @@ public class BaseSettingFragment extends BaseFragment {
         sbSound = baseSetting.sbSound;
         sbSoundT = baseSetting.sbTable;
         sbSound.setChecked(true);
-
+        requestPermission();
         //滑动音量初始化
         int soundProgress = SharedPreferencesUtils.getInt(getActivity(), DEFAULT_SOUND_SETTING,50);
         mSlider.setCurrentProgress(soundProgress);
@@ -129,6 +136,17 @@ public class BaseSettingFragment extends BaseFragment {
         });
     }
 
+    private void requestPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(getActivity())) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getActivity().getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivityForResult(intent,1);
+            }
+        }
+    }
+
     @Override
     public void onInitViewModel() {
         // TODO 牛逼
@@ -148,6 +166,5 @@ public class BaseSettingFragment extends BaseFragment {
     public void onProgressChange(QMUISlider slider, int progress, int tickCount, boolean fromUser) {
 
     }
-
 
 }

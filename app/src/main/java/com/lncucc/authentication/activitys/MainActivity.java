@@ -1,13 +1,10 @@
 package com.lncucc.authentication.activitys;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -22,12 +19,9 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.APP;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
-import com.askia.common.util.MyTimeUtils;
-import com.askia.common.util.PageCountDownTimer;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
-import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.askia.coremodel.viewmodel.MainViewModel;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
@@ -35,16 +29,10 @@ import com.lncucc.authentication.databinding.ActMainBinding;
 import com.lncucc.authentication.widgets.PopExamPlan;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import io.reactivex.functions.Consumer;
-
-import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
 
 
 @Route(path = ARouterPath.MAIN_ACTIVITY)

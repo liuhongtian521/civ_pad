@@ -1,5 +1,6 @@
 package com.lncucc.authentication.activitys;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -26,9 +27,13 @@ import com.askia.coremodel.datamodel.http.entities.CheckVersionData;
 import com.askia.coremodel.viewmodel.CheckUpdateViewModel;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.DeviceUtils;
-import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.NetworkUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActUpdateBinding;
+import com.lncucc.authentication.widgets.DataLoadingDialog;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.UpDateDialog;
 
 import java.io.File;
 
@@ -67,7 +72,6 @@ public class UpdateActivity extends BaseActivity {
     private void initView() {
         File datapath = Environment.getDataDirectory();
         StatFs dataFs = new StatFs(datapath.getPath());
-
         long sizes = (long) dataFs.getFreeBlocks() * (long) dataFs.getBlockSize();
         long available = sizes / ((1024 * 1024));
 
@@ -97,21 +101,8 @@ public class UpdateActivity extends BaseActivity {
 
     @Override
     public void onSubscribeViewModel() {
-        mViewModel.getmCheckVersionData().observe(this, new Observer<CheckVersionData>() {
-            @Override
-            public void onChanged(CheckVersionData checkVersionData) {
-                if (checkVersionData.isSuccess()) {
-                    //下载安装包并且安装
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(Uri.parse(checkVersionData.getResult()));
-                    startActivity(intent);
-//                    mViewModel.DownApk(checkVersionData.getResult());
-                } else {
-                    Toast.makeText(UpdateActivity.this, checkVersionData.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
+        mViewModel.getmCheckVersionData().observe(this, checkVersionData -> {
+            showUpdateDialog(checkVersionData);
         });
 
         mViewModel.getSdCardData().observe(this, new Observer<String>() {
@@ -123,6 +114,32 @@ public class UpdateActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void showUpdateDialog(CheckVersionData data){
+        if (data.isSuccess()) {
+            Dialog dialog = new UpDateDialog(this, new DialogClickBackListener() {
+                @Override
+                public void dissMiss() {
+                    this.dissMiss();
+                }
+
+                @Override
+                public void backType(int type) {
+                    if (type == 0){
+                        //下载安装包并且安装
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                        intent.setData(Uri.parse(data.getResult()));
+                        startActivity(intent);
+                    }
+                }
+            });
+            dialog.show();
+        } else {
+            Toast.makeText(UpdateActivity.this, data.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void installAPK() {
@@ -167,6 +184,10 @@ public class UpdateActivity extends BaseActivity {
     }
 
     public void getUpData(View view) {
+        if (!NetworkUtils.isConnected()) {
+            ToastUtils.showShort("请先连接网络后再进行升级检测！");
+            return;
+        }
         mViewModel.checkVersion(getVersion(this));
     }
 

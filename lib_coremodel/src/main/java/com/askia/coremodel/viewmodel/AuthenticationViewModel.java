@@ -100,7 +100,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         mArrange.postValue(list);
     }
 
-    public  void getPlane(String examCode){
+    public void getPlane(String examCode) {
         DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
         mDBExamPlan.postValue(dbExamPlan);
     }
@@ -132,6 +132,7 @@ public class AuthenticationViewModel extends BaseViewModel {
             mCheckVersionData.postValue(list.get(0));
         }
     }
+
     public void getSeatAbout(String stuNo, String examCode, String seCode) {
         DBExamLayout mDbExamLayout = DBOperation.getStudentInfoTwo(examCode, stuNo, seCode);
         mSeat.postValue(mDbExamLayout);
@@ -156,7 +157,7 @@ public class AuthenticationViewModel extends BaseViewModel {
         mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode));
     }
 
-    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number,String manualVerifyResult) {
+    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String manualVerifyResult) {
         Log.e("TagSnake", type + ":状态" + "::" + time);
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
@@ -166,7 +167,7 @@ public class AuthenticationViewModel extends BaseViewModel {
 //        db.setExamineeId(id);
         db.setVerifyTime(time);
         db.setVerifyResult(type);
-        if(number.length() > 4){
+        if (number.length() > 4) {
             db.setMatchRate(number.substring(0, 4));
         }
         db.setSeCode(dbExamLayout.getSeCode());
@@ -225,22 +226,13 @@ public class AuthenticationViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(@NotNull BaseResponseData baseResponseData) {
-                        Log.e("TagSnake back", baseResponseData.getMessage());
-                        //2022 10.22 达尔哥新增需求，记录实时上传状态DataExport表中，网络导出时弹出实时上传失败数量弹框
-                        //上传成功
-                        if (baseResponseData.isSuccess()){
-                            //存储上传状态
-                            setUpLoadDataStatus(dbExamExport,1);
-                        }else {
-                            setUpLoadDataStatus(dbExamExport,0);
-                        }
+                        //2022 10.22 达尔哥新增需求，记录实时上传状态到DBExamExport表中，网络导出时弹出实时上传失败数量弹框
+                        setUpLoadDataStatus(dbExamExport.getId(), baseResponseData.isSuccess() ? 1 : 0);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
-                        Log.e("TagSnake err", Log.getStackTraceString(e));
-                        //上传失败，*不能上传失败状态，会造成数据覆盖问题
-                        setUpLoadDataStatus(dbExamExport,0);
+                        setUpLoadDataStatus(dbExamExport.getId(), 0);
                     }
 
                     @Override
@@ -250,7 +242,9 @@ public class AuthenticationViewModel extends BaseViewModel {
                 });
     }
 
-    private void setUpLoadDataStatus(DBExamExport db,int status){
-        DBOperation.setUpLoadDataStatusOnLine(db,status);
+    private void setUpLoadDataStatus(String id, int status) {
+        //根据id获取当前数据的最新状态，以最后更新一次为主，
+        DBExamExport exportData = DBOperation.getExamExportById(id);
+        DBOperation.updateDataStatus(exportData, status);
     }
 }

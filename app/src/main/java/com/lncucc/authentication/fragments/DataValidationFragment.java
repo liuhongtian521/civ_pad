@@ -53,7 +53,7 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
         peopleMsgDialog = new PeopleMsgDialog(getActivity(),this);
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            DBExamExport examExport = DBOperation.getExamportById(tempList.get(position).getId());
+            DBExamExport examExport = DBOperation.getExamExportById(tempList.get(position).getId());
             peopleMsgDialog.setMsg(examExport);
             peopleMsgDialog.show();
         });

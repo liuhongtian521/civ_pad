@@ -17,6 +17,7 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.event.UniAuthInfoEvent;
 import com.askia.coremodel.util.NetUtils;
+import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -46,8 +47,6 @@ public class LoginActivity extends BaseActivity {
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
         loginViewModel.account.set(defaultAccount);
-//        loginViewModel.account.set("K210106005");
-//        loginViewModel.password.set("Sjzt_2020@!");
     }
 
     @Override
@@ -126,7 +125,9 @@ public class LoginActivity extends BaseActivity {
                 MyToastUtils.error("请输入密码！",0);
                 return;
             }
-            doLogin();
+            if (!Utils.doubleClick()){
+                doLogin();
+            }
         }
 
         public void openEyes() {

@@ -60,10 +60,10 @@ public class LogoutSettingFragment extends BaseFragment implements DialogClickBa
     public void backType(int type) {
         if (logoutDialog != null){
             logoutDialog.dismiss();
-            //清除密码
-            SharedPreferencesUtils.putString(getActivity(), "password", "");
-            //清除orgCode
-            SharedPreferencesUtils.putString(getActivity(), "code", "");
+//            //清除密码
+//            SharedPreferencesUtils.putString(getActivity(), "password", "");
+//            //清除orgCode
+//            SharedPreferencesUtils.putString(getActivity(), "code", "");
             Intent intent = new Intent(getActivity(),LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

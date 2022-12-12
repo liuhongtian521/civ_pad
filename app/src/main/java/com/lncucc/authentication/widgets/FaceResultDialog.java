@@ -142,10 +142,11 @@ public class FaceResultDialog extends BaseDialog {
 //            linSuccess.setVisibility(View.GONE);
 //            linFaile.setVisibility(View.VISIBLE);
 //        }
+//        //暂时去除健康码语音提示，保留通过和请重试。
         if (type) {
+            player = MediaPlayer.create(mContext, R.raw.tongguo);
             switch (code){
                 case "0":
-                    player = MediaPlayer.create(mContext, R.raw.tongguo);
                     linSuccess.setVisibility(View.VISIBLE);
                     healthCode.setImageResource(R.mipmap.icon_code_green);
                     tvStatus.setText("健康码正常");
@@ -153,27 +154,27 @@ public class FaceResultDialog extends BaseDialog {
                     linFaile.setVisibility(View.GONE);
                     break;
                 case "1":
-                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+//                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
                     linSuccess.setVisibility(View.VISIBLE);
                     healthCode.setImageResource(R.mipmap.icon_code_yellow);
-                    tvStatus.setText("健康码异常");
+                    tvStatus.setText("健康码未知");
                     tvStatus.setTextColor(Color.parseColor("#FFC047"));
                     linFaile.setVisibility(View.GONE);
                     break;
                 case "2":
-                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+//                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
                     linSuccess.setVisibility(View.VISIBLE);
                     healthCode.setImageResource(R.mipmap.icon_code_red);
-                    tvStatus.setText("健康码异常");
+                    tvStatus.setText("健康码未知");
                     tvStatus.setTextColor(Color.parseColor("#FF615F"));
                     linFaile.setVisibility(View.GONE);
                     break;
                 case "3":
-                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
+//                    player = MediaPlayer.create(mContext, R.raw.health_code_abnormal);
                     linSuccess.setVisibility(View.VISIBLE);
                     healthCode.setImageResource(R.mipmap.icon_code_none);
                     tvStatus.setTextColor(Color.parseColor("#6F7783"));
-                    tvStatus.setText("健康码异常");
+                    tvStatus.setText("健康码未知");
                     linFaile.setVisibility(View.GONE);
                     break;
             }

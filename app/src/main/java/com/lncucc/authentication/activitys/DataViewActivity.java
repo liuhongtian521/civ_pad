@@ -45,7 +45,7 @@ public class DataViewActivity extends BaseActivity implements DialogClickBackLis
         mDataBinding.recList.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            DBExamExport examExport = DBOperation.getExamportById(tempList.get(position).getId());
+            DBExamExport examExport = DBOperation.getExamExportById(tempList.get(position).getId());
             peopleMsgDialog.setMsg(examExport);
             peopleMsgDialog.show();
         });

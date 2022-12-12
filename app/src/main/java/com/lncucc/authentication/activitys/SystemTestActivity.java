@@ -21,6 +21,7 @@ import com.askia.coremodel.util.AssetsUtil;
 import com.askia.coremodel.util.JsonUtil;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.NetworkUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.SystemTestAdapter;
 import com.lncucc.authentication.adapters.itemclick.ItemClickListener;
@@ -142,33 +143,34 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
 
     //人脸测试
     private void testFace() {
-        showNetDialog();
-//        FaceDetectManager.getInstance().init(this, "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
-//            @Override
-//            public void onInitComplete() {
-//                bean.getData().get(REQUEST_CODE_FACE).setState(1);
-//                saveData2Local(bean);
-//                mAdapter.notifyDataSetChanged();
-//                dismissNetDialog();
-//                MyToastUtils.error("人脸识别检查成功",1);
-//            }
-//
-//            @Override
-//            public void onInitFailure(String s) {
-//                dismissNetDialog();
-//                MyToastUtils.error("人脸初始化异常，请退出应用重启再试！",1);
-//            }
-//        });
-        if (!APP.isInitFaceSuccess) {
-            bean.getData().get(REQUEST_CODE_FACE).setState(1);
-            saveData2Local(bean);
-            mAdapter.notifyDataSetChanged();
-            dismissNetDialog();
-            MyToastUtils.error("人脸识别检查成功", 1);
-        }else {
-            dismissNetDialog();
-            MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！", 1);
+        if (!NetworkUtils.isConnected()){
+            MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！",1);
+            return;
         }
+        FaceDetectManager.getInstance().init(this, "229b20394c0149dfb39995b87288dde8", new FaceDetectInitListener() {
+            @Override
+            public void onInitComplete() {
+                bean.getData().get(REQUEST_CODE_FACE).setState(1);
+                saveData2Local(bean);
+                mAdapter.notifyDataSetChanged();
+                MyToastUtils.error("人脸识别检查成功",1);
+            }
+
+            @Override
+            public void onInitFailure(String s) {
+                MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！",1);
+            }
+        });
+//        if (!APP.isInitFaceSuccess) {
+//            bean.getData().get(REQUEST_CODE_FACE).setState(1);
+//            saveData2Local(bean);
+//            mAdapter.notifyDataSetChanged();
+//            dismissNetDialog();
+//            MyToastUtils.error("人脸识别检查成功", 1);
+//        }else {
+//            dismissNetDialog();
+//            MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！", 1);
+//        }
     }
 
     private void saveData2Local(SystemTestBean bean) {

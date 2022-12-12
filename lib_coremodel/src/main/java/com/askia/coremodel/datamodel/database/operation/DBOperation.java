@@ -7,14 +7,14 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.db.DBLogs;
+import com.askia.coremodel.event.ExportDataEvent;
 import com.blankj.utilcode.util.LogUtils;
+import com.ttsea.jrxbus2.RxBus2;
 
 import java.util.List;
-import java.util.Locale;
 
 import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmAsyncTask;
 import io.realm.RealmQuery;
 import io.realm.Sort;
 
@@ -73,19 +73,8 @@ public class DBOperation {
         return Realm.getDefaultInstance().where(DBExamArrange.class).findAll().sort("startTime");
     }
 
-    public static List<DBExamArrange> getDBExamArrange(String examCode) {
-        return Realm.getDefaultInstance().where(DBExamArrange.class).findAll();
-    }
-
-
     public static void setDBExamExport(DBExamExport db) {
-//        Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.insertOrUpdate(db));
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.insertOrUpdate(db);
-            }
-        });
+        Realm.getDefaultInstance().executeTransaction(realm -> realm.insertOrUpdate(db));
     }
 
     public static int getDBExamExport(String id) {
@@ -274,6 +263,45 @@ public class DBOperation {
     }
 
     /**
+     * 根据场次编码更新导出数据是否实时上传成功的状态
+     * 数据导出成功后调用（包含网络导出、SD卡导出、U盘导出）
+     *
+     * @param seCode 场地编码
+     */
+    public static void modifyExportDataState(String seCode) {
+        //创建事件总线event
+        ExportDataEvent event = new ExportDataEvent();
+        int eventCode = 22;
+        Realm.getDefaultInstance().executeTransactionAsync(realm -> {
+            //根据场次编码和上传状态查询导出数据
+            RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+            query.beginGroup();
+            query.equalTo("seCode", seCode);
+            query.equalTo("upLoadStatus", 0);
+            query.endGroup();
+            //导出数据中，未实时上传的dataList
+            List<DBExamExport> dataList = query.findAll();
+            for (DBExamExport item : dataList) {
+                //更新导出成功数据的上传状态
+                item.setUpLoadStatus(1);
+            }
+
+            //event添加场次码，验证数据使用
+            event.setSeCode(seCode);
+            //异步更新数据上传状态
+            realm.insertOrUpdate(dataList);
+        }, () -> {
+            //上传状态更新成功
+            event.setSuccess(true);
+            RxBus2.getInstance().post(eventCode, event);
+        }, error -> {
+            //上传状态更新失败
+            event.setSuccess(false);
+            RxBus2.getInstance().post(eventCode, event);
+        });
+    }
+
+    /**
      * 根据考试代码 学生编号 场次代码 获取详细信息
      *
      * @param examCode 考试代码
@@ -348,8 +376,7 @@ public class DBOperation {
             query.like("idCard", "?*" + idNo);
             query.endGroup();
             examLayout = query.findFirst();
-            if (examLayout == null){
-                String id = idNo.toLowerCase();
+            if (examLayout == null) {
                 RealmQuery<DBExamLayout> querySmall = Realm.getDefaultInstance().where(DBExamLayout.class);
                 querySmall.beginGroup();
                 querySmall.equalTo("examCode", examCode);
@@ -358,7 +385,7 @@ public class DBOperation {
                 querySmall.endGroup();
                 examLayout = querySmall.findFirst();
             }
-        }else {
+        } else {
             RealmQuery<DBExamLayout> queryNormal = Realm.getDefaultInstance().where(DBExamLayout.class);
             queryNormal.beginGroup();
             queryNormal.equalTo("examCode", examCode);
@@ -457,7 +484,7 @@ public class DBOperation {
      * @param id id
      * @return 根据id获取验证信息详情
      */
-    public static DBExamExport getExamportById(String id) {
+    public static DBExamExport getExamExportById(String id) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("id", id, Case.SENSITIVE);
@@ -466,12 +493,12 @@ public class DBOperation {
     }
 
     /**
-     * 设置数据上传状态
+     * 更新数据上传状态
      *
      * @param data   上传数据
      * @param status 上传状态 0失败 1成功
      */
-    public static void setUpLoadDataStatusOnLine(DBExamExport data, int status) {
+    public static void updateDataStatus(DBExamExport data, int status) {
         Realm.getDefaultInstance().executeTransaction(realm -> {
             data.setUpLoadStatus(status);
             realm.insertOrUpdate(data);

@@ -29,6 +29,7 @@ import com.askia.coremodel.datamodel.data.DataImportListBean;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
+import com.askia.coremodel.event.ExportDataEvent;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
@@ -152,18 +153,18 @@ public class DataExportFragment extends BaseFragment {
         }, "有" + num + "条验证数据未实时上传成功，是否通过网络上传？");
         if (num > 0) {
             dialog.show();
-        }else {
+        } else {
             upLoadData(filePath);
         }
     }
 
-    private void upLoadData(String filePath){
+    private void upLoadData(String filePath) {
         String examCode = itemArrange.getExamCode();
         String seCode = itemArrange.getSeCode();
-        if (NetworkUtils.isConnected()){
+        if (NetworkUtils.isConnected()) {
             exportViewModel.postData(examCode, siteCode, seCode, filePath);
             LogsUtil.saveOperationLogs("数据导出");
-        }else {
+        } else {
             MyToastUtils.error("网络异常，请检查您的网络！", Toast.LENGTH_SHORT);
             closeLoading();
         }
@@ -210,6 +211,20 @@ public class DataExportFragment extends BaseFragment {
             readDevice(getUsbMass(usbDevice));
         }
     }
+
+    /**
+     * 数据导出成功后，更新DBExport表的上传状态
+     *
+     * @param event ExportDataEvent
+     */
+    @Subscribe(code = 22)
+    public void onModifyDataStateEvent(ExportDataEvent event) {
+        if (loadingDialog != null && loadingDialog.isShowing()){
+            loadingDialog.dismiss();
+        }
+        Log.e("modify dbExport ->", "场次" + event.getSeCode() + "result->" + event.isSuccess());
+    }
+
 
     private UsbMassStorageDevice getUsbMass(UsbDevice usbDevice) {
         for (UsbMassStorageDevice device : storageDevices) {
@@ -321,6 +336,7 @@ public class DataExportFragment extends BaseFragment {
             loadingDialog.setLoadingProgress(percentDone, result.getMessage());
             if (result.getCode() == 0) {
                 closeLoading();
+                DBOperation.modifyExportDataState(seCode);
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
             }
             LogsUtil.saveOperationLogs("数据导出");
@@ -336,14 +352,10 @@ public class DataExportFragment extends BaseFragment {
                     redUDiskDevsList();
                     //选择网络导出
                 } else if (defaultIndex == 0) {
-                    //新增dialog提示
                     showUnUpLoadDataNumberDialog(result.getFilePath());
-//                    String examCode = itemArrange.getExamCode();
-//                    String seCode = itemArrange.getSeCode();
-//                    exportViewModel.postData(examCode, siteCode, seCode, result.getFilePath());
-//                    LogsUtil.saveOperationLogs("数据导出");
                 } else {
                     closeLoading();
+                    DBOperation.modifyExportDataState(seCode);
                     LogsUtil.saveOperationLogs("数据导出");
                     MyToastUtils.error("导出成功", Toast.LENGTH_SHORT);
                 }
@@ -357,6 +369,11 @@ public class DataExportFragment extends BaseFragment {
                 float ioPercentDone = (float) result.getCurrent() / (float) result.getTotal() * 100;
                 String percentDone = numberFormat.format(ioPercentDone);
                 loadingDialog.setLoadingProgress(percentDone, result.getInfo());
+            }
+            //上传成功后改变实时上传状态
+            if (result.isSuccess()){
+                //设置实时上传数据状态
+                DBOperation.modifyExportDataState(seCode);
             }
             if (result.getState() == 0) {
                 closeLoading();

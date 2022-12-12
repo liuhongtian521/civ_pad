@@ -23,6 +23,7 @@ import com.askia.coremodel.datamodel.data.KeyBoardBean;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.util.AssetsUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.askia.coremodel.viewmodel.ManualCheckViewModel;
 import com.lncucc.authentication.R;
@@ -224,8 +225,10 @@ public class ManualCheckActivity extends BaseActivity {
             bundle.putString("stuNo",examLayout.getStuNo());
             bundle.putString("seCode",examLayout.getSeCode());
             bundle.putString("path", path);
-            //点击比对
-            startActivityForResultByRouter(ARouterPath.TAKE_PHOTO,PHOTO_REQUEST,bundle);
+            if (!Utils.doubleClick()){
+                //点击比对
+                startActivityForResultByRouter(ARouterPath.TAKE_PHOTO,PHOTO_REQUEST,bundle);
+            }
         });
     }
 

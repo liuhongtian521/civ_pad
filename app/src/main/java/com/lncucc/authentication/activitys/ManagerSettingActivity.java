@@ -13,6 +13,7 @@ import com.askia.common.base.BaseActivity;
 import com.askia.coremodel.datamodel.manager.ManagerItemBean;
 import com.askia.coremodel.util.AssetsUtil;
 import com.askia.coremodel.util.JsonUtil;
+import com.askia.coremodel.util.Utils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.ManagerSettingAdapter;
 import com.lncucc.authentication.databinding.ActManagerBinding;
@@ -38,28 +39,31 @@ public class ManagerSettingActivity extends BaseActivity {
         mRecyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((adapter1, view, position) -> {
-            switch (position){
-                case 0:
-                    startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
-                    break;
-                case 1:
-                    startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);
-                    break;
-                case 2:
-                    startActivityByRouter(ARouterPath.SYSTEM_SETTING);
-                    break;
-                case 3:
-                    startActivityByRouter(ARouterPath.LOGS_ACTIVITY);
-                    break;
-                case 4:
-                    startActivityByRouter(ARouterPath.SYSTEM_TEST);
-                    break;
-                case 5:
-                    startActivityByRouter(ARouterPath.SYSTEM_INFO);
-                    break;
-                default:
-                    break;
+            boolean isFastClick = Utils.doubleClick();
+            if (!isFastClick){
+                switch (position){
+                    case 0:
+                        startActivityByRouter(ARouterPath.EXAMINIATION_ACTIVITY);
+                        break;
+                    case 1:
+                        startActivityByRouter(ARouterPath.DATA_SERVICE_ACTIVITY);
+                        break;
+                    case 2:
+                        startActivityByRouter(ARouterPath.SYSTEM_SETTING);
+                        break;
+                    case 3:
+                        startActivityByRouter(ARouterPath.LOGS_ACTIVITY);
+                        break;
+                    case 4:
+                        startActivityByRouter(ARouterPath.SYSTEM_TEST);
+                        break;
+                    case 5:
+                        startActivityByRouter(ARouterPath.SYSTEM_INFO);
+                        break;
+                    default:
+                        break;
 
+                }
             }
         });
     }

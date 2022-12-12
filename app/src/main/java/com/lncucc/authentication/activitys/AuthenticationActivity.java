@@ -35,6 +35,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.rtc.Constants;
+import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.TimeUtils;
@@ -136,13 +137,13 @@ public class AuthenticationActivity extends BaseActivity {
         mDataBinding.tvTime.setText(TimeUtils.millis2String(nowTime));
         if (nowTime > timeEnd) {
             //关闭dialog
-            if (faceResultDialog != null && faceResultDialog.isShowing()){
+            if (faceResultDialog != null && faceResultDialog.isShowing()) {
                 faceResultDialog.dismiss();
             }
-            if (peopleMsgDialog != null && peopleMsgDialog.isShowing()){
+            if (peopleMsgDialog != null && peopleMsgDialog.isShowing()) {
                 peopleMsgDialog.dismiss();
             }
-            if (faceComparedDialog != null && faceComparedDialog.isShowing()){
+            if (faceComparedDialog != null && faceComparedDialog.isShowing()) {
                 faceComparedDialog.dismiss();
             }
             startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
@@ -213,7 +214,6 @@ public class AuthenticationActivity extends BaseActivity {
             mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
 
         saveList = new ArrayList<>();
-
 
 
         //记录列表展示
@@ -307,13 +307,13 @@ public class AuthenticationActivity extends BaseActivity {
                     faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 }
             }
         });
@@ -333,13 +333,13 @@ public class AuthenticationActivity extends BaseActivity {
                 faceFragment.goContinueDetectFace();
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity),"0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
                 }
             }
         });
@@ -410,6 +410,7 @@ public class AuthenticationActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         faceFragment.closeFace();
+        faceFragment.releaseCamera();
         handler.removeCallbacks(runnable);
     }
 
@@ -457,7 +458,7 @@ public class AuthenticationActivity extends BaseActivity {
             if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
                 return;
             //刷脸成功
-            faceResultDialog.setType(true,result);
+            faceResultDialog.setType(true, result);
         });
 
 
@@ -478,7 +479,7 @@ public class AuthenticationActivity extends BaseActivity {
                     Log.e("TagSnake", "havethis" + haveIndex);
                     //移除旧的验证数据，添加新的验证数据。
                     saveList.remove(haveIndex);
-                    saveList.add(0,dbExamExport);
+                    saveList.add(0, dbExamExport);
                     //新增排序
 
 
@@ -530,7 +531,7 @@ public class AuthenticationActivity extends BaseActivity {
                     return;
                 if (dbExaminee == null) {
                     if (!isComparison) {
-                        faceResultDialog.setType(false,"");
+                        faceResultDialog.setType(false, "");
                     } else
                         faceFragment.goContinueDetectFace();
                 } else {
@@ -569,11 +570,11 @@ public class AuthenticationActivity extends BaseActivity {
                         else if (mExamCodeList.indexOf(dbExamLayout.getRoomNo()) > -1) {
                             mViewModel.canSign(dbExamLayout.getId());
                         } else
-                            faceResultDialog.setType(false,"");
+                            faceResultDialog.setType(false, "");
                     }
                 } else {
                     if (!isComparison) {
-                        faceResultDialog.setType(false,"");
+                        faceResultDialog.setType(false, "");
                     } else {
                         faceFragment.goContinueDetectFace();
                     }
@@ -596,31 +597,37 @@ public class AuthenticationActivity extends BaseActivity {
 
     //选择考场
     public void chooseExamination(View view) {
-        Bundle _b = new Bundle();
-        _b.putString("SE_CODE", mSeCode);
-        startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 1211, _b);
+        if (!Utils.doubleClick()) {
+            Bundle _b = new Bundle();
+            _b.putString("SE_CODE", mSeCode);
+            startActivityForResultByRouter(ARouterPath.CHOOSE_VENVE, 1211, _b);
+        }
     }
 
     public void setting(View view) {
-        startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+        if (!Utils.doubleClick()) {
+            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+        }
     }
 
     //人工审核
     public void audit(View view) {
         faceFragment.closeFace();
-//        inquiryDialog.show();
-//        inquiryDialog.search();
-        Bundle bundle = new Bundle();
-        bundle.putString("examCode",mExamCode);
-        bundle.putString("seCode",mSeCode);
-        startActivityByRouter(ARouterPath.MANUAL_CHECK,bundle);
+        if (!Utils.doubleClick()) {
+            Bundle bundle = new Bundle();
+            bundle.putString("examCode", mExamCode);
+            bundle.putString("seCode", mSeCode);
+            startActivityByRouter(ARouterPath.MANUAL_CHECK, bundle);
+        }
     }
 
 
     public void toSeeMore(View view) {
-        Bundle bundle = new Bundle();
-        bundle.putString("seCode",mSeCode);
-        startActivityByRouter(ARouterPath.DATA_VIEW,bundle);
+        if (!Utils.doubleClick()) {
+            Bundle bundle = new Bundle();
+            bundle.putString("seCode", mSeCode);
+            startActivityByRouter(ARouterPath.DATA_VIEW, bundle);
+        }
     }
 
     //页面返回接收
@@ -654,7 +661,7 @@ public class AuthenticationActivity extends BaseActivity {
                 this.mDetectResult = detectResult;
                 mViewModel.quickPeople(mDetectResult.faceNum, mExamCode);//查询学生
             } else {
-                faceResultDialog.setType(false,"");
+                faceResultDialog.setType(false, "");
             }
         }
     }

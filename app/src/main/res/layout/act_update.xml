@@ -406,20 +406,21 @@
                     android:background="@drawable/bg_driver" />
 
             </LinearLayout>
+
             <Button
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
                 android:id="@+id/btn_get"
                 android:layout_width="390dp"
                 android:layout_height="@dimen/dp_30"
-                android:layout_marginBottom="64dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginBottom="64dp"
                 android:background="@drawable/btn_one"
-                android:text="联网测试升级"
                 android:onClick="@{handlers::getUpData}"
-                android:textSize="@dimen/sp_11"
-                android:textColor="@color/white"/>
+                android:text="联网检测升级"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_11" />
 
         </RelativeLayout>
 

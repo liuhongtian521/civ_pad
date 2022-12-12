@@ -217,7 +217,7 @@ public class DataImportViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(FaceDBHandleEvent result) {
-                        if (result.getState() == 1) {
+                        if (result.getState() == 1 || result.getState() == 2) {
                             removeZipFile();
                         }
                         faceDbObservable.postValue(result);
@@ -240,17 +240,12 @@ public class DataImportViewModel extends BaseViewModel {
 
     public void readZipFromUDisk(UsbFile usbFile) {
         Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter -> {
-//            UsbFile descFile = usbFile;
             InputStream is = null;
             UsbWriteEvent event = new UsbWriteEvent();
-
-            //如果多个压缩包 进行批量复制到sdcard
-//                for (UsbFile file : descFile.listFiles()) {
             is = new UsbFileInputStream(usbFile);
             String path = ZIP_PATH + File.separator + usbFile.getName();
             OutputStream os = null;
             File targetFile = new File(path);
-//            File folder = new File(ZIP_PATH);
             boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
             if (hasFolder) {
                 try {

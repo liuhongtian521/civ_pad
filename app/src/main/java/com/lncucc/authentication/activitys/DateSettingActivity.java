@@ -87,11 +87,9 @@ public class DateSettingActivity extends BaseActivity {
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.INTERNET,
-
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                Manifest.permission.ACCESS_WIFI_STATE,
-                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS
+                Manifest.permission.ACCESS_WIFI_STATE
         ).subscribe(aBoolean -> {
             if (aBoolean) {
                 //申请的权限全部允许

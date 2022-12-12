@@ -43,7 +43,7 @@ public interface NetDataService {
 
     @GET("/api/pad/selectpalnbysitecode")
     Observable<SelectpalnbysitecodeData> selectpalnbysitecode(@Query("orgCode") String orgCode);
-    //实时数据上传
+    //网络导出上传
     @Multipart
     @POST("/api/pad/importverifypack")
     Observable<UpLoadResult> postVerifyData(@HeaderMap Map<String, String> map, @Part MultipartBody.Part body);
