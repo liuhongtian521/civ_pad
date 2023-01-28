@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.multidex.MultiDex;
 
@@ -176,6 +177,7 @@ public class APP extends Application {
             public void onInitFailure(String errorMessage) {
                 isInitFaceSuccess = false;
                 Log.e("init face error", errorMessage);
+                MyToastUtils.error("人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP", Toast.LENGTH_LONG);
             }
         });
 

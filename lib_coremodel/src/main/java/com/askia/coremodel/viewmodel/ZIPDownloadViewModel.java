@@ -39,6 +39,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import me.jessyan.retrofiturlmanager.RetrofitUrlManager;
 
 /**
  * Create bt she:
@@ -155,6 +156,9 @@ public class ZIPDownloadViewModel extends BaseViewModel {
             if (file != null)
                 StorageUtil.deleteFile(file);
         }
+        //base Url
+        String baseUrl = RetrofitUrlManager.getInstance().getGlobalDomain().url().toString();
+        Log.e("domain url ->", baseUrl);
          FileDownloader.getImpl().create(ApiConstants.HOST+"/api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
                 .setPath(Constants.ZIP_PATH + File.separator +resultBean.getExamCode()+ ".zip")
                 .setForceReDownload(true)

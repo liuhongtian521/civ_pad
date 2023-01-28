@@ -61,6 +61,7 @@ public class IPSettingDialog extends BaseDialog {
                     MyToastUtils.success("IP修改成功",0);
                     //切换baseUrl
                     RetrofitUrlManager.getInstance().setGlobalDomain(baseUrl);
+                    RetrofitUrlManager.getInstance().putDomain("baseDomain",baseUrl);
                     callback.backType(0);
                     KeyboardUtils.toggleSoftInput();
                 }else {

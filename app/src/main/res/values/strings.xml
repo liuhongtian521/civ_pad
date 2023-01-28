@@ -4,12 +4,12 @@
     <string name="security_pwd_format">0123456789</string>
     <string name="verification_code_format">0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
     <string name="invite_code_format">0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
-    <string name="logining">正在登陆</string>
     <string name="emptyView_mode_desc_fail_title">加载失败</string>
     <string name="emptyView_mode_desc_retry">点击重试</string>
     <string name="filtrate">筛选</string>
     <string name="more">更多</string>
     <string name="copyright">Copyright 169 联通（辽宁）产业互联网有限公司 . All Rights Reserved.</string>
+    <string name="login_net_setting">网络设置 ></string>
     <string name="admin_login">管理员登录</string>
     <string name="main_examination">选择考场</string>
     <string name="login_title">考生身份认证系统</string>

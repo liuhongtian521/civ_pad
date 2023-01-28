@@ -20,10 +20,13 @@ import com.askia.coremodel.util.NetUtils;
 import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActLoginBinding;
 import com.askia.coremodel.util.SignUtils;
+import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.IPSettingDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 
@@ -33,12 +36,14 @@ import java.util.Objects;
  * LoginActivity
  */
 @Route(path = ARouterPath.LOGIN_ACTIVITY)
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements DialogClickBackListener {
 
     private ActLoginBinding loginBinding;
     private LoginViewModel loginViewModel;
     private EditText txtPassword;
     private ImageView imageView;
+    //ip setting
+    private IPSettingDialog dialog;
 
     @Override
     public void onInit() {
@@ -46,6 +51,7 @@ public class LoginActivity extends BaseActivity {
         txtPassword = findViewById(R.id.edt_pwd);
         imageView = findViewById(R.id.iv_pwd_switch);
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
+        dialog = new IPSettingDialog(this,this);
         loginViewModel.account.set(defaultAccount);
     }
 
@@ -91,7 +97,16 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin() {
-
+        //添加内置管理员账号
+        if ("SFYZadmin".equals(loginViewModel.account.get()) && "SFYA@sfyz".equals(loginViewModel.password.get())){
+            if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+                startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+            } else {
+                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+            }
+            finish();
+            return;
+        }
         //有网络联网登录
         if (NetUtils.isNetConnected()) {
             String pwd = SignUtils.encryptByPublic(loginViewModel.password.get());
@@ -110,13 +125,24 @@ public class LoginActivity extends BaseActivity {
             } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
-//            loginBinding.btnLogin.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void dissMiss() {
+        KeyboardUtils.toggleSoftInput();
+    }
+
+    @Override
+    public void backType(int type) {
+        if (type == 0 && dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+            KeyboardUtils.toggleSoftInput();
         }
     }
 
     public class ProxyClick {
         public void login() {
-//            loginBinding.btnLogin.setEnabled(false);
             if (TextUtils.isEmpty(loginViewModel.account.get())) {
                 MyToastUtils.error("请输入用户名！", 0);
                 return;
@@ -139,6 +165,12 @@ public class LoginActivity extends BaseActivity {
                 imageView.setBackgroundResource(R.mipmap.icon_pwd_hide);
             }
             txtPassword.setSelection(Objects.requireNonNull(loginViewModel.password.get()).length());
+        }
+
+        public void setHost(){
+            if (dialog != null){
+                dialog.show();
+            }
         }
     }
 

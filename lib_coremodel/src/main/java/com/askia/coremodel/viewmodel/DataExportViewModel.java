@@ -97,6 +97,26 @@ public class DataExportViewModel extends BaseViewModel {
             boolean isExit = FileUtils.createFileByDeleteOldFile(exportPath);
             //遍历历史导出文件压缩包并清理
             List<File> fileList = FileUtils.listFilesInDir(STU_EXPORT);
+//            Observable.fromIterable(fileList)
+//                    .observeOn(Schedulers.computation())
+//                    .filter(file -> file.getName().contains(".zip"))
+//                    .toList()
+//                    .subscribe(new SingleObserver<List<File>>() {
+//                        @Override
+//                        public void onSubscribe(@NonNull Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(@NonNull List<File> files) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(@NonNull Throwable e) {
+//
+//                        }
+//                    });
             for (File file: fileList){
                 if (file.getName().contains(".zip")){
                     FileUtils.deleteFile(file);
@@ -314,7 +334,8 @@ public class DataExportViewModel extends BaseViewModel {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         UpLoadResult bean = new UpLoadResult();
-                        bean.setMessage(e.getMessage());
+                        //添加网络数据导出异常信息
+                        bean.setMessage("网络连接失败，请检查网络后连接重试！");
                         bean.setSuccess(false);
                         upLoadObservable.postValue(bean);
                     }
