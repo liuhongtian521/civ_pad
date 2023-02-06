@@ -71,8 +71,6 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
         for (int i = 0; i < mTList.size(); i++) {
             if (mTList.get(i).isChecked()) {
                 idList.add(mTList.get(i).getRoomNo());
-                int finalI = i;
-
             }
             boolean isChecked = mTList.get(i).isChecked();
             int finalI = i;
@@ -102,11 +100,11 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
             //全选 -> 取消全选
             if (defaultTag) {
                 if (isChecked) {
-                    mTList.get(i).setChecked(!isChecked);
+                    mTList.get(i).setChecked(false);
                 }
             } else {
                 if (!isChecked) {
-                    mTList.get(i).setChecked(!isChecked);
+                    mTList.get(i).setChecked(true);
                 }
             }
         }

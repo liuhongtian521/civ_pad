@@ -109,16 +109,26 @@ public class JsonUtil {
         return list;
     }
 
-
-//    List<T> list = new ArrayList<T>();
-//        try {
-//        Gson gson = new Gson();
-//        JsonArray arry = new JsonParser().parse(jsonString).getAsJsonArray();
-//        for (JsonElement jsonElement : arry) {
-//            list.add(gson.fromJson(jsonElement, cls));
-//        }
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
-
+    /**
+     * 读取文件内容并转json
+     * @param path 文件路径
+     * @param t 转换类型
+     * @param <T> 泛型
+     * @return
+     */
+    public static <T> T file2JsonObject(String path, Class<T> t){
+        T bean = null;
+        File file = FileUtils.getFileByPath(path);
+        String json = null;
+        try {
+            FileInputStream inputStream = new FileInputStream(file);
+            byte [] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes);
+            json = new String(bytes);
+            bean = Str2JsonBean(json,t);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  bean;
+    }
 }

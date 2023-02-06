@@ -97,31 +97,28 @@ public class LoginActivity extends BaseActivity implements DialogClickBackListen
     }
 
     private void doLogin() {
+        String userName = loginViewModel.account.get();
+        String password = loginViewModel.password.get();
         //添加内置管理员账号
-        if ("SFYZadmin".equals(loginViewModel.account.get()) && "SFYA@sfyz".equals(loginViewModel.password.get())){
-            if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-                startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-            } else {
-                startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-            }
-            finish();
+        if ("SFYZadmin".equals(userName) && "SFYA@sfyz".equals(password)){
+            toMainOrManagerActivity();
             return;
         }
-        //有网络联网登录
+        // 需求1.3.2 添加本地数据库账号密码登录逻辑。
+        // 数据来源-> 数据包导入时account.json文件 DBAccount文件
+        if (DBOperation.isMatchingWithLocal(userName,password)){
+            toMainOrManagerActivity();
+            return;
+        }
+        //有网络联网登录，没有网络尝试读取本地缓存
         if (NetUtils.isNetConnected()) {
-            String pwd = SignUtils.encryptByPublic(loginViewModel.password.get());
-            loginViewModel.login(loginViewModel.account.get(), pwd);
+            loginViewModel.login(userName, password);
         } else {
-            String account = SharedPreferencesUtils.getString(this, "account", loginViewModel.account.get());
-            String password = SharedPreferencesUtils.getString(this, "password", loginViewModel.password.get());
+            String account = SharedPreferencesUtils.getString(this, "account", userName);
+            String passwordLocal = SharedPreferencesUtils.getString(this, "password", password);
             //本地账号密码登录
-            if (account.equals(loginViewModel.account.get()) && password.equals(loginViewModel.password.get())) {
-                if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
-                    startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
-                } else {
-                    startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
-                }
-                finish();
+            if (account.equals(userName) && passwordLocal.equals(password)) {
+                toMainOrManagerActivity();
             } else {
                 MyToastUtils.error("账号密码错误！", Toast.LENGTH_SHORT);
             }
@@ -139,6 +136,15 @@ public class LoginActivity extends BaseActivity implements DialogClickBackListen
             dialog.dismiss();
             KeyboardUtils.toggleSoftInput();
         }
+    }
+
+    private void toMainOrManagerActivity(){
+        if (DBOperation.getDBExamArrange() != null && DBOperation.getDBExamArrange().size() > 0) {
+            startActivityByRouter(ARouterPath.MAIN_ACTIVITY);
+        } else {
+            startActivityByRouter(ARouterPath.MANAGER_SETTING_ACTIVITY);
+        }
+        finish();
     }
 
     public class ProxyClick {

@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.askia.coremodel.datamodel.data.DataImportBean;
+import com.askia.coremodel.datamodel.database.db.DBAccount;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -58,14 +59,13 @@ import io.realm.Realm;
 public class DataImportViewModel extends BaseViewModel {
 
     //usb
-    private MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
+    private final MutableLiveData<UsbWriteEvent> usbImportObservable = new MutableLiveData<>();
     //unzip
-    private MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
+    private final MutableLiveData<UnZipHandleEvent> unZipObservable = new MutableLiveData<>();
     //face db insert
-    private MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
+    private final MutableLiveData<FaceDBHandleEvent> faceDbObservable = new MutableLiveData<>();
     //face db insert error list
-    private List<String> errorList = new ArrayList<>();
-    private String pwd = "Ut9RKOo8d4NCrnll";
+    private final List<String> errorList = new ArrayList<>();
 
     public MutableLiveData<UnZipHandleEvent> doZipHandle() {
         return unZipObservable;
@@ -144,6 +144,11 @@ public class DataImportViewModel extends BaseViewModel {
             case "ea_data_version.json":
                 List<DBDataVersion> versionBean = JsonUtil.file2JsonArray(filePath, DBDataVersion.class);
                 Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(versionBean));
+                break;
+            //账号信息
+            case "account.json":
+                DBAccount account = JsonUtil.file2JsonObject(filePath, DBAccount.class);
+                Realm.getDefaultInstance().executeTransactionAsync(realm -> realm.copyToRealmOrUpdate(account));
                 break;
             default:
                 break;
@@ -332,6 +337,7 @@ public class DataImportViewModel extends BaseViewModel {
                     // 生成的压缩文件
                     ZipFile zipFile = new ZipFile(path);
                     // 设置密码
+                    String pwd = "Ut9RKOo8d4NCrnll";
                     zipFile.setPassword(pwd.toCharArray());
                     //解压进度
                     ProgressMonitor progressMonitor = zipFile.getProgressMonitor();

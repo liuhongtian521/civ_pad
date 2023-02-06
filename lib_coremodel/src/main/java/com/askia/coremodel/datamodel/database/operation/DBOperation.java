@@ -1,5 +1,6 @@
 package com.askia.coremodel.datamodel.database.operation;
 
+import com.askia.coremodel.datamodel.database.db.DBAccount;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
@@ -10,8 +11,8 @@ import com.askia.coremodel.datamodel.database.db.DBLogs;
 import com.askia.coremodel.event.ExportDataEvent;
 import com.blankj.utilcode.util.LogUtils;
 import com.ttsea.jrxbus2.RxBus2;
-
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -26,7 +27,7 @@ public class DBOperation {
     /**
      * 获取考试计划列表
      *
-     * @return
+     * @return 考试计划列表
      */
     public static List<DBExamPlan> getExamPlan() {
         return Realm.getDefaultInstance().where(DBExamPlan.class).findAll();
@@ -37,15 +38,11 @@ public class DBOperation {
                 .findFirst();
     }
 
-    public static DBExamPlan getSingleExamPlan() {
-        return Realm.getDefaultInstance().where(DBExamPlan.class).findFirst();
-    }
-
     /**
      * 获取考试名称
      *
-     * @param examCode
-     * @return
+     * @param examCode 考试代码
+     * @return 考试名称
      */
     public static DBExamPlan getExamName(String examCode) {
         return Realm.getDefaultInstance().where(DBExamPlan.class).equalTo("examCode", examCode)
@@ -56,7 +53,7 @@ public class DBOperation {
     /**
      * 获取考场安排列表
      *
-     * @return
+     * @return 考试安排
      */
     public static List<DBExamArrange> getDBExamArrange() {
         RealmQuery<DBExamArrange> query = Realm.getDefaultInstance().where(DBExamArrange.class);
@@ -66,7 +63,7 @@ public class DBOperation {
     /**
      * 场次查看
      *
-     * @return
+     * @return 场次列表
      */
     public static List<DBExamArrange> getAllExamArrange() {
         //根据时间排序
@@ -75,14 +72,6 @@ public class DBOperation {
 
     public static void setDBExamExport(DBExamExport db) {
         Realm.getDefaultInstance().executeTransaction(realm -> realm.insertOrUpdate(db));
-    }
-
-    public static int getDBExamExport(String id) {
-        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
-        query.beginGroup();
-        query.equalTo("id", id);
-        query.endGroup();
-        return query.findAll().size();
     }
 
     /**
@@ -96,7 +85,7 @@ public class DBOperation {
         query.beginGroup();
         query.equalTo("id", id);
         query.endGroup();
-        return query.findFirst().getHealthCode();
+        return Objects.requireNonNull(query.findFirst()).getHealthCode();
     }
 
     public static int getDBExamExportNumber(String seCode, String examCode) {
@@ -111,7 +100,7 @@ public class DBOperation {
     /**
      * 获取考试考试编排表
      *
-     * @return
+     * @return 考试考试编排表
      */
     public static List<DBExamLayout> getDBExamLayout() {
         return Realm.getDefaultInstance().where(DBExamLayout.class).findAll();
@@ -128,7 +117,7 @@ public class DBOperation {
     /**
      * 获取考生信息列表
      *
-     * @return
+     * @return 考生信息列表
      */
     public static List<DBExaminee> getDBExaminee() {
         return Realm.getDefaultInstance().where(DBExaminee.class).findAll();
@@ -136,7 +125,7 @@ public class DBOperation {
 
     /**
      * @return 获取考试编排表
-     * @params 身份证准考证后6位
+     * @param params 身份证准考证后6位
      */
     public static List<DBExamLayout> getDBExamLayoutByIdNo(String params) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
@@ -212,8 +201,8 @@ public class DBOperation {
      * @return 居住信息
      */
     public static String getLiveAddress(String stuNo) {
-        return Realm.getDefaultInstance().where(DBExaminee.class).equalTo("stuNo", stuNo)
-                .findFirst().getLiveAddr();
+        return Objects.requireNonNull(Realm.getDefaultInstance().where(DBExaminee.class).equalTo("stuNo", stuNo)
+                .findFirst()).getLiveAddr();
     }
 
     /**
@@ -367,7 +356,7 @@ public class DBOperation {
      * @return 学生信息
      */
     public static DBExamLayout getStudentByIdCard(String idNo, String examCode, String seCode) {
-        DBExamLayout examLayout = null;
+        DBExamLayout examLayout;
         if (idNo.contains("X")) {
             RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
             query.beginGroup();
@@ -442,7 +431,7 @@ public class DBOperation {
      * 根据场次编码获取 验证数据信息
      *
      * @param seCode 场次码
-     * @return
+     * @return 验证数据信息
      */
     public static List<DBExamExport> getVerifyListBySeCode(String seCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
@@ -462,12 +451,12 @@ public class DBOperation {
         query.beginGroup();
         query.equalTo("examCode", examCode, Case.SENSITIVE);
         query.endGroup();
-        return query.findFirst().getSiteCode();
+        return Objects.requireNonNull(query.findFirst()).getSiteCode();
     }
 
     /**
      * @return 获取验证数据查询
-     * @params 身份证准考证后6位
+     * @param params 身份证准考证后6位
      */
     public static List<DBExamExport> getDBExportByIdNo(String params) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
@@ -518,5 +507,21 @@ public class DBOperation {
         query.equalTo("seCode", seCode, Case.SENSITIVE);
         query.endGroup();
         return query.findAll().size();
+    }
+
+    /**
+     * 查询本地数据库验证账号密码一致性
+     *
+     * @param userName 账号
+     * @param password 密码
+     * @return 查询结果大于0 匹配
+     */
+    public static boolean isMatchingWithLocal(String userName, String password) {
+        RealmQuery<DBAccount> query = Realm.getDefaultInstance().where(DBAccount.class);
+        query.beginGroup();
+        query.equalTo("code", userName);
+        query.equalTo("password", password);
+        query.endGroup();
+        return query.findAll().size() != 0;
     }
 }
