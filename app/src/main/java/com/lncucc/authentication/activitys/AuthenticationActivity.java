@@ -676,4 +676,16 @@ public class AuthenticationActivity extends BaseActivity {
             view.setSystemUiVisibility(uiOptions);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //添加资源释放
+        if (faceFragment != null){
+            faceFragment.closeFace();
+            faceFragment.releaseCamera();
+        }
+        handler.removeCallbacks(runnable);
+        handler.removeCallbacksAndMessages(null);
+    }
 }

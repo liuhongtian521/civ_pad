@@ -111,8 +111,8 @@ public class AuthenticationViewModel extends BaseViewModel {
         long timeNow = System.currentTimeMillis();
         DBExamArrange back = null;
         for (DBExamArrange item : list) {
-            long start = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) - (Long.valueOf(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000);
-            long end = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) + (Long.valueOf(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000);
+            long start = TimeUtils.string2Millis(item.getStartTime()) - (Long.parseLong(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000);
+            long end = TimeUtils.string2Millis(item.getEndTime());
             if (start < timeNow && end > timeNow) {
                 back = item;
                 break;

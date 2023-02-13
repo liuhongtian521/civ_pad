@@ -161,16 +161,6 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
                 MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！",1);
             }
         });
-//        if (!APP.isInitFaceSuccess) {
-//            bean.getData().get(REQUEST_CODE_FACE).setState(1);
-//            saveData2Local(bean);
-//            mAdapter.notifyDataSetChanged();
-//            dismissNetDialog();
-//            MyToastUtils.error("人脸识别检查成功", 1);
-//        }else {
-//            dismissNetDialog();
-//            MyToastUtils.error("人脸初始化异常，请退出应用连接互联网后重启再试！", 1);
-//        }
     }
 
     private void saveData2Local(SystemTestBean bean) {
@@ -195,6 +185,13 @@ public class SystemTestActivity extends BaseActivity implements ItemClickListene
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mDisposable.isDisposed()){
+            mDisposable.dispose();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {

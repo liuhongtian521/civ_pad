@@ -24,6 +24,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.viewmodel.MainViewModel;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActMainBinding;
@@ -34,6 +35,12 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 
 @Route(path = ARouterPath.MAIN_ACTIVITY)
@@ -49,9 +56,10 @@ public class MainActivity extends BaseActivity {
     long timeStart, timeEnd;
     String mVerifyStartTime, mVerifyEndTime;
     private ArrayList<String> mExamCodeList = new ArrayList<>();
+    private Disposable mDisposable;
 
 
-    private int TIME = 1000;  //每隔1s执行一次.
+    private final int TIME = 1000;  //每隔1s执行一次.
 
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
@@ -74,13 +82,7 @@ public class MainActivity extends BaseActivity {
                 if (!APP.isInitFaceSuccess) {
                     return;
                 }
-                Bundle _d = new Bundle();
-                _d.putString("mExamCode", mExamCode);
-                _d.putStringArrayList("list", mExamCodeList);
-                _d.putLong("startTIME", timeStart);
-                _d.putLong("endTIME", timeEnd);
-                startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY, _d);
-                finish();
+                navigate2AuthActivity();
             } else {
                 long betten = timeStart - nowTime;
                 long hour = betten / (1000 * 60 * 60);//小时
@@ -89,6 +91,23 @@ public class MainActivity extends BaseActivity {
                 mDataBinding.tvTime.setText((hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min) + ":" + (sercend < 10 ? "0" + sercend : sercend));
             }
         }
+    }
+
+    private void navigate2AuthActivity(){
+        //此处添加延时跳转，避免重复跳转
+        mDisposable = Flowable.intervalRange(0,2,0,1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(aLong -> LogUtils.e("count down ->", aLong))
+                .doOnComplete(() -> {
+                    Bundle _d = new Bundle();
+                    _d.putString("mExamCode", mExamCode);
+                    _d.putStringArrayList("list", mExamCodeList);
+                    _d.putLong("startTIME", timeStart);
+                    _d.putLong("endTIME", timeEnd);
+                    startActivityByRouter(ARouterPath.IDENTIFY_ACTIVITY, _d);
+                    finish();
+                })
+                .subscribe();
     }
 
     //修改考试编号
@@ -287,6 +306,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (!mDisposable.isDisposed()){
+            mDisposable.dispose();
+        }
     }
 
 

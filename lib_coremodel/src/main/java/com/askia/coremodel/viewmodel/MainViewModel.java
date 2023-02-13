@@ -84,7 +84,7 @@ public class MainViewModel extends BaseViewModel {
         }
     }
 
-    public void getSiteCode(String examCode) {//String examCode) {
+    public void getSiteCode(String examCode) {
 //        examCode = "GK2030";
         DBExamPlan dbExamPlan = DBOperation.getExamPlan(examCode);
         List<DBExamArrange> list = DBOperation.getExamArrange(examCode);
@@ -93,7 +93,8 @@ public class MainViewModel extends BaseViewModel {
         for (DBExamArrange item : list) {
             Log.e("TagSnake", item.toString());
             long start = TimeUtils.string2Millis(item.getStartTime()) - Long.parseLong(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000;
-            long end = TimeUtils.string2Millis(item.getStartTime()) + Long.parseLong(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000;
+            //fixed 修正验证逻辑，去掉验证结束时间
+            long end = TimeUtils.string2Millis(item.getEndTime() == null ? "0" : item.getEndTime());
             Log.e("TagSnake", "timeNow:" + timeNow + ":start:" + start + ":end:" + end);
             if (start < timeNow && end > timeNow) {
                 back = item;
