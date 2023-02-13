@@ -30,12 +30,14 @@ import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
+import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 验证数据查看
@@ -47,6 +49,7 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
     private List<DBExamExport> tempList = new ArrayList<>();
     private PeopleMsgDialog peopleMsgDialog;
     private List<DBExamArrange> sessionList;
+    private String seCode;
 
     @Override
     public void onInit() {
@@ -58,6 +61,12 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
         mAdapter = new ValidationDataAdapter(tempList);
         mBinding.rlDataView.setAdapter(mAdapter);
         mBinding.tvSession.setText(sessionList.get(0).getSeName());
+        if (null !=sessionList && sessionList.size() >0 && sessionList.get(0).getSeName() != null){
+            seCode = sessionList.get(0).getSeCode();
+        }
+        RxBus2.getInstance().register(this);
+        //默认查询当前场次验证数据
+        query(null);
         initEvent();
     }
 
@@ -69,14 +78,11 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
             peopleMsgDialog.show();
         });
 
-        mBinding.editExamNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH){
-                    query(null);
-                }
-                return false;
+        mBinding.editExamNumber.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                query(null);
             }
+            return false;
         });
         mBinding.rlSession.setOnClickListener(v -> showPopUp());
     }
@@ -100,30 +106,23 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
     public void onGetSessionEvent(String index) {
         int position = Integer.parseInt(index);
         //获取选中场次
-        String seCode = sessionList.get(position).getSeCode();
+        seCode = sessionList.get(position).getSeCode();
         //更新selected view
         mBinding.tvSession.setText(sessionList.get(position).getSeName());
-        List<DBExamExport> examList = DBOperation.getExportBySeCode(seCode);
-        if (examList != null && examList.size() > 0){
-            mList.clear();
-            mList.addAll(examList);
-            mAdapter.notifyDataSetChanged();
-        }else {
-            Toast.makeText(getActivity(),"未查询到当前场次的验证信息！",Toast.LENGTH_SHORT).show();
-        }
+        query(null);
     }
 
     public void query(View view) {
         String queryParams = mBinding.editExamNumber.getText().toString().trim();
-        mList = DBOperation.getDBExportByIdNo(queryParams);
-        KeyboardUtils.hideSoftInput(getActivity());
+        mList = DBOperation.getDBExportByIdNo(queryParams,seCode);
+        KeyboardUtils.hideSoftInput(Objects.requireNonNull(getActivity()));
+        tempList.clear();
         if (mList.size() > 0) {
-            tempList.clear();
             tempList.addAll(mList);
-            mAdapter.notifyDataSetChanged();
         } else {
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
         }
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -146,5 +145,11 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
     @Override
     public void backType(int type) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus2.getInstance().unRegister(this);
     }
 }

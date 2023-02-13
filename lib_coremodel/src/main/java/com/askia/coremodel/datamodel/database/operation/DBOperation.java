@@ -18,6 +18,7 @@ import java.util.Objects;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -463,16 +464,19 @@ public class DBOperation {
 
     /**
      * @param params 身份证准考证后6位
+     * @param seCode 场次（新增场次参数）
      * @return 获取验证数据查询
      */
-    public static List<DBExamExport> getDBExportByIdNo(String params) {
-        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
-        query.beginGroup();
-        //身份证号
-        query.like("idCard", "?*" + params, Case.SENSITIVE);
-        //准考证号
-        query.or().like("stuNo", "?*" + params, Case.SENSITIVE);
-        query.endGroup();
+    public static List<DBExamExport> getDBExportByIdNo(String params,String seCode) {
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class)
+                .beginGroup()
+                .equalTo("seCode",seCode)
+                .endGroup()
+                .beginGroup()
+                .like("idCard", "?*" + params, Case.SENSITIVE)
+                .or()
+                .like("stuNo", "?*" + params, Case.SENSITIVE)
+                .endGroup();
         return query.findAll();
     }
 
@@ -577,8 +581,7 @@ public class DBOperation {
                 .findAllSorted("startTime", Sort.ASCENDING);
         int position = 0;
         for (int i = 0; i < planList.size(); i++) {
-            assert planList.get(i) != null;
-            if (currentExamStartTime.equals(planList.get(i).getStartTime())) {
+            if (currentExamStartTime.equals(Objects.requireNonNull(planList.get(i)).getStartTime())) {
                 position = i;
             }
         }
