@@ -31,6 +31,50 @@
             android:shadowDy="2"
             android:shadowRadius="3">
 
+            <Button
+                android:id="@+id/btn_setting"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_20"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
+                android:onClick="@{handlers::setting}"
+                android:text="管理员设置"
+                android:textColor="#3A90FF"
+                android:textSize="@dimen/sp_9" />
+
+
+            <Button
+                android:id="@+id/btn_audit"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_20"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/btn_setting"
+                android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
+                android:onClick="@{handlers::audit}"
+                android:text="人工审核"
+                android:textColor="#3A90FF"
+                android:textSize="@dimen/sp_9" />
+
+            <Button
+                android:id="@+id/btn_examination"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_20"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_14"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/btn_audit"
+                android:background="@drawable/bg_btn_line_blue"
+                android:gravity="center"
+                android:onClick="@{handlers::chooseExamination}"
+                android:text="选择考场"
+                android:textColor="#3A90FF"
+                android:textSize="@dimen/sp_9" />
+
             <ImageView
                 android:id="@+id/view_one"
                 android:layout_width="@dimen/dp_30"
@@ -55,14 +99,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tv_examname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textColor="#2A6DE5"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="bold" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -75,6 +111,15 @@
                             android:layout_height="@dimen/dp_10"
                             android:src="@drawable/icon_blue_arrow_down" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_examname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="#2A6DE5"
+                        android:textSize="@dimen/sp_12"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -116,50 +161,6 @@
                         android:textSize="@dimen/sp_8" />
                 </LinearLayout>
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_setting"
-                android:layout_width="@dimen/dp_75"
-                android:layout_height="@dimen/dp_20"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp_10"
-                android:background="@drawable/bg_btn_line_blue"
-                android:gravity="center"
-                android:onClick="@{handlers::setting}"
-                android:text="管理员设置"
-                android:textColor="#3A90FF"
-                android:textSize="@dimen/sp_9" />
-
-            <Button
-                android:id="@+id/btn_audit"
-                android:layout_width="@dimen/dp_75"
-                android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_toLeftOf="@+id/btn_setting"
-                android:background="@drawable/bg_btn_line_blue"
-                android:gravity="center"
-                android:onClick="@{handlers::audit}"
-                android:text="人工审核"
-                android:textColor="#3A90FF"
-                android:textSize="@dimen/sp_9" />
-
-
-            <Button
-                android:id="@+id/btn_examination"
-                android:layout_width="@dimen/dp_75"
-                android:layout_height="@dimen/dp_20"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_14"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_toLeftOf="@+id/btn_audit"
-                android:background="@drawable/bg_btn_line_blue"
-                android:gravity="center"
-                android:onClick="@{handlers::chooseExamination}"
-                android:text="选择考场"
-                android:textColor="#3A90FF"
-                android:textSize="@dimen/sp_9" />
 
 
             <TextView

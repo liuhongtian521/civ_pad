@@ -11,6 +11,7 @@ import com.askia.coremodel.datamodel.database.db.DBLogs;
 import com.askia.coremodel.event.ExportDataEvent;
 import com.blankj.utilcode.util.LogUtils;
 import com.ttsea.jrxbus2.RxBus2;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -124,8 +125,8 @@ public class DBOperation {
     }
 
     /**
-     * @return 获取考试编排表
      * @param params 身份证准考证后6位
+     * @return 获取考试编排表
      */
     public static List<DBExamLayout> getDBExamLayoutByIdNo(String params) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
@@ -222,13 +223,19 @@ public class DBOperation {
         return query.findFirst();
     }
 
-    public static void updateVerifyTime(String startTime, String endTime) {
+    /**
+     * v1.3.2 验证结束时间修改为每科考试结束时间
+     *
+     * @param startTime    开始验证时间
+     * @param intervalTime 验证间隔
+     */
+    public static void updateVerifyTime(String startTime, String intervalTime) {
 
         Realm.getDefaultInstance().executeTransactionAsync(realm -> {
                     DBExamPlan plan = realm.where(DBExamPlan.class).findFirst();
                     if (plan != null) {
                         plan.setVerifyStartTime(startTime);
-                        plan.setVerifyEndTime(endTime);
+                        plan.setVerifyIntervalTime(intervalTime);
                         realm.copyToRealmOrUpdate(plan);
                     }
                 },
@@ -455,8 +462,8 @@ public class DBOperation {
     }
 
     /**
-     * @return 获取验证数据查询
      * @param params 身份证准考证后6位
+     * @return 获取验证数据查询
      */
     public static List<DBExamExport> getDBExportByIdNo(String params) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
@@ -524,4 +531,58 @@ public class DBOperation {
         query.endGroup();
         return query.findAll().size() != 0;
     }
+
+    /**
+     * 查询账号表中的code，用于校验数据导出一致性使用
+     *
+     * @return orgCode
+     */
+    public static String queryOrgCode() {
+        return Objects.requireNonNull(Realm.getDefaultInstance().where(DBAccount.class).findFirst()).getCode();
+    }
+
+    /**
+     * 上传数据时判断内置orgCode与导出数据内的sitCode是否相同，不相同则拒绝导出
+     *
+     * @return 根据内置orgCode去导出数据中查询，如果数量不一致则拒绝上传
+     */
+    public static boolean isAffiliationCurrentSite() {
+        //获取orgCode
+        String orgCode = queryOrgCode();
+        return Realm.getDefaultInstance().where(DBExamExport.class).findAll().size()
+                == Realm.getDefaultInstance().where(DBExamExport.class).beginGroup()
+                .equalTo("siteCode", orgCode)
+                .endGroup()
+                .findAll()
+                .size();
+    }
+
+    /**
+     * 查询导入的账号,密码
+     *
+     * @return 账号密码
+     */
+    public static DBAccount queryInnerAccount() {
+        return Realm.getDefaultInstance().where(DBAccount.class).findFirst();
+    }
+
+    /**
+     * 查询距离当前考试最近的一场考试，（避免设置的验证开始时间过长，导致验证时间重合）
+     *
+     * @param currentExamStartTime 当前考试的开始时间
+     * @return 上一场考试object
+     */
+    public static DBExamArrange queryLatestExam(String currentExamStartTime) {
+        List<DBExamArrange> planList = Realm.getDefaultInstance().where(DBExamArrange.class)
+                .findAllSorted("startTime", Sort.ASCENDING);
+        int position = 0;
+        for (int i = 0; i < planList.size(); i++) {
+            assert planList.get(i) != null;
+            if (currentExamStartTime.equals(planList.get(i).getStartTime())) {
+                position = i;
+            }
+        }
+        return position - 1 >= 0 ? planList.get(position - 1) : new DBExamArrange();
+    }
+
 }

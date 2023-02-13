@@ -22,6 +22,15 @@ public class DBExamPlan extends RealmObject implements Serializable {
     private Long updateTime;
     private String verifyStartTime;
     private String verifyEndTime;
+    private String verifyIntervalTime = "3"; //识别间隔时间，默认3S v1.3.2添加
+
+    public String getVerifyIntervalTime() {
+        return verifyIntervalTime;
+    }
+
+    public void setVerifyIntervalTime(String verifyIntervalTime) {
+        this.verifyIntervalTime = verifyIntervalTime;
+    }
 
     public String getVerifyCode() {
         return verifyCode;

@@ -37,7 +37,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.SocketTimeoutException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Stack;
@@ -90,8 +92,8 @@ public class MainViewModel extends BaseViewModel {
         DBExamArrange back = null;
         for (DBExamArrange item : list) {
             Log.e("TagSnake", item.toString());
-            long start = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) - Long.valueOf(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000;
-            long end = Long.valueOf(TimeUtils.string2Millis(item.getStartTime())) + Long.valueOf(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000;
+            long start = TimeUtils.string2Millis(item.getStartTime()) - Long.parseLong(dbExamPlan.getVerifyStartTime() == null ? "0" : dbExamPlan.getVerifyStartTime()) * 60 * 1000;
+            long end = TimeUtils.string2Millis(item.getStartTime()) + Long.parseLong(dbExamPlan.getVerifyEndTime() == null ? "0" : dbExamPlan.getVerifyEndTime()) * 60 * 1000;
             Log.e("TagSnake", "timeNow:" + timeNow + ":start:" + start + ":end:" + end);
             if (start < timeNow && end > timeNow) {
                 back = item;
@@ -100,7 +102,7 @@ public class MainViewModel extends BaseViewModel {
             if (start > timeNow) {
                 if (back == null) {
                     back = item;
-                } else if (Long.valueOf(TimeUtils.string2Millis(back.getStartTime())) > Long.valueOf(TimeUtils.string2Millis(item.getStartTime()))) {
+                } else if (TimeUtils.string2Millis(back.getStartTime()) > TimeUtils.string2Millis(item.getStartTime())) {
                     back = item;
                 }
             }

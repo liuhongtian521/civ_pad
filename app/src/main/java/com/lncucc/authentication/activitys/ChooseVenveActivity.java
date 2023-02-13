@@ -77,9 +77,9 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
             realm.executeTransaction(realm -> {
                 DBExamLayout layout = mList.get(finalI);
                 layout.setChecked(isChecked);
+                realm.copyToRealmOrUpdate(layout);
             });
         }
-
 
         if (idList.size() == 0){
             MyToastUtils.error("请选择考场！", Toast.LENGTH_SHORT);
@@ -88,7 +88,7 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
 
         Intent intent = new Intent();
         intent.putStringArrayListExtra("list", idList);
-        setResult(1, intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

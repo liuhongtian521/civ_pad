@@ -45,7 +45,6 @@ import com.lncucc.authentication.fragments.FaceShowFragment;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.FaceComparedDialog;
 import com.lncucc.authentication.widgets.FaceResultDialog;
-import com.lncucc.authentication.widgets.InquiryDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
 import com.lncucc.authentication.widgets.PopExamPlan;
 import com.unicom.facedetect.detect.FaceDetectResult;
@@ -55,10 +54,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.askia.coremodel.rtc.Constants.UN_ZIP_PATH;
-import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
-
+import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 /**
  * Create bt she:
  * 身份验证
@@ -634,9 +633,9 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1211 && resultCode == 1) {
+        if (requestCode == 1211 && resultCode == RESULT_OK && data != null) {
             mExamCodeList.clear();
-            mExamCodeList.addAll(data.getStringArrayListExtra("list"));
+            mExamCodeList.addAll(Objects.requireNonNull(data.getStringArrayListExtra("list")));
             mDataBinding.tvSessionAll.setText(mExamCodeList.size() + "");
         }
     }

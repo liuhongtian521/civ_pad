@@ -1,6 +1,7 @@
 package com.lncucc.authentication.fragments;
 
 import static com.askia.coremodel.rtc.Constants.ACTION_USB_PERMISSION;
+import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 import static com.askia.coremodel.rtc.Constants.STU_EXPORT;
 
 import android.app.PendingIntent;
@@ -32,7 +33,6 @@ import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.event.ExportDataEvent;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
 import com.blankj.utilcode.util.FileUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -54,12 +54,13 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 数据导出
  */
 public class DataExportFragment extends BaseFragment {
-    private List<DataImportListBean> dataExportList = new ArrayList<>();
+    private final List<DataImportListBean> dataExportList = new ArrayList<>();
     private List<DBExamArrange> sessionList;
     private String seCode = "";
     private UsbMassStorageDevice[] storageDevices;
@@ -68,11 +69,7 @@ public class DataExportFragment extends BaseFragment {
 
     private FragmentExportBinding exportBinding;
     private DataExportViewModel exportViewModel;
-    public static final int FULL_SCREEN_FLAG = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            | View.SYSTEM_UI_FLAG_FULLSCREEN;
+
     private DBExamArrange itemArrange;
     private DataImportAdapter dataImportAdapter;
     private int defaultIndex = 2;
@@ -204,8 +201,7 @@ public class DataExportFragment extends BaseFragment {
 
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
-        if (event.isConnected) {
-        } else if (event.isGetPermission) {
+        if (event.isGetPermission) {
             UsbDevice usbDevice = event.usbDevice;
             MyToastUtils.error("权限已获取", Toast.LENGTH_SHORT);
             readDevice(getUsbMass(usbDevice));
@@ -240,7 +236,7 @@ public class DataExportFragment extends BaseFragment {
      */
     private void redUDiskDevsList() {
         //设备管理器
-        UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
+        UsbManager usbManager = (UsbManager) Objects.requireNonNull(getActivity()).getSystemService(Context.USB_SERVICE);
         //获取U盘存储设备
         storageDevices = UsbMassStorageDevice.getMassStorageDevices(getActivity());
 
@@ -371,11 +367,11 @@ public class DataExportFragment extends BaseFragment {
                 loadingDialog.setLoadingProgress(percentDone, result.getInfo());
             }
             //上传成功后改变实时上传状态
-            if (result.isSuccess()){
+            if (result != null  && result.isSuccess()){
                 //设置实时上传数据状态
                 DBOperation.modifyExportDataState(seCode);
             }
-            if (result.getState() == 0) {
+            if (result != null && result.getState() == 0) {
                 closeLoading();
                 if (result.getMessage() != null) {
                     MyToastUtils.success(result.getMessage(), Toast.LENGTH_LONG);
@@ -414,11 +410,17 @@ public class DataExportFragment extends BaseFragment {
     /**
      * 数据导出
      *
-     * @param view
+     * @param view view
      */
     public void export(View view) {
-        showLoading();
-        exportViewModel.doDataExport(seCode);
+        //判断导出数据中考点代码是否正确
+        if (DBOperation.isAffiliationCurrentSite()){
+            showLoading();
+            //添加orgCode判断，只能导出当前考点数据
+            exportViewModel.doDataExport(seCode);
+        }else {
+            MyToastUtils.error("导出数据中，考点代码异常，请检查后重新尝试！",1);
+        }
     }
 
     @Override

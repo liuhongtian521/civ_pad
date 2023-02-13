@@ -1,10 +1,10 @@
 package com.lncucc.authentication.activitys;
 
-import static com.lncucc.authentication.fragments.DataExportFragment.FULL_SCREEN_FLAG;
-
+import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -22,6 +22,7 @@ import com.askia.common.base.BaseActivity;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.db.DBExamPlan;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.viewmodel.MainViewModel;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
@@ -68,7 +69,7 @@ public class MainActivity extends BaseActivity {
 
     public void timer() {
         long nowTime = System.currentTimeMillis();
-        if (timeStart > 0)
+        if (timeStart > 0){
             if (nowTime > timeStart) {
                 if (!APP.isInitFaceSuccess) {
                     return;
@@ -87,6 +88,7 @@ public class MainActivity extends BaseActivity {
                 long sercend = (betten - (hour * 1000 * 60 * 60) - (min * 1000 * 60)) / 1000;
                 mDataBinding.tvTime.setText((hour < 10 ? "0" + hour : hour) + ":" + (min < 10 ? "0" + min : min) + ":" + (sercend < 10 ? "0" + sercend : sercend));
             }
+        }
     }
 
     //修改考试编号
@@ -213,9 +215,25 @@ public class MainActivity extends BaseActivity {
                 //获取场次数据
                 mSeCode = dbExamArrange.getSeCode();
                 mDataBinding.tvSuject.setText(dbExamArrange.getSeName());
-                mDataBinding.tvExaminationTime.setText(dbExamArrange.getStartTime() + "~" + dbExamArrange.getEndTime());
-                timeStart = Long.valueOf(TimeUtils.string2Millis(dbExamArrange.getStartTime())) - (Long.valueOf(mVerifyStartTime) * 60 * 1000);
-                timeEnd = Long.valueOf(TimeUtils.string2Millis(dbExamArrange.getStartTime())) + (Long.valueOf(mVerifyEndTime) * 60 * 1000);
+                mDataBinding.tvExaminationTime.setText(String.format("%s~%s", dbExamArrange.getStartTime(), dbExamArrange.getEndTime()));
+                //v1.3.2 修改验证结束时间每科考试结束时间
+                timeEnd = TimeUtils.string2Millis(dbExamArrange.getEndTime());
+                //获取上一场考试结束时间
+                DBExamArrange lastedArrange = DBOperation.queryLatestExam(dbExamArrange.getStartTime());
+                //当前考试开始时间
+                long currentExamStartTime = TimeUtils.string2Millis(dbExamArrange.getStartTime());
+                if (null != lastedArrange && null != lastedArrange.getEndTime()){
+                    //判断当前场次的结束时间和上一场考试开始时间的间隔 是否小于验证开始时间
+                    if (currentExamStartTime - TimeUtils.string2Millis(lastedArrange.getEndTime()) >= (Long.parseLong(mVerifyStartTime) * 60 * 1000)){
+                        //倒计时开始时间= 考试开始时间
+                        timeStart = TimeUtils.string2Millis(dbExamArrange.getStartTime()) - (Long.parseLong(mVerifyStartTime) * 60 * 1000);
+                    }else {
+                        timeStart = TimeUtils.string2Millis(lastedArrange.getEndTime());
+                        Log.e("上一场考试结束时间:",lastedArrange.getEndTime());
+                    }
+                }else {
+                    timeStart = TimeUtils.string2Millis(dbExamArrange.getStartTime()) - (Long.parseLong(mVerifyStartTime) * 60 * 1000);
+                }
                 mDataBinding.tvVerificationTime.setText(simpleDateFormat.format(new Date(timeStart)) + "~" + simpleDateFormat.format(new Date(timeEnd)));
                 handler.removeCallbacks(runnable);
                 handler.postDelayed(runnable, TIME); // 在初始化方法里.
@@ -277,19 +295,10 @@ public class MainActivity extends BaseActivity {
         new QMUIDialog.MessageDialogBuilder(MainActivity.this)
                 .setTitle("提示")
                 .setMessage("是否退出应用？")
-                .addAction("取消", new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        dialog.dismiss();
-                    }
-                })
-                .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        dialog.dismiss();
-                        //         showNetDialog();
-                        finish();
-                    }
+                .addAction("取消", (dialog, index) -> dialog.dismiss())
+                .addAction(0, "确定", QMUIDialogAction.ACTION_PROP_POSITIVE, (dialog, index) -> {
+                    dialog.dismiss();
+                    finish();
                 })
                 .create(com.qmuiteam.qmui.R.style.QMUI_Dialog).show();
     }

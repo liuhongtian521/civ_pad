@@ -23,8 +23,10 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportBean;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
@@ -32,6 +34,7 @@ import com.github.mjdev.libaums.fs.UsbFile;
 import com.github.mjdev.libaums.partition.Partition;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.InitializeActivity;
+import com.lncucc.authentication.activitys.LoginActivity;
 import com.lncucc.authentication.adapters.DataImportAdapter;
 import com.lncucc.authentication.databinding.FragmentImportBinding;
 import com.lncucc.authentication.widgets.DataImportDialog;
@@ -49,6 +52,15 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 数据导入
@@ -67,6 +79,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     private DataImportDialog importDialog;
     private final List<DataImportBean> mList = new ArrayList<>();
     private FaceImportErrorDialog errorDialog;
+    public final CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     public void onInit() {
@@ -74,7 +87,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         initEvent();
     }
 
-    private void initView(){
+    private void initView() {
         numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
         loadingDialog = new DataLoadingDialog(getActivity());
@@ -157,12 +170,14 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
                 closeLoading();
                 MyToastUtils.success("导入成功", Toast.LENGTH_SHORT);
                 LogsUtil.saveOperationLogs("数据导入");
+                //v1.3.2新增 如果管理员账号导入成功后退出程序
+                importSuccessAndExitApp();
             }
             //人脸库导入异常
             if (result.getState() == 2) {
                 MyToastUtils.success(result.getMessage(), Toast.LENGTH_SHORT);
                 closeLoading();
-                if (getActivity() != null){
+                if (getActivity() != null) {
                     errorDialog = new FaceImportErrorDialog(getActivity(), new DialogClickBackListener() {
                         @Override
                         public void dissMiss() {
@@ -176,6 +191,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
                     }, result.getErrorList());
                     errorDialog.show();
                 }
+                importSuccessAndExitApp();
             }
             closeLogadingDialog();
         });
@@ -199,6 +215,42 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
         });
     }
 
+    /**
+     * 管理员账号导入数据成功后，3秒后退出登录状态并回到首页
+     */
+    public void importSuccessAndExitApp() {
+        String userName = SharedPreferencesUtils.getString(getActivity(), "account", "");
+        if ("SFYZadmin".equals(userName)) {
+            Observable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Long>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+                            mDisposable.add(d);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull Long aLong) {
+                            Toast.makeText(getActivity(), "退出登录状态，回到登录页,请使用内置账号登录！", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            //v1.3.2 账号默认为导入的编排包中的考点账号
+                            String userName = DBOperation.queryInnerAccount().getCode();
+                            SharedPreferencesUtils.putString(getActivity(), "account", userName);
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    });
+        }
+    }
 
     @Subscribe
     public void onNetworkChangeEvent(UsbStatusChangeEvent event) {
@@ -223,7 +275,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
      * U盘设备读取
      */
     private void redUDiskDevsList() {
-        if (getActivity() != null){
+        if (getActivity() != null) {
             //设备管理器
             UsbManager usbManager = (UsbManager) getActivity().getSystemService(Context.USB_SERVICE);
             //获取U盘存储设备
@@ -285,14 +337,23 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
 
     /**
      * 数据导入
+     *
      * @param view view
      */
     public void importData(View view) {
         switch (defaultIndex) {
-            case 0: //网络导入复用initializeActivity,
-                Intent intent = new Intent(getActivity(), InitializeActivity.class);
-                intent.putExtra("type", -1);
-                startActivity(intent);
+            case 0:
+                //网络导入复用initializeActivity,
+                //需求1.3.2 管理员账号登录不能使用网络导入功能
+                String account = SharedPreferencesUtils.getString(getActivity(), "account", "");
+                String passwordLocal = SharedPreferencesUtils.getString(getActivity(), "password", "");
+                if (account.equals("SFYZadmin") && passwordLocal.equals("SFYA@sfyz")) {
+                    Toast.makeText(getActivity(), "管理员账号不可使用网络导入功能", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getActivity(), InitializeActivity.class);
+                    intent.putExtra("type", -1);
+                    startActivity(intent);
+                }
                 break;
             case 1:
                 redUDiskDevsList();

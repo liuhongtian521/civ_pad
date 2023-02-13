@@ -97,26 +97,6 @@ public class DataExportViewModel extends BaseViewModel {
             boolean isExit = FileUtils.createFileByDeleteOldFile(exportPath);
             //遍历历史导出文件压缩包并清理
             List<File> fileList = FileUtils.listFilesInDir(STU_EXPORT);
-//            Observable.fromIterable(fileList)
-//                    .observeOn(Schedulers.computation())
-//                    .filter(file -> file.getName().contains(".zip"))
-//                    .toList()
-//                    .subscribe(new SingleObserver<List<File>>() {
-//                        @Override
-//                        public void onSubscribe(@NonNull Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(@NonNull List<File> files) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(@NonNull Throwable e) {
-//
-//                        }
-//                    });
             for (File file: fileList){
                 if (file.getName().contains(".zip")){
                     FileUtils.deleteFile(file);
@@ -179,30 +159,26 @@ public class DataExportViewModel extends BaseViewModel {
         File zipPath_ = new File(com.askia.coremodel.rtc.Constants.STU_EXPORT);
         File filePath_ = new File(filePath);
         String macId = DeviceUtils.getAndroidID();
-        String zipFilePath = zipPath_ + "/" + seCode + "_" +macId+ ".zip";
+        //v1.3.2 数据导出包命名规则添加考点代码
+        String orgCode = DBOperation.queryOrgCode();
+        String zipFilePath = zipPath_ + "/" + orgCode + seCode + "_" +macId+ ".zip";
+
         String zipName = seCode + "_" +macId+ ".zip";
         // 生成的压缩文件
         ZipFile zipFile = new ZipFile(zipFilePath);
-
         ZipParameters parameters = new ZipParameters();
-
         // 压缩方式
         parameters.setCompressionMethod(CompressionMethod.DEFLATE);
-
         // 压缩级别
         parameters.setCompressionLevel(CompressionLevel.NORMAL);
-
         // 是否设置加密文件
         parameters.setEncryptFiles(true);
-
         // 设置加密算法
         parameters.setEncryptionMethod(EncryptionMethod.AES);
-
         // 设置AES加密密钥的密钥强度
         parameters.setAesKeyStrength(AesKeyStrength.KEY_STRENGTH_256);
 
-        // 设置密码
-        //压缩密码
+        // 设置压缩密码
         String pwd = "Ut9RKOo8d4NCrnll";
         if (!TextUtils.isEmpty(pwd)) {
             zipFile.setPassword(pwd.toCharArray());
@@ -294,11 +270,13 @@ public class DataExportViewModel extends BaseViewModel {
      * @param filePath 上传文件地址
      */
     public void postData(String examCode,String siteCode,String seCode,String filePath){
+        String orgCode = DBOperation.queryOrgCode();
         Map<String,String> map = new HashMap<>();
         map.put("examCode",examCode);
         map.put("siteCode",siteCode);
         map.put("seCode",seCode);
         map.put("equipment",DeviceUtils.getAndroidID());
+        map.put("orgCode",orgCode);
         File file = new File(filePath);
         UpLoadResult event = new UpLoadResult();
         //添加自定义请求 requestBody，增加上传进度实时回调

@@ -6,9 +6,6 @@
         <variable
             name="handlers"
             type="com.lncucc.authentication.activitys.InitializeActivity" />
-        <variable
-            name="viewmodel"
-            type="com.askia.coremodel.viewmodel.InitializeViewModel" />
     </data>
 
     <RelativeLayout

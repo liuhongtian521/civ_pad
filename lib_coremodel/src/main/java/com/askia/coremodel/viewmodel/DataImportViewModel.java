@@ -5,6 +5,7 @@ import static com.askia.coremodel.rtc.Constants.ZIP_PATH;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -216,23 +217,22 @@ public class DataImportViewModel extends BaseViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<FaceDBHandleEvent>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
                         mDisposable.add(d);
                     }
 
                     @Override
-                    public void onNext(FaceDBHandleEvent result) {
+                    public void onNext(@NonNull FaceDBHandleEvent result) {
                         if (result.getState() == 1 || result.getState() == 2) {
                             removeZipFile();
                         }
                         faceDbObservable.postValue(result);
-                        LogUtils.e(result.getFaceNum() + "faceid ->", result.getFaceId());
+                        LogUtils.e(result.getFaceNum() + "faceId ->", result.getFaceId());
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-
                     }
 
                     @Override
@@ -245,7 +245,7 @@ public class DataImportViewModel extends BaseViewModel {
 
     public void readZipFromUDisk(UsbFile usbFile) {
         Observable.create((ObservableOnSubscribe<UsbWriteEvent>) emitter -> {
-            InputStream is = null;
+            InputStream is;
             UsbWriteEvent event = new UsbWriteEvent();
             is = new UsbFileInputStream(usbFile);
             String path = ZIP_PATH + File.separator + usbFile.getName();
@@ -342,7 +342,7 @@ public class DataImportViewModel extends BaseViewModel {
                     //解压进度
                     ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
                     Thread thread = new Thread(() -> {
-                        int percentDone = 0;
+                        int percentDone;
                         LogUtils.e("life owner ->", "thread created");
                         while (true) {
                             percentDone = progressMonitor.getPercentDone();
@@ -361,6 +361,7 @@ public class DataImportViewModel extends BaseViewModel {
                         }
                     });
                     thread.start();
+                    //生命周期绑定，如果生命周期结束结束线程，结束线程
                     owner.getLifecycle().addObserver((LifecycleEventObserver) (source, event) -> {
                         if (event == Lifecycle.Event.ON_DESTROY) {
                             thread.interrupt();
@@ -436,7 +437,7 @@ public class DataImportViewModel extends BaseViewModel {
         File folder = new File(ZIP_PATH);
         boolean hasFolder = FileUtils.createOrExistsDir(ZIP_PATH);
 
-        if (hasFolder) {
+        if (hasFolder && folder.listFiles() != null) {
             for (File file : folder.listFiles()) {
                 String zipPath = ZIP_PATH + File.separator + file.getName();
                 bean = new DataImportBean();

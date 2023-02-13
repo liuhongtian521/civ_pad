@@ -40,6 +40,8 @@
     <string name="advanced__setting">高级设置</string>
     <string name="start_valid_time">开始验证时间</string>
     <string name="end_valid_time">结束验证时间</string>
+    <string name="every_subject_end_time">每科考试结束时间</string>
+    <string name="valid_interval_time">识别间隔时长</string>
     <string name="verify_time">验证时间</string>
     <string name="login_system">进入系统</string>
     <string name="initialize_title">考生身份认证系统</string>

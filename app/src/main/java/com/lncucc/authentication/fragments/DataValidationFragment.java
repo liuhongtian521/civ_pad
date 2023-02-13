@@ -1,5 +1,8 @@
 package com.lncucc.authentication.fragments;
 
+import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
+
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.askia.common.base.BaseFragment;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.blankj.utilcode.util.KeyboardUtils;
@@ -25,6 +29,8 @@ import com.lncucc.authentication.adapters.ValidationDataAdapter;
 import com.lncucc.authentication.databinding.FragmentDataValidationBinding;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
+import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
+import com.ttsea.jrxbus2.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,18 +46,23 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
     private ValidationDataAdapter mAdapter;
     private List<DBExamExport> tempList = new ArrayList<>();
     private PeopleMsgDialog peopleMsgDialog;
+    private List<DBExamArrange> sessionList;
 
     @Override
     public void onInit() {
         mList = DBOperation.getVerifyList();
+        sessionList = DBOperation.getAllExamArrange();
         tempList.clear();
         tempList.addAll(mList);
         mBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ValidationDataAdapter(tempList);
         mBinding.rlDataView.setAdapter(mAdapter);
+        mBinding.tvSession.setText(sessionList.get(0).getSeName());
+        initEvent();
+    }
 
+    private void initEvent(){
         peopleMsgDialog = new PeopleMsgDialog(getActivity(),this);
-
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
             DBExamExport examExport = DBOperation.getExamExportById(tempList.get(position).getId());
             peopleMsgDialog.setMsg(examExport);
@@ -67,11 +78,39 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
                 return false;
             }
         });
+        mBinding.rlSession.setOnClickListener(v -> showPopUp());
     }
 
     @Override
     public void onInitViewModel() {
 
+    }
+
+    private void showPopUp() {
+        View parent = mBinding.llContainer;
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        pop.setFocusable(false);
+        pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
+        pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
+        pop.setFocusable(true);
+        pop.update();
+    }
+
+    @Subscribe(code = 0)
+    public void onGetSessionEvent(String index) {
+        int position = Integer.parseInt(index);
+        //获取选中场次
+        String seCode = sessionList.get(position).getSeCode();
+        //更新selected view
+        mBinding.tvSession.setText(sessionList.get(position).getSeName());
+        List<DBExamExport> examList = DBOperation.getExportBySeCode(seCode);
+        if (examList != null && examList.size() > 0){
+            mList.clear();
+            mList.addAll(examList);
+            mAdapter.notifyDataSetChanged();
+        }else {
+            Toast.makeText(getActivity(),"未查询到当前场次的验证信息！",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void query(View view) {

@@ -1,6 +1,5 @@
 package com.askia.coremodel.util;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.fs.UsbFile;
 import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 
@@ -16,8 +15,10 @@ public class IOUtil {
         UsbFile uFile = null;
         FileInputStream fis = null;
         try {//开始写入
-            fis = new FileInputStream(f);//读取选择的文件的
-            if (usbFile.isDirectory()) {//如果选择是个文件夹
+            //读取选择的文件的
+            fis = new FileInputStream(f);
+            //如果选择是个文件夹
+            if (usbFile.isDirectory()) {
                 UsbFile[] usbFiles = usbFile.listFiles();
                 if (usbFiles != null && usbFiles.length > 0) {
                     for (UsbFile file : usbFiles) {

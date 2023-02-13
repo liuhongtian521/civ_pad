@@ -3,6 +3,7 @@ package com.askia.coremodel.datamodel.database.db;
 import java.io.Serializable;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by ymy
@@ -16,6 +17,17 @@ public class DBAccount extends RealmObject implements Serializable {
     private String salt;
     private String name;
     private String type;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @PrimaryKey
+    private String id;
 
     public String getPassword() {
         return password;

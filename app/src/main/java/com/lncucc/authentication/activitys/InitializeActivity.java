@@ -24,7 +24,6 @@ import com.askia.coremodel.event.FaceHandleEvent;
 import com.askia.coremodel.event.UnZipHandleEvent;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
-import com.askia.coremodel.viewmodel.InitializeViewModel;
 import com.askia.coremodel.viewmodel.ZIPDownloadViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.lncucc.authentication.R;
@@ -49,7 +48,6 @@ import io.reactivex.disposables.Disposable;
 @Route(path = ARouterPath.INITIALIZE_ACTIVITY)
 public class InitializeActivity extends BaseActivity {
     private ActInitializeBinding actInitializeBinding;
-    private InitializeViewModel initializeViewModel;
     private DataImportViewModel dataImportViewModel;
     private ZIPDownloadViewModel zipDownloadViewModel;
     private Disposable mDisposable;
@@ -136,7 +134,6 @@ public class InitializeActivity extends BaseActivity {
 
     @Override
     public void onInitViewModel() {
-        initializeViewModel = ViewModelProviders.of(this).get(InitializeViewModel.class);
         zipDownloadViewModel = ViewModelProviders.of(this).get(ZIPDownloadViewModel.class);
         dataImportViewModel = ViewModelProviders.of(this).get(DataImportViewModel.class);
     }

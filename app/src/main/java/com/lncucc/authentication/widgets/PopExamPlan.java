@@ -1,6 +1,5 @@
 package com.lncucc.authentication.widgets;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,9 +19,7 @@ import com.askia.coremodel.datamodel.database.db.DBExamPlan;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.PopExamPlanAdapter;
-import com.lncucc.authentication.generated.callback.OnClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/ll_container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,68 +32,99 @@
             android:layout_height="0.5dp"
             android:background="@drawable/bg_driver"
             app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top" />
-        <RelativeLayout
-            android:id="@+id/rl_search"
-            android:layout_width="275dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="@dimen/dp_20"
-            android:background="@drawable/bg_edit"
-            android:paddingLeft="@dimen/dp_10"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top">
-
-            <Button
-                android:id="@+id/btn_search"
-                android:layout_width="60dp"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dp_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/rl_session"
+                android:layout_width="110dp"
                 android:layout_height="25dp"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/btn_one"
-                android:onClick="@{handles::query}"
-                android:text="搜索"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-            <!--            android:onClick="@{handles::query}"-->
-
-            <EditText
-                android:id="@+id/edit_exam_number"
-                android:layout_width="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/bg_edit"
+                android:paddingLeft="@dimen/dp_10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top">
+                <TextView
+                    android:id="@+id/tv_session"
+                    android:textSize="9sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:textColor="@color/_333333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/dp_7"
+                    android:layout_centerVertical="true"
+                    android:background="@mipmap/icon_arrow_down"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_search"
+                android:layout_width="275dp"
                 android:layout_height="25dp"
-                android:layout_toRightOf="@+id/iv_view"
-                android:background="@null"
-                android:hint="请输入身份证或准考证后6位"
-                android:imeOptions="actionSearch"
-                android:maxLength="6"
-                android:maxLines="1"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6"
-                android:singleLine="true"
-                android:textColorHint="#A7B6D1"
-                android:textSize="9sp" />
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/bg_edit"
+                android:paddingLeft="@dimen/dp_10"
+                app:layout_constraintRight_toRightOf ="@+id/rl_session"
+                app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top">
 
-            <EditText
-                android:id="@+id/edit_idcard"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toRightOf="@+id/iv_view"
-                android:background="@null"
-                android:hint="请输入身份证号"
-                android:imeOptions="actionSearch"
-                android:maxLines="1"
-                android:paddingLeft="@dimen/dp_6"
-                android:paddingRight="@dimen/dp_6"
-                android:textSize="@dimen/sp_10"
-                android:visibility="gone" />
+                <Button
+                    android:id="@+id/btn_search"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/btn_one"
+                    android:onClick="@{handles::query}"
+                    android:text="搜索"
+                    android:textColor="@color/white"
+                    android:textSize="10sp" />
 
-            <ImageView
-                android:id="@+id/iv_view"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/icon_search" />
+                <EditText
+                    android:id="@+id/edit_exam_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_toRightOf="@+id/iv_view"
+                    android:background="@null"
+                    android:hint="请输入身份证或准考证后6位"
+                    android:imeOptions="actionSearch"
+                    android:maxLength="6"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_6"
+                    android:singleLine="true"
+                    android:textColorHint="#A7B6D1"
+                    android:textSize="9sp" />
 
-        </RelativeLayout>
+                <EditText
+                    android:id="@+id/edit_idcard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/iv_view"
+                    android:background="@null"
+                    android:hint="请输入身份证号"
+                    android:imeOptions="actionSearch"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/dp_6"
+                    android:paddingRight="@dimen/dp_6"
+                    android:textSize="@dimen/sp_10"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_view"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_search" />
+
+            </RelativeLayout>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_header"
             android:layout_width="match_parent"

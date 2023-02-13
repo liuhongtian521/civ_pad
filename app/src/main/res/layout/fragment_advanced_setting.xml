@@ -116,23 +116,54 @@
                     android:textColor="@color/_666666"
                     android:textSize="9sp" />
 
+                <TextView
+                    android:text="@string/every_subject_end_time"
+                    android:textSize="9sp"
+                    android:textColor="#999999"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/bg_driver" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="31dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/valid_interval_time"
+                    android:textColor="@color/_666666"
+                    android:textSize="9sp" />
+
                 <EditText
-                    android:id="@+id/edt_end_time"
-                    android:inputType="number"
-                    android:maxEms="2"
-                    android:maxLines="1"
+                    android:id="@+id/edt_verify_interval_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginRight="35dp"
-                    android:gravity="right|center_vertical"
-                    android:layout_width="88dp"
-                    android:maxLength="3"
-                    android:textSize="9sp"
-                    android:textColor="@color/_333333"
-                    android:hint="请输入开始时间(分钟)"
                     android:background="@null"
-                    android:layout_height="match_parent"/>
+                    android:gravity="right|center_vertical"
+                    android:hint="3"
+                    android:inputType="number"
+                    android:maxEms="2"
+                    android:maxLength="3"
+                    android:maxLines="1"
+                    android:textColor="@color/_333333"
+                    android:textSize="9sp" />
                 <TextView
-                    android:text="分钟"
+                    android:text="秒"
                     android:textSize="9sp"
                     android:textColor="#999999"
                     android:layout_alignParentEnd="true"
@@ -156,6 +187,50 @@
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_driver" />
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_header"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="3"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_common_list_header"
+                app:layout_constraintTop_toBottomOf="@+id/data_lead_line"
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
+
+
+                <TextView
+                    android:textSize="9sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/_333333"
+                    android:text="@string/session_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:textSize="9sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/_333333"
+                    android:text="@string/start_valid_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:textSize="9sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/_333333"
+                    android:text="@string/end_valid_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_session"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
         </LinearLayout>
 
         <TextView
