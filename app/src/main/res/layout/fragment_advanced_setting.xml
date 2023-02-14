@@ -148,9 +148,8 @@
 
                 <EditText
                     android:id="@+id/edt_verify_interval_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="35dp"
                     android:layout_height="match_parent"
-                    android:paddingLeft="15dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginRight="35dp"
                     android:background="@null"
@@ -160,6 +159,7 @@
                     android:maxEms="2"
                     android:maxLength="3"
                     android:maxLines="1"
+                    android:paddingLeft="15dp"
                     android:textColor="@color/_333333"
                     android:textSize="9sp" />
                 <TextView
@@ -227,12 +227,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_session"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
         </LinearLayout>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_session"
+            android:background="@color/btn_ghost_blue_border_pressed"
+            app:layout_constraintTop_toBottomOf="@+id/ll_base_setting__mode"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
         <TextView
             android:id="@+id/btn_confirm"
             android:text="@string/confirm"

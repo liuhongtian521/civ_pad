@@ -22,6 +22,7 @@ import com.lncucc.authentication.adapters.AdvanceSessionAdapter;
 import com.lncucc.authentication.databinding.FragmentAdvancedSettingBinding;
 import com.lncucc.authentication.widgets.PassWordClickCallBack;
 import com.lncucc.authentication.widgets.VerifyCodeDialog;
+import com.ttsea.jrxbus2.RxBus2;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -93,6 +94,7 @@ public class AdvancedSettingFragment extends BaseFragment implements PassWordCli
             //写入开始验证时间和识别间隔
             DBOperation.updateVerifyTime(sVerifyTime,mVerifyIntervalTime);
             MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+            RxBus2.getInstance().postStickyEvent( "success");
         }else {
             MyToastUtils.error("密码输入错误！",Toast.LENGTH_SHORT);
         }

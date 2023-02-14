@@ -244,6 +244,13 @@ public class DBOperation {
                 error -> LogUtils.e("verify time insert error->", error.getMessage()));
     }
 
+    /**
+     * 查询刷脸验证间隔时间
+     * @return 刷脸验证间隔时间
+     */
+    public static int getIntervalVerifyTime(){
+        return Integer.parseInt(Objects.requireNonNull(Realm.getDefaultInstance().where(DBExamPlan.class).findFirst()).getVerifyIntervalTime());
+    }
 
     /**
      * 根据场次代码 查询导出数据

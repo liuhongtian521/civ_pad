@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.lncucc.authentication.R;
 
 /**
@@ -53,7 +54,10 @@ public class FaceResultDialog extends BaseDialog {
 
         this.onListener = dialogClickBackListener;
 
-        mCountDownTimer = new CountDownTimer(3 * 1000, 1000) {
+        //获取高级设置中的验证间隔时间
+        int interval = DBOperation.getIntervalVerifyTime();
+
+        mCountDownTimer = new CountDownTimer(interval * 1000L, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -133,16 +137,7 @@ public class FaceResultDialog extends BaseDialog {
         layoutParams.gravity = Gravity.CENTER;
         window.setAttributes(layoutParams);
         mCountDownTimer.start();
-//        if (type) {
-//            player = MediaPlayer.create(mContext,R.raw.tongguo);
-//            linSuccess.setVisibility(View.VISIBLE);
-//            linFaile.setVisibility(View.GONE);
-//        } else {
-//            player = MediaPlayer.create(mContext,R.raw.qingchongshi);
-//            linSuccess.setVisibility(View.GONE);
-//            linFaile.setVisibility(View.VISIBLE);
-//        }
-//        //暂时去除健康码语音提示，保留通过和请重试。
+       //暂时去除健康码语音提示，保留通过和请重试。
         if (type) {
             player = MediaPlayer.create(mContext, R.raw.tongguo);
             switch (code){

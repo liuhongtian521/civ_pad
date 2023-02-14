@@ -47,6 +47,8 @@ import com.lncucc.authentication.widgets.FaceComparedDialog;
 import com.lncucc.authentication.widgets.FaceResultDialog;
 import com.lncucc.authentication.widgets.PeopleMsgDialog;
 import com.lncucc.authentication.widgets.PopExamPlan;
+import com.ttsea.jrxbus2.RxBus2;
+import com.ttsea.jrxbus2.Subscribe;
 import com.unicom.facedetect.detect.FaceDetectResult;
 
 import java.io.File;
@@ -65,7 +67,7 @@ import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
  * @date 2021/8/5
  */
 @Route(path = ARouterPath.IDENTIFY_ACTIVITY)
-public class AuthenticationActivity extends BaseActivity {
+public class AuthenticationActivity extends BaseActivity implements DialogClickBackListener{
     private ActAuthenticationBinding mDataBinding;
 
     private AuthenticationViewModel mViewModel;
@@ -197,6 +199,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     public void onInit() {
         KeyboardUtils.hideSoftInput(this);
+        RxBus2.getInstance().register(this);
         faceFragment = (FaceShowFragment) getFragment(ARouterPath.FACE_SHOW_ACTIVITY);
         addFragment(faceFragment, R.id.frame_layout);
         if (getIntent().getExtras() != null) {
@@ -291,31 +294,7 @@ public class AuthenticationActivity extends BaseActivity {
         });
 
 
-        faceResultDialog = new FaceResultDialog(this, new DialogClickBackListener() {
-            @Override
-            public void dissMiss() {
-                faceResultDialog.dismiss();
-                if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
-                    faceFragment.goContinueDetectFace();
-            }
-
-            @Override
-            public void backType(int type) {
-                faceResultDialog.dismiss();
-                if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
-                    faceFragment.goContinueDetectFace();
-                if (type == 0) {
-                    //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
-                } else if (type == 1) {
-                    //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
-                } else {
-                    //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
-                }
-            }
-        });
+        faceResultDialog = new FaceResultDialog(this,this);
 
         faceComparedDialog = new FaceComparedDialog(this, new DialogClickBackListener() {
             @Override
@@ -378,6 +357,12 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     OrientationEventListener mOrientationEventListener;
+
+    @Subscribe(receiveStickyEvent = true)
+    public void onGetVerifyIntervalTimeEvent(String message){
+        Log.e("--------------",message);
+        faceResultDialog = new FaceResultDialog(this,this);
+    }
 
     @Override
     protected void onResume() {
@@ -687,5 +672,30 @@ public class AuthenticationActivity extends BaseActivity {
         }
         handler.removeCallbacks(runnable);
         handler.removeCallbacksAndMessages(null);
+        RxBus2.getInstance().unRegister(this);
+    }
+
+    @Override
+    public void dissMiss() {
+        faceResultDialog.dismiss();
+        if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
+            faceFragment.goContinueDetectFace();
+    }
+
+    @Override
+    public void backType(int type) {
+        faceResultDialog.dismiss();
+        if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
+            faceFragment.goContinueDetectFace();
+        if (type == 0) {
+            //不通过
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+        } else if (type == 1) {
+            //存疑
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+        } else {
+            //通过
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+        }
     }
 }
