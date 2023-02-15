@@ -122,56 +122,19 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:layout_gravity="left"
+                    android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:gravity="left"
-                    android:orientation="horizontal">
-
-
-                    <TextView
-                        android:id="@+id/tv_session"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="第一天第一场"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="（共计"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-
-                    <TextView
-                        android:id="@+id/tv_session_all"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="20"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="个考场）"
-                        android:textColor="#163366"
-                        android:textSize="@dimen/sp_8" />
-                </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="3dp"
+                    android:layout_toLeftOf="@+id/btn_examination"
+                    android:text="2021.06.21 09:00:00"
+                    android:textColor="#163366"
+                    android:textSize="@dimen/sp_7" />
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/btn_examination"
-                android:text="2021.06.21 09:00:00"
-                android:textColor="#163366"
-                android:textSize="@dimen/sp_7" />
         </RelativeLayout>
 
         <LinearLayout
@@ -251,16 +214,56 @@
             android:layout_toLeftOf="@+id/rel_people"
             android:background="@drawable/bg_write_round_five"
             android:orientation="vertical">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding = "8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_seName"
+                    android:text="考点名称"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#163366"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_session"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="第一天第一场"
+                        android:textColor="#163366"
+                        android:textSize="@dimen/sp_8" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_30"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_10"
-                android:text="摄像头画面"
-                android:textColor="@color/_163366"
-                android:textSize="9sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="（共计"
+                        android:textColor="#163366"
+                        android:textSize="@dimen/sp_8" />
 
+                    <TextView
+                        android:id="@+id/tv_session_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20"
+                        android:textColor="#163366"
+                        android:textSize="@dimen/sp_8" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="个考场）"
+                        android:textColor="#163366"
+                        android:textSize="@dimen/sp_8" />
+                </LinearLayout>
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

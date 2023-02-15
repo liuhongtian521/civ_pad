@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,7 @@ import com.askia.common.recyclerview.FOnRVItemClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
 import com.askia.common.util.ImageUtil;
+import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -39,6 +41,7 @@ import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.TimeUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
 import com.lncucc.authentication.fragments.FaceShowFragment;
@@ -354,13 +357,17 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
             }
         });
         handler.postDelayed(runnable, TIME);
+        List<DBExamLayout> list  = DBOperation.getDBExamLayout(mExamCode);
+        if (null != list && list.size() > 0){
+            //添加考点名称
+            mDataBinding.tvSeName.setText(list.get(0).getSiteName());
+        }
     }
 
     OrientationEventListener mOrientationEventListener;
 
     @Subscribe(receiveStickyEvent = true)
     public void onGetVerifyIntervalTimeEvent(String message){
-        Log.e("--------------",message);
         faceResultDialog = new FaceResultDialog(this,this);
     }
 
@@ -464,8 +471,6 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                     //移除旧的验证数据，添加新的验证数据。
                     saveList.remove(haveIndex);
                     saveList.add(0, dbExamExport);
-                    //新增排序
-
 
                 } else {
                     saveList.add(0, dbExamExport);
@@ -489,10 +494,12 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                     return;
                 }
                 setmSeCode(dbExamArrange.getSeCode());
+                //添加考场集合赋值
+                getRoomNoListBySeCode();
                 mDataBinding.tvSession.setText(dbExamArrange.getSeName());
-                //考场总数
-                mDataBinding.tvSessionAll.setText(DBOperation.getRoomList(dbExamArrange.getSeCode()).size() + "");
-                mStudentNumber = DBOperation.getStudentNumber(mExamCode, mSeCode);
+                //fixed 考场选择赋值不正确
+                mDataBinding.tvSessionAll.setText(String.format("%d", DBOperation.getSelectedRoomList(mSeCode).size()));
+                mStudentNumber = DBOperation.getStudentNumber(mExamCode, mSeCode,mExamCodeList);
                 mViewModel.getExamNumber(mSeCode, mExamCode);
 //                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
                 mViewModel.getExamNumber(dbExamArrange.getSeCode(), dbExamArrange.getExamCode());
@@ -551,10 +558,17 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                         //识别状态
                         if (mExamCodeList.size() == 0)
                             mViewModel.canSign(dbExamLayout.getId());
-                        else if (mExamCodeList.indexOf(dbExamLayout.getRoomNo()) > -1) {
+                        else if (mExamCodeList.contains(dbExamLayout.getRoomNo())) {
                             mViewModel.canSign(dbExamLayout.getId());
-                        } else
+                        }else if (!mExamCodeList.contains(dbExamLayout.getRoomNo())){
+                            //v1.3.2新增考生不属于当前场次，验证失败并语音提示 考生考号
+                            faceResultDialog.setType(false,"");
+                            showVoicePrompt(dbExamLayout.getRoomNo());
+                            MyToastUtils.error("非本场考生，考场号" + dbExamLayout.getRoomNo(),0);
+                        }
+                        else{
                             faceResultDialog.setType(false, "");
+                        }
                     }
                 } else {
                     if (!isComparison) {
@@ -577,6 +591,33 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                 }
             }
         });
+    }
+
+    /**
+     * @description 修正之前考场数据初始化为空问题，新增方法用于同步考场信息并给mExamCodeList进行赋值
+     *              用于判断学生刷脸时是否在所选的考场集合中。
+     */
+    private void getRoomNoListBySeCode(){
+        //获取用户选中的所有考场（初始化时默认当前场次下的考场全部是默认选中状态）
+        List<DBExamLayout> selectedRoomList = DBOperation.getSelectedRoomList(mSeCode);
+        //提取roomNo 赋值给mExamCodeList
+        mExamCodeList.clear();
+        for (DBExamLayout db: selectedRoomList){
+            if (db.isChecked()){
+                mExamCodeList.add(db.getRoomNo());
+            }
+        }
+    }
+
+    /**
+     * @description 非当前考场考生进行语音提示
+     * @param roomNo 考场号
+     */
+    private void showVoicePrompt(String roomNo){
+        MediaPlayer player = MediaPlayer.create(this,R.raw.qingchongshi);
+        if (null != player){
+            player.start();
+        }
     }
 
     //选择考场

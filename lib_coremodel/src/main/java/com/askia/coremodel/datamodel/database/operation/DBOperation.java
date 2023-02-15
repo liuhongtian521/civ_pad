@@ -12,13 +12,13 @@ import com.askia.coremodel.event.ExportDataEvent;
 import com.blankj.utilcode.util.LogUtils;
 import com.ttsea.jrxbus2.RxBus2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
@@ -141,7 +141,6 @@ public class DBOperation {
     }
 
     /**
-     * 根据
      *
      * @param seCode 场次编码
      * @return 根据场次码获取当前场次下的 所有考场编号
@@ -155,13 +154,48 @@ public class DBOperation {
         return query.distinct("roomNo");
     }
 
-    public static int getStudentNumber(String examCode, String seCode) {
+    /**
+     * 查询当前场次下 选中的考场
+     * @param seCode 场次代码
+     * @return 考场集合
+     */
+    public static List<DBExamLayout> getSelectedRoomList(String seCode){
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.beginGroup();
+        query.equalTo("seCode", seCode);
+        query.endGroup();
+        //直接查询有问题
+        List<DBExamLayout> layoutList = new ArrayList<>();
+        for (DBExamLayout layout: query.distinct("roomNo")){
+            if (layout.isChecked()){
+                layoutList.add(layout);
+            }
+        }
+        return layoutList;
+    }
+
+    /**
+     * @description fixed修正原有查询方法，在场次和考试代码条件的基础上添加用户选择的考场，
+     *              返回当前考试当前场次下所选考场的所有考生。
+     * @param seCode 场次码
+     * @param examCode 考试代码
+     * @param roomList 所选考场的集合
+     * @return 当前考试当前场次下所选考场的所有考生人数
+     * @edit ymy
+     */
+    public static int getStudentNumber(String examCode, String seCode,List<String> roomList) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("examCode", examCode);
         query.equalTo("seCode", seCode);
         query.endGroup();
-        return query.findAll().size();
+        List<DBExamLayout> list = new ArrayList<>();
+        for (DBExamLayout item : query.findAll()){
+            if (roomList.contains(item.getRoomNo())){
+                list.add(item);
+            }
+        }
+        return list.size();
     }
 
 
