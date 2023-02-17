@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/ll_container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_write_round_five">
+
+        <!-- top -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_8"
+            android:layout_height="30dp">
+
+            <TextView
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#163366"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/validation_data_statistics"
+                />
+
+            <TextView
+                android:id="@+id/tv_session"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@+id/img_arrow"
+                android:text="第一天第一场"
+                android:textColor="#3A90FF"
+                android:textSize="9sp" />
+            <ImageView
+                android:id="@+id/img_arrow"
+                android:layout_centerVertical="true"
+                android:background="@mipmap/icon_arrow_right"
+                android:layout_alignParentEnd="true"
+                android:layout_width="8dp"
+                android:layout_height="8dp"/>
+        </RelativeLayout>
+        <View
+            android:id="@+id/data_lead_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@drawable/bg_driver"
+            app:layout_constraintTop_toBottomOf="@+id/ll_data_lead_top" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_warring"
+                android:background="@mipmap/icon_validation_warring"
+                android:layout_width="@dimen/dp_12"
+                android:layout_height="@dimen/dp_12"/>
+            <TextView
+                android:text="@string/warm_reminder"
+                android:textSize="9sp"
+                android:layout_marginStart="@dimen/dp_5"
+                android:textColor="#2A6DE5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <!--通过 未通过 存疑... -->
+        <LinearLayout
+            android:weightSum="4"
+            android:layout_width="match_parent"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_8"
+            android:layout_height="wrap_content">
+            
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/ll_not_validation"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_marginEnd="14dp"
+                android:paddingStart="@dimen/dp_16"
+                android:background="@mipmap/icon_not_validation"
+                android:layout_width="@dimen/dp_153"
+                android:layout_height="@dimen/dp_55">
+                <TextView
+                    android:id="@+id/tv_not_validation"
+                    android:text="0"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:text="@string/not_validation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/ll_validation_pass"
+                android:layout_marginEnd="14dp"
+                android:paddingStart="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:layout_width="@dimen/dp_153"
+                android:layout_height="@dimen/dp_55"
+                android:background="@mipmap/icon_validation_pass"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_validation_pass"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/validation_pass" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/ll_validation_doubt"
+                android:layout_marginEnd="14dp"
+                android:paddingStart="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:layout_width="@dimen/dp_153"
+                android:layout_height="@dimen/dp_55"
+                android:background="@mipmap/icon_validation_doubt"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_validation_doubt"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/validation_doubt" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/ll_validation_no_pass"
+                android:paddingStart="@dimen/dp_16"
+                android:gravity="center_vertical"
+                android:layout_width="@dimen/dp_153"
+                android:layout_height="@dimen/dp_55"
+                android:background="@mipmap/icon_no_pass"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_validation_no_pass"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+
+                <TextView
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/validation_not_pass" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 考场数据 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_session"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</layout>

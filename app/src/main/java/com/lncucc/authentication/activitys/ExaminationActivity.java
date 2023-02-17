@@ -17,6 +17,7 @@ import com.lncucc.authentication.adapters.DataServicePageAdapter;
 import com.lncucc.authentication.databinding.ActExaminationBinding;
 import com.lncucc.authentication.fragments.DataValidationFragment;
 import com.lncucc.authentication.fragments.SessionFragment;
+import com.lncucc.authentication.fragments.ValidationDataStatisticsFragment;
 import com.lncucc.authentication.widgets.NoSwipeViewPager;
 
 import java.util.ArrayList;
@@ -71,10 +72,12 @@ public class ExaminationActivity extends BaseActivity {
         mTitleList = new ArrayList<>();
         mTitleList.add("场次查看");
         mTitleList.add("验证数据查看");
+        mTitleList.add("验证数据统计");
 
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new SessionFragment());
         mFragmentList.add(new DataValidationFragment());
+        mFragmentList.add(new ValidationDataStatisticsFragment());
 
         viewPager.setAdapter(new DataServicePageAdapter(mFragmentList, getSupportFragmentManager()));
         viewPager.setHorizontalScrollBarEnabled(false);

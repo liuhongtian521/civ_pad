@@ -177,6 +177,8 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setSiteCode(dbExamLayout.getSiteCode());
         db.setIdCard(dbExamLayout.getIdCard());
         db.setHealthCode(dbExamLayout.getHealthCode());
+        //新增考场号
+        db.setRoomNo(dbExamLayout.getRoomNo());
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
         upMsg(db);
@@ -207,7 +209,8 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setManualVerifyResult(dbExamExport.getManualVerifyResult());
         //添加上传健康码
         db.setHealthCode(dbExamExport.getHealthCode());
-//        db.setEntrancePhotoUrl();
+        //添加考场号
+        db.setRoomNo(dbExamExport.getRoomNo());
         String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
         try {
             db.setEntrancePhotoUrl(Utils.encodeBase64File(pathT));

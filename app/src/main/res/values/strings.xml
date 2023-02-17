@@ -95,6 +95,13 @@
     <!-- 数据导入选择 -->
     <string name="data_import_select">请选择考试数据</string>
     <string name="data_import_tips">请选择并确认本考点需要导入的考试数据</string>
-
     <string name="msg_none">暂无考生信息～</string>
+
+    <!-- 验证数据统计-->
+    <string name="validation_data_statistics">验证数据统计</string>
+    <string name="warm_reminder">温馨提示：页面显示的数据仅是本设备的验证数据 ～</string>
+    <string name="not_validation">未验证</string>
+    <string name="validation_pass">通过</string>
+    <string name="validation_doubt">存疑</string>
+    <string name="validation_not_pass">未通过</string>
 </resources>

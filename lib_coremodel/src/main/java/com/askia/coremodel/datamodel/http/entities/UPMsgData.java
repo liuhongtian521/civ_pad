@@ -28,6 +28,14 @@ public class UPMsgData extends BaseRequestParams {
     private String idCard;//身份证号码
     private String manualVerifyResult;//0 自动审核 1人工审核
     private String healthCode; //健康码 0绿码 1黄码 2红码 3未知
+    private String roomNo; //考场编号 v1.3.2新增（验证数据统计模块需要）
+    public String getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
+    }
 
     public String getHealthCode() {
         return healthCode;

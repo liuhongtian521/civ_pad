@@ -60,9 +60,9 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
         mBinding.rlDataView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ValidationDataAdapter(tempList);
         mBinding.rlDataView.setAdapter(mAdapter);
-        mBinding.tvSession.setText(sessionList.get(0).getSeName());
         if (null !=sessionList && sessionList.size() >0 && sessionList.get(0).getSeName() != null){
             seCode = sessionList.get(0).getSeCode();
+            mBinding.tvSession.setText(sessionList.get(0).getSeName());
         }
         RxBus2.getInstance().register(this);
         //默认查询当前场次验证数据

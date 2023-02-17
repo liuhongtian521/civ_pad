@@ -1,5 +1,9 @@
 package com.askia.coremodel.datamodel.database.operation;
 
+import android.annotation.SuppressLint;
+
+import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
+import com.askia.coremodel.datamodel.data.ValidationDataBean;
 import com.askia.coremodel.datamodel.database.db.DBAccount;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
@@ -16,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -141,7 +147,6 @@ public class DBOperation {
     }
 
     /**
-     *
      * @param seCode 场次编码
      * @return 根据场次码获取当前场次下的 所有考场编号
      * she 8.23修改 去重
@@ -156,18 +161,19 @@ public class DBOperation {
 
     /**
      * 查询当前场次下 选中的考场
+     *
      * @param seCode 场次代码
      * @return 考场集合
      */
-    public static List<DBExamLayout> getSelectedRoomList(String seCode){
+    public static List<DBExamLayout> getSelectedRoomList(String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("seCode", seCode);
         query.endGroup();
         //直接查询有问题
         List<DBExamLayout> layoutList = new ArrayList<>();
-        for (DBExamLayout layout: query.distinct("roomNo")){
-            if (layout.isChecked()){
+        for (DBExamLayout layout : query.distinct("roomNo")) {
+            if (layout.isChecked()) {
                 layoutList.add(layout);
             }
         }
@@ -175,23 +181,23 @@ public class DBOperation {
     }
 
     /**
-     * @description fixed修正原有查询方法，在场次和考试代码条件的基础上添加用户选择的考场，
-     *              返回当前考试当前场次下所选考场的所有考生。
-     * @param seCode 场次码
+     * @param seCode   场次码
      * @param examCode 考试代码
      * @param roomList 所选考场的集合
      * @return 当前考试当前场次下所选考场的所有考生人数
+     * @description fixed修正原有查询方法，在场次和考试代码条件的基础上添加用户选择的考场，
+     * 返回当前考试当前场次下所选考场的所有考生。
      * @edit ymy
      */
-    public static int getStudentNumber(String examCode, String seCode,List<String> roomList) {
+    public static int getStudentNumber(String examCode, String seCode, List<String> roomList) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("examCode", examCode);
         query.equalTo("seCode", seCode);
         query.endGroup();
         List<DBExamLayout> list = new ArrayList<>();
-        for (DBExamLayout item : query.findAll()){
-            if (roomList.contains(item.getRoomNo())){
+        for (DBExamLayout item : query.findAll()) {
+            if (roomList.contains(item.getRoomNo())) {
                 list.add(item);
             }
         }
@@ -280,9 +286,10 @@ public class DBOperation {
 
     /**
      * 查询刷脸验证间隔时间
+     *
      * @return 刷脸验证间隔时间
      */
-    public static int getIntervalVerifyTime(){
+    public static int getIntervalVerifyTime() {
         return Integer.parseInt(Objects.requireNonNull(Realm.getDefaultInstance().where(DBExamPlan.class).findFirst()).getVerifyIntervalTime());
     }
 
@@ -508,10 +515,10 @@ public class DBOperation {
      * @param seCode 场次（新增场次参数）
      * @return 获取验证数据查询
      */
-    public static List<DBExamExport> getDBExportByIdNo(String params,String seCode) {
+    public static List<DBExamExport> getDBExportByIdNo(String params, String seCode) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class)
                 .beginGroup()
-                .equalTo("seCode",seCode)
+                .equalTo("seCode", seCode)
                 .endGroup()
                 .beginGroup()
                 .like("idCard", "?*" + params, Case.SENSITIVE)
@@ -627,6 +634,143 @@ public class DBOperation {
             }
         }
         return position - 1 >= 0 ? planList.get(position - 1) : new DBExamArrange();
+    }
+
+    /**
+     * 查询当前场次数据验证情况，并按考场编号升序排列
+     *
+     * @param seCode 场次代码
+     * @return 验证数据集合
+     */
+    @SuppressLint("CheckResult")
+    public static List<ExamExportGroupBean> queryValidationDataBySeCode(String seCode) {
+        List<DBExamExport> list = Realm.getDefaultInstance().where(DBExamExport.class)
+                .beginGroup()
+                .equalTo("seCode", seCode)
+                .endGroup()
+                .findAllSorted("roomNo", Sort.ASCENDING);
+        List<ExamExportGroupBean> groupList = new ArrayList<>();
+
+        //打散验证数据的list,按roomNo进行分组并计算每个考场学生的验证数量
+        Observable.fromIterable(list)
+                .groupBy(DBExamExport::getRoomNo)
+                .flatMapSingle(groupedObservable -> groupedObservable.toList()
+                        .map(examExports ->
+                                //返回重组后的ExamExportGroupBean
+                                integrateGroup(groupedObservable.getKey(), examExports, seCode)
+                        ))
+                .toList()
+                .subscribe((Consumer<List<ExamExportGroupBean>>) groupList::addAll);
+
+        return groupList;
+    }
+
+    /**
+     * 数据整理
+     *
+     * @param seCode 场次
+     * @param roomNo 考场
+     * @param list   验证数据
+     * @return ExamExportGroupBean
+     */
+    private static ExamExportGroupBean integrateGroup(String roomNo, List<DBExamExport> list, String seCode) {
+        //创建一个新的集合
+        ExamExportGroupBean bean = new ExamExportGroupBean(roomNo, list);
+        //当前场次当前考场的学生总数
+        int total = getCurrentRoomStuNum(seCode, roomNo);
+        //已通过
+        int pass = queryCurrentRoomStuValidationState(seCode, roomNo, "1");
+        //未通过
+        int notPass = queryCurrentRoomStuValidationState(seCode, roomNo, "2");
+        //存疑
+        int doubt = queryCurrentRoomStuValidationState(seCode, roomNo, "3");
+        //未验证
+        int notValidation = total - pass - notPass - doubt;
+        bean.setTotal(total);
+        bean.setPassValidation(pass);
+        bean.setNotPassValidation(notPass);
+        bean.setDoubtValidation(doubt);
+        bean.setNotValidation(notValidation);
+        return bean;
+    }
+
+
+    /**
+     * 根据场次和考场查询当前考场学生总数
+     *
+     * @param seCode 场次
+     * @param roomNo 考场
+     * @return 当前考场学生总数
+     */
+    private static int getCurrentRoomStuNum(String seCode, String roomNo) {
+        return Realm.getDefaultInstance().where(DBExamLayout.class)
+                .beginGroup()
+                .equalTo("seCode", seCode)
+                .equalTo("roomNo", roomNo)
+                .endGroup()
+                .findAll()
+                .size();
+    }
+
+    /**
+     * 根据场次和考场查询当前考场学生验证状态
+     *
+     * @param seCode 场次
+     * @param roomNo 考场
+     * @param state  验证状态 1成功 2失败 3存疑
+     * @return 当前考场学生验证状态
+     */
+    private static int queryCurrentRoomStuValidationState(String seCode, String roomNo, String state) {
+        return Realm.getDefaultInstance().where(DBExamExport.class)
+                .beginGroup()
+                .equalTo("seCode", seCode)
+                .equalTo("roomNo", roomNo)
+                .equalTo("verifyResult", state)
+                .endGroup()
+                .findAll()
+                .size();
+    }
+
+    /**
+     * @param seCode 场次
+     * @param examCode 考试代码
+     * @return 根据场次和考试代码 返回验证数量
+     */
+    public static ValidationDataBean queryStuNumBySeCode(String seCode, String examCode) {
+        ValidationDataBean bean = new ValidationDataBean();
+        //获取当前考试，当前场次下考生总数
+        int total = Realm.getDefaultInstance().where(DBExamLayout.class).beginGroup()
+                .equalTo("examCode", examCode)
+                .equalTo("seCode", seCode)
+                .endGroup()
+                .findAll()
+                .size();
+        int passValidation = queryStudentNumByState(examCode,seCode,"1");
+        int doubtValidation = queryStudentNumByState(examCode,seCode,"2");
+        int notPassValidation = queryStudentNumByState(examCode,seCode,"3");
+        int notValidation = total - passValidation - doubtValidation - notPassValidation;
+        bean.setPassValidation(passValidation);
+        bean.setDoubtValidation(doubtValidation);
+        bean.setNotPassValidation(notPassValidation);
+        bean.setNotValidation(notValidation);
+        bean.setTotal(total);
+        return bean;
+    }
+
+    /**
+     * @param seCode 场次
+     * @param examCode 考试代码
+     * @param verifyResult 验证状态
+     * @return 验证数量
+     */
+    private static int queryStudentNumByState(String examCode, String seCode, String verifyResult) {
+        return Realm.getDefaultInstance().where(DBExamExport.class).beginGroup()
+                .equalTo("examCode", examCode)
+                .equalTo("seCode", seCode)
+                .equalTo("verifyResult", verifyResult)
+                .endGroup()
+                .findAll()
+                .size();
     }
 
 }

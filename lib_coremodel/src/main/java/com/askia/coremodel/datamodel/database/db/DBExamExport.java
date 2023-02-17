@@ -33,7 +33,15 @@ public class DBExamExport extends RealmObject implements Serializable {
     private String manualVerifyResult;//0 自动审核 1人工审核
     private String healthCode; //健康码
     private int upLoadStatus = 0; //上传状态 0未上传 1上传成功（只有在线导出模式使用，用于增量上传）
+    private String roomNo; //考场编号 v1.3.2新增（验证数据统计模块需要）
 
+    public String getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
+    }
     public int getUpLoadStatus() {
         return upLoadStatus;
     }

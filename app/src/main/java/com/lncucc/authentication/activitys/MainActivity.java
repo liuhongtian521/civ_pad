@@ -306,7 +306,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mDisposable.isDisposed()){
+        if (null != mDisposable && !mDisposable.isDisposed()){
             mDisposable.dispose();
         }
     }
