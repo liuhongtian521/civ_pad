@@ -2,25 +2,28 @@ package com.lncucc.authentication.fragments;
 
 import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseFragment;
 import com.askia.common.widget.GridSpacingItemDecoration;
 import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
 import com.askia.coremodel.datamodel.data.ValidationDataBean;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
-import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.lncucc.authentication.R;
+import com.lncucc.authentication.activitys.RoomListActivity;
 import com.lncucc.authentication.adapters.ValidationDataStatisticsAdapter;
 import com.lncucc.authentication.databinding.FragmentValidataionDataStatisticsFragmentBinding;
 import com.lncucc.authentication.widgets.pop.BottomPopUpWindow;
@@ -63,6 +66,14 @@ public class ValidationDataStatisticsFragment extends BaseFragment {
         mBinding.recyclerSession.addItemDecoration(new GridSpacingItemDecoration(4,30,30,false));
         //设置顶部数量
         setValidationNum();
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            //跳转到考场页面
+            Bundle b = new Bundle();
+            b.putString("roomNo",mValidationList.get(position).getRoomNo());
+            b.putString("seCode",seCode);
+            b.putString("examCode",examCode);
+            ARouter.getInstance().build(ARouterPath.ROOM_LIST).with(b).navigation();
+        });
     }
 
     @Override
@@ -109,7 +120,6 @@ public class ValidationDataStatisticsFragment extends BaseFragment {
 
     @Override
     public void onSubscribeViewModel() {
-
     }
 
     @Override

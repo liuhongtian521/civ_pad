@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_125"
+        android:layout_height="@dimen/dp_32"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_stu_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_11"
+            android:text="A01"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tv_stu_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

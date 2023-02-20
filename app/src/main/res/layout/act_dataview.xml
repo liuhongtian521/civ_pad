@@ -25,17 +25,6 @@
             android:shadowDy="2"
             android:shadowRadius="3">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="验证数据查看"
-                android:textColor="#333333"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold" />
-
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -57,6 +46,17 @@
                     android:textColor="#666666"
                     android:textSize="@dimen/sp_9" />
             </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="验证数据查看"
+                android:textColor="#333333"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <LinearLayout

@@ -200,6 +200,11 @@
             android:screenOrientation="landscape"
             android:theme="@style/activity_styles"/>
 
+        <!-- 验证数据统计 -->
+        <activity android:name=".activitys.RoomListActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/BaseNoActionBar"/>
+
         <!-- usb receiver-->
         <receiver android:name="com.askia.common.util.receiver.USBReceiver">
             <intent-filter>

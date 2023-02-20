@@ -3,6 +3,7 @@ package com.askia.coremodel.datamodel.database.operation;
 import android.annotation.SuppressLint;
 
 import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
+import com.askia.coremodel.datamodel.data.StudentBean;
 import com.askia.coremodel.datamodel.data.ValidationDataBean;
 import com.askia.coremodel.datamodel.database.db.DBAccount;
 import com.askia.coremodel.datamodel.database.db.DBDataVersion;
@@ -662,6 +663,7 @@ public class DBOperation {
                 .toList()
                 .subscribe((Consumer<List<ExamExportGroupBean>>) groupList::addAll);
 
+
         return groupList;
     }
 
@@ -732,7 +734,7 @@ public class DBOperation {
     }
 
     /**
-     * @param seCode 场次
+     * @param seCode   场次
      * @param examCode 考试代码
      * @return 根据场次和考试代码 返回验证数量
      */
@@ -745,9 +747,9 @@ public class DBOperation {
                 .endGroup()
                 .findAll()
                 .size();
-        int passValidation = queryStudentNumByState(examCode,seCode,"1");
-        int doubtValidation = queryStudentNumByState(examCode,seCode,"2");
-        int notPassValidation = queryStudentNumByState(examCode,seCode,"3");
+        int passValidation = queryStudentNumByState(examCode, seCode, "1").size();
+        int doubtValidation = queryStudentNumByState(examCode, seCode, "2").size();
+        int notPassValidation = queryStudentNumByState(examCode, seCode, "3").size();
         int notValidation = total - passValidation - doubtValidation - notPassValidation;
         bean.setPassValidation(passValidation);
         bean.setDoubtValidation(doubtValidation);
@@ -758,19 +760,73 @@ public class DBOperation {
     }
 
     /**
-     * @param seCode 场次
-     * @param examCode 考试代码
+     * @param seCode       场次
+     * @param examCode     考试代码
      * @param verifyResult 验证状态
-     * @return 验证数量
+     * @return 已验证考生的列表
      */
-    private static int queryStudentNumByState(String examCode, String seCode, String verifyResult) {
+    private static List<DBExamExport> queryStudentNumByState(String examCode, String seCode, String verifyResult) {
         return Realm.getDefaultInstance().where(DBExamExport.class).beginGroup()
                 .equalTo("examCode", examCode)
                 .equalTo("seCode", seCode)
                 .equalTo("verifyResult", verifyResult)
                 .endGroup()
-                .findAll()
-                .size();
+                .findAll();
+    }
+
+    /**
+     * 根据场次和考场查询当前考场学生验证状态
+     *
+     * @param examCode 考试代码
+     * @param seCode   场次
+     * @param roomNo   考场
+     * @param stuNo    学号
+     * @return 考生对象
+     */
+    private static DBExamExport queryStuValidationState(String examCode, String seCode, String roomNo, String stuNo) {
+        return Realm.getDefaultInstance().where(DBExamExport.class)
+                .beginGroup()
+                .equalTo("seCode", seCode)
+                .equalTo("roomNo", roomNo)
+                .equalTo("stuNo", stuNo)
+                .equalTo("examCode", examCode)
+                .endGroup()
+                .findFirst();
+    }
+
+    /**
+     * @param examCode 考试代码
+     * @param seCode   场次
+     * @param roomNo   考场
+     * @return
+     */
+    public static List<StudentBean> queryStudentByRoomAndSeCode(String examCode, String seCode, String roomNo) {
+        //获取考生列表
+        List<DBExamLayout> list = Realm.getDefaultInstance().where(DBExamLayout.class).beginGroup()
+                .equalTo("examCode", examCode)
+                .equalTo("seCode", seCode)
+                .equalTo("roomNo", roomNo)
+                .endGroup()
+                .findAll();
+        StudentBean stuBean;
+        List<StudentBean> stuList = new ArrayList<>();
+        for (DBExamLayout bean : list) {
+            stuBean = new StudentBean();
+            stuBean.setRoomNo(bean.getRoomNo());
+            stuBean.setExamCode(examCode);
+            stuBean.setName(bean.getStuName());
+            stuBean.setSeatNo(bean.getSeatNo());
+            stuBean.setSeCode(bean.getSeCode());
+            String validationState;
+            if (null == queryStuValidationState(examCode, seCode, roomNo, bean.getStuNo())) {
+                validationState = "0";
+            } else {
+                validationState = queryStuValidationState(examCode, seCode, roomNo, bean.getStuNo()).getVerifyResult();
+            }
+            stuBean.setValidationState(validationState);
+            stuList.add(stuBean);
+        }
+        return stuList;
     }
 
 }

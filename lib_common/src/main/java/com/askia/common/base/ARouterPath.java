@@ -44,4 +44,6 @@ public class ARouterPath {
     public static final String TAKE_PHOTO = "/activity/take/photo";
     /* 人脸测试 */
     public static final String FACE_TEST = "/activity/face/test";
+    /* 验证数据统计 */
+    public static final String ROOM_LIST = "/activity/room/list";
 }
