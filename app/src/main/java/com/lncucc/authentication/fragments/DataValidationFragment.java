@@ -2,6 +2,7 @@ package com.lncucc.authentication.fragments;
 
 import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -65,8 +66,6 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
             mBinding.tvSession.setText(sessionList.get(0).getSeName());
         }
         RxBus2.getInstance().register(this);
-        //默认查询当前场次验证数据
-        query(null);
         initEvent();
     }
 
@@ -123,6 +122,15 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser){
+            //默认查询当前场次验证数据
+            query(null);
+        }
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override

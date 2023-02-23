@@ -663,7 +663,6 @@ public class DBOperation {
                 .toList()
                 .subscribe((Consumer<List<ExamExportGroupBean>>) groupList::addAll);
 
-
         return groupList;
     }
 
@@ -798,7 +797,7 @@ public class DBOperation {
      * @param examCode 考试代码
      * @param seCode   场次
      * @param roomNo   考场
-     * @return
+     * @return 考生列表
      */
     public static List<StudentBean> queryStudentByRoomAndSeCode(String examCode, String seCode, String roomNo) {
         //获取考生列表
@@ -807,7 +806,7 @@ public class DBOperation {
                 .equalTo("seCode", seCode)
                 .equalTo("roomNo", roomNo)
                 .endGroup()
-                .findAll();
+                .findAllSorted("seatNo",Sort.ASCENDING);
         StudentBean stuBean;
         List<StudentBean> stuList = new ArrayList<>();
         for (DBExamLayout bean : list) {
@@ -820,8 +819,10 @@ public class DBOperation {
             String validationState;
             if (null == queryStuValidationState(examCode, seCode, roomNo, bean.getStuNo())) {
                 validationState = "0";
+                stuBean.setId("");
             } else {
                 validationState = queryStuValidationState(examCode, seCode, roomNo, bean.getStuNo()).getVerifyResult();
+                stuBean.setId(queryStuValidationState(examCode,seCode,roomNo,bean.getStuNo()).getId());
             }
             stuBean.setValidationState(validationState);
             stuList.add(stuBean);

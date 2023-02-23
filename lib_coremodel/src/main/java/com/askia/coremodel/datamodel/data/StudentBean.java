@@ -15,6 +15,16 @@ public class StudentBean implements Serializable {
     private String examCode;
     private String roomNo;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    private String id; //用于查询已验证考生的信息
+
     public String getValidationState() {
         return validationState;
     }

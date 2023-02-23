@@ -4,8 +4,12 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/ll_item_student"
+        android:background="@color/btn_ghost_blue_border_pressed"
         android:layout_width="@dimen/dp_125"
         android:layout_height="@dimen/dp_32"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center">
 
         <TextView
