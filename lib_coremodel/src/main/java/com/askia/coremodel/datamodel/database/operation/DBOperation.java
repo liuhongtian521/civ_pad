@@ -255,12 +255,12 @@ public class DBOperation {
      * @param stuNo    学生编号
      * @return 详细信息
      */
-    public static DBExamLayout getStudentInfo(String examCode, String stuNo, String secode) {
+    public static DBExamLayout getStudentInfo(String examCode, String stuNo, String seCode) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
         query.beginGroup();
         query.equalTo("examCode", examCode);
         query.equalTo("stuNo", stuNo);
-        query.equalTo("seCode", secode);
+        query.equalTo("seCode", seCode);
         query.endGroup();
         return query.findFirst();
     }
@@ -656,13 +656,12 @@ public class DBOperation {
         Observable.fromIterable(list)
                 .groupBy(DBExamExport::getRoomNo)
                 .flatMapSingle(groupedObservable -> groupedObservable.toList()
-                        .map(examExports ->
-                                //返回重组后的ExamExportGroupBean
-                                integrateGroup(groupedObservable.getKey(), examExports, seCode)
-                        ))
+                .map(examExports ->
+                    //返回重组后的ExamExportGroupBean
+                    integrateGroup(groupedObservable.getKey(), examExports, seCode)
+                ))
                 .toList()
                 .subscribe((Consumer<List<ExamExportGroupBean>>) groupList::addAll);
-
         return groupList;
     }
 

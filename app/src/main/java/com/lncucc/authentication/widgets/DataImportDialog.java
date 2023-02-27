@@ -71,11 +71,7 @@ public class DataImportDialog extends BaseDialog {
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
             index = position;
             for (int i = 0; i < mList.size(); i++) {
-                if (i == position) {
-                    mList.get(i).setChecked(true);
-                } else {
-                    mList.get(i).setChecked(false);
-                }
+                mList.get(i).setChecked(i == position);
             }
             mAdapter.notifyDataSetChanged();
         });

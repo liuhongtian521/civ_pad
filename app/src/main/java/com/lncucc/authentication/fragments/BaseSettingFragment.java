@@ -167,4 +167,8 @@ public class BaseSettingFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+    }
 }
