@@ -591,7 +591,8 @@ public class DBOperation {
      * @return orgCode
      */
     public static String queryOrgCode() {
-        return Objects.requireNonNull(Realm.getDefaultInstance().where(DBAccount.class).findFirst()).getCode();
+        DBAccount account = Realm.getDefaultInstance().where(DBAccount.class).findFirst();
+        return  account != null ? account.getCode(): "";
     }
 
     /**
