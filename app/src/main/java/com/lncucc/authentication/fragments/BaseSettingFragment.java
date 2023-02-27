@@ -55,40 +55,49 @@ public class BaseSettingFragment extends BaseFragment {
         requestPermission();
         //滑动音量初始化
         int soundProgress = SharedPreferencesUtils.getInt(getActivity(), DEFAULT_SOUND_SETTING,50);
-        mSlider.setCurrentProgress(soundProgress);
-        mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-        mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-        //静音设置初始化
-        int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING,0);
-        mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, silentSound * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-        sbSound.setChecked(silentSound == 0);
-        //语音提示初始化
-        boolean voice = SharedPreferencesUtils.getBoolean(getActivity(),VOICE_SETTING,true);
-        LogUtils.e("voice test ->", voice);
-        baseSetting.soundTip.setChecked(voice);
-        if (voice){
+        try {
+            mSlider.setCurrentProgress(soundProgress);
+            mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
             mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-        }else {
-            mgr.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+            //静音设置初始化
+            int silentSound = SharedPreferencesUtils.getInt(getActivity(),SOUND_SETTING,0);
+            mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, silentSound * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
+            sbSound.setChecked(silentSound == 0);
+            //语音提示初始化
+            boolean voice = SharedPreferencesUtils.getBoolean(getActivity(),VOICE_SETTING,true);
+            LogUtils.e("voice test ->", voice);
+            baseSetting.soundTip.setChecked(voice);
+            if (voice){
+                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
+            }else {
+                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+            }
+        }catch (Exception e){
+            Log.e("System Service error->", e.getMessage());
         }
+
 
         // 静音设置
         sbSound.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 0 , AudioManager.FLAG_PLAY_SOUND);
+            try {
+                if (b) {
+                    mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 0 , AudioManager.FLAG_PLAY_SOUND);
 //                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, 0,AudioManager.FLAG_PLAY_SOUND);
-                SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,0);
-                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
-                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 0);
-                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
-            } else {
+                    SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,0);
+                    Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 0);
+                    SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 0);
+                    MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+                } else {
 //                mgr.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 1);//取消静音
-                mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 100 , AudioManager.FLAG_PLAY_SOUND);
+                    mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, 100 , AudioManager.FLAG_PLAY_SOUND);
 //                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress,AudioManager.FLAG_PLAY_SOUND);
-                Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
-                SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
-                SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,100);
-                MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+                    Settings.System.putInt(mActivity.getContentResolver(), Settings.System.SOUND_EFFECTS_ENABLED, 1);
+                    SharedPreferencesUtils.putInt(getActivity(), KEY_SOUND, 1);
+                    SharedPreferencesUtils.putInt(getActivity(),SOUND_SETTING,100);
+                    MyToastUtils.success("设置成功", Toast.LENGTH_SHORT);
+                }
+            }catch (Exception e){
+                Log.e("System Service error->", e.getMessage());
             }
         });
 
@@ -108,10 +117,15 @@ public class BaseSettingFragment extends BaseFragment {
 
             @Override
             public void onTouchUp(QMUISlider slider, int progress, int tickCount) {
-                // slider 滑动后设置声音
-                mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, progress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, progress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-                SharedPreferencesUtils.putInt(getActivity(), DEFAULT_SOUND_SETTING, progress);
+                try {
+                    // slider 滑动后设置声音
+                    mgr.setStreamVolume(AudioManager.STREAM_SYSTEM, progress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
+                    mgr.setStreamVolume(AudioManager.STREAM_MUSIC, progress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
+                    SharedPreferencesUtils.putInt(getActivity(), DEFAULT_SOUND_SETTING, progress);
+                }catch (Exception e){
+                    Log.e("System Service error->", e.getMessage());
+                }
+
 
             }
 
@@ -127,11 +141,16 @@ public class BaseSettingFragment extends BaseFragment {
         });
         //语音提示
         baseSetting.soundTip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
-                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
-            }else {
-                mgr.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+            try {
+                if (isChecked){
+                    mgr.setStreamVolume(AudioManager.STREAM_MUSIC, soundProgress * mgr.getStreamMaxVolume(AudioManager.STREAM_SYSTEM) / 100, AudioManager.FLAG_PLAY_SOUND);
+                }else {
+                    mgr.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+                }
+            }catch (Exception e){
+                Log.e("System Service error->", e.getMessage());
             }
+
             SharedPreferencesUtils.putBoolean(getActivity(),VOICE_SETTING,isChecked);
         });
     }
