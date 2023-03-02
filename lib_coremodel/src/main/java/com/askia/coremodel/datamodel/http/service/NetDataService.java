@@ -16,8 +16,8 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -49,5 +49,5 @@ public interface NetDataService {
     Observable<UpLoadResult> postVerifyData(@HeaderMap Map<String, String> map, @Part MultipartBody.Part body);
 
     @POST("/api/pad/uploadverifydetail")
-    Observable<BaseResponseData> uploadverifydetail(@Body RequestBody body);
+    Observable<BaseResponseData> uploadverifydetail(@Body RequestBody body,@Header("orgCode") String orgCode);
 }

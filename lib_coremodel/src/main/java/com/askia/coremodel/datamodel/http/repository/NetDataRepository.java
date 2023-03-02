@@ -63,9 +63,9 @@ public class NetDataRepository {
         return responseData;
     }
 
-    public static Observable<BaseResponseData> uploadverifydetail(RequestBody body){
+    public static Observable<BaseResponseData> uploadverifydetail(RequestBody body,String orgCode){
         Observable<BaseResponseData> responseData = ApiClient.getNetDataService()
-                .uploadverifydetail(body);
+                .uploadverifydetail(body,orgCode);
         return responseData;
     }
 

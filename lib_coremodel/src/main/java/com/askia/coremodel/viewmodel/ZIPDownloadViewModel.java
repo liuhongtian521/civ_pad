@@ -159,7 +159,7 @@ public class ZIPDownloadViewModel extends BaseViewModel {
         //base Url
         String baseUrl = RetrofitUrlManager.getInstance().getGlobalDomain().url().toString();
         Log.e("domain url ->", baseUrl);
-         FileDownloader.getImpl().create(ApiConstants.HOST+"/api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
+         FileDownloader.getImpl().create(baseUrl+"api/pad/getpack"+"?examCode="+resultBean.getExamCode()+"&fileUrl="+resultBean.getFileUrl())//resultBean.getMinioUrl() + resultBean.getBucketName() + File.separator + resultBean.getFileUrl() + resultBean.getFilename())
                 .setPath(Constants.ZIP_PATH + File.separator +resultBean.getExamCode()+ ".zip")
                 .setForceReDownload(true)
                 .setListener(new FileDownloadListener() {

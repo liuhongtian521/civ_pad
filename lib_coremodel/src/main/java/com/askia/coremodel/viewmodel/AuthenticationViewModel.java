@@ -211,8 +211,6 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setHealthCode(dbExamExport.getHealthCode());
         //添加考场号
         db.setRoomNo(dbExamExport.getRoomNo());
-        //添加orgCode
-        db.setOrgCode(orgCode);
         String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
         try {
             db.setEntrancePhotoUrl(Utils.encodeBase64File(pathT));
@@ -220,7 +218,7 @@ public class AuthenticationViewModel extends BaseViewModel {
             e.printStackTrace();
         }
 //        Log.e("TagSnake up", db.toString());
-        NetDataRepository.uploadverifydetail(convertPostBody(db))
+        NetDataRepository.uploadverifydetail(convertPostBody(db),orgCode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .safeSubscribe(new Observer<BaseResponseData>() {
