@@ -137,8 +137,12 @@ public class RoomListActivity extends BaseActivity {
             mBinding.tvExamSubjects.setText(layout.getSeName());
             mBinding.tvRoom.setText(layout.getRoomNo());
             mBinding.tvSeatNumber.setText(layout.getSeatNo());
+            mBinding.tvExaminationRoom.setText(layout.getRoomNo());
         }
 
+        switch (export.getHealthCode()){
+
+        }
     }
 
     public void setResult(String type) {

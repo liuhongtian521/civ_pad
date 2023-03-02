@@ -32,6 +32,7 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.event.ExportDataEvent;
 import com.askia.coremodel.viewmodel.DataExportViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
@@ -413,8 +414,9 @@ public class DataExportFragment extends BaseFragment {
      * @param view view
      */
     public void export(View view) {
+        String orgCode = SharedPreferencesUtils.getString(getActivity(), "code", "");
         //判断导出数据中考点代码是否正确
-        if (DBOperation.isAffiliationCurrentSite()){
+        if (DBOperation.isAffiliationCurrentSite(orgCode)){
             showLoading();
             //添加orgCode判断，只能导出当前考点数据
             exportViewModel.doDataExport(seCode);

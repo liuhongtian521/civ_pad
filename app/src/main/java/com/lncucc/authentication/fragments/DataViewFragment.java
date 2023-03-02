@@ -89,10 +89,11 @@ public class DataViewFragment extends BaseFragment {
             } else {
                 tempList.addAll(mList);
             }
-            mAdapter.notifyDataSetChanged();
         } else {
+            tempList.clear();
             MyToastUtils.error("没有查询到该考生信息！", Toast.LENGTH_SHORT);
         }
+        mAdapter.notifyDataSetChanged();
         KeyboardUtils.hideSoftInput(getActivity());
     }
 

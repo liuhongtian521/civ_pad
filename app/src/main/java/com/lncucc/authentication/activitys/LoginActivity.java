@@ -16,6 +16,7 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.event.UniAuthInfoEvent;
 import com.askia.coremodel.util.NetUtils;
+import com.askia.coremodel.util.SignUtils;
 import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
@@ -103,12 +104,13 @@ public class LoginActivity extends BaseActivity implements DialogClickBackListen
         // 需求1.3.2 添加本地数据库账号密码登录逻辑。
         // 数据来源-> 数据包导入时account.json文件 DBAccount文件
         if (DBOperation.isMatchingWithLocal(userName,password)){
+            SharedPreferencesUtils.putString(getApplicationContext(), "code", DBOperation.queryOrgCode());
             toMainOrManagerActivity(userName,password);
             return;
         }
         //有网络联网登录，没有网络尝试读取本地缓存
         if (NetUtils.isNetConnected()) {
-            loginViewModel.login(userName, password);
+            loginViewModel.login(userName, SignUtils.encryptByPublic(password));
         } else {
             String account = SharedPreferencesUtils.getString(this, "account", userName);
             String passwordLocal = SharedPreferencesUtils.getString(this, "password", password);

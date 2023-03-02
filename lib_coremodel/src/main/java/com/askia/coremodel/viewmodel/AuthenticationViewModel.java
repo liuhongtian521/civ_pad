@@ -153,11 +153,11 @@ public class AuthenticationViewModel extends BaseViewModel {
         mCanSign.postValue(DBOperation.getHealthCode(id));
     }
 
-    public void getExamNumber(String seCode, String examCode) {
-        mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode));
+    public void getExamNumber(String seCode, String examCode,List<DBExamLayout> list) {
+        mDBExamExportNumber.postValue(DBOperation.getDBExamExportNumber(seCode, examCode,list));
     }
 
-    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String manualVerifyResult) {
+    public void setMsg(DBExamLayout dbExamLayout, String time, String type, String number, String manualVerifyResult,String orgCode) {
         Log.e("TagSnake", type + ":状态" + "::" + time);
         DBExamExport db = new DBExamExport();
         db.setId(dbExamLayout.getId());
@@ -181,12 +181,12 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setRoomNo(dbExamLayout.getRoomNo());
         DBOperation.setDBExamExport(db);
         mDBExamExport.postValue(db);
-        upMsg(db);
+        upMsg(db,orgCode);
 
     }
 
 
-    private void upMsg(DBExamExport dbExamExport) {
+    private void upMsg(DBExamExport dbExamExport,String orgCode) {
 //        Log.e("TagSnake up", "upMsg");
 
         UPMsgData db = new UPMsgData();
@@ -211,6 +211,8 @@ public class AuthenticationViewModel extends BaseViewModel {
         db.setHealthCode(dbExamExport.getHealthCode());
         //添加考场号
         db.setRoomNo(dbExamExport.getRoomNo());
+        //添加orgCode
+        db.setOrgCode(orgCode);
         String pathT = Constants.STU_EXPORT + File.separator + db.getSeCode() + File.separator + "photo" + File.separator + db.getStuNo() + ".jpg";
         try {
             db.setEntrancePhotoUrl(Utils.encodeBase64File(pathT));

@@ -132,7 +132,7 @@
                     <TextView
                         android:textSize="8sp"
                         android:layout_marginLeft="@dimen/dp_2"
-                        android:text="@string/not_validation"
+                        android:text="@string/validation_doubt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -162,7 +162,7 @@
                     <TextView
                         android:textSize="8sp"
                         android:layout_marginLeft="@dimen/dp_2"
-                        android:text="@string/not_validation"
+                        android:text="@string/validation_not_pass"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>

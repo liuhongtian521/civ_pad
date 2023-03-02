@@ -1,7 +1,6 @@
 package com.askia.coremodel.datamodel.database.operation;
 
 import android.annotation.SuppressLint;
-
 import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
 import com.askia.coremodel.datamodel.data.StudentBean;
 import com.askia.coremodel.datamodel.data.ValidationDataBean;
@@ -20,6 +19,7 @@ import com.ttsea.jrxbus2.RxBus2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -97,13 +97,31 @@ public class DBOperation {
         return Objects.requireNonNull(query.findFirst()).getHealthCode();
     }
 
-    public static int getDBExamExportNumber(String seCode, String examCode) {
+    /**
+     * fixed 产品修改要查询当前考点当前考试 所选考场的验证学生数
+     * @param seCode 场次
+     * @param examCode 考试
+     * @param list 选中考场的集合
+     * @return 当前考点当前考试 所选考场的验证学生数
+     */
+    @SuppressLint("CheckResult")
+    public static int getDBExamExportNumber(String seCode, String examCode, List<DBExamLayout> list) {
         RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
         query.beginGroup();
         query.equalTo("seCode", seCode);
         query.equalTo("examCode", examCode);
         query.endGroup();
-        return query.findAll().size();
+        //当前场次考生验证信息集合
+        List<DBExamExport> exportList = query.findAll();
+        AtomicInteger total = new AtomicInteger();
+        //查询选中考场中的验证考生数量
+        Observable.fromIterable(exportList)
+                .flatMap(item ->
+                        //二次迭代过滤考场号相同的数据
+                        Observable.fromIterable(list).filter(layout ->item.getRoomNo().equals(layout.getRoomNo())))
+                .count()
+                .subscribe(count -> total.set(Integer.parseInt(count + "")));
+        return total.get();
     }
 
     /**
@@ -526,7 +544,7 @@ public class DBOperation {
                 .or()
                 .like("stuNo", "?*" + params, Case.SENSITIVE)
                 .endGroup();
-        return query.findAll();
+        return query.findAllSorted("verifyTime", Sort.DESCENDING);
     }
 
     /**
@@ -600,9 +618,7 @@ public class DBOperation {
      *
      * @return 根据内置orgCode去导出数据中查询，如果数量不一致则拒绝上传
      */
-    public static boolean isAffiliationCurrentSite() {
-        //获取orgCode
-        String orgCode = queryOrgCode();
+    public static boolean isAffiliationCurrentSite(String orgCode) {
         return Realm.getDefaultInstance().where(DBExamExport.class).findAll().size()
                 == Realm.getDefaultInstance().where(DBExamExport.class).beginGroup()
                 .equalTo("siteCode", orgCode)
@@ -747,8 +763,8 @@ public class DBOperation {
                 .findAll()
                 .size();
         int passValidation = queryStudentNumByState(examCode, seCode, "1").size();
-        int doubtValidation = queryStudentNumByState(examCode, seCode, "2").size();
-        int notPassValidation = queryStudentNumByState(examCode, seCode, "3").size();
+        int doubtValidation = queryStudentNumByState(examCode, seCode, "3").size();
+        int notPassValidation = queryStudentNumByState(examCode, seCode, "2").size();
         int notValidation = total - passValidation - doubtValidation - notPassValidation;
         bean.setPassValidation(passValidation);
         bean.setDoubtValidation(doubtValidation);

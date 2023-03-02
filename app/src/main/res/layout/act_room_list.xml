@@ -157,7 +157,8 @@
                         android:src="@mipmap/icon_type_success" />
 
                     <ImageView
-                        android:background="@mipmap/icon_h_green"
+                        android:id="@+id/iv_health_code"
+                        android:background="@mipmap/icon_h_none"
                         android:layout_marginLeft="@dimen/dp_4"
                         android:layout_width="@dimen/dp_34"
                         android:layout_height="@dimen/dp_12"/>

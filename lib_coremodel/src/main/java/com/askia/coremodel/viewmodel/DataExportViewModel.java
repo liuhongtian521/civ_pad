@@ -160,8 +160,7 @@ public class DataExportViewModel extends BaseViewModel {
         File filePath_ = new File(filePath);
         String macId = DeviceUtils.getAndroidID();
         //v1.3.2 数据导出包命名规则添加考点代码
-        String orgCode = DBOperation.queryOrgCode();
-        String zipFilePath = zipPath_ + "/" + orgCode + seCode + "_" +macId+ ".zip";
+        String zipFilePath = zipPath_ + "/" + seCode + "_" +macId+ ".zip";
 
         String zipName = seCode + "_" +macId+ ".zip";
         // 生成的压缩文件

@@ -39,6 +39,7 @@ import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -312,15 +313,16 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                 isComparison = false;
                 faceComparedDialog.dismiss();
                 faceFragment.goContinueDetectFace();
+                String orgCode = SharedPreferencesUtils.getString(AuthenticationActivity.this, "code", "");
                 if (type == 0) {
                     //不通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
                 } else if (type == 1) {
                     //存疑
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
                 } else {
                     //通过
-                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+                    mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
                 }
             }
         });
@@ -475,7 +477,7 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                 } else {
                     saveList.add(0, dbExamExport);
                 }
-                mViewModel.getExamNumber(mSeCode, mExamCode);
+                mViewModel.getExamNumber(mSeCode, mExamCode,DBOperation.getSelectedRoomList(mSeCode));
 //                mDataBinding.tvVerifyNumber.setText(saveList.size() + "/" + mStudentNumber);
                 mAdapter.notifyDataSetChanged();
             }
@@ -500,9 +502,8 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                 //fixed 考场选择赋值不正确
                 mDataBinding.tvSessionAll.setText(String.format("%d", DBOperation.getSelectedRoomList(mSeCode).size()));
                 mStudentNumber = DBOperation.getStudentNumber(mExamCode, mSeCode,mExamCodeList);
-                mViewModel.getExamNumber(mSeCode, mExamCode);
+                mViewModel.getExamNumber(mSeCode, mExamCode,DBOperation.getSelectedRoomList(mSeCode));
 //                mDataBinding.tvVerifyNumber.setText("0/" + mStudentNumber);
-                mViewModel.getExamNumber(dbExamArrange.getSeCode(), dbExamArrange.getExamCode());
                 saveList.clear();
             }
         });
@@ -726,17 +727,18 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
     @Override
     public void backType(int type) {
         faceResultDialog.dismiss();
+        String orgCode = SharedPreferencesUtils.getString(AuthenticationActivity.this, "code", "");
         if (!mPopExamPlan.isShowing() && !peopleMsgDialog.isShowing() && !faceComparedDialog.isShowing())
             faceFragment.goContinueDetectFace();
         if (type == 0) {
             //不通过
-            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "2", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
         } else if (type == 1) {
             //存疑
-            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "3", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
         } else {
             //通过
-            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0");
+            mViewModel.setMsg(mDbExamLayout, System.currentTimeMillis() + "", "1", mDetectResult == null ? "0.00" : Float.toString(mDetectResult.similarity), "0",orgCode);
         }
     }
 }

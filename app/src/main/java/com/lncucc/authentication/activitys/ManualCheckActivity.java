@@ -26,6 +26,7 @@ import com.askia.coremodel.util.JsonUtil;
 import com.askia.coremodel.util.Utils;
 import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.askia.coremodel.viewmodel.ManualCheckViewModel;
+import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.adapters.KeyBoardAdapter;
 import com.lncucc.authentication.databinding.ActManualCheckBinding;
@@ -55,7 +56,7 @@ public class ManualCheckActivity extends BaseActivity {
     private AuthenticationViewModel authViewModel;
     private ActManualCheckBinding manualBinding;
     //搜索类别 0 准考证查询 1 身份证查询
-    private int searchType = 0;
+    private int searchType = 1;
     private KeyBoardAdapter keyBoardAdapter;
     private String examCode, seCode;
     private final static int PHOTO_REQUEST = 1001;
@@ -83,16 +84,17 @@ public class ManualCheckActivity extends BaseActivity {
 
             @Override
             public void backType(int type) {
+                String orgCode = SharedPreferencesUtils.getString(ManualCheckActivity.this, "code", "");
                 faceComparedDialog.dismiss();
                 if (type == 0) {
                     //不通过
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "2", similarity,"1");
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "2", similarity,"1",orgCode);
                 } else if (type == 1) {
                     //存疑
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "3", similarity,"1");
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "3", similarity,"1",orgCode);
                 } else {
                     //通过
-                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "1", similarity,"1");
+                    authViewModel.setMsg(examLayout, System.currentTimeMillis() + "", "1", similarity,"1",orgCode);
                 }
                 MyToastUtils.success("审核成功！",Toast.LENGTH_SHORT);
             }
@@ -216,6 +218,9 @@ public class ManualCheckActivity extends BaseActivity {
                 if (length >= 4) {
                     //如果长度》=4 直接搜索
                     manualViewModel.fetchStudentInfo(searchType, s.toString(), examCode, seCode);
+                }else {
+                    manualBinding.linePeople.setVisibility(View.GONE);
+                    manualBinding.rlBlank.setVisibility(View.VISIBLE);
                 }
             }
         });

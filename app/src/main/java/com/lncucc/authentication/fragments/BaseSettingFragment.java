@@ -1,8 +1,11 @@
 package com.lncucc.authentication.fragments;
 
-import android.Manifest;
+import static com.askia.coremodel.rtc.Constants.DEFAULT_SOUND_SETTING;
+import static com.askia.coremodel.rtc.Constants.KEY_SOUND;
+import static com.askia.coremodel.rtc.Constants.SOUND_SETTING;
+import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
+
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -11,12 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.askia.common.base.BaseFragment;
@@ -29,11 +30,6 @@ import com.lncucc.authentication.databinding.FragmentBaseSettingBinding;
 import com.qmuiteam.qmui.widget.QMUISlider;
 
 import org.jetbrains.annotations.NotNull;
-
-import static com.askia.coremodel.rtc.Constants.DEFAULT_SOUND_SETTING;
-import static com.askia.coremodel.rtc.Constants.KEY_SOUND;
-import static com.askia.coremodel.rtc.Constants.SOUND_SETTING;
-import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
 
 /**
  * 数据导入

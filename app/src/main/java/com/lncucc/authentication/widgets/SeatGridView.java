@@ -52,11 +52,7 @@ public class SeatGridView extends ViewGroup {
                 textView.setText(mDataList.get(i).getName());
             }
             //2个占位
-            if (i == 7 || i == 31){
-                textView.setBackgroundColor(Color.parseColor("#ffffff"));
-            }else {
-                textView.setBackgroundColor(Color.parseColor("#0EBD35"));
-            }
+            textView.setBackgroundColor(Color.parseColor("#ffffff"));
             textView.setPadding(0, 20, 0, 0);
             addView(textView, i);
         }
@@ -117,9 +113,9 @@ public class SeatGridView extends ViewGroup {
                 }else if ("1".equals(this.mDataList.get(i).getValidationState())){
                     getChildAt(i).setBackgroundColor(Color.parseColor("#0EBD35"));
                 }else if ("2".equals(this.mDataList.get(i).getValidationState())){
-                    getChildAt(i).setBackgroundColor(Color.parseColor("#FBB630"));
-                }else if ("3".equals(this.mDataList.get(i).getValidationState())){
                     getChildAt(i).setBackgroundColor(Color.parseColor("#FF5F5F"));
+                }else if ("3".equals(this.mDataList.get(i).getValidationState())){
+                    getChildAt(i).setBackgroundColor(Color.parseColor("#FBB630"));
                 }
             }
         }
