@@ -154,12 +154,12 @@ public class RoomListActivity extends BaseActivity {
             mBinding.ivStudentType.setImageResource(R.mipmap.icon_type_faile);
             mBinding.tvTypeSuccess.setVisibility(View.GONE);
             mBinding.tvTypeFaile.setVisibility(View.VISIBLE);
-            mBinding.tvTypeFaile.setText("失败");
+            mBinding.tvTypeFaile.setText("失败/");
         } else {
             mBinding.ivStudentType.setImageResource(R.mipmap.icon_cunyi);
             mBinding.tvTypeSuccess.setVisibility(View.GONE);
             mBinding.tvTypeFaile.setVisibility(View.VISIBLE);
-            mBinding.tvTypeFaile.setText("存疑");
+            mBinding.tvTypeFaile.setText("存疑/");
         }
     }
 

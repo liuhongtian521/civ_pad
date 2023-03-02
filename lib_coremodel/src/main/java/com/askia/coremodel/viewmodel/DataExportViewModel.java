@@ -159,10 +159,10 @@ public class DataExportViewModel extends BaseViewModel {
         File zipPath_ = new File(com.askia.coremodel.rtc.Constants.STU_EXPORT);
         File filePath_ = new File(filePath);
         String macId = DeviceUtils.getAndroidID();
+        String orgCode = DBOperation.queryOrgCode();
         //v1.3.2 数据导出包命名规则添加考点代码
-        String zipFilePath = zipPath_ + "/" + seCode + "_" +macId+ ".zip";
-
-        String zipName = seCode + "_" +macId+ ".zip";
+        String zipFilePath = zipPath_ + "/" +orgCode+ "_" + seCode + "_" +macId+ ".zip";
+        String zipName = orgCode+ "_" + seCode + "_" +macId+ ".zip";
         // 生成的压缩文件
         ZipFile zipFile = new ZipFile(zipFilePath);
         ZipParameters parameters = new ZipParameters();
