@@ -1,6 +1,8 @@
 package com.askia.coremodel.datamodel.database.operation;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+
 import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
 import com.askia.coremodel.datamodel.data.StudentBean;
 import com.askia.coremodel.datamodel.data.ValidationDataBean;
@@ -14,6 +16,7 @@ import com.askia.coremodel.datamodel.database.db.DBExaminee;
 import com.askia.coremodel.datamodel.database.db.DBLogs;
 import com.askia.coremodel.event.ExportDataEvent;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.ttsea.jrxbus2.RxBus2;
 
 import java.util.ArrayList;
@@ -816,6 +819,19 @@ public class DBOperation {
      * @return 考生列表
      */
     public static List<StudentBean> queryStudentByRoomAndSeCode(String examCode, String seCode, String roomNo) {
+        //构建初始化座位表数组 用座位号去匹配
+        List<StudentBean> relStudentBean = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            StudentBean studentBean = new StudentBean();
+            if(i<9) {
+                studentBean.setSeatNo("0"+String.valueOf(i + 1));
+                studentBean.setName("");
+            }else{
+                studentBean.setSeatNo(String.valueOf(i+1));
+                studentBean.setName("       ");
+            }
+            relStudentBean.add(studentBean);
+        }
         //获取考生列表
         List<DBExamLayout> list = Realm.getDefaultInstance().where(DBExamLayout.class).beginGroup()
                 .equalTo("examCode", examCode)
@@ -843,7 +859,16 @@ public class DBOperation {
             stuBean.setValidationState(validationState);
             stuList.add(stuBean);
         }
-        return stuList;
+        for (int i = 0; i < relStudentBean.size(); i++) {
+            for (StudentBean bean : stuList){
+                if(relStudentBean.get(i).getSeatNo().equals(bean.getSeatNo())){
+                    relStudentBean.set(i,bean);
+                }
+            }
+        }
+
+
+        return relStudentBean;
     }
 
 }

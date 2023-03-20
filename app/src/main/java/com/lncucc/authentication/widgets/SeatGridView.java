@@ -116,6 +116,8 @@ public class SeatGridView extends ViewGroup {
                     getChildAt(i).setBackgroundColor(Color.parseColor("#FF5F5F"));
                 }else if ("3".equals(this.mDataList.get(i).getValidationState())){
                     getChildAt(i).setBackgroundColor(Color.parseColor("#FBB630"));
+                }else {
+                    getChildAt(i).setBackgroundColor(Color.parseColor("#808080"));
                 }
             }
         }
