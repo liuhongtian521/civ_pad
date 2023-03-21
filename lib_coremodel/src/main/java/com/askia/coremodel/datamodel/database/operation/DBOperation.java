@@ -683,9 +683,32 @@ public class DBOperation {
                 .beginGroup()
                 .equalTo("seCode", seCode)
                 .endGroup()
-                .findAllSorted("roomNo", Sort.ASCENDING);
-        List<ExamExportGroupBean> groupList = new ArrayList<>();
+                .distinct("roomNo").sort("roomNo", Sort.ASCENDING);
+        List<DBExamLayout> dbExamLayouts = DBOperation.getRoomList(seCode);
+        List<DBExamExport> replenishList = new ArrayList<>();
+   /*     if(null!=list && list.size()>0){
+            for (int j = 0; j <dbExamLayouts.size() ; j++) {
+                Boolean flag = false;
+                for (int i = 0; i < list.size(); i++) {
+                    if(dbExamLayouts.get(j).getRoomNo().equals(list.get(i).getRoomNo())){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    DBExamExport dbExamExport = list.get(0);
+                    dbExamExport.setRoomNo(dbExamLayouts.get(j).getRoomNo());
+                    replenishList.add(dbExamExport);
+                }
+            }
+        if(null!=replenishList&&replenishList.size()>0){
+            list.addAll(replenishList);
+        }
+        }*/
 
+
+
+        List<ExamExportGroupBean> groupList = new ArrayList<>();
         //打散验证数据的list,按roomNo进行分组并计算每个考场学生的验证数量
         Observable.fromIterable(list)
                 .groupBy(DBExamExport::getRoomNo)
@@ -842,7 +865,7 @@ public class DBOperation {
                 studentBean.setName("");
             }else{
                 studentBean.setSeatNo(String.valueOf(i+1));
-                studentBean.setName("       ");
+                studentBean.setName("      无人");
             }
             relStudentBean.add(studentBean);
         }
@@ -880,9 +903,25 @@ public class DBOperation {
                 }
             }
         }
+        //蛇形排序
+        List<StudentBean> resultStudentBean = new ArrayList<>();
+        int firstNum = 6;
+        int endNum = 22;
+        for (int j = 0; j < relStudentBean.size(); j++) {
+            if(j<7){
+               resultStudentBean.add(relStudentBean.get(firstNum));
+               firstNum--;
+            }else if(j>14&&j<23){
+                resultStudentBean.add(relStudentBean.get(endNum));
+                endNum--;
+            }else{
+                resultStudentBean.add(relStudentBean.get(j));
+            }
 
 
-        return relStudentBean;
+        }
+
+        return resultStudentBean;
     }
 
 }
