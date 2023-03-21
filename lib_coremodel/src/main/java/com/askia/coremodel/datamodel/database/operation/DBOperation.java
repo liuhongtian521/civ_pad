@@ -178,9 +178,23 @@ public class DBOperation {
         query.beginGroup();
         query.equalTo("seCode", seCode);
         query.endGroup();
-        return query.distinct("roomNo");
+        return query.distinct("roomNo").sort("roomNo",Sort.ASCENDING);
     }
-
+    public static List<DBExamArrange> getDBExamArrangeList(String seCode) {
+        RealmQuery<DBExamArrange> query = Realm.getDefaultInstance().where(DBExamArrange.class);
+        query.equalTo("seCode", seCode);
+        List<DBExamArrange> dbExamArranges = query.findAll();
+        String examCode = dbExamArranges.get(0).getExamCode() ;
+        RealmQuery<DBExamArrange> relQuery = Realm.getDefaultInstance().where(DBExamArrange.class);
+        relQuery.equalTo("examCode",examCode);
+        return relQuery.findAll();
+    }
+    public static List<DBExamLayout> getAllLayout(String examCode,String roomNo) {
+        RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);
+        query.equalTo("examCode", examCode);
+        query.equalTo("roomNo", roomNo);
+        return query.findAll();
+    }
     /**
      * 查询当前场次下 选中的考场
      *

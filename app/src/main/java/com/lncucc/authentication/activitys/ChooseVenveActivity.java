@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
 import com.askia.common.util.MyToastUtils;
+import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.repository.ExamItemCheck;
@@ -40,6 +41,8 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     private Realm realm;
     private List<ExamItemCheck> mTList = new ArrayList<>();
 
+    //private List<DBExamArrange> dbExamArrangeList = new ArrayList<>();
+
     @Override
     public void onInit() {
         mDataBinding.llBack.setOnClickListener(v -> finish());
@@ -67,6 +70,10 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
     }
 
     public void confirm(View view) {
+       /* for (DBExamArrange dbExamArrange : dbExamArrangeList) {
+            
+        }
+*/
         ArrayList<String> idList = new ArrayList<>();
         for (int i = 0; i < mTList.size(); i++) {
             if (mTList.get(i).isChecked()) {
@@ -76,8 +83,12 @@ public class ChooseVenveActivity extends BaseActivity implements VenveItemClick 
             int finalI = i;
             realm.executeTransaction(realm -> {
                 DBExamLayout layout = mList.get(finalI);
-                layout.setChecked(isChecked);
-                realm.copyToRealmOrUpdate(layout);
+                //layout.setChecked(isChecked);
+                List<DBExamLayout> dbExamLayouts = DBOperation.getAllLayout(layout.getExamCode(),layout.getRoomNo());
+                for (DBExamLayout  dbExamLayout:  dbExamLayouts) {
+                    dbExamLayout.setChecked(isChecked);
+                    realm.copyToRealmOrUpdate(dbExamLayout);
+                }
             });
         }
 
