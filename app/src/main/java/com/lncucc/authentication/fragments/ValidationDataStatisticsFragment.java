@@ -4,6 +4,7 @@ import static com.askia.coremodel.rtc.Constants.FULL_SCREEN_FLAG;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.se.omapi.SEService;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.askia.common.widget.GridSpacingItemDecoration;
 import com.askia.coremodel.datamodel.data.ExamExportGroupBean;
 import com.askia.coremodel.datamodel.data.ValidationDataBean;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
+import com.askia.coremodel.datamodel.database.db.DBExamExport;
+import com.askia.coremodel.datamodel.database.db.DBExamLayout;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.activitys.RoomListActivity;
@@ -58,6 +61,7 @@ public class ValidationDataStatisticsFragment extends BaseFragment {
         mBinding.tvSession.setOnClickListener(v -> showPopUp());
         //获取当前场次验证数据
         mValidationList = DBOperation.queryValidationDataBySeCode(seCode);
+        mValidationList = DBOperation.getAllExaminationHall(mValidationList, seCode,examCode);
         RxBus2.getInstance().register(this);
         GridLayoutManager manager = new GridLayoutManager(getActivity(),4);
         mAdapter = new ValidationDataStatisticsAdapter(mValidationList);
@@ -111,7 +115,8 @@ public class ValidationDataStatisticsFragment extends BaseFragment {
         //获取选中场次
         seCode = sessionList.get(position).getSeCode();
         mValidationList.clear();
-        mValidationList.addAll(DBOperation.queryValidationDataBySeCode(seCode));
+        List<ExamExportGroupBean> examExportGroupBeans = DBOperation.queryValidationDataBySeCode(seCode);
+        mValidationList.addAll(DBOperation.getAllExaminationHall(examExportGroupBeans, seCode,examCode));
         //更新selected view
         mBinding.tvSession.setText(sessionList.get(position).getSeName());
         setValidationNum();

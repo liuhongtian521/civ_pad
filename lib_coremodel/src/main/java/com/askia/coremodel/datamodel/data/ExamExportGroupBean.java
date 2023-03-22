@@ -20,6 +20,18 @@ public class ExamExportGroupBean implements Serializable {
     private int doubtValidation;//存疑
     private int notPassValidation;//未通过
 
+    private boolean isNewFlag;//是否为一人未验证得数据
+
+    public ExamExportGroupBean() {
+
+    }
+    public boolean getIsNewFlag() {
+        return isNewFlag;
+    }
+
+    public void setIsNewFlag(boolean isNewFlag) {
+        this.isNewFlag = isNewFlag;
+    }
     public int getTotal() {
         return total;
     }

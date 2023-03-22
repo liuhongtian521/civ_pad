@@ -20,6 +20,7 @@ import com.blankj.utilcode.util.StringUtils;
 import com.ttsea.jrxbus2.RxBus2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -684,30 +685,6 @@ public class DBOperation {
                 .equalTo("seCode", seCode)
                 .endGroup()
                 .distinct("roomNo").sort("roomNo", Sort.ASCENDING);
-        List<DBExamLayout> dbExamLayouts = DBOperation.getRoomList(seCode);
-        List<DBExamExport> replenishList = new ArrayList<>();
-   /*     if(null!=list && list.size()>0){
-            for (int j = 0; j <dbExamLayouts.size() ; j++) {
-                Boolean flag = false;
-                for (int i = 0; i < list.size(); i++) {
-                    if(dbExamLayouts.get(j).getRoomNo().equals(list.get(i).getRoomNo())){
-                        flag = true;
-                        break;
-                    }
-                }
-                if(!flag){
-                    DBExamExport dbExamExport = list.get(0);
-                    dbExamExport.setRoomNo(dbExamLayouts.get(j).getRoomNo());
-                    replenishList.add(dbExamExport);
-                }
-            }
-        if(null!=replenishList&&replenishList.size()>0){
-            list.addAll(replenishList);
-        }
-        }*/
-
-
-
         List<ExamExportGroupBean> groupList = new ArrayList<>();
         //打散验证数据的list,按roomNo进行分组并计算每个考场学生的验证数量
         Observable.fromIterable(list)
@@ -721,7 +698,59 @@ public class DBOperation {
                 .subscribe((Consumer<List<ExamExportGroupBean>>) groupList::addAll);
         return groupList;
     }
+    public static List<ExamExportGroupBean> getAllExaminationHall(List<ExamExportGroupBean> examExportGroupBeans,String seCode,String examCode){
+        List<ExamExportGroupBean> relExamExportGroupBeans = new ArrayList<>();
+        List<DBExamLayout> dbExamLayouts = DBOperation.getRoomList(seCode);
 
+        if(null != examExportGroupBeans && examExportGroupBeans.size()>0){
+            for (int j = 0; j <dbExamLayouts.size() ; j++) {
+                Boolean flag = false;
+                for (int i = 0; i < examExportGroupBeans.size(); i++) {
+                    if(dbExamLayouts.get(j).getRoomNo().equals(examExportGroupBeans.get(i).getRoomNo())){
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    ExamExportGroupBean examExportGroupBean = new ExamExportGroupBean();
+                    examExportGroupBean.setRoomNo(dbExamLayouts.get(j).getRoomNo());
+                    examExportGroupBean.setDoubtValidation(0);
+                    examExportGroupBean.setTotal(30);
+                    examExportGroupBean.setNotValidation(0);
+                    examExportGroupBean.setPassValidation(0);
+                    examExportGroupBean.setNotPassValidation(0);
+                    examExportGroupBean.setIsNewFlag(true);
+                    examExportGroupBeans.add(examExportGroupBean);
+                }
+            }
+            relExamExportGroupBeans.addAll(examExportGroupBeans);
+        }else{
+            for (int i = 0; i < dbExamLayouts.size(); i++) {
+                ExamExportGroupBean examExportGroupBean = new ExamExportGroupBean();
+                examExportGroupBean.setRoomNo(dbExamLayouts.get(i).getRoomNo());
+                examExportGroupBean.setDoubtValidation(0);
+                examExportGroupBean.setIsNewFlag(true);
+                examExportGroupBean.setTotal(30);
+                examExportGroupBean.setNotValidation(0);
+                examExportGroupBean.setPassValidation(0);
+                examExportGroupBean.setNotPassValidation(0);
+                relExamExportGroupBeans.add(examExportGroupBean);
+            }
+        }
+        for (int i = 0; i < relExamExportGroupBeans.size(); i++) {
+            List<DBExamLayout> list = Realm.getDefaultInstance().where(DBExamLayout.class).beginGroup()
+                    .equalTo("examCode", examCode)
+                    .equalTo("seCode", seCode)
+                    .equalTo("roomNo", relExamExportGroupBeans.get(i).getRoomNo())
+                    .endGroup()
+                    .findAllSorted("seatNo",Sort.ASCENDING);
+            if(relExamExportGroupBeans.get(i).getIsNewFlag()){
+                relExamExportGroupBeans.get(i).setTotal(list.size());
+                relExamExportGroupBeans.get(i).setNotValidation(list.size());
+            }
+        }
+        return relExamExportGroupBeans;
+    }
     /**
      * 数据整理
      *
