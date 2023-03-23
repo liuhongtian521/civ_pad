@@ -70,6 +70,7 @@ public class DateSettingActivity extends BaseActivity {
         content = findViewById(R.id.content);
         monthPager = findViewById(R.id.calendar_view);
         monthPager.setViewHeight(Utils.dpi2px(this, 200));
+        LogsUtil.saveOperationLogs("时间校正");
         initCurrentDate();
         initCalendarView();
         initTimer();

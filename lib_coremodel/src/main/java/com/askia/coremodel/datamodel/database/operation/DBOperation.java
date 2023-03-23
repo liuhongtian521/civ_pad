@@ -496,7 +496,7 @@ public class DBOperation {
      * @return 数据操作日志信息
      */
     public static List<DBLogs> getOperationLogs() {
-        return Realm.getDefaultInstance().where(DBLogs.class).findAll();
+        return Realm.getDefaultInstance().where(DBLogs.class).findAllSorted("operationTime",Sort.DESCENDING);
     }
 
     /**
@@ -708,8 +708,7 @@ public class DBOperation {
                 for (int i = 0; i < examExportGroupBeans.size(); i++) {
                     if(dbExamLayouts.get(j).getRoomNo().equals(examExportGroupBeans.get(i).getRoomNo())){
                         flag = true;
-                        break;
-                    }
+                     }
                 }
                 if(!flag){
                     ExamExportGroupBean examExportGroupBean = new ExamExportGroupBean();

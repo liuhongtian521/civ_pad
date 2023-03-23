@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.apkfuns.logutils.LogUtils;
 import com.askia.common.base.BaseFragment;
+import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.viewmodel.DateSettingViewModel;
 import com.askia.coremodel.viewmodel.LoginViewModel;
 import com.blankj.utilcode.util.TimeUtils;
@@ -121,6 +122,7 @@ public class DateSettingFragment extends BaseFragment {
     }
 
     public void dateClick() {
+        LogsUtil.saveOperationLogs("时间校正");
         mActivity.startActivity(new Intent(Settings.ACTION_DATE_SETTINGS));
     }
 
