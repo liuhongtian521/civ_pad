@@ -181,14 +181,12 @@ public class DBOperation {
         query.endGroup();
         return query.distinct("roomNo").sort("roomNo",Sort.ASCENDING);
     }
-    public static List<DBExamArrange> getDBExamArrangeList(String seCode) {
+    public static DBExamArrange getDBExamArrangeList(String seCode) {
         RealmQuery<DBExamArrange> query = Realm.getDefaultInstance().where(DBExamArrange.class);
         query.equalTo("seCode", seCode);
         List<DBExamArrange> dbExamArranges = query.findAll();
-        String examCode = dbExamArranges.get(0).getExamCode() ;
-        RealmQuery<DBExamArrange> relQuery = Realm.getDefaultInstance().where(DBExamArrange.class);
-        relQuery.equalTo("examCode",examCode);
-        return relQuery.findAll();
+
+        return dbExamArranges.get(0);
     }
     public static List<DBExamLayout> getAllLayout(String examCode,String roomNo) {
         RealmQuery<DBExamLayout> query = Realm.getDefaultInstance().where(DBExamLayout.class);

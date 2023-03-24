@@ -93,7 +93,17 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
 
     private void showPopUp() {
         View parent = mBinding.llContainer;
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        DBExamArrange dbExamArrange =  DBOperation.getDBExamArrangeList(seCode);
+        List<DBExamArrange> relDBExamArranges = new ArrayList<>();
+        for (int i = 0; i < sessionList.size(); i++) {
+            if(dbExamArrange.getId().equals(sessionList.get(i).getId())){
+                relDBExamArranges.add(0,sessionList.get(i));
+            }else{
+                    relDBExamArranges.add(i,sessionList.get(i));
+                }
+        }
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), relDBExamArranges);
+
         pop.setFocusable(false);
         pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
         pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
