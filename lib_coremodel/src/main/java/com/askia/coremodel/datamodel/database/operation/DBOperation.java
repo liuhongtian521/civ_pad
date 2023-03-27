@@ -531,7 +531,20 @@ public class DBOperation {
         query.endGroup();
         return query.findAllSorted("verifyTime", Sort.DESCENDING);
     }
-
+    public static List<DBExamExport> getSeletedVerifyListBySeCode(String seCode) {
+        RealmQuery<DBExamExport> query = Realm.getDefaultInstance().where(DBExamExport.class);
+        query.beginGroup();
+        query.equalTo("seCode", seCode, Case.SENSITIVE);
+        query.endGroup();
+        List<DBExamLayout> dbExamLayouts = DBOperation.getSelectedRoomList(seCode);
+        String[] roomList = new String[1000];
+        if(null!=dbExamLayouts&&!dbExamLayouts.isEmpty()){
+            for (int i = 0; i < dbExamLayouts.size(); i++) {
+                roomList[i] = dbExamLayouts.get(i).getRoomNo();
+            }
+        }
+        return query.in("roomNo",roomList).findAllSorted("verifyTime", Sort.DESCENDING);
+    }
     /**
      * 根据examCode 获取sitCode
      *
