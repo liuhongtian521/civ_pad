@@ -34,7 +34,10 @@ public class FaceResultDialog extends BaseDialog {
 
     LinearLayout linSuccess, linFaile;
     ImageView healthCode;
+    ImageView faileImage;
     TextView tvStatus;
+
+    TextView faileStatus;
     private MediaPlayer player;
     private Context mContext;
 
@@ -48,10 +51,10 @@ public class FaceResultDialog extends BaseDialog {
         ivClose = mView.findViewById(R.id.iv_close);
         linSuccess = mView.findViewById(R.id.line_face_success);
         linFaile = mView.findViewById(R.id.line_face_faile);
-
+        faileImage = mView.findViewById(R.id.icon_face_faile_img);
         healthCode = mView.findViewById(R.id.iv_health_code);
         tvStatus = mView.findViewById(R.id.tv_health_status);
-
+        faileStatus = mView.findViewById(R.id.icon_face_faile_message);
         this.onListener = dialogClickBackListener;
 
         //获取高级设置中的验证间隔时间
@@ -118,7 +121,7 @@ public class FaceResultDialog extends BaseDialog {
         window.setAttributes(layoutParams);
     }
 
-    public void setType(boolean type, String code) {
+    public void setType(boolean type, String code,String message) {
 //        1，验证通过+绿码  语音提示：验证通过
 //
 //        2，验证通过+黄码/红码/未知  语音提示：健康码异常
@@ -175,9 +178,20 @@ public class FaceResultDialog extends BaseDialog {
             }
         }
         if (!type){
-            player = MediaPlayer.create(mContext, R.raw.qingchongshi);
-            linSuccess.setVisibility(View.GONE);
-            linFaile.setVisibility(View.VISIBLE);
+            if(code.equals("4")){
+                player = MediaPlayer.create(mContext, R.raw.qingchongshi);
+                linSuccess.setVisibility(View.GONE);
+                faileImage.setImageResource(R.mipmap.icon_face_faile);
+                faileStatus.setTextColor(Color.parseColor("#6F7783"));
+                faileStatus.setText("                 验证失败"+"\n"+message);
+                linFaile.setVisibility(View.VISIBLE);
+            }else{
+                player = MediaPlayer.create(mContext, R.raw.qingchongshi);
+                faileStatus.setText("  验证失败");
+                linSuccess.setVisibility(View.GONE);
+                linFaile.setVisibility(View.VISIBLE);
+            }
+
         }
         if (player != null) {
             player.start();

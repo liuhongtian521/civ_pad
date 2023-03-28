@@ -66,10 +66,12 @@
             android:gravity="center"
             android:background="@drawable/bg_write_round_five">
             <ImageView
+                android:id="@+id/icon_face_faile_img"
                 android:layout_width="@dimen/dp_135"
                 android:layout_height="@dimen/dp_130"
                 android:src="@mipmap/icon_face_faile"/>
             <TextView
+                android:id="@+id/icon_face_faile_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="验证失败"

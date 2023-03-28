@@ -29,7 +29,6 @@ import com.askia.common.recyclerview.FOnRVItemClickListener;
 import com.askia.common.recyclerview.FRecyclerViewAdapter;
 import com.askia.common.recyclerview.FViewHolderHelper;
 import com.askia.common.util.ImageUtil;
-import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.askia.coremodel.datamodel.database.db.DBExamExport;
 import com.askia.coremodel.datamodel.database.db.DBExamLayout;
@@ -42,7 +41,6 @@ import com.askia.coremodel.viewmodel.AuthenticationViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.TimeUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActAuthenticationBinding;
 import com.lncucc.authentication.fragments.FaceShowFragment;
@@ -451,7 +449,7 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
             if (mPopExamPlan.isShowing() || peopleMsgDialog.isShowing() || faceResultDialog.isShowing() || faceComparedDialog.isShowing())
                 return;
             //刷脸成功
-            faceResultDialog.setType(true, result);
+            faceResultDialog.setType(true, result,"" );
         });
 
 
@@ -523,7 +521,7 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                     return;
                 if (dbExaminee == null) {
                     if (!isComparison) {
-                        faceResultDialog.setType(false, "");
+                        faceResultDialog.setType(false, "", "");
                     } else
                         faceFragment.goContinueDetectFace();
                 } else {
@@ -557,23 +555,23 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                         }
                     } else {
                         //识别状态
-                        if (mExamCodeList.size() == 0)
+                         if (mExamCodeList.size() == 0)
                             mViewModel.canSign(dbExamLayout.getId());
                         else if (mExamCodeList.contains(dbExamLayout.getRoomNo())) {
                             mViewModel.canSign(dbExamLayout.getId());
                         }else if (!mExamCodeList.contains(dbExamLayout.getRoomNo())){
                             //v1.3.2新增考生不属于当前场次，验证失败并语音提示 考生考号
-                            faceResultDialog.setType(false,"");
-                            showVoicePrompt(dbExamLayout.getRoomNo());
-                            MyToastUtils.error("非本场考生，考场号" + dbExamLayout.getRoomNo(),0);
+                                   faceResultDialog.setType(false,"4","非本场考生，考场号" + dbExamLayout.getRoomNo() );
+                            //showVoicePrompt(dbExamLayout.getRoomNo());
+                            //MyToastUtils.error("非本场考生，考场号" + dbExamLayout.getRoomNo(),0);
                         }
                         else{
-                            faceResultDialog.setType(false, "");
+                            faceResultDialog.setType(false, "", "");
                         }
                     }
                 } else {
                     if (!isComparison) {
-                        faceResultDialog.setType(false, "");
+                        faceResultDialog.setType(false, "","" );
                     } else {
                         faceFragment.goContinueDetectFace();
                     }
@@ -687,7 +685,7 @@ public class AuthenticationActivity extends BaseActivity implements DialogClickB
                 this.mDetectResult = detectResult;
                 mViewModel.quickPeople(mDetectResult.faceNum, mExamCode);//查询学生
             } else {
-                faceResultDialog.setType(false, "");
+                faceResultDialog.setType(false, "","" );
             }
         }
     }
