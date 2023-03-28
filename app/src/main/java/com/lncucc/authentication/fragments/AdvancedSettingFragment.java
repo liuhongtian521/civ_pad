@@ -26,6 +26,11 @@ import com.ttsea.jrxbus2.RxBus2;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,15 +50,42 @@ public class AdvancedSettingFragment extends BaseFragment implements PassWordCli
         List<DBExamPlan> list = DBOperation.getExamPlan();
         //所有考试场次
         List<DBExamArrange> arrSessionList = DBOperation.getAllExamArrange();
+        String time = "";
         if (list != null && list.size() > 0) {
+            time = list.get(0).getVerifyStartTime() == null ? "0" : list.get(0).getVerifyStartTime();
             //设置开始时间
-            advancedSetting.edtStartTime.setText(list.get(0).getVerifyStartTime() == null ? "0" : list.get(0).getVerifyStartTime());
+            advancedSetting.edtStartTime.setText(time);
             //设置识别间隔
             advancedSetting.edtVerifyIntervalTime.setText(list.get(0).getVerifyIntervalTime());
         }
+        //用于操作查出集合
+        List<DBExamArrange> relArrange = new ArrayList<>();
+        for (DBExamArrange o: arrSessionList) {
+            DBExamArrange dbExamArrange = new DBExamArrange();
+            dbExamArrange.setStartTime(o.getStartTime());
+            dbExamArrange.setEndTime(o.getEndTime());
+            dbExamArrange.setSubName(o.getSubName());
+            relArrange.add(dbExamArrange);
+        }
+        //计算时间
+        if(!"0".equals(time)) {
+            for (int i = 0; i < relArrange.size(); i++) {
+                Date date;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(relArrange.get(i).getStartTime());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                cal.add(Calendar.MINUTE,-Integer.valueOf(time));
+                String relDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cal.getTime());
+                relArrange.get(i).setStartTime(relDate);
+            }
+        }
         dialog = new VerifyCodeDialog(getActivity(),this);
         advancedSetting.recyclerSession.setLayoutManager(new LinearLayoutManager(getActivity()));
-        advancedSetting.recyclerSession.setAdapter(new AdvanceSessionAdapter(arrSessionList));
+        advancedSetting.recyclerSession.setAdapter(new AdvanceSessionAdapter(relArrange));
     }
 
     @Override
