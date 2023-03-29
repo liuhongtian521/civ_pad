@@ -23,10 +23,14 @@ import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportBean;
 import com.askia.coremodel.datamodel.data.DataImportListBean;
+import com.askia.coremodel.datamodel.database.db.DBAccount;
+import com.askia.coremodel.datamodel.database.db.DBDataVersion;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
+import com.askia.coremodel.util.JsonUtil;
 import com.askia.coremodel.viewmodel.DataImportViewModel;
 import com.baidu.tts.tools.SharedPreferencesUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
@@ -47,6 +51,7 @@ import com.ttsea.jrxbus2.Subscribe;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -153,6 +158,9 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             loadingDialog.setLoadingProgress(result.getUnZipProcess() + "", result.getMessage());
             if (progress == 100) {
                 LogUtils.e("file unzip success ->", result.getUnZipProcess());
+                if(!this.checkInfo(result.getFilePath())){
+                    MyToastUtils.error("导入编排包的考点需要与当前登录账号的考点一致", Toast.LENGTH_SHORT);
+                }
                 //解析 插入数据/插入人脸库
                 viewModel.getExDataFromLocal(result.getFilePath());
             }
@@ -407,4 +415,11 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             importDialog.dismiss();
         }
     }
+
+    private boolean checkInfo(String path) {
+        DBAccount dbAccount = DBOperation.queryInnerAccount();
+        DBAccount checkAccount = JsonUtil.file2JsonObject(path + File.separator+"account.json", DBAccount.class);
+        return dbAccount.getCode().equals(checkAccount.getCode());
+    }
+
 }
