@@ -1,12 +1,16 @@
 package com.lncucc.authentication.widgets;
 
+import static com.askia.coremodel.rtc.Constants.AUTO_BASE_URL;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.android.arouter.utils.TextUtils;
+import com.askia.common.base.ViewManager;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.rtc.Constants;
 import com.baidu.tts.tools.SharedPreferencesUtils;
@@ -29,15 +33,18 @@ public class IPSettingDialog extends BaseDialog {
     private DialogClickBackListener callback;
     private EditText editText;
 
+    //private TextView defaultIp;
     public IPSettingDialog(Context context, DialogClickBackListener listener) {
         super(context);
         mView = LayoutInflater.from(context).inflate(R.layout.dialog_ip_setting, null);
         this.callback = listener;
         setContentView(mView);
         setCanceledOnTouchOutside(true);
-
         editText = mView.findViewById(R.id.edt_ip_input);
-
+        String url =  SharedPreferencesUtils.getString(ViewManager.getInstance().currentActivity(),AUTO_BASE_URL).replaceAll("http://","");
+        if(null!=url){
+            editText.setText(url);
+        }
         mView.findViewById(R.id.rl_close).setOnClickListener(v -> {
             KeyboardUtils.toggleSoftInput();
             dismiss();
@@ -68,7 +75,6 @@ public class IPSettingDialog extends BaseDialog {
                     MyToastUtils.error("IP输入错误，请重新输入",0);
                 }
             }
-
         });
     }
 }
