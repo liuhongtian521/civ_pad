@@ -901,7 +901,7 @@ public class DBOperation {
             StudentBean studentBean = new StudentBean();
             if(i<9) {
                 studentBean.setSeatNo("0"+String.valueOf(i + 1));
-                studentBean.setName("");
+                studentBean.setName("      无人");
             }else{
                 studentBean.setSeatNo(String.valueOf(i+1));
                 studentBean.setName("      无人");
