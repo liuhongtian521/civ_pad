@@ -230,7 +230,7 @@ public class DataExportViewModel extends BaseViewModel {
                         event.setMessage("正在写入到U盘中...");
                         event.setCode(1);
                     } else {
-                        event.setMessage("数据导出完成，已导入到U盘Export文件夹中");
+                        event.setMessage("导出成功");
                         event.setCode(0);
                     }
                     emitter.onNext(event);
