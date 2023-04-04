@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.askia.common.base.BaseFragment;
+import com.askia.common.base.HandleEvent;
+import com.askia.common.base.ViewManager;
 import com.askia.common.util.MyToastUtils;
 import com.askia.common.util.receiver.UsbStatusChangeEvent;
 import com.askia.coremodel.datamodel.data.DataImportBean;
@@ -45,10 +47,12 @@ import com.lncucc.authentication.widgets.DataImportDialog;
 import com.lncucc.authentication.widgets.DataImportDialogListener;
 import com.lncucc.authentication.widgets.DataLoadingDialog;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.ErrorDialog;
 import com.lncucc.authentication.widgets.FaceImportErrorDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -88,10 +92,17 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
 
     @Override
     public void onInit() {
+        EventBus.getDefault().register(this);
         initView();
         initEvent();
     }
-
+    @org.greenrobot.eventbus.Subscribe
+    public  void  onFaceInitFailureEvent(HandleEvent event){
+        MyToastUtils.error("人脸认证SDK初始化失败，不允许导入数据包", Toast.LENGTH_SHORT);
+       /* ErrorDialog errorDialog = new ErrorDialog(ViewManager.getInstance().currentActivity(), "人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP");
+        errorDialog.show();
+        return;*/
+    }
     private void initView() {
         numberFormat = NumberFormat.getInstance();
         numberFormat.setMaximumFractionDigits(2);
@@ -391,6 +402,7 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
     public void onDestroy() {
         super.onDestroy();
         RxBus2.getInstance().unRegister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
