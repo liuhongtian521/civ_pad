@@ -12,6 +12,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.base.HandleEvent;
 import com.askia.common.util.MyToastUtils;
 import com.askia.coremodel.datamodel.database.operation.DBOperation;
 import com.askia.coremodel.event.UniAuthInfoEvent;
@@ -24,9 +25,12 @@ import com.blankj.utilcode.util.KeyboardUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActLoginBinding;
 import com.lncucc.authentication.widgets.DialogClickBackListener;
+import com.lncucc.authentication.widgets.ErrorDialog;
 import com.lncucc.authentication.widgets.IPSettingDialog;
 import com.ttsea.jrxbus2.RxBus2;
 import com.ttsea.jrxbus2.Subscribe;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Objects;
 
@@ -51,13 +55,18 @@ public class LoginActivity extends BaseActivity implements DialogClickBackListen
         String defaultAccount = SharedPreferencesUtils.getString(this, "account", "");
         dialog = new IPSettingDialog(this,this);
         loginViewModel.account.set(defaultAccount);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onInitViewModel() {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
     }
-
+    @org.greenrobot.eventbus.Subscribe
+    public  void  onFaceInitFailureEvent(HandleEvent event){
+        ErrorDialog errorDialog = new ErrorDialog(this, "人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP");
+        errorDialog.show();
+    }
     @Override
     public void onInitDataBinding() {
         loginBinding = DataBindingUtil.setContentView(this, R.layout.act_login);
@@ -184,5 +193,7 @@ public class LoginActivity extends BaseActivity implements DialogClickBackListen
     protected void onDestroy() {
         super.onDestroy();
         RxBus2.getInstance().unRegister(this);
+        EventBus.getDefault().unregister(this);
     }
+
 }

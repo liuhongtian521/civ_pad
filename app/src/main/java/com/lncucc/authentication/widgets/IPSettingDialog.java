@@ -41,9 +41,9 @@ public class IPSettingDialog extends BaseDialog {
         setContentView(mView);
         setCanceledOnTouchOutside(true);
         editText = mView.findViewById(R.id.edt_ip_input);
-        String url =  SharedPreferencesUtils.getString(ViewManager.getInstance().currentActivity(),AUTO_BASE_URL).replaceAll("http://","");
+        String url =  SharedPreferencesUtils.getString(ViewManager.getInstance().currentActivity(),AUTO_BASE_URL);
         if(null!=url){
-            editText.setText(url);
+            editText.setText(url.replaceAll("http://",""));
         }
         mView.findViewById(R.id.rl_close).setOnClickListener(v -> {
             KeyboardUtils.toggleSoftInput();

@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.askia.common.base.ARouterPath;
 import com.askia.common.base.BaseActivity;
+import com.askia.common.base.HandleEvent;
 import com.askia.common.base.ViewManager;
 import com.askia.coremodel.datamodel.database.operation.LogsUtil;
 import com.askia.coremodel.event.UniAuthInfoEvent;
@@ -30,6 +31,7 @@ import com.ldf.calendar.view.Calendar;
 import com.ldf.calendar.view.MonthPager;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActDateSettingBinding;
+import com.lncucc.authentication.widgets.ErrorDialog;
 import com.lncucc.authentication.widgets.calendar.CustomDayView;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
@@ -37,6 +39,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.ttsea.jrxbus2.RxBus2;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -75,6 +78,7 @@ public class DateSettingActivity extends BaseActivity {
         initCalendarView();
         initTimer();
         requestPermissions();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -244,6 +248,14 @@ public class DateSettingActivity extends BaseActivity {
         };
     }
 
+
+    @Subscribe
+    public  void  onFaceInitFailureEvent(HandleEvent event){
+        ErrorDialog errorDialog = new ErrorDialog(this, "人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP");
+        errorDialog.show();
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -309,5 +321,7 @@ public class DateSettingActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         mDisposable.dispose();
+        EventBus.getDefault().unregister(this);
+
     }
 }

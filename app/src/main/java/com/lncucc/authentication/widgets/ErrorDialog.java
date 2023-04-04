@@ -21,7 +21,7 @@ public class ErrorDialog extends BaseDialog
     //    style引用style样式
     public ErrorDialog(Context context,String hint)
     {
-        super(context,R.style.DialogTheme);
+        super(context,R.style.ErrorDialogTheme);
         mView = getLayoutInflater().inflate(R.layout.dialog_error,null);
         setContentView(mView);
 

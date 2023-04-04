@@ -1,10 +1,10 @@
 package com.askia.common.base;
 
 import static com.askia.coremodel.rtc.Constants.AUTO_BASE_URL;
-import static com.askia.coremodel.rtc.Constants.CAMERA_DEFAULT;
 import static com.askia.coremodel.rtc.Constants.VOICE_SETTING;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,38 +26,29 @@ import com.askia.coremodel.datamodel.database.repository.SharedPreUtil;
 import com.askia.coremodel.datamodel.http.ApiConstants;
 import com.askia.coremodel.datamodel.realm.MyMigration;
 import com.askia.coremodel.datamodel.realm.RealmConstant;
-import com.askia.coremodel.event.AuthenticationEvent;
-import com.askia.coremodel.event.LoginSuccessEvent;
 import com.askia.coremodel.rtc.AgoraEventHandler;
 import com.askia.coremodel.rtc.Constants;
 import com.askia.coremodel.rtc.EngineConfig;
-import com.askia.coremodel.rtc.EventHandler;
-import com.askia.coremodel.rtc.FileUtil;
 import com.askia.coremodel.rtc.PrefManager;
 import com.askia.coremodel.rtc.StatsManager;
 import com.askia.coremodel.rtm.IMUtils;
-import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.TtsMode;
 import com.baidu.tts.tools.SharedPreferencesUtils;
 import com.blankj.utilcode.util.Utils;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadLog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
-import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 import com.tencent.bugly.beta.ui.UILifecycleListener;
 import com.ttsea.jrxbus2.RxBus2;
-import com.ttsea.jrxbus2.Subscribe;
 import com.unicom.facedetect.detect.FaceDetectInitListener;
 import com.unicom.facedetect.detect.FaceDetectManager;
 import com.unicom.facedetect.log.DiagnosisLog;
 import com.unicom.facedetect.log.DiagnosisType;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.agora.rtc.RtcEngine;
 import io.agora.rtm.ErrorInfo;
@@ -177,7 +168,14 @@ public class APP extends Application {
             public void onInitFailure(String errorMessage) {
                 isInitFaceSuccess = false;
                 Log.e("init face error", errorMessage);
-                MyToastUtils.error("人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP", Toast.LENGTH_LONG);
+                EventBus.getDefault().post(new HandleEvent("showFaceInitError"));
+           /*     new  AlertDialog.Builder(ViewManager.getInstance().currentActivity())
+                        .setTitle("错误提示")
+                        .setMessage("人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP" )
+                        .setPositiveButton("确定" ,  null)
+                        .show();
+                MyToastUtils.error("人脸认证SDK初始化失败，请确认是否连接互联网，之后重启APP", Toast.LENGTH_LONG);*/
+
             }
         });
 

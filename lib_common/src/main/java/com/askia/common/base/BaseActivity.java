@@ -26,6 +26,9 @@ import com.askia.common.widget.NetLoadingDialog;
 import com.qmuiteam.qmui.util.QMUIStatusBarHelper;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import me.jessyan.autosize.AutoSize;
 
 
@@ -51,6 +54,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         ViewManager.getInstance().addActivity(this);
         LogUtils.d(this.getClass().getSimpleName() + "---onCreate()");
 
@@ -94,7 +99,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         ViewManager.getInstance().finishActivity(this);
         LogUtils.d(this.getClass().getSimpleName() + "---onDestroy()");
-
     }
 
     @Override
@@ -123,6 +127,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs)

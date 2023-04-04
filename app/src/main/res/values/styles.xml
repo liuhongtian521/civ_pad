@@ -33,7 +33,24 @@
         <!-- 遮罩层 -->
         <item name="android:backgroundDimAmount">0.5</item>
     </style>
-
+    <!-- Dialog样式-->
+    <style name="ErrorDialogTheme" parent="@android:style/Theme.Dialog">
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#FFFFFF</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">#FFFFFF</item>
+        <!-- 模糊 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 遮罩层 -->
+        <item name="android:backgroundDimAmount">0.5</item>
+    </style>
     <style name="BaseNoActionBar" parent="QMUI.Compat.NoActionBar">
         <!--        <item name="android:windowIsTranslucent">true</item>-->
         <item name="android:windowDisablePreview">true</item>
