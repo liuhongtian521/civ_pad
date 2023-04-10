@@ -102,15 +102,18 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
                     relDBExamArranges.add(i,sessionList.get(i));
                 }
         }
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), relDBExamArranges);
-
+        sessionList = new ArrayList<>();
+        sessionList.addAll(relDBExamArranges);
+        /*sessionList.clear();
+        sessionList.addAll(relDBExamArranges);*/
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        //BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
         pop.setFocusable(false);
         pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
         pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
         pop.setFocusable(true);
         pop.update();
     }
-
     @Subscribe(code = 0)
     public void onGetSessionEvent(String index) {
         int position = Integer.parseInt(index);
