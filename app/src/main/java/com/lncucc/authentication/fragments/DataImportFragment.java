@@ -169,9 +169,9 @@ public class DataImportFragment extends BaseFragment implements DataImportDialog
             loadingDialog.setLoadingProgress(result.getUnZipProcess() + "", result.getMessage());
             if (progress == 100) {
                 LogUtils.e("file unzip success ->", result.getUnZipProcess());
-                if(!this.checkInfo(result.getFilePath())){
+              /*  if(!this.checkInfo(result.getFilePath())){
                     MyToastUtils.error("导入编排包的考点需要与当前登录账号的考点一致", Toast.LENGTH_SHORT);
-                }
+                }*/
                 //解析 插入数据/插入人脸库
                 viewModel.getExDataFromLocal(result.getFilePath());
             }
