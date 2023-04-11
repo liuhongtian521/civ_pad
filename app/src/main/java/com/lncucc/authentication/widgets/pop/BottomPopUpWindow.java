@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.askia.coremodel.datamodel.database.db.DBExamArrange;
 import com.blankj.utilcode.util.LogUtils;
@@ -27,16 +29,21 @@ public class BottomPopUpWindow extends PopupWindow {
     private List<DBExamArrange> mList;
     private WheelItemView wheelView;
 
-    public BottomPopUpWindow(Context context, List<DBExamArrange> list) {
+    private TextView textView;
+
+    public BottomPopUpWindow(Context context, List<DBExamArrange> list,String headText) {
         this.mContext = context;
         this.mList = list;
-        initView();
+        initView(headText);
     }
 
-    private void initView() {
+    private void initView(String headText) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.pop_arrange, null);
         view.findViewById(R.id.rl_close).setOnClickListener(v -> dismiss());
-
+        textView = view.findViewById(R.id.head_info);
+        if(null!=headText&&!headText.isEmpty()){
+            textView.setText(headText);
+        }
         view.findViewById(R.id.tv_confirm).setOnClickListener(v ->
             {
                 dismiss();

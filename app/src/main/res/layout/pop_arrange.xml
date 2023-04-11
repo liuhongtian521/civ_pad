@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="31dp">
             <TextView
+                android:id="@+id/head_info"
                 android:layout_alignParentLeft="true"
                 android:text="@string/export_session_"
                 android:textColor="@color/_163366"

@@ -106,7 +106,7 @@ public class DataValidationFragment extends BaseFragment implements DialogClickB
         sessionList.addAll(relDBExamArranges);
         /*sessionList.clear();
         sessionList.addAll(relDBExamArranges);*/
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList,"选择查看场次");
         //BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
         pop.setFocusable(false);
         pop.showAtLocation(parent, Gravity.CENTER, 0, 0);

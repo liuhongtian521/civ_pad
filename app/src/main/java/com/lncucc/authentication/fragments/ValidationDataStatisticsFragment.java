@@ -93,7 +93,7 @@ public class ValidationDataStatisticsFragment extends BaseFragment {
 
     private void showPopUp() {
         View parent = mBinding.llContainer;
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList,"选择查看场次");
         pop.setFocusable(false);
         pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
         pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);

@@ -400,7 +400,7 @@ public class DataExportFragment extends BaseFragment {
 
     private void showPopUp() {
         View parent = exportBinding.llContainer;
-        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList);
+        BottomPopUpWindow pop = new BottomPopUpWindow(getActivity(), sessionList,"选择导出场次");
         pop.setFocusable(false);
         pop.showAtLocation(parent, Gravity.CENTER, 0, 0);
         pop.getContentView().setSystemUiVisibility(FULL_SCREEN_FLAG);
