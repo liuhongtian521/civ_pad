@@ -28,6 +28,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.lncucc.authentication.R;
 import com.lncucc.authentication.databinding.ActMainBinding;
+import com.lncucc.authentication.widgets.ErrorDialog;
 import com.lncucc.authentication.widgets.PopExamPlan;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
@@ -131,7 +132,9 @@ public class MainActivity extends BaseActivity {
     public void onInit() {
 
         if (!APP.isInitFaceSuccess) {
-            Toast.makeText(this, "人脸扫描初始化失败，无法启动身份认证功能", Toast.LENGTH_SHORT).show();
+            ErrorDialog errorDialog = new ErrorDialog(this, "人脸扫描初始化失败，无法启动身份认证功能");
+            errorDialog.show();
+            //Toast.makeText(this, "人脸扫描初始化失败，无法启动身份认证功能", Toast.LENGTH_SHORT).show();
         }
 
         mPopExamPlan = new PopExamPlan(this, new PopExamPlan.PopListener() {
